@@ -19,5 +19,8 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen" VERBATIM
         )
 endif(DOXYGEN_FOUND)
+
+# C_FLAGS options
+set(CMAKE_C_FLAGS "-O0 -std=c99")
  
 add_executable(main ${SOURCES})
