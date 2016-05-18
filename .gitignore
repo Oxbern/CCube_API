@@ -10,4 +10,4 @@
 *.tmp
 *.o
 
-build/CMakeFiles
+build
