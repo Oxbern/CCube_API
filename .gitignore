@@ -1,0 +1,11 @@
+.classpath
+.project
+
+# Tempory files
+*\#*
+~*
+*~
+
+*.err
+*.tmp
+*.o
