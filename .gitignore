@@ -9,3 +9,5 @@
 *.err
 *.tmp
 *.o
+
+build/CMakeFiles
