@@ -1,10 +1,10 @@
-#ifndef CONNEXION
-#define CONNEXION
+#ifndef CONNEXION_H
+#define CONNEXION_H
 
 /**
  * File descriptor to communicate with the device
  */
-int fd = -1;
+extern int fd;
 
 
 /**

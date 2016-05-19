@@ -1,6 +1,8 @@
 #include "connexion.h"
 #include <fcntl.h>
 
+int fd = -1;
+
 /**
  * @brief Open a connection with the device
  * @param dev : path of the device
