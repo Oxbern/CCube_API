@@ -8,7 +8,9 @@ int main(int argc, char *argv[]) {
 
     cube *cube = new_cube();
 
-    display("/dev/ttyAMC0", cube);
+    on(4, 4, 4, cube);
+
+    display("/dev/ttyACM0", cube);
 
     free(cube);
     

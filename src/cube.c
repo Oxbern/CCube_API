@@ -13,23 +13,63 @@
 cube *new_cube() {
     cube *newCube = malloc(sizeof(cube));
 
-    for (int i = 0; i < 10; ++i) {
-	for (int j = 0; j < 9; ++j)
-	    newCube->led_buffer[i][j] = (uint16_t)0b0000000001;
-	newCube->led_buffer[i][9] = (uint16_t)(1 << i);
+	for (int i = 0; i < 10; ++i) {
+		for (int j = 0; j < 9; ++j)
+	    	newCube->led_buffer[i][j] = (uint16_t)0b0000000000;
+			newCube->led_buffer[i][9] = (uint16_t)(1 << i);
     }
     newCube->led_buffer[9][9] = (uint16_t)0b0000000000;
-
     return newCube;
 }
+
+/**
+* Switch on a led
+* 	x, y, z should be > 0 and <= 8
+*/
+void on(int x, int y, int z, cube *cube) {
+	if (x > 8 || y > 8 || z > 8) {
+		perror("Index of led out of bounds");
+		exit(EXIT_FAILURE);
+	} else {
+		cube->led_buffer[z][(8-y)] |= (1 << x);
+	}
+}
+
+/**
+* Switch off a led
+* 	x, y, z should be > 0 and <= 8
+*/
+void off(int x, int y, int z, cube *cube) {
+	if (x > 8 || y > 8 || z > 8) {
+		perror("Index of led out of bounds");
+		exit(EXIT_FAILURE);
+	} else {
+		cube->led_buffer[z][(8-y)] &= (0 << x);
+	}
+}
+
+/**
+* Toggle a led status
+* 	x, y, z should be > 0 and <= 8
+*/
+void toggle(int x, int y, int z, cube *cube) {
+	if (x > 8 || y > 8 || z > 8) {
+		perror("Index of led out of bounds");
+		exit(EXIT_FAILURE);
+	} else {
+		cube->led_buffer[z][(8-y)] ^= (1 << x);
+	}
+}
+
 
 void display(char * dev, cube *cube) {
     int fd = 10 /* open(dev, O_RDWR | O_NOCTTY | O_NDELAY) */;
     uint8_t *buffer = calloc(BUFFER_MAX_INDEX, sizeof(uint8_t));
     
-    if (fd == -1)
-	perror("Unable to open connection\n");
-    else if (fd > 0) {
+    if (fd == -1) {
+		perror("Unable to open connection\n");
+		exit(EXIT_FAILURE);
+    } else if (fd > 0) {
 	int x = 0, y = 0;
 	bool firstBuffer = true;
 
@@ -64,7 +104,6 @@ void display(char * dev, cube *cube) {
 		    }
 		}
 	    }
-
 	    uint16_t crc = computeCRC(buffer+4, 8*58);
 	    
 	    buffer[BUFFER_MAX_INDEX - 2] = crc >> 8;
@@ -83,6 +122,7 @@ void display(char * dev, cube *cube) {
 
     } else {
 	perror("Error in open_connection function\n");
+	exit(EXIT_FAILURE);
     }
 
     close(fd);

@@ -12,6 +12,9 @@ typedef struct _cube {
 
 cube *new_cube();
 
+void on(int x, int y, int z, cube *cube);
+void off(int x, int y, int z, cube *cube);
+void toggle(int x, int y, int z, cube *cube);
 void display(char * dev, cube *cube);
 
 #endif 
