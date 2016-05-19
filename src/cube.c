@@ -3,11 +3,12 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include "cube.h"
-#include "connexion.h"
+#include "crc.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 cube *new_cube() {
     cube *newCube = malloc(sizeof(cube));
@@ -23,7 +24,7 @@ cube *new_cube() {
 }
 
 void display(char * dev, cube *cube) {
-    fd = open_connection(dev);
+    int fd = 10 /* open(dev, O_RDWR | O_NOCTTY | O_NDELAY) */;
     uint8_t *buffer = calloc(BUFFER_MAX_INDEX, sizeof(uint8_t));
     
     if (fd == -1)
@@ -64,8 +65,10 @@ void display(char * dev, cube *cube) {
 		}
 	    }
 
-	    buffer[BUFFER_MAX_INDEX - 2] = 0x04;
-	    buffer[BUFFER_MAX_INDEX - 1] = 0x04;
+	    uint16_t crc = computeCRC(buffer+4, 8*58);
+	    
+	    buffer[BUFFER_MAX_INDEX - 2] = crc >> 8;
+	    buffer[BUFFER_MAX_INDEX - 1] = crc & 0xFF;
 
 	    /* Buffer is now full, ready to be sent */
 	    write(fd, buffer, 64);
@@ -81,7 +84,8 @@ void display(char * dev, cube *cube) {
     } else {
 	perror("Error in open_connection function\n");
     }
-    
+
+    close(fd);
 }
 
 
