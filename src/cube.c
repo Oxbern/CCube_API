@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "cube.h"
+#include "connexion.h"
 
 #define DEBUG 0
 
@@ -22,7 +23,7 @@ cube *new_cube() {
 }
 
 void display(char * dev, cube *cube) {
-    int fd /* = open_connection(dev) */;
+    fd = open_connection(dev);
     uint8_t *buffer = calloc(BUFFER_MAX_INDEX, sizeof(uint8_t));
     
     if (fd == -1)
@@ -67,7 +68,7 @@ void display(char * dev, cube *cube) {
 	    buffer[BUFFER_MAX_INDEX - 1] = 0x04;
 
 	    /* Buffer is now full, ready to be sent */
-	    /* write(fd, buffer, 64); */
+	    write(fd, buffer, 64);
 
 #if DEBUG
 	    printf("BUFFER : \n");
