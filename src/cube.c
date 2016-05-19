@@ -13,7 +13,7 @@ cube *new_cube() {
 
     for (int i = 0; i < 10; ++i) {
 	for (int j = 0; j < 9; ++j)
-	    newCube->led_buffer[i][j] = (uint16_t)0b0000000000;
+	    newCube->led_buffer[i][j] = (uint16_t)0b0000000001;
 	newCube->led_buffer[i][9] = (uint16_t)(1 << i);
     }
     newCube->led_buffer[9][9] = (uint16_t)0b0000000000;
@@ -34,8 +34,10 @@ void display(char * dev, cube *cube) {
 	while (x < 10 && y < 10) {
 
 	    /* First octet set to know if this is the first buffer of package */
-	    if (firstBuffer)
+	    if (firstBuffer) {
 		buffer[0] = 0x01;
+		firstBuffer = false;
+	    }
 	    else
 		buffer[0] = 0x00;
 	    
