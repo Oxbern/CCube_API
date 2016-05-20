@@ -22,5 +22,7 @@ endif(DOXYGEN_FOUND)
 
 # C_FLAGS options
 set(CMAKE_C_FLAGS "-O0 -std=c99")
- 
+#set(SOURCE_FILES $(SOURCES))
+
 add_executable(main ${SOURCES})
+target_link_libraries(main m)
