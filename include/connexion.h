@@ -8,7 +8,7 @@ extern int fd;
 
 
 /**
- * @brief Open a connection with the device
+ * @brief Opens a connection with the device
  * @param dev : path of the device
  * @return file descriptor for communicate with the device
  */
