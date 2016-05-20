@@ -20,6 +20,13 @@ cube *new_cube();
 
 
 /**
+ * @brief
+ * @return ACK as uint8_t table
+ */
+uint8_t *getACK(int fd);
+
+
+/**
  * @brief Turns on a led
  * @param x
  * @param y 

@@ -113,11 +113,7 @@ void display(char * dev, cube *cube) {
 	    /* Buffer is now full, ready to be sent */
 	    write(fd, buffer, 64);
 
-	    fcntl(fd, F_SETFL, 0);
-	    if (read(fd, &c, 1) <= 0)
-		perror("Cannot read data over USB connection!\n");
-	    else
-		printf("Data recovered : %u\n", c);
+	    uint8_t *ACK = getACK(fd);
 	}
 
     } else {
@@ -126,4 +122,19 @@ void display(char * dev, cube *cube) {
     }
     
     close(fd);
+}
+
+uint8_t *getACK(int fd) {
+    
+    int index = 0,
+	c = 0;
+    
+    uint8_t *buf = malloc(6*sizeof(uint8_t));
+        
+    while (read(fd, &c, 1) > 0) {
+	buf[index] = c;
+	index ++;
+    }
+        
+    return buf;
 }
