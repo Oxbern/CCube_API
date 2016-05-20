@@ -1,5 +1,5 @@
-#ifndef TEST_DISPLAY_H
-#define TEST_DISPLAY_H
+#ifndef POINT_H
+#define POINT_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -8,11 +8,13 @@
 #include <inttypes.h>
 #include <math.h>
 #include "cube.h"
-#define M_PI 3.14159265359
 
+struct Point {
+    uint8_t x;
+    uint8_t y;
+    uint8_t z;
+} typedef Point;
 
-void printcmd();
-
+Point *new_point(uint8_t x,uint8_t y, uint8_t z);
 bool handle_out_of_bounds(uint8_t x,uint8_t y, uint8_t z);
-
-#endif 
+#endif

@@ -5,7 +5,7 @@ project (main)
 include_directories(include)
  
 # However, the file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES "src/*.c")
+file(GLOB SOURCES "src/*.c" "test/cubeShape.c" "test/sphereShape.c" "test/pilote.c" "test/okShape.c")
 
 # Add a target to generate API documentation with Doxygen
 find_package(Doxygen)
@@ -26,3 +26,5 @@ set(CMAKE_C_FLAGS "-O0 -std=c99")
 
 add_executable(main ${SOURCES})
 target_link_libraries(main m)
+target_link_libraries(main ncurses)
+

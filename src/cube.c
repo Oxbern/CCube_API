@@ -8,7 +8,7 @@
 #include "cube.h"
 #include "crc.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 cube *new_cube() {
     cube *newCube = malloc(sizeof(cube));
