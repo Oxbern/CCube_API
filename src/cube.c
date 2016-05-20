@@ -63,7 +63,7 @@ void toggle(int x, int y, int z, cube *cube) {
 
 
 void display(char * dev, cube *cube) {
-    int fd = 10 /* open(dev, O_RDWR | O_NOCTTY | O_NDELAY) */;
+    int fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
     uint8_t *buffer = calloc(BUFFER_MAX_INDEX, sizeof(uint8_t));
     
     if (fd == -1) {
