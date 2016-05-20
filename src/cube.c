@@ -65,6 +65,7 @@ void toggle(int x, int y, int z, cube *cube) {
 void display(char * dev, cube *cube) {
     int fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
     uint8_t *buffer = calloc(BUFFER_MAX_INDEX, sizeof(uint8_t));
+    uint8_t c;
     
     if (fd == -1) {
 		perror("Unable to open connection\n");
@@ -112,20 +113,17 @@ void display(char * dev, cube *cube) {
 	    /* Buffer is now full, ready to be sent */
 	    write(fd, buffer, 64);
 
-#if DEBUG
-	    printf("BUFFER : \n");
-	    for (int l = 0; l < BUFFER_MAX_INDEX; ++l)
-		printf("%x ", buffer[l]);
-	    printf("\nEND OF BUFFER\n");
-#endif
+	    fcntl(fd, F_SETFL, 0);
+	    if (read(fd, &c, 1) <= 0)
+		perror("Cannot read data over USB connection!\n");
+	    else
+		printf("Data recovered : %u\n", c);
 	}
 
     } else {
 	perror("Error in open_connection function\n");
 	exit(EXIT_FAILURE);
     }
-
+    
     close(fd);
 }
-
-
