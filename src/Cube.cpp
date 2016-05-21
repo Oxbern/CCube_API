@@ -1,4 +1,4 @@
-#include "Cube.h"
+#include "../include/Cube.h"
 // #include <iostream>
 
 /**
@@ -53,8 +53,12 @@ void Cube::off() {
  * @param z
  */
 void Cube::off(int x, int y, int z) {
-    std::perror("Not yet implemented");
-    exit(EXIT_FAILURE);
+    if (x > 8 || y > 8 || z > 8) {
+        std::perror("Index of led out of bounds");
+        exit(EXIT_FAILURE);
+    } else {
+        ledBuffer[z][(8-y)] &= ~(1 << x);
+    }
 }
 
 /** 
