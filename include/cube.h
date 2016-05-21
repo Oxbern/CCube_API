@@ -21,7 +21,7 @@ cube *new_cube();
 
 /**
  * @brief
- * @return ACK as uint8_t table
+ * @return get ACK (over USB connection) as uint8_t table 
  */
 uint8_t *getACK(int fd);
 
