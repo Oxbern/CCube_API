@@ -25,7 +25,7 @@ class Cube {
     void off(int x, int y, int z);
     void toggle(int x, int y, int z);
     void toArray(uint8_t *ledStatus);
-
+    void display(char *dev);
 };
 
 #endif

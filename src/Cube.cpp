@@ -80,3 +80,12 @@ void Cube::toArray(uint8_t *ledStatus) {
     std::perror("Not yet implemented");
     exit(EXIT_FAILURE);
 }
+
+/**
+ * @brief Displays the entire cube
+ * @param dev
+ */
+void Cube::display(char *dev) {
+    std::perror("Not yet implemented");
+    exit(EXIT_FAILURE);    
+}
