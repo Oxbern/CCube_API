@@ -4,8 +4,10 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdint.h>
+#include "../include/connexion.h"
+#include "../include/cube.h"
 
-void set_led_line(int fd) {
+void set_led_line_manual(int fd) {
     int i = 0;
     uint8_t buffer[64];
 
@@ -58,6 +60,23 @@ void set_led_line(int fd) {
     write(fd, buffer, i);
 }
 
+void set_led_line(int fd, int x, int y, int z) {
+    buffer* l_buf;
+    cube *cube = new_cube();
+    uint8_t led[200]; 
+    cubeToArray(*cube, led);
+    int nb_buffer = getNumberOfBuffer(200);    
+
+    on(x, y, z, cube);
+
+    //Encoding of data
+    l_buf = data_encoding(0x01, 200, led);
+
+    for (int i = 0; i < nb_buffer; i++) {
+        write(fd, l_buf[i], BUFFER_MAX_INDEX);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     int fd = -1;
@@ -106,7 +125,7 @@ int main(int argc, char* argv[])
 
     printf("------ Connection successfull ------ \n");
 
-    set_led_line(fd);
+    set_led_line(fd, x, y, z);
 
     close(fd);
 
