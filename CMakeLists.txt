@@ -5,7 +5,7 @@ project (main)
 include_directories(include)
  
 # However, the file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES "src/*.c")
+file(GLOB SOURCES "src/*.cpp")
 file(GLOB TESTS "test/*.c")
 
 set(CMAKE_C_FLAGS "-O0 -std=c99")
@@ -15,7 +15,7 @@ add_executable(main ${SOURCES})
 target_link_libraries(main m)
 target_link_libraries(main ncurses)
 
-set(CMAKE_C_FLAGS "-O0 -std=c99 -Wall")
+#set(CMAKE_C_FLAGS "-O0 -std=c99 -Wall")
  
 
 # Tests files
