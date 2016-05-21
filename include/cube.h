@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #define BUFFER_MAX_INDEX 64
+#define DATA_MAX_SIZE 58
 
 /**
  * @struct cube
@@ -12,12 +13,33 @@ typedef struct _cube {
     uint16_t led_buffer[10][10];
 } cube;
 
+typedef uint8_t buffer[BUFFER_MAX_INDEX]; 
+
+/**
+ * @struct buffer
+ */
+ /*
+typedef struct _buffer {
+	uint16_t header_bit;
+	uint8_t codop;
+	uint16_t size;
+	uint8_t data[DATA_MAX_SIZE];
+	uint16_t crc;
+} buffer; 
+*/
+
 /**
  * @brief 
  * @return new cube 
  */
 cube *new_cube();
 
+/**
+ * @brief Converts cube's structure to an array 
+ * @param c : a cube 
+ * @param led_status : array to fill
+ */
+void cubeToArray(cube c, uint8_t *led_status);
 
 /**
  * @brief
