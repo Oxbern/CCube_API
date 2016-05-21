@@ -7,6 +7,15 @@
 #include "test_display.h"
 #include "pilote.h"
 
+void printcmd(){
+    printf(" Available key bindings:\n");
+    printf("- Move on x : z/s\n");
+    printf("- Move on y : q/d\n");
+    printf("- Move on z : l/m\n");
+    printf("- Scale +/-\n");
+    printf("- Change forme : c\n");
+    printf("- Full/Empty : f\n");
+}
 
 int pilote(){
     cube *cube = new_cube();
