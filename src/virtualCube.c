@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <pthread.h>
@@ -23,7 +24,7 @@ bool HANDLE_DATA_RECEIVED = false;
 #define CRC_INDEX 62
 
 /* Size of ACK buffers */
-#define ACK_SIZE 8
+#define ACK_SIZE 6
 
 typedef struct _Control_Args {
     uint8_t cmd;
@@ -50,16 +51,27 @@ static void Empty_UserRxBufferFS() {
 	UserRxBufferFS[i] = 0;
     }
     UserRxBufferFS_Current_Index = 0;
- }
+}
+
+static void printBuffer(uint8_t *buffer, uint16_t size) {
+    printf("BUFFER : |");
+    for (int i = 0; i < size; ++i) {
+	printf(" %u |", buffer[i]);
+    }
+    printf("\n");
+}
 
 static bool Is_CMD_Known(uint8_t CMD) {
     if (CMD == CDC_DISPLAY_CUBE ||
 	CMD == CDC_SEND_ACK)
 	return true;
+    
+    printf("CMD_UNKNOWN\n");
     return false;
 }
 
 static uint8_t *ACKSend_OK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
+    printf("ACK OK\n");
     uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_OK;
@@ -73,6 +85,7 @@ static uint8_t *ACKSend_OK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
 }
 
 static uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
+    printf("ACK ERR\n");
     uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_ERR;
@@ -86,6 +99,7 @@ static uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
 }
 
 static uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
+    printf("ACK NOK\n");
     uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_NOK;
@@ -110,16 +124,19 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 	+ (buff_RX[SIZE_INDEX] << 8);
 	
     /* Compute CRC for received buffer */
-    uint16_t computed_CRC = CRC_compute(buff_RX);
+    uint16_t computed_CRC = CRC_compute(buff_RX + DATA_INDEX);
     uint16_t buff_CRC = (buff_RX[CRC_INDEX] >> 8) + buff_RX[CRC_INDEX + 1];
 
     /* Checks if a buffer was lost */
-    if (size_left_buff != UserRxBufferFS_Size_Left) { 
-	return ACKSend_NOK(Current_CMD,
-			   size_left_buff, CRC_compute(buff_RX));  
+    if (buff_RX[BEGINNING_INDEX] =! BEGINNING_DATA ) {
+	if (size_left_buff != UserRxBufferFS_Size_Left) { 
+	    return ACKSend_NOK(Current_CMD,
+			       size_left_buff, CRC_compute(buff_RX));
+	}
     } else {
 	/* If CRC don't match then send ACK_ERR message */
 	if (buff_CRC != computed_CRC) {
+	    printf("CRC don't match!\n");
 	    return ACKSend_ERR(Current_CMD,
 			       size_left_buff, CRC_compute(buff_RX));
 	} else { 		/* Buffer should be OK now */
@@ -135,13 +152,17 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 		    UserRxBufferFS_Current_CMD = Current_CMD;
 		}
 	    }
-
+	    
 	    /* Fill local buffer until no there is no data left to read */
-	    while (UserRxBufferFS_Size_Left-- > 0 || buff_RX_Index < CRC_INDEX) {
-		UserRxBufferFS[UserRxBufferFS_Current_Index++] = buff_RX[buff_RX_Index];
+	    while (UserRxBufferFS_Size_Left > 0 && buff_RX_Index < CRC_INDEX) {
+		--UserRxBufferFS_Size_Left;
+		UserRxBufferFS[UserRxBufferFS_Current_Index++] = buff_RX[buff_RX_Index++];
 	    }
-	    if (UserRxBufferFS_Size_Left == 0) {
+
+	    if (UserRxBufferFS_Size_Left <= 0) {
 		HANDLE_DATA_RECEIVED = true;
+	    } else {
+		printf("Size Left : %d\n", UserRxBufferFS_Size_Left);
 	    }
 	    
 	    /* Send ACK */
@@ -153,7 +174,7 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
 
 void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
-    uint8_t buff_TX[512];
+    uint8_t *buff_TX = calloc(512, sizeof(uint8_t));
     
     if (Is_CMD_Known(buff_RX[CMD_INDEX])) { /* Only handle buffer that can be understood */
 	memcpy(buff_TX, CDC_Set_ACK(buff_RX), ACK_SIZE*sizeof(uint8_t));
@@ -166,6 +187,8 @@ void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 
     /* If all data were received the call control function */
     if (HANDLE_DATA_RECEIVED) {
+	printf("All data were received\n");
+	
 	HANDLE_DATA_RECEIVED = false;
 
 	Control_Args args = {.cmd = UserRxBufferFS_Current_CMD,
@@ -178,9 +201,9 @@ void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 	    /* Do something smart to handle error */
 	}
 
-	if(pthread_join(Control_FS_thread, NULL)) {
-	    /* ERROR HANDLING ? */
-	}
+	/* if(pthread_join(Control_FS_thread, NULL)) { */
+	/*     /\* ERROR HANDLING ? *\/ */
+	/* } */
 	
     }
     
@@ -190,5 +213,7 @@ void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 
 uint8_t *USBD_CDC_TransmitPacket(uint8_t *buff_TX) {
 
+    printBuffer(buff_TX, ACK_SIZE);
+    
     return buff_TX;
 }
