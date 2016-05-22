@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cerrno>
+#include <unistd.h>
 
 #include "Buffer.h"
 
@@ -65,4 +66,11 @@ void Buffer::setSizeLeft(uint16_t size) {
  */
 void Buffer::setCrc(uint16_t crcCheck) {
     crc = crcCheck;
+}
+
+/**
+ * @brief Sends one buffer
+ */
+void Buffer::send(int fd) {
+    write(fd, this, SIZE_BUFFER);
 }
