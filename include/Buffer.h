@@ -14,12 +14,12 @@
 class Buffer {
  private :
     uint8_t header;
-    uint8_t opCode;
-    uint16_t sizeLeft;
     uint16_t crc;
 
  public :
     uint8_t *data;
+    uint8_t opCode;
+    uint16_t sizeLeft;
     
     Buffer();
 
