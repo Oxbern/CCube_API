@@ -5,7 +5,8 @@
 #include <unistd.h>
 
 #include "Message.h"
-
+#include "Ack.h"
+#include "crc.h"
 
 /**
  * @brief Default Constructor
@@ -63,9 +64,36 @@ void Message::encode(uint8_t *dataToEncode) {
 }
 
 /**
+ * @brief Find a buffer based on its opCode and sizeLeft
+ * @return The right buffer
+ */
+
+Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
+    for (int i = 0; i < NbBuffers(); i++) {
+	if (listBuffer[i].opCode == opCode && listBuffer[i].sizeLeft == sizeLeft)
+	    return listBuffer[i];
+    }
+}
+
+/**
  * @brief Sends a message
  */
 void Message::send(int fd) {
-    for (int i = 0; i < NbBuffers(); i++)
+    for (int i = 0; i < NbBuffers(); i++) {
         write(fd, listBuffer+i, SIZE_BUFFER);
+
+	int index = 0, c = 0;
+	uint8_t buf[6];
+        
+	while (read(fd, &c, 1) > 0) {
+	    buf[index] = c;
+	    index ++;
+	}
+
+	Ack ack(buf[0], buf[1],
+			  (buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
+
+	ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
+	ack.handleAck(fd, *this);
+    }
 }

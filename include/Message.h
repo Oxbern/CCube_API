@@ -21,6 +21,7 @@ class Message {
 
     int NbBuffers();
     void encode(uint8_t *dataToEncode);
+    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft);
     void send(int fd);
 };
 
