@@ -1,4 +1,7 @@
 #include "Point.h"
+#include <iostream>
+#include <cmath>
+
 using namespace std;
 
 Point::Point() : x(0), y(0), z(0)

@@ -1,18 +1,14 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include <iostream>
-#include <cmath>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <stdint.h>
 
-using namespace std;
 
-class Point
-{
+class Point {
 
 private: 
     uint8_t x;
