@@ -16,13 +16,15 @@
 class Buffer {
  private :
     uint8_t header;
-    uint8_t codop;
+    uint8_t codeOp;
     uint16_t sizeLeft;
-    uint8_t data[DATA_MAX_SIZE];
+    uint8_t *data;
     uint16_t crc;
 
  public :
     Buffer();
+
+    Buffer(uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck);
 
     ~Buffer();
 
