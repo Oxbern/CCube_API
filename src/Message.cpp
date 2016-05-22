@@ -6,8 +6,10 @@
 
 #include "Message.h"
 #include "Ack.h"
-#include "crc.h"
 
+extern "C" {
+#include "crc.h"
+}
 /**
  * @brief Default Constructor
  */
@@ -91,8 +93,8 @@ void Message::send(int fd) {
 	}
 
 	Ack ack(buf[0], buf[1],
-			  (buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
-
+		(buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
+	
 	ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
 	ack.handleAck(fd, *this);
     }
