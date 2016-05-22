@@ -6,7 +6,7 @@ project (cubeapi)
 
 # Headers files and sources files 
 file(GLOB_RECURSE HEADERS "../include/*.h")
-file(GLOB_RECURSE TESTS "*.c")
+file(GLOB_RECURSE TESTS "*.c*")
 
 LINK_DIRECTORIES(../src)
 
