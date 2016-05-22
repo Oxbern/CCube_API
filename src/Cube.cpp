@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "Cube.h"
 #include "Message.h"
@@ -117,7 +118,12 @@ void Cube::toArray(uint8_t *ledStatus) {
  * @param dev
  */
 void Cube::display(char *dev) {
-    int fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
+    int fd;
+    if (strcmp(dev, "local")) 
+	fd = 1;
+    else
+	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
+
     Message message(SIZE_DATA_LED,0x01);
 
     if (fd == -1) {
@@ -137,5 +143,4 @@ void Cube::display(char *dev) {
 	exit(EXIT_FAILURE);
     }
     close(fd);   
-    
 }
