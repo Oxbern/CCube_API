@@ -27,7 +27,7 @@ Cube::~Cube() {
  */
 void Cube::on(int x, int y, int z) {
     if (x > 8 || y > 8 || z > 8) {
-        std::perror("Index of led out of bounds");
+        perror("Index of led out of bounds");
         exit(EXIT_FAILURE);
     } else {
         ledBuffer[z][(8-y)] |= (1 << x);
@@ -53,7 +53,7 @@ void Cube::off() {
  * @param z
  */
 void Cube::off(int x, int y, int z) {
-    std::perror("Not yet implemented");
+    perror("Not yet implemented");
     exit(EXIT_FAILURE);
 }
 
@@ -65,7 +65,7 @@ void Cube::off(int x, int y, int z) {
  */
 void Cube::toggle(int x, int y, int z) {
     if (x > 8 || y > 8 || z > 8) {
-        std::perror("Index of led out of bounds");
+        perror("Index of led out of bounds");
         exit(EXIT_FAILURE);
     } else {
         ledBuffer[z][(8-y)] ^= (1 << x);
@@ -77,6 +77,6 @@ void Cube::toggle(int x, int y, int z) {
  * @param ledStatus 
  */
 void Cube::toArray(uint8_t *ledStatus) {
-    std::perror("Not yet implemented");
+    perror("Not yet implemented");
     exit(EXIT_FAILURE);
 }

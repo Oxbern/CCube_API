@@ -8,7 +8,9 @@ include_directories(include)
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB TESTS "test/*.c")
 
-set(CMAKE_C_FLAGS "-O0 -std=c99")
+#set(CMAKE_C_FLAGS "-O0 -std=c90")
+set(CMAKE_CXX_FLAGS "-O0 -Wall -std=c++11")
+
 #set(SOURCE_FILES $(SOURCES))
 
 add_executable(main ${SOURCES})

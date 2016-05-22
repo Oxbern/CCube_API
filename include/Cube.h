@@ -2,10 +2,9 @@
 #define CUBE_H
 
 #include <cstdint>
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 #include <cerrno>
-
 /**
  * @class Cube
  * @brief TODO
