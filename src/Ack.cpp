@@ -42,6 +42,6 @@ bool Ack::checkAck(uint16_t crc) {
 void Ack::handleAck(int fd, Message msg) {
     if (ackType != ACK_OK) {
 	Buffer buf = msg.getBuffer(opCode, sizeLeft);
-	
+	buf.send(fd);
     }
 }
