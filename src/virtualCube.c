@@ -54,7 +54,7 @@ static void Empty_UserRxBufferFS() {
 }
 
 static void printBuffer(uint8_t *buffer, uint16_t size) {
-    printf("BUFFER : |");
+    printf("ACK : |");
     for (int i = 0; i < size; ++i) {
 	printf(" %u |", buffer[i]);
     }
@@ -66,7 +66,6 @@ static bool Is_CMD_Known(uint8_t CMD) {
 	CMD == CDC_SEND_ACK)
 	return true;
     
-    printf("CMD_UNKNOWN\n");
     return false;
 }
 
@@ -113,11 +112,11 @@ static uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
 }
 
 static uint16_t CRC_compute(uint8_t *buff_RX) {
-    return computeCRC(buff_RX, (CRC_INDEX - DATA_INDEX)*sizeof(uint8_t));
+    return computeCRC(buff_RX, 58*sizeof(uint8_t));
 }
 
 static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
-
+    
     static uint16_t buff_RX_Index = DATA_INDEX;
     uint8_t Current_CMD = buff_RX[CMD_INDEX];
     uint16_t size_left_buff = buff_RX[SIZE_INDEX + 1]
@@ -125,7 +124,7 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 	
     /* Compute CRC for received buffer */
     uint16_t computed_CRC = CRC_compute(buff_RX + DATA_INDEX);
-    uint16_t buff_CRC = (buff_RX[CRC_INDEX] >> 8) + buff_RX[CRC_INDEX + 1];
+    uint16_t buff_CRC = (buff_RX[CRC_INDEX] << 8) + buff_RX[CRC_INDEX + 1];
 
     /* Checks if a buffer was lost */
     if (buff_RX[BEGINNING_INDEX] =! BEGINNING_DATA ) {
@@ -136,7 +135,7 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
     } else {
 	/* If CRC don't match then send ACK_ERR message */
 	if (buff_CRC != computed_CRC) {
-	    printf("CRC don't match!\n");
+	    printf("CRC don't match: %u != %u\n", buff_CRC, computed_CRC);
 	    return ACKSend_ERR(Current_CMD,
 			       size_left_buff, CRC_compute(buff_RX));
 	} else { 		/* Buffer should be OK now */
