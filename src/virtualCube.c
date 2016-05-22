@@ -176,7 +176,7 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
 
 
-void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
+uint8_t *CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
     uint8_t *buff_TX = calloc(512, sizeof(uint8_t));
     
     if (Is_CMD_Known(buff_RX[CMD_INDEX])) { /* Only handle buffer that can be understood */
@@ -210,7 +210,8 @@ void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 	
     }
     
-    USBD_CDC_TransmitPacket(buff_TX);
+    return USBD_CDC_TransmitPacket(buff_TX);
+
 }
 
 
