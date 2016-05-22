@@ -2,9 +2,9 @@
 #define CUBE_H
 
 #include <cstdint>
-#include <stdio.h>
-#include <cstdlib>
-#include <cerrno>
+
+#define SIZE_DATA_LED 200
+
 /**
  * @class Cube
  * @brief TODO

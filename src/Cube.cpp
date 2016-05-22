@@ -1,5 +1,12 @@
+#include <cstdint>
+#include <stdio.h>
+#include <cstdlib>
+#include <cerrno>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include "Cube.h"
-// #include <iostream>
+#include "Message.h"
 
 /**
  * @brief Default Constructor
@@ -110,6 +117,25 @@ void Cube::toArray(uint8_t *ledStatus) {
  * @param dev
  */
 void Cube::display(char *dev) {
-    perror("Not yet implemented");
-    exit(EXIT_FAILURE);    
+    int fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
+    Message message(SIZE_DATA_LED,0x01);
+
+    if (fd == -1) {
+        perror("Unable to open connection\n");
+        exit(EXIT_FAILURE);
+    } else if (fd > 0) {
+        uint8_t *data = NULL;
+        toArray(data); //converts ledBuffer to an array
+        message.encode(data);
+
+        // CRC HERE
+
+        message.send(fd);
+        
+    } else {
+	perror("Error in open_connection function\n");
+	exit(EXIT_FAILURE);
+    }
+    close(fd);   
+    
 }
