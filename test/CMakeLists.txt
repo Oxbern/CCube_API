@@ -4,20 +4,20 @@ cmake_minimum_required(VERSION 2.8.9)
 # Project Name
 project (cubeapi)
 
-find_package(Threads)
+# Extern libraries required for compilation
+find_package(Threads REQUIRED)
 find_package(Curses REQUIRED)
+
+LINK_DIRECTORIES(../src)
 
 # Headers files and sources files 
 file(GLOB_RECURSE HEADERS "../include/*.h")
 file(GLOB_RECURSE TESTS "*.c*")
 
-LINK_DIRECTORIES(../src)
-
 # Bring the headers into the project
 include_directories(include)
 
 # Tests files
-
 # Change output directory for test files
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
