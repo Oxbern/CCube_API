@@ -1,11 +1,6 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cerrno>
-
 #include "Buffer.h"
 
 /**
@@ -24,7 +19,9 @@ class Message {
     Message(uint16_t size, uint8_t code);
     ~Message();
 
-    int getNumberOfBuffer();
+    int NbBuffers();
+    void encode(uint8_t *dataToEncode);
+    void send(int fd);
 };
 
 #endif
