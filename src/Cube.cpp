@@ -123,10 +123,8 @@ uint8_t* Cube::toArray() {
  * @param dev
  */
 void Cube::display(char *dev) {
-    int fd;
-    if (!strcmp(dev, "local")) 
-	fd = 1;
-    else
+    int fd = 0;
+    if (strcmp(dev, "local")) 
 	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
 
     Message message(SIZE_DATA_LED,0x01);

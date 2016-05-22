@@ -11,6 +11,7 @@ using namespace std;
 
 extern "C" {
 #include "crc.h"
+#include "virtualCube.h"
 }
 /**
  * @brief Default Constructor
@@ -87,21 +88,24 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
  */
 void Message::send(int fd) {
     for (int i = 0; i < NbBuffers(); i++) {
-        std::cout << "Hey \n";
-        write(fd, listBuffer+i, SIZE_BUFFER);
-
-	// int index = 0, c = 0;
-	// uint8_t buf[6];
+	uint8_t buf[6];
         
-	// while (read(fd, &c, 1) > 0) {
-	//     buf[index] = c;
-	//     index ++;
-	// }
-
-	// Ack ack(buf[0], buf[1],
-	// 	(buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
+	if (fd) {
+	    write(fd, listBuffer+i, SIZE_BUFFER);
+            int index = 0, c = 0;
 	
-	// ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
-	// ack.handleAck(fd, *this);
+	    while (read(fd, &c, 1) > 0) {
+	        buf[index] = c;
+	        index ++;
+	    }
+	}
+	// else
+	//     CDC_Receive_FS(listBuffer+i, NULL);
+	
+	Ack ack(buf[0], buf[1],
+		(buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
+	
+	ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
+	ack.handleAck(fd, *this);
     }
 }
