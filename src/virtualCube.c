@@ -59,7 +59,7 @@ static bool Is_CMD_Known(uint8_t CMD) {
     return false;
 }
 
-uint8_t *ACKSend_OK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
+static uint8_t *ACKSend_OK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_OK;
@@ -72,7 +72,7 @@ uint8_t *ACKSend_OK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     return ACK;
 }
 
-uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
+static uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_ERR;
@@ -85,7 +85,7 @@ uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     return ACK;
 }
 
-uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
+static uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_NOK;
@@ -98,11 +98,11 @@ uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     return ACK;
 }
 
-uint16_t CRC_compute(uint8_t *buff_RX) {
+static uint16_t CRC_compute(uint8_t *buff_RX) {
     return computeCRC(buff_RX, (CRC_INDEX - DATA_INDEX)*sizeof(uint8_t));
 }
 
-uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
+static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
     static uint16_t buff_RX_Index = DATA_INDEX;
     uint8_t Current_CMD = buff_RX[CMD_INDEX];
