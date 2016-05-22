@@ -4,10 +4,11 @@
 
 #include "Cube.h"
 
-main() {
+int main() {
     Cube cube;
 
     cube.on(0, 0, 0);
     cube.display("local");
-    
+
+    return 0;
 }

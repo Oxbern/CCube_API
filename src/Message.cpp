@@ -27,8 +27,8 @@ Message::Message() {
  * @param code operation code
  */
 Message::Message(uint16_t size, uint8_t code) {
-    size = size;
-    opCode = code;
+    this->size = size;
+    this->opCode = code;
     listBuffer = new Buffer[NbBuffers()];
     listBuffer[0].setHeader(0x1); // first one
     for (int i = 0; i< NbBuffers(); i++) {
@@ -59,16 +59,19 @@ int Message::NbBuffers() {
  * @param data data to encode
  */
 void Message::encode(uint8_t *dataToEncode) {
-    int j;    
+    int j;
     for (int i = 0; i < NbBuffers(); i ++) {
         j = 0;
-        while (j < DATA_MAX_SIZE)
+        while (j < DATA_MAX_SIZE) {
             listBuffer[i].data[j] = dataToEncode[j];
+            j++;
+        }
     }
 }
 
 /**
  * @brief Find a buffer based on its opCode and sizeLeft
+ * @todo return for else
  * @return The right buffer
  */
 
@@ -84,7 +87,7 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
  */
 void Message::send(int fd) {
     for (int i = 0; i < NbBuffers(); i++) {
-	cout << "Hey";
+        std::cout << "Hey \n";
         write(fd, listBuffer+i, SIZE_BUFFER);
 
 	// int index = 0, c = 0;

@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+#include <iostream>
 
 #include "Cube.h"
 #include "Message.h"
@@ -136,7 +137,7 @@ void Cube::display(char *dev) {
     } else if (fd > 0) {
         uint8_t *data = toArray(); //converts ledBuffer to an array
         message.encode(data);
-
+        
         // CRC HERE
 
         message.send(fd);
@@ -145,5 +146,6 @@ void Cube::display(char *dev) {
 	perror("Error in open_connection function\n");
 	exit(EXIT_FAILURE);
     }
-    close(fd);   
+    close(fd);
+            
 }
