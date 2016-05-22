@@ -11,6 +11,7 @@
 #include <errno.h>
 #include "Point.h"
 #include "Cube.h"
+#include "Vec3.h"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ public:
 
   void removePoint(Point p);
   void clearShape();
+  void translateShape(Vec3 v);
 
   //OkShape
   void loadOkShape();

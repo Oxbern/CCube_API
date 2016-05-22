@@ -46,6 +46,15 @@ void Shape::clearShape(){
     this->vertices.clear();
 }
 
+void Shape::translateShape(Vec3 v){
+    std::list<Point>::iterator iter ;
+    for(iter = vertices.begin(); (iter != vertices.end()); *iter++){
+	iter->setX(iter->getX() + v.getX());
+	iter->setY(iter->getY() + v.getY());
+	iter->setZ(iter->getZ() + v.getZ());
+    }
+}
+
 void Shape::describe() const
 {
     std::list<Point>::const_iterator iter ;

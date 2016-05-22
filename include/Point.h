@@ -14,7 +14,7 @@ private:
     uint8_t x;
     uint8_t y;
     uint8_t z;
-    
+
 public:
   Point();
   Point(uint8_t x, uint8_t y, uint8_t z);

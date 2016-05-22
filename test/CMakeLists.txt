@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 2.8.9)
 project (cubeapi)
 
 find_package(Threads)
+find_package(Curses REQUIRED)
 
 # Headers files and sources files 
 file(GLOB_RECURSE HEADERS "../include/*.h")
@@ -25,5 +26,5 @@ foreach( testsourcefile ${TESTS})
     string( REPLACE ".c" "" testname ${testsourcefile})
     get_filename_component(FILE_NAME ${testsourcefile} NAME_WE)
     add_executable(${FILE_NAME} ${testsourcefile} ${HEADERS})
-    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES})
 endforeach( testsourcefile ${TESTS} )
