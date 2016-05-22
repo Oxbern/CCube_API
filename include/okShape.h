@@ -8,7 +8,6 @@
 #include <inttypes.h>
 #include <math.h>
 #include "cube.h"
-#include "Point.h"
 #include "test_display.h"
 
 cube *test_ok();

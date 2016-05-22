@@ -1,4 +1,4 @@
-#include "../include/connexion.h"
+#include "connexion.h"
 #include <stdio.h>
 
 int main(int argc, char* argv[]) {
