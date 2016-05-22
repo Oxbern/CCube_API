@@ -16,6 +16,10 @@ LINK_DIRECTORIES(../src)
 include_directories(include)
 
 # Tests files
+
+# Change output directory for test files
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 foreach( testsourcefile ${TESTS})
     # simple string replace, to cut off .c.
     string( REPLACE ".c" "" testname ${testsourcefile})
