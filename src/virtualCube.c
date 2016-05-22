@@ -1,16 +1,19 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <pthread.h>
 
 #include "virtualCube.h"
+#include "crc.h"
 
 #define APP_RX_DATA_SIZE  512
 #define BEGINNING_DATA 0x01 
 
 uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
 uint16_t UserRxBufferFS_Current_Index;
-uint16_t UserRxBufferFS_Size_Left;
+uint16_t UserRxBufferFS_Size_Left = 0;
 uint8_t UserRxBufferFS_Current_CMD;
+bool HANDLE_DATA_RECEIVED = false;
 
 /* Received Buffer Index */
 #define BEGINNING_INDEX 0 
@@ -22,7 +25,20 @@ uint8_t UserRxBufferFS_Current_CMD;
 /* Size of ACK buffers */
 #define ACK_SIZE 8
 
-static void CDC_Control_FS(uint8_t cmd, uint8_t *Buf, uint16_t size) {
+typedef struct _Control_Args {
+    uint8_t cmd;
+    uint8_t *Buf;
+    uint16_t size;
+} Control_Args;
+
+static void CDC_Control_FS(void *args) {
+
+    Control_Args *control_args = (Control_Args*)args;
+
+    switch (control_args->cmd) {
+    case CDC_DISPLAY_CUBE:
+	break;
+    }
 
     return;
 }
@@ -83,11 +99,10 @@ uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
 }
 
 uint16_t CRC_compute(uint8_t *buff_RX) {
-    /* TODO */
-    return 0x0001;
+    return computeCRC(buff_RX, (CRC_INDEX - DATA_INDEX)*sizeof(uint8_t));
 }
 
-uint8_t *CDC_Send_ACK(uint8_t *buff_RX) {
+uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
     static uint16_t buff_RX_Index = DATA_INDEX;
     uint8_t Current_CMD = buff_RX[CMD_INDEX];
@@ -98,16 +113,15 @@ uint8_t *CDC_Send_ACK(uint8_t *buff_RX) {
     uint16_t computed_CRC = CRC_compute(buff_RX);
     uint16_t buff_CRC = (buff_RX[CRC_INDEX] >> 8) + buff_RX[CRC_INDEX + 1];
 
-    /* If CRC don't match then send ACK_ERR message */
-    if (buff_CRC != computed_CRC) {
-	return ACKSend_ERR(Current_CMD,
-		    size_left_buff, CRC_compute(buff_RX));
+    /* Checks if a buffer was lost */
+    if (size_left_buff != UserRxBufferFS_Size_Left) { 
+	return ACKSend_NOK(Current_CMD,
+			   size_left_buff, CRC_compute(buff_RX));  
     } else {
-
-	/* Checks if a buffer was lost */
-	if (size_left_buff != UserRxBufferFS_Size_Left) { 
-	    return ACKSend_NOK(Current_CMD,
-			size_left_buff, CRC_compute(buff_RX));  
+	/* If CRC don't match then send ACK_ERR message */
+	if (buff_CRC != computed_CRC) {
+	    return ACKSend_ERR(Current_CMD,
+			       size_left_buff, CRC_compute(buff_RX));
 	} else { 		/* Buffer should be OK now */
 
 	    /* Empty local buffer for new message */
@@ -126,11 +140,13 @@ uint8_t *CDC_Send_ACK(uint8_t *buff_RX) {
 	    while (UserRxBufferFS_Size_Left-- > 0 || buff_RX_Index < CRC_INDEX) {
 		UserRxBufferFS[UserRxBufferFS_Current_Index++] = buff_RX[buff_RX_Index];
 	    }
-
+	    if (UserRxBufferFS_Size_Left == 0) {
+		HANDLE_DATA_RECEIVED = true;
+	    }
+	    
 	    /* Send ACK */
 	    return ACKSend_OK(Current_CMD,
 		       size_left_buff, CRC_compute(buff_RX)); 
-
 	}
     }    
 }
@@ -140,18 +156,33 @@ void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
     uint8_t buff_TX[512];
     
     if (Is_CMD_Known(buff_RX[CMD_INDEX])) { /* Only handle buffer that can be understood */
-	memcpy(buff_TX, CDC_Send_ACK(buff_RX), ACK_SIZE*sizeof(uint8_t));
-    } /* else if (UserRxBufferFS_Size_Left > 0){ */
-    /* 	/\* A buffer was received but there is still data to be recovered from last message *\/ */
-    /* 	ACKSend_NOK(buff_TX, ACK_NOK_SIZE, UserRxBufferFS_Current_CMD, */
-    /* 		    UserRxBufferFS_Size_Left, CRC_compute(buff_RX));   */
-    /* } */
+	memcpy(buff_TX, CDC_Set_ACK(buff_RX), ACK_SIZE*sizeof(uint8_t));
+    } else if (UserRxBufferFS_Size_Left > 0){
+    	/* A buffer was received but there is still data to be recovered from last message */
+	memcpy(buff_TX, ACKSend_NOK(UserRxBufferFS_Current_CMD,
+				    UserRxBufferFS_Size_Left, CRC_compute(buff_RX)),
+	       ACK_SIZE*sizeof(uint8_t));
+    }
 
     /* If all data were received the call control function */
-    /* if (UserRxBufferFS_Size_Left == 0) { */
-    /* 	CDC_Control_FS(Current_CMD, UserRxBufferFS, */
-    /* 		       UserRxBufferFS_Current_Index*sizeof(uint8_t)); */
-    /* } */
+    if (HANDLE_DATA_RECEIVED) {
+	HANDLE_DATA_RECEIVED = false;
+
+	Control_Args args = {.cmd = UserRxBufferFS_Current_CMD,
+			     .Buf = UserRxBufferFS,
+			     .size = UserRxBufferFS_Current_Index*sizeof(uint8_t)};
+	pthread_t Control_FS_thread;
+	
+	
+	if(pthread_create(&Control_FS_thread, NULL, (void *)CDC_Control_FS, &args)) {
+	    /* Do something smart to handle error */
+	}
+
+	if(pthread_join(Control_FS_thread, NULL)) {
+	    /* ERROR HANDLING ? */
+	}
+	
+    }
     
     USBD_CDC_TransmitPacket(buff_TX);
 }
