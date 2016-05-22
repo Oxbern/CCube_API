@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -Wall -I.
+CFLAGS= -Wall -I ../include
 DEPS = virtualCube.h
 
 %.o: %.c $(DEPS)
