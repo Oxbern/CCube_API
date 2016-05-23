@@ -3,9 +3,12 @@
 #include <cstdlib>
 #include <cerrno>
 #include <unistd.h>
+#include <iostream>
+
 
 #include "Buffer.h"
 
+using namespace std;
 /**
  * @brief Default Constructor
  */
@@ -73,4 +76,16 @@ void Buffer::setCrc(uint16_t crcCheck) {
  */
 void Buffer::send(int fd) {
     write(fd, this, SIZE_BUFFER);
+}
+
+void Buffer::describe(){
+    cout <<"\n";
+    cout << "header : "<< (int) this->header << "\n"<<
+	"opCode : " << (int) this->opCode <<"\n" <<
+	"sizeLeft : " << (int) this->sizeLeft <<"\n"<<
+	"Data : \n";
+    for (int i = 0; i < DATA_MAX_SIZE; i ++)
+	cout << (int) this->data[i];
+    cout << "\nCRC : "<< (int) this->crc <<"\n";
+	
 }

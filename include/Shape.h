@@ -25,6 +25,7 @@ public:
   Shape(Cube cube);
   Shape(Cube cube, list<Point> vertices);
 
+  void display(const char *dev);
   void on();
   void addPoint(Point p);
   void addPoint(uint8_t x, uint8_t y, uint8_t z);

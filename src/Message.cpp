@@ -92,6 +92,8 @@ void Message::send(int fd) {
         
 	if (fd) {
 	    write(fd, listBuffer+i, SIZE_BUFFER);
+	    for (uint8_t j = 0; j < NbBuffers(); j++)
+		listBuffer[j].describe();
             int index = 0, c = 0;
 	
 	    while (read(fd, &c, 1) > 0) {
@@ -109,3 +111,5 @@ void Message::send(int fd) {
 	ack.handleAck(fd, *this);
     }
 }
+
+

@@ -24,7 +24,7 @@ class Cube {
     void off(int x, int y, int z);
     void toggle(int x, int y, int z);
     uint8_t *toArray();
-    void display(char *dev);
+    void display(const char *dev);
 };
 
 #endif

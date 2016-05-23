@@ -19,6 +19,11 @@ void Shape::on(){
     	cube.on(iter->getX(), iter->getY(), iter->getZ());
     }
 }
+
+void Shape::display(const char *dev){
+    cube.display(dev);
+}
+
 void Shape::addPoint(Point p)
 {
     this->vertices.push_back(p);

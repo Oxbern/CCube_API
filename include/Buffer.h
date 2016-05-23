@@ -34,6 +34,8 @@ class Buffer {
     void setData(uint8_t *data);
 
     void send(int fd);
+
+    void describe();
 };
 
 #endif
