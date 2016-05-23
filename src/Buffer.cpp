@@ -89,3 +89,19 @@ void Buffer::describe(){
     cout << "\nCRC : "<< (int) this->crc <<"\n";
 	
 }
+
+uint8_t * Buffer::toArray() {
+    uint8_t buffLinear[SIZE_BUFFER];
+    buffLinear[HEADER_INDEX] = header;
+    buffLinear[OPCODE_INDEX] = opCode;
+    buffLinear[SIZE_INDEX] = (uint8_t)(sizeLeft >> 8);
+    buffLinear[SIZE_INDEX +1] = (uint8_t)(sizeLeft & 0xFF);
+
+    for (int i = 0; i < DATA_MAX_SIZE; i++)
+        buffLinear[DATA_INDEX+i] = data[i];
+
+    buffLinear[CRC_INDEX] = (uint8_t)(crc >> 8);
+    buffLinear[CRC_INDEX+1] = (uint8_t)(crc & 0xFF);
+    
+    return buffLinear;
+}

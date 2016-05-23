@@ -5,6 +5,11 @@
 
 #define DATA_MAX_SIZE 58
 #define SIZE_BUFFER 64
+#define HEADER_INDEX 0
+#define OPCODE_INDEX 1
+#define SIZE_INDEX 2
+#define DATA_INDEX 4
+#define CRC_INDEX 62
 
 /**
  * @class Buffer
@@ -36,6 +41,8 @@ class Buffer {
     void send(int fd);
 
     void describe();
+
+    uint8_t* toArray();
 };
 
 #endif
