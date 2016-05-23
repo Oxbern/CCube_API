@@ -58,15 +58,21 @@ int Message::NbBuffers() {
 /**
  * @brief encoding
  * @param data data to encode
+ * @todo dataToEncode's size
  */
-void Message::encode(uint8_t *dataToEncode) {
+void Message::encode(uint8_t *dataToEncode, uint16_t sizeData) {
     int j;
     for (int i = 0; i < NbBuffers(); i ++) {
         j = 0;
         while (j < DATA_MAX_SIZE) {
-            listBuffer[i].data[j] = dataToEncode[j];
+            if (j < sizeData)
+                listBuffer[i].data[j] = dataToEncode[j];
+            else
+                listBuffer[i].data[j] = 0;
             j++;
         }
+        uint16_t crcComputed = computeCRC(listBuffer[i].data, 8*DATA_MAX_SIZE);
+        listBuffer[i].setCrc(crcComputed);
     }
 }
 

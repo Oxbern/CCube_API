@@ -20,7 +20,7 @@ class Message {
     ~Message();
 
     int NbBuffers();
-    void encode(uint8_t *dataToEncode);
+    void encode(uint8_t *dataToEncode, uint16_t sizeData);
     Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft);
     void send(int fd);
 };

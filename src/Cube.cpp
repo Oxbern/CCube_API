@@ -134,9 +134,8 @@ void Cube::display(const char *dev) {
         exit(EXIT_FAILURE);
     } else if (fd > 0) {
         uint8_t *data = toArray(); //converts ledBuffer to an array
-        message.encode(data);
+        message.encode(data, SIZE_DATA_LED);
         
-        // CRC HERE
 
         message.send(fd);
         
