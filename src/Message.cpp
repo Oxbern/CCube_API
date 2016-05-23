@@ -6,8 +6,6 @@
 #include <iostream>
 #include <string.h>
 
-using namespace std;
-
 #include "Message.h"
 #include "Ack.h"
 
@@ -16,7 +14,7 @@ extern "C" {
 #include "virtualCube.h"
 }
 /**
- * @brief Default Constructor
+ * @brief Creates an empty message
  */
 Message::Message() {
     size = 0;
@@ -25,7 +23,7 @@ Message::Message() {
 }
 
 /**
- * @brief Constructor
+ * @brief Creates a message without any data or crc
  * @param size of the message
  * @param code operation code
  */
@@ -33,7 +31,7 @@ Message::Message(uint16_t size, uint8_t code) {
     this->size = size;
     this->opCode = code;
     listBuffer = new Buffer[NbBuffers()];
-    listBuffer[0].setHeader(0x1); // first one
+    listBuffer[0].setHeader(1); // first one
     for (int i = 0; i< NbBuffers(); i++) {
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i*DATA_MAX_SIZE);
@@ -48,7 +46,8 @@ Message::~Message() {
 }
 
 /**
- * @brief 
+ * @brief Calculates the number of buffers necessary to create Message
+ * @return number of buffers
  */
 int Message::NbBuffers() {
     if ((size % DATA_MAX_SIZE) == 0)
@@ -58,9 +57,9 @@ int Message::NbBuffers() {
 }
 
 /**
- * @brief encoding
- * @param data data to encode
- * @todo dataToEncode's size
+ * @brief Fills the buffers with the data
+ * @param data to encode
+ * @param sizeData data's size
  */
 void Message::encode(uint8_t *dataToEncode, uint16_t sizeData) {
     int j = 0; int k= 0;
@@ -81,9 +80,11 @@ void Message::encode(uint8_t *dataToEncode, uint16_t sizeData) {
 }
 
 /**
- * @brief Find a buffer based on its opCode and sizeLeft
+ * @brief Finds a buffer based on its opCode and sizeLeft
+ * @param opCode 
+ * @param sizeLeft
  * @todo return for else
- * @return The right buffer
+ * @return buffer
  */
 
 Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
@@ -95,6 +96,7 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
 
 /**
  * @brief Sends a message
+ * @param fd file descriptor
  */
 void Message::send(int fd) {    
     std::cout << "Sending Ok :" << fd << "\n";
@@ -106,8 +108,8 @@ void Message::send(int fd) {
 	    uint8_t pack[64];
 	    memcpy(pack,(listBuffer[i]).toArray(),64);
 	    for (int j = 0; j < 64; j++) 
-		cout<< (int) pack[j] << " | ";
-	    cout<<"\n";
+                std::cout<< (int) pack[j] << " | ";
+            std::cout<<"\n";
 	    if (fd == 1)
 		CDC_Receive_FS(pack, NULL);
 	    else

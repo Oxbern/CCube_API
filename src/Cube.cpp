@@ -13,7 +13,7 @@
 #define BUFFER_MAX_SIZE 64
 
 /**
- * @brief Default Constructor
+ * @brief Creates a cube
  */
 Cube::Cube() {
     for (int i = 0; i < 10; i++) {
@@ -90,8 +90,8 @@ void Cube::toggle(int x, int y, int z) {
 }
 
 /**
- * @brief Converts into an array
- * @param ledStatus 
+ * @brief Converts ledBuffer into an array
+ * @return array
  */
 uint8_t* Cube::toArray() {
 
@@ -129,7 +129,7 @@ void Cube::display(const char *dev) {
 	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
 
     std::cout << "Connection Ok :" << fd << "\n";
-    Message message(SIZE_DATA_LED,0x01);
+    Message message(SIZE_DATA_LED,BUFF_SENDING);
 
     if (fd == -1) {
         perror("Unable to open connection\n");

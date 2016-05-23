@@ -8,9 +8,8 @@
 
 #include "Buffer.h"
 
-using namespace std;
 /**
- * @brief Default Constructor
+ * @brief Creates a buffer
  */
 Buffer::Buffer() {
     header = 0;
@@ -21,11 +20,11 @@ Buffer::Buffer() {
 }
 
 /**
- * @brief Constructor 
- * @param header
- * @param opCode
+ * @brief Creates a buffer
+ * @param header : indicates if it is the first buffer of the message or not
+ * @param opCode 
  * @param sizeLeft
- * @param crc
+ * @param crcCheck
  */
 Buffer::Buffer(uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) {
     header = head;
@@ -46,52 +45,63 @@ Buffer::~Buffer() {
 
 /**
  * @brief Sets the header
+ * @param head
  */
 void Buffer::setHeader(uint8_t head) {
-    header = head;
+    this->header = head;
 }
 /** 
  * @brief Sets the opCode
+ * @param code
  */
 void Buffer::setOpCode(uint8_t code) {
-    opCode = code;
+    this->opCode = code;
 }
 
 /**
  * @brief Sets the sizeLeft
+ * @param size
  */
 void Buffer::setSizeLeft(uint16_t size) {
-    sizeLeft = size;
+    this->sizeLeft = size;
 }
 
 /** 
  * @brief Sets the crc
+ * @param crcCheck
  */
 void Buffer::setCrc(uint16_t crcCheck) {
-    crc = crcCheck;
+    this->crc = crcCheck;
 }
 
 /**
  * @brief Sends one buffer
+ * @param fd file descriptor
  */
 void Buffer::send(int fd) {
     write(fd, this, SIZE_BUFFER);
 }
 
+/**
+ * @brief Prints a buffer
+ */
 void Buffer::describe(){
-    cout <<"\n";
-    cout << "header : "<< std::hex << (int) this->header << "\n"<<
+    std::cout <<"\n";
+    std::cout << "header : "<< std::hex << (int) this->header << "\n"<<
 	"opCode : " << (int) this->opCode <<"\n" <<
 	"sizeLeft : " << (int) this->sizeLeft <<"\n"<<
 	"Data : \n";
     for (int i = 0; i < DATA_MAX_SIZE; i ++){
-	cout << (int) this->data[i] << " | ";
+        std::cout << (int) this->data[i] << " | ";
 	
     }
-    cout << "\nCRC : "<< (int) this->crc <<"\n";
-	
+    std::cout << "\nCRC : "<< (int) this->crc <<"\n";	
 }
 
+/**
+ * @brief Converts a buffer into an array
+ * @return array
+ */
 uint8_t * Buffer::toArray() {
     uint8_t *buffLinear = new uint8_t[SIZE_BUFFER];
     buffLinear[HEADER_INDEX] = header;
