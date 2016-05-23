@@ -102,6 +102,7 @@ void Message::send(int fd) {
     std::cout << "Sending Ok :" << fd << "\n";
 
     for (int i = 0; i < NbBuffers(); i++) {
+        
 	Ack ack;
         
 	if (fd) {
@@ -114,15 +115,16 @@ void Message::send(int fd) {
 		CDC_Receive_FS(pack, NULL);
 	    else
 		write(fd, pack, SIZE_BUFFER);
-
+            //sleep(1);
+            
 	    ack.setAck(fd);
 	    ack.describe();
 	}
 	// else
 	//     CDC_Receive_FS(listBuffer+i, NULL);
 		
-    // 	ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
-    // 	ack.handleAck(fd, *this);
+     	//ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
+     	//ack.handleAck(fd, *this);
      }
 }
 
