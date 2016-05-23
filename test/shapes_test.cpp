@@ -13,10 +13,10 @@ int main(int argc, char *argv[]) {
     
     Cube cube;
 
-    // cube.on(3,3,3);
+    cube.on(3,3,3);
     char const *dev = "/dev/ttyACM0";
     char const *loc = "local";
-    cube.display(loc);
+    cube.display(dev);
 
     // Shape sphere(cube);
     // int r = 3;
