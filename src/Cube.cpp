@@ -148,3 +148,8 @@ void Cube::display(const char *dev) {
     close(fd);
             
 }
+
+uint8_t Cube::getLedBuffer(int x, int y, int z) {
+    uint8_t val = (uint8_t)((ledBuffer[z][y] >> x) & 0x1);
+    return val;
+}
