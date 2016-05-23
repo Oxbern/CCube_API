@@ -38,6 +38,7 @@ static void CDC_Control_FS(void *args) {
 
     switch (control_args->cmd) {
     case CDC_DISPLAY_CUBE:
+	printf("Display the cube\n");
 	break;
     }
 
@@ -190,7 +191,6 @@ uint8_t *CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 
     /* If all data were received the call control function */
     if (HANDLE_DATA_RECEIVED) {
-	printf("All data were received\n");
 	
 	HANDLE_DATA_RECEIVED = false;
 
