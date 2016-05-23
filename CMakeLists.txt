@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 # Project Name
-project (cubeAPITest)
+project (cubeAPI)
 
 # Compilers options
 set(CMAKE_C_FLAGS "-O0 -std=c99")
