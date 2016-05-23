@@ -25,6 +25,7 @@ bool HANDLE_DATA_RECEIVED = false;
 
 /* Size of ACK buffers */
 #define ACK_SIZE 6
+uint8_t ACK[ACK_SIZE] = {0};
 
 typedef struct _Control_Args {
     uint8_t cmd;
@@ -72,8 +73,7 @@ static bool Is_CMD_Known(uint8_t CMD) {
 
 static uint8_t *ACKSend_OK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     printf("ACK OK\n");
-    uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
-
+    
     ACK[0] = CDC_SEND_ACK_OK;
     ACK[1] = CMD;
     ACK[2] = size_buff >> 8;
@@ -86,7 +86,6 @@ static uint8_t *ACKSend_OK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
 
 static uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     printf("ACK ERR\n");
-    uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_ERR;
     ACK[1] = CMD;
@@ -100,7 +99,6 @@ static uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
 
 static uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     printf("ACK NOK\n");
-    uint8_t *ACK = calloc(ACK_SIZE, sizeof(uint8_t));
 
     ACK[0] = CDC_SEND_ACK_NOK;
     ACK[1] = CMD;
@@ -118,8 +116,6 @@ static uint16_t CRC_compute(uint8_t *buff_RX) {
 
 static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
-    printBuffer(buff_RX, 64);
-    
     uint16_t buff_RX_Index = DATA_INDEX;
     uint8_t Current_CMD = buff_RX[CMD_INDEX];
     uint16_t size_left_buff = (buff_RX[SIZE_INDEX + 1]
@@ -206,9 +202,9 @@ uint8_t *CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 	    /* Do something smart to handle error */
 	}
 
-	/* if(pthread_join(Control_FS_thread, NULL)) { */
-	/*     /\* ERROR HANDLING ? *\/ */
-	/* } */
+	if(pthread_join(Control_FS_thread, NULL)) {
+	    /* ERROR HANDLING ? */
+	}
 	
     }
     
