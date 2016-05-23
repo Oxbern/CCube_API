@@ -4,9 +4,13 @@
 #include <cerrno>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
+#include <iostream>
 
 #include "Cube.h"
 #include "Message.h"
+
+#define BUFFER_MAX_SIZE 64
 
 /**
  * @brief Default Constructor
@@ -88,8 +92,9 @@ void Cube::toggle(int x, int y, int z) {
  * @brief Converts into an array
  * @param ledStatus 
  */
-void Cube::toArray(uint8_t *ledStatus) {
+uint8_t* Cube::toArray() {
 
+    uint8_t *ledStatus = new uint8_t[BUFFER_MAX_SIZE];
     int i = 0, x = 0, y = 0;
 
     while (x < 10 && y < 10) {
@@ -110,6 +115,7 @@ void Cube::toArray(uint8_t *ledStatus) {
         }
         i += 2;
     }
+    return ledStatus;
 }
 
 /**
@@ -117,17 +123,19 @@ void Cube::toArray(uint8_t *ledStatus) {
  * @param dev
  */
 void Cube::display(char *dev) {
-    int fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
+    int fd = 0;
+    if (strcmp(dev, "local")) 
+	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
+
     Message message(SIZE_DATA_LED,0x01);
 
     if (fd == -1) {
         perror("Unable to open connection\n");
         exit(EXIT_FAILURE);
     } else if (fd > 0) {
-        uint8_t *data = NULL;
-        toArray(data); //converts ledBuffer to an array
+        uint8_t *data = toArray(); //converts ledBuffer to an array
         message.encode(data);
-
+        
         // CRC HERE
 
         message.send(fd);
@@ -136,6 +144,6 @@ void Cube::display(char *dev) {
 	perror("Error in open_connection function\n");
 	exit(EXIT_FAILURE);
     }
-    close(fd);   
-    
+    close(fd);
+            
 }

@@ -38,6 +38,7 @@ static void CDC_Control_FS(void *args) {
 
     switch (control_args->cmd) {
     case CDC_DISPLAY_CUBE:
+	printf("Display the cube\n");
 	break;
     }
 
@@ -54,7 +55,7 @@ static void Empty_UserRxBufferFS() {
 }
 
 static void printBuffer(uint8_t *buffer, uint16_t size) {
-    printf("BUFFER : |");
+    printf("ACK : |");
     for (int i = 0; i < size; ++i) {
 	printf(" %u |", buffer[i]);
     }
@@ -66,7 +67,6 @@ static bool Is_CMD_Known(uint8_t CMD) {
 	CMD == CDC_SEND_ACK)
 	return true;
     
-    printf("CMD_UNKNOWN\n");
     return false;
 }
 
@@ -94,7 +94,7 @@ static uint8_t *ACKSend_ERR(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
     ACK[3] = size_buff & 0xFF;
     ACK[4] = crc >> 8;
     ACK[5] = crc & 0xFF;
-
+    
     return ACK;
 }
 
@@ -113,81 +113,84 @@ static uint8_t *ACKSend_NOK(uint8_t CMD, uint16_t size_buff, uint16_t crc) {
 }
 
 static uint16_t CRC_compute(uint8_t *buff_RX) {
-    return computeCRC(buff_RX, (CRC_INDEX - DATA_INDEX)*sizeof(uint8_t));
+    return computeCRC(buff_RX, 58*sizeof(uint8_t));
 }
 
 static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
-    static uint16_t buff_RX_Index = DATA_INDEX;
+    uint16_t buff_RX_Index = DATA_INDEX;
     uint8_t Current_CMD = buff_RX[CMD_INDEX];
-    uint16_t size_left_buff = buff_RX[SIZE_INDEX + 1]
-	+ (buff_RX[SIZE_INDEX] << 8);
-	
+    uint16_t size_left_buff = (buff_RX[SIZE_INDEX + 1]
+			       + (buff_RX[SIZE_INDEX] << 8));
+    
     /* Compute CRC for received buffer */
     uint16_t computed_CRC = CRC_compute(buff_RX + DATA_INDEX);
-    uint16_t buff_CRC = (buff_RX[CRC_INDEX] >> 8) + buff_RX[CRC_INDEX + 1];
-
+    uint16_t buff_CRC = (buff_RX[CRC_INDEX] << 8) + buff_RX[CRC_INDEX + 1];
+    
     /* Checks if a buffer was lost */
-    if (buff_RX[BEGINNING_INDEX] =! BEGINNING_DATA ) {
-	if (size_left_buff != UserRxBufferFS_Size_Left) { 
+    if (buff_RX[BEGINNING_INDEX] != BEGINNING_DATA) {
+	if (size_left_buff != UserRxBufferFS_Size_Left) {
 	    return ACKSend_NOK(Current_CMD,
-			       size_left_buff, CRC_compute(buff_RX));
-	}
-    } else {
-	/* If CRC don't match then send ACK_ERR message */
-	if (buff_CRC != computed_CRC) {
-	    printf("CRC don't match!\n");
+			       UserRxBufferFS_Size_Left, CRC_compute(buff_RX));
+	} else if (Current_CMD != UserRxBufferFS_Current_CMD) {
+	    return ACKSend_NOK(UserRxBufferFS_Current_CMD,
+			       UserRxBufferFS_Size_Left, CRC_compute(buff_RX));
+	} 
+    }
+
+    if (buff_CRC != computed_CRC) {
+	    printf("CRC don't match: %u != %u\n", buff_CRC, computed_CRC);
 	    return ACKSend_ERR(Current_CMD,
 			       size_left_buff, CRC_compute(buff_RX));
-	} else { 		/* Buffer should be OK now */
-
-	    /* Empty local buffer for new message */
-	    if (buff_RX[BEGINNING_INDEX] == BEGINNING_DATA) {  
-		if (UserRxBufferFS_Size_Left > 0) {
-		    return ACKSend_NOK(Current_CMD,
-				size_left_buff, CRC_compute(buff_RX));
-		} else {
-		    Empty_UserRxBufferFS();
-		    UserRxBufferFS_Size_Left = size_left_buff;
-		    UserRxBufferFS_Current_CMD = Current_CMD;
-		}
-	    }
-	    
-	    /* Fill local buffer until no there is no data left to read */
-	    while (UserRxBufferFS_Size_Left > 0 && buff_RX_Index < CRC_INDEX) {
-		--UserRxBufferFS_Size_Left;
-		UserRxBufferFS[UserRxBufferFS_Current_Index++] = buff_RX[buff_RX_Index++];
-	    }
-
-	    if (UserRxBufferFS_Size_Left <= 0) {
-		HANDLE_DATA_RECEIVED = true;
-	    } else {
-		printf("Size Left : %d\n", UserRxBufferFS_Size_Left);
-	    }
-	    
-	    /* Send ACK */
-	    return ACKSend_OK(Current_CMD,
-		       size_left_buff, CRC_compute(buff_RX)); 
+    }
+    
+    /* Empty local buffer for new message */
+    if (buff_RX[BEGINNING_INDEX] == BEGINNING_DATA) {  
+	if (UserRxBufferFS_Size_Left > 0) {
+	    return ACKSend_NOK(Current_CMD,
+			       size_left_buff, CRC_compute(buff_RX));
+	} else {
+	    Empty_UserRxBufferFS();
+	    UserRxBufferFS_Size_Left = size_left_buff;
+	    UserRxBufferFS_Current_CMD = Current_CMD;
 	}
-    }    
+    }
+
+    /* Fill local buffer until no there is no data left to read */
+    while (UserRxBufferFS_Size_Left > 0 && buff_RX_Index < CRC_INDEX) {
+	--UserRxBufferFS_Size_Left;
+	UserRxBufferFS[UserRxBufferFS_Current_Index] = buff_RX[buff_RX_Index];
+	UserRxBufferFS_Current_Index++;
+	buff_RX_Index++;
+    }
+
+    if (UserRxBufferFS_Size_Left <= 0) {
+	HANDLE_DATA_RECEIVED = true;
+    } else {
+	printf("Size Left : %d\n", UserRxBufferFS_Size_Left);
+    }
+	    
+    /* Send ACK */
+    return ACKSend_OK(Current_CMD,
+		      size_left_buff, CRC_compute(buff_RX)); 
 }
 
 
-void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
+
+uint8_t *CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
     uint8_t *buff_TX = calloc(512, sizeof(uint8_t));
     
     if (Is_CMD_Known(buff_RX[CMD_INDEX])) { /* Only handle buffer that can be understood */
 	memcpy(buff_TX, CDC_Set_ACK(buff_RX), ACK_SIZE*sizeof(uint8_t));
     } else if (UserRxBufferFS_Size_Left > 0){
     	/* A buffer was received but there is still data to be recovered from last message */
-	memcpy(buff_TX, ACKSend_NOK(UserRxBufferFS_Current_CMD,
-				    UserRxBufferFS_Size_Left, CRC_compute(buff_RX)),
-	       ACK_SIZE*sizeof(uint8_t));
+    	memcpy(buff_TX, ACKSend_NOK(UserRxBufferFS_Current_CMD,
+    				    UserRxBufferFS_Size_Left, CRC_compute(buff_RX)),
+    	       ACK_SIZE*sizeof(uint8_t));
     }
 
     /* If all data were received the call control function */
     if (HANDLE_DATA_RECEIVED) {
-	printf("All data were received\n");
 	
 	HANDLE_DATA_RECEIVED = false;
 
@@ -207,7 +210,8 @@ void CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 	
     }
     
-    USBD_CDC_TransmitPacket(buff_TX);
+    return USBD_CDC_TransmitPacket(buff_TX);
+
 }
 
 

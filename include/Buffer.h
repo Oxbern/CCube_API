@@ -14,13 +14,12 @@
 class Buffer {
  private :
     uint8_t header;
-    uint8_t opCode;
-    uint16_t sizeLeft;
-    //    uint8_t *data;
     uint16_t crc;
 
  public :
     uint8_t *data;
+    uint8_t opCode;
+    uint16_t sizeLeft;
     
     Buffer();
 
@@ -34,6 +33,7 @@ class Buffer {
     void setCrc(uint16_t crcCheck);
     void setData(uint8_t *data);
 
+    void send(int fd);
 };
 
 #endif
