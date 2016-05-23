@@ -66,7 +66,7 @@ void Message::encode(uint8_t *dataToEncode, uint16_t sizeData) {
     int j = 0; int k= 0;
     for (int i = 0; i < NbBuffers(); i ++) {
         while (j < DATA_MAX_SIZE) {
-            if (j < sizeData)
+            if (k < sizeData)
                 listBuffer[i].data[j] = dataToEncode[k];
             else
                 listBuffer[i].data[j] = 0;

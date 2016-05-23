@@ -17,17 +17,12 @@
  */
 Cube::Cube() {
     for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            if (i == 9) {
-                    ledBuffer[i][j] = (uint16_t)0x0;
-            } else {
-                if (j == 9)     
-                    ledBuffer[i][j] = (uint16_t)(1 << i);
-                else
-                    ledBuffer[i][j] = (uint16_t)0;
-            }
+        for (int j = 0; j < 9; j++) {
+            ledBuffer[i][j] = (uint16_t)0b0000000000;
         }
+        ledBuffer[i][9] = (uint16_t)(1 << i);
     }
+    this->ledBuffer[9][9] = (uint16_t)0b0000000000;
 }
 
 /**
@@ -47,7 +42,7 @@ void Cube::on(int x, int y, int z) {
         perror("Index of led out of bounds");
         exit(EXIT_FAILURE);
     } else {
-        ledBuffer[z][(8-y)] |= (1 << x);
+        this->ledBuffer[z][(8-y)] |= (1 << x);
     }
 }
 
@@ -100,7 +95,7 @@ void Cube::toggle(int x, int y, int z) {
  */
 uint8_t* Cube::toArray() {
 
-    uint8_t *ledStatus = new uint8_t[BUFFER_MAX_SIZE];
+    uint8_t *ledStatus = new uint8_t[SIZE_DATA_LED];
     int i = 0, x = 0, y = 0;
 
     while (x < 10 && y < 10) {
@@ -129,7 +124,7 @@ uint8_t* Cube::toArray() {
  * @param dev
  */
 void Cube::display(const char *dev) {
-    int fd = 1;
+    int fd = 0;
     if (strcmp(dev, "local")) 
 	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
 
@@ -152,9 +147,4 @@ void Cube::display(const char *dev) {
     }
     close(fd);
             
-}
-
-uint8_t Cube::getLedBuffer(int x, int y, int z) {
-    uint8_t val = (uint8_t)((ledBuffer[z][y] >> x) & 0x1);
-    return val;
 }
