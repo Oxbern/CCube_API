@@ -1,10 +1,6 @@
 #ifndef ACK_H
 #define ACK_H
 
-#define ACK_OK 0x01
-#define ACK_ERR 0x02
-#define ACK_NOK 0x03
-
 #include "Message.h"
 
 /**
