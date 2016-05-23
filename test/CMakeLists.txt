@@ -38,3 +38,9 @@ foreach( testsourcefile ${TESTS_CXX})
     add_executable(${FILE_NAME} ${testsourcefile} ${HEADERS})
     target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES})
 endforeach( testsourcefile ${TESTS_CXX} )
+
+# Target to execute all test files
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../test/tests.sh)
+    add_custom_target(test
+        COMMAND ${BASH_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../test/tests.sh)
+endif()
