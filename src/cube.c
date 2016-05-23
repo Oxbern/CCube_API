@@ -135,10 +135,16 @@ void display(char * dev, cube *cube) {
 	    buf[BUFFER_MAX_INDEX - 2] = crc >> 8;
 	    buf[BUFFER_MAX_INDEX - 1] = crc & 0xFF;
 
+	    printf("One buffer sent! \n");
+	    for (int k = 0; k < 64; ++k)
+		printf("%u | ", buf[k]);
+	    printf("\n");
+	    
 	    /* Buffer is now full, ready to be sent */
 	    write(fd, buf, 64);
-
-	    uint8_t *ACK = getACK(fd);
+	    sleep(1);
+	  
+	    /* uint8_t *ACK = getACK(fd); */
 #if DEBUG
 	    printf("BUFFER : \n");
 	    for (int l = 0; l < BUFFER_MAX_INDEX; ++l)
