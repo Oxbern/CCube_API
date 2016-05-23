@@ -20,35 +20,61 @@ int main(int argc, char *argv[]) {
 
     bool endGame = false;
     
-     while(!endGame){
-	 //Animate the ball
-	 b.animateBall();
-	 b.handleCollisions(p1,p2);
-	 keypad(stdscr, TRUE);
-	 noecho();
-
-	 //Move players
-	 char moveP1 = '&';
-	 moveP1 = getch();
-	 char moveP2 = '&';
-	 moveP2 = getch();
-	 
-	 p1.movePlayer(moveP1);
-	 p2.movePlayer(moveP2);
-
-	 if (moveP1 == '<' || moveP2 == '<')
+ 
+    initscr();   // mandatory curses init
+    //char chr;
+    // int a = 0, s = 0, nul = 0, er = 0, pass = 0;
+    // while(true){
+    // 	cbreak();         // don't interrupt for user input
+    // 	//noecho();
+    // 	timeout(100);     // wait 500ms for key press
+    // 	//keypad(stdscr, TRUE);
+    // 	chr = getch();
+    // 	switch (chr){
+    // 	case 'a' :
+    // 	    a++;
+    // 	    break;
+    // 	case 's' :
+    // 	    s++;
+    // 	    break;
+    // 	case ERR:
+    // 	    er++;
+    // 	    break;
+    // 	default :
+    // 	    nul++;
+    // 	};
+    // 	pass++;
+    // 	printf("a = %i, s = %i, nul = %i, er = %i, pass = %i\n",a,s,nul,er, pass);
+    // 	//refresh();
+    // }
+    while(!endGame){
+	//Animate the ball
+	b.animateBall();
+	b.handleCollisions(p1,p2);
+	
+	//Move players
+	char movePlayer;
+	cbreak();
+	timeout(100);
+	movePlayer = getch();
+	printf("Getch %i\n",movePlayer);
+	
+	p1.movePlayer(movePlayer);
+	p2.movePlayer(movePlayer);
+	
+	if (movePlayer == 't' || movePlayer == 't')
 	     endGame = true;
-     }
-     
-     // Shape s(cube);
-     // s.on();
-     // s.addPoint(Point(3,3,3));
-     // s.describe();
-     // s.clearShape();
-     // s.describe();
-     // s.loadOkShape();
-     // s.describe();
-
+    }
+    
+    // Shape s(cube);
+    // s.on();
+    // s.addPoint(Point(3,3,3));
+    // s.describe();
+    // s.clearShape();
+    // s.describe();
+    // s.loadOkShape();
+    // s.describe();
+    
     return 0;
 }
 

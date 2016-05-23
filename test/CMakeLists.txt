@@ -15,6 +15,7 @@ LINK_DIRECTORIES(../src)
 
 # Bring the headers into the project
 include_directories(include)
+include_directories(${CURSES_INCLUDE_DIR})
 
 # Tests files
 
