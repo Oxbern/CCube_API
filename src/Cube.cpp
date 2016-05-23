@@ -127,6 +127,7 @@ void Cube::display(const char *dev) {
     if (strcmp(dev, "local")) 
 	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
 
+    std::cout << "Connection Ok :" << fd << "\n";
     Message message(SIZE_DATA_LED,0x01);
 
     if (fd == -1) {

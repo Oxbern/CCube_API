@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     cube.on(3,3,3);
     char const *dev = "/dev/ttyACM0";
     cube.display(dev);
-
+    sleep(2);
 
     // Shape sphere(cube);
     // int r = 3;
