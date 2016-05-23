@@ -103,6 +103,7 @@ void Message::send(int fd) {
 
     for (int i = 0; i < NbBuffers(); i++) {
 	Ack ack;
+        
 	if (fd) {
 	    uint8_t pack[64];
 	    memcpy(pack,(listBuffer[i]).toArray(),64);

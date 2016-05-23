@@ -8,14 +8,16 @@
 #include <ncurses.h>
 #include "Shape.h"
 
-class Player : Shape {
+class Player : public Shape {
 
 private: 
     Point positionPlayer;
     int sizePlayer;
     
 public:
+    
     Player(Cube cube, int number);
+    void display(const char *);
     Point getPosition() const;
     int getSize() const;
     

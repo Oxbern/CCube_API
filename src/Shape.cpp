@@ -15,6 +15,7 @@ Cube Shape::getCube() const{
 
 void Shape::on(){
     std::list<Point>::iterator iter ;
+    cube.off();
     for(iter = vertices.begin() ; (iter != vertices.end()) ;iter++){
     	cube.on(iter->getX(), iter->getY(), iter->getZ());
     }
@@ -58,6 +59,7 @@ void Shape::translateShape(Vec3 v){
 	iter->setY(iter->getY() + v.getY());
 	iter->setZ(iter->getZ() + v.getZ());
     }
+    on();
 }
 
 void Shape::describe() const
@@ -70,6 +72,7 @@ void Shape::describe() const
 
 
 void Shape::loadOkShape(){
+    clearShape();
     // The O
     addPoint(4, 3, 6);
     addPoint(4, 4, 5);
@@ -90,6 +93,8 @@ void Shape::loadOkShape(){
     addPoint(4, 7, 5);
     addPoint(4, 7, 3);
     addPoint(4, 8, 2);
+
+    on();
 }
 
 Point CircSpherPoint(int r, Point origin, uint8_t theta, uint8_t phi, int n){
@@ -115,18 +120,7 @@ void Shape::circularShape(int r, Point origin, int type){
 
 
 void Shape::loadSphereShape(int radius, Point origin, bool full){
-    if (!full){
-	uint8_t r = radius;
-	circularShape(r,origin,2);
-    }
-    else{
-	for (double r = 0; r <= radius; r+=0.5)
-	    circularShape(r,origin,2);
-    }
-}
-
-
-void Shape::loadCircleShape(int radius, Point origin, Point orientation, bool full){
+    clearShape();
     if (!full){
 	uint8_t r = radius;
 	circularShape(r,origin,1);
@@ -135,11 +129,27 @@ void Shape::loadCircleShape(int radius, Point origin, Point orientation, bool fu
 	for (double r = 0; r <= radius; r+=0.5)
 	    circularShape(r,origin,1);
     }
+    on();
+}
+
+
+void Shape::loadCircleShape(int radius, Point origin, Point orientation, bool full){
+    clearShape();
+    if (!full){
+	uint8_t r = radius;
+	circularShape(r,origin,2);
+    }
+    else{
+	for (double r = 0; r <= radius; r+=0.5)
+	    circularShape(r,origin,2);
+    }
+    on();
 }
 
 void Shape::loadCubeShape(int radius, Point origin, bool full){
+    clearShape();
     uint16_t x,y,z;
-    
+
     for (uint8_t i = 0; i<=radius;i++){
 	for (uint8_t j = 0; j<=radius;j++){
 	    for (uint8_t k = 0; k<=radius;k++){
@@ -150,4 +160,5 @@ void Shape::loadCubeShape(int radius, Point origin, bool full){
 	    }
 	}
     }
+    on();
 }

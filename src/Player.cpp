@@ -29,6 +29,10 @@ int Player::getSize() const{
     return this->sizePlayer;
 }
 
+void Player::display(const char * dev){
+    display(dev);
+}
+
 void Player::movePlayer(char c){
     Vec3 v(0,0,0);
     switch (c) {

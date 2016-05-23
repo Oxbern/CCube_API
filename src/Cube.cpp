@@ -129,7 +129,7 @@ void Cube::display(const char *dev) {
 	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
 
     std::cout << "Connection Ok :" << fd << "\n";
-    Message message(SIZE_DATA_LED,BUFF_SENDING);
+    Message message(SIZE_DATA_LED,1);
 
     if (fd == -1) {
         perror("Unable to open connection\n");
