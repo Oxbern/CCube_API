@@ -17,10 +17,16 @@
  */
 Cube::Cube() {
     for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 9; j++) {
-            ledBuffer[i][j] = (uint16_t)0b0000000000;
+        for (int j = 0; j < 10; j++) {
+            if (i == 9) {
+                    ledBuffer[i][j] = (uint16_t)0x0;
+            } else {
+                if (j == 9)     
+                    ledBuffer[i][j] = (uint16_t)(1 << i);
+                else
+                    ledBuffer[i][j] = (uint16_t)0;
+            }
         }
-        ledBuffer[i][9] = (uint16_t)(1 << i);
     }
 }
 
@@ -146,4 +152,9 @@ void Cube::display(const char *dev) {
     }
     close(fd);
             
+}
+
+uint8_t Cube::getLedBuffer(int x, int y, int z) {
+    uint8_t val = (uint8_t)((ledBuffer[z][y] >> x) & 0x1);
+    return val;
 }

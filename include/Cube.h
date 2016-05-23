@@ -24,7 +24,8 @@ class Cube {
     void off(int x, int y, int z);
     void toggle(int x, int y, int z);
     uint8_t *toArray();
-    void display(const char *dev);
+    void display(char *dev);
+    uint8_t getLedBuffer(int x, int y, int z);
 };
 
 #endif
