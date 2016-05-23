@@ -14,8 +14,8 @@ int main(int argc, char *argv[]) {
     Cube cube;
     Player p1(cube,1);
     Player p2(cube,2);
-    Point origine(3,3,6);
-    Vec3 dir(0,0,-1);
+    Point origine(3,4,6);
+    Vec3 dir(1,-1,-1);
     Ball b(cube,origine,dir);
     bool endGame = false;
  
@@ -45,28 +45,28 @@ int main(int argc, char *argv[]) {
     // 	printf("a = %i, s = %i, nul = %i, er = %i, pass = %i\n",a,s,nul,er, pass);
     // 	//refresh();
     // }
-        
+
     while(!endGame){
 	//Animate the ball
 	b.animateBall();
 	b.handleCollisions(p1,p2);
-        cout << b.getDirection().getX() << "," << b.getDirection().getY() << "," << b.getDirection().getZ() << "\n";
         b.display("/dev/ttyACM0");
-        sleep(1);
+        nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
+
 	//Move players
-	// char movePlayer;
-	// cbreak();
-	// timeout(100);
-	// movePlayer = getch();
-	// cout << "Getch :" << movePlayer << "\n";
+	char movePlayer = 'c';
+	cbreak();
+	timeout(100);
+	movePlayer = getch();
+	cout << "Getch :" << movePlayer << "\n";
 	
-	// p1.movePlayer(movePlayer);
-	// p2.movePlayer(movePlayer);
+	p1.movePlayer(movePlayer);
+	p2.movePlayer(movePlayer);
 	
-	// if (movePlayer == 't' || movePlayer == 't')
-	//      endGame = true;
-        // p1.display("/dev/ttyACM0");
-        // p2.display("/dev/ttyACM0");
+	if (movePlayer == 't' || movePlayer == 't')
+	     endGame = true;
+        p1.display("/dev/ttyACM0");
+        p2.display("/dev/ttyACM0");
 
     }
     

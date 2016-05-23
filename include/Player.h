@@ -17,7 +17,6 @@ private:
 public:
     
     Player(Cube cube, int number);
-    void display(const char *);
     Point getPosition() const;
     int getSize() const;
     

@@ -29,32 +29,41 @@ int Player::getSize() const{
     return this->sizePlayer;
 }
 
-void Player::display(const char * dev){
-    display(dev);
-}
-
 void Player::movePlayer(char c){
     Vec3 v(0,0,0);
     switch (c) {
     case 'z':
 	//Up
 	v = Vec3(0,0,1);
-	this->translateShape(v);
+        if (positionPlayer.getZ() != 7){
+            this->positionPlayer.setZ(positionPlayer.getZ()+1);
+            this->translateShape(v);
+        }
 	break;
     case 's':
 	//Down
 	v = Vec3(0,0,-1);
-	this->translateShape(v);
-	break;
-    case 'd':
+        if (positionPlayer.getZ() != 1){
+            this->positionPlayer.setZ(positionPlayer.getZ()-1);
+            this->translateShape(v);
+        }
+        break;
+    case 'q':
 	//Right
 	v = Vec3(1,0,0);
 	this->translateShape(v);
+        if (positionPlayer.getX() != 7){
+            this->positionPlayer.setX(positionPlayer.getX()+1);
+            this->translateShape(v);
+        }
 	break;
-    case 'q':
+    case 'd':
 	//Left
 	v = Vec3(-1,0,0);
-	this->translateShape(v);
+        if (positionPlayer.getX() != 1){
+            this->positionPlayer.setX(positionPlayer.getX()-1);
+            this->translateShape(v);
+        }
 	break;
     default:
 	break;

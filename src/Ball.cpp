@@ -16,6 +16,7 @@ Point Ball::getPosition(){
 }
 
 void Ball::animateBall(){
+    this->positionBall = Point(positionBall.getX() + directionBall.getX(),positionBall.getY() + directionBall.getY(),positionBall.getZ() + directionBall.getZ());
     this->translateShape(this->directionBall);
 }
 
