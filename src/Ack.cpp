@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <unistd.h>
 
 #include "Ack.h"
 
@@ -53,4 +54,21 @@ void Ack::handleAck(int fd, Message msg) {
 	Buffer buf = msg.getBuffer(opCode, sizeLeft);
 	buf.send(fd);
     }
+}
+
+void Ack::setAck(int fd) {
+    int index = 0,
+	c = 0;
+
+    uint8_t buf[6];
+    
+    while (read(fd, &c, 1) > 0) {
+	buf[index] = c;
+	index ++;
+    }
+
+    this->ackType = buf[0];
+    this->opCode = buf[1];
+    this->sizeLeft = (buf[2] << 8) + buf[3];
+    this->crc = (buf[4] << 8) + buf[5];
 }
