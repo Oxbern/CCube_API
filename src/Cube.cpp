@@ -123,7 +123,7 @@ uint8_t* Cube::toArray() {
  * @param dev
  */
 void Cube::display(const char *dev) {
-    int fd = 0;
+    int fd = 1;
     if (strcmp(dev, "local")) 
 	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
 

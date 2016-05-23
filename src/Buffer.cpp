@@ -104,6 +104,9 @@ uint8_t * Buffer::toArray() {
 
     buffLinear[CRC_INDEX] = (uint8_t)(crc >> 8);
     buffLinear[CRC_INDEX+1] = (uint8_t)(crc & 0xFF);
+
+    std::cout << "CRC : " << (buffLinear[CRC_INDEX] << 8) +
+	buffLinear[CRC_INDEX + 1] << "\n";
     
     return buffLinear;
 }

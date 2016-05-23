@@ -118,6 +118,8 @@ static uint16_t CRC_compute(uint8_t *buff_RX) {
 
 static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
+    printBuffer(buff_RX, 64);
+    
     uint16_t buff_RX_Index = DATA_INDEX;
     uint8_t Current_CMD = buff_RX[CMD_INDEX];
     uint16_t size_left_buff = (buff_RX[SIZE_INDEX + 1]

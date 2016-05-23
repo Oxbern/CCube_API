@@ -74,6 +74,7 @@ void Message::encode(uint8_t *dataToEncode, uint16_t sizeData) {
             j++;
         }
         uint16_t crcComputed = computeCRC(listBuffer[i].data, 8*DATA_MAX_SIZE);
+	std::cout << "CRC computed : " << crcComputed << "\n";
         listBuffer[i].setCrc(crcComputed);
     }
 }
@@ -94,7 +95,7 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
 /**
  * @brief Sends a message
  */
-void Message::send(int fd) {
+void Message::send(int fd) {    
     std::cout << "Sending Ok :" << fd << "\n";
 
     for (int i = 0; i < NbBuffers(); i++) {
@@ -106,7 +107,10 @@ void Message::send(int fd) {
 	    for (int j = 0; j < 64; j++) 
 		cout<< (int) pack[j] << " | ";
 	    cout<<"\n";
-	    write(fd, pack, SIZE_BUFFER);
+	    if (fd == 1)
+		CDC_Receive_FS(pack, NULL);
+	    else
+		write(fd, pack, SIZE_BUFFER);
 	    
 	    //listBuffer[i].describe();
             //int index = 0, c = 0;
