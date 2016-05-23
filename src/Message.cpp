@@ -93,29 +93,30 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
  * @brief Sends a message
  */
 void Message::send(int fd) {
+    std::cout << "Sending Ok :" << fd << "\n";
+
     for (int i = 0; i < NbBuffers(); i++) {
 	uint8_t buf[6];
         
 	if (fd) {
 	    write(fd, listBuffer+i, SIZE_BUFFER);
-	    for (uint8_t j = 0; j < NbBuffers(); j++)
-		listBuffer[j].describe();
-            int index = 0, c = 0;
+	    listBuffer[i].describe();
+            //int index = 0, c = 0;
 	
-	    while (read(fd, &c, 1) > 0) {
-	        buf[index] = c;
-	        index ++;
-	    }
+	    // while (read(fd, &c, 1) > 0) {
+	    //     buf[index] = c;
+	    //     index ++;
+	    // }
 	}
 	// else
 	//     CDC_Receive_FS(listBuffer+i, NULL);
 	
-	Ack ack(buf[0], buf[1],
-		(buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
+    // 	Ack ack(buf[0], buf[1],
+    // 		(buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
 	
-	ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
-	ack.handleAck(fd, *this);
-    }
+    // 	ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
+    // 	ack.handleAck(fd, *this);
+     }
 }
 
 

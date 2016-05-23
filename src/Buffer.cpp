@@ -80,12 +80,14 @@ void Buffer::send(int fd) {
 
 void Buffer::describe(){
     cout <<"\n";
-    cout << "header : "<< (int) this->header << "\n"<<
+    cout << "header : "<< std::hex << (int) this->header << "\n"<<
 	"opCode : " << (int) this->opCode <<"\n" <<
 	"sizeLeft : " << (int) this->sizeLeft <<"\n"<<
 	"Data : \n";
-    for (int i = 0; i < DATA_MAX_SIZE; i ++)
-	cout << (int) this->data[i];
+    for (int i = 0; i < DATA_MAX_SIZE; i ++){
+	cout << (int) this->data[i] << " | ";
+	
+    }
     cout << "\nCRC : "<< (int) this->crc <<"\n";
 	
 }
