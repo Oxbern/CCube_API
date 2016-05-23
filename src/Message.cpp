@@ -73,8 +73,9 @@ void Message::encode(uint8_t *dataToEncode, uint16_t sizeData) {
                 listBuffer[i].data[j] = 0;
             j++;
         }
-        uint16_t crcComputed = computeCRC(listBuffer[i].data, 8*DATA_MAX_SIZE);
-	std::cout << "CRC computed : " << crcComputed << "\n";
+
+
+        uint16_t crcComputed = computeCRC(listBuffer[i].data, sizeof(uint8_t)*DATA_MAX_SIZE);
         listBuffer[i].setCrc(crcComputed);
     }
 }
