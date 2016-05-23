@@ -93,7 +93,7 @@ void Buffer::describe(){
 }
 
 uint8_t * Buffer::toArray() {
-    uint8_t buffLinear[SIZE_BUFFER];
+    uint8_t *buffLinear = new uint8_t[SIZE_BUFFER];
     buffLinear[HEADER_INDEX] = header;
     buffLinear[OPCODE_INDEX] = opCode;
     buffLinear[SIZE_INDEX] = (uint8_t)(sizeLeft >> 8);

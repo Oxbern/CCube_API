@@ -4,6 +4,8 @@
 #include <cerrno>
 #include <unistd.h>
 #include <iostream>
+#include <string.h>
+
 using namespace std;
 
 #include "Message.h"
@@ -99,8 +101,14 @@ void Message::send(int fd) {
 	uint8_t buf[6];
         
 	if (fd) {
-	    write(fd, listBuffer+i, SIZE_BUFFER);
-	    listBuffer[i].describe();
+	    uint8_t pack[64];
+	    memcpy(pack,(listBuffer[i]).toArray(),64);
+	    for (int j = 0; j < 64; j++) 
+		cout<< (int) pack[j] << " | ";
+	    cout<<"\n";
+	    write(fd, pack, SIZE_BUFFER);
+	    
+	    //listBuffer[i].describe();
             //int index = 0, c = 0;
 	
 	    // while (read(fd, &c, 1) > 0) {
