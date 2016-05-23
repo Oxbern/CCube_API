@@ -1,19 +1,25 @@
 #!/bin/bash
 
-EXEC=../build/exec
+# On se place dans le répertoire du projet (quel que soit le
+# répertoire d'où est lancé le script) :
+cd "$(dirname "$0")"/../build/exec || exit 1
 
-for tests in $EXEC/*
+for tests in $(ls)
 do
-    "$tests" > tmp
+    $(./"$tests" > tmp)
+
     if grep -q -e "TODO" tmp
     then
-        echo -e "\033[33m[TODO]\033[0m pour $(basename $tests )"
+        tput setaf 3;
+        echo -e "[TODO] for $(basename $tests)"
     elif grep -q -e "PASSED" tmp
     then
-        echo -e "\033[32m[SUCCESS]\033[0m pour $(basename $tests )"
+        tput setaf 2;
+        echo -e "[SUCCESS] for $(basename $tests)"
     else
-        echo -e "\033[31m[FAILED]\033[Om pour $(basename $tests)"
+        tput setaf 1;
+        echo -e "[FAILED] for $(basename $tests)"
     fi
+    tput setaf 7;
 done
 rm tmp
-
