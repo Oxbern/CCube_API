@@ -102,8 +102,7 @@ void Message::send(int fd) {
     std::cout << "Sending Ok :" << fd << "\n";
 
     for (int i = 0; i < NbBuffers(); i++) {
-	uint8_t buf[6];
-        
+	Ack ack;
 	if (fd) {
 	    uint8_t pack[64];
 	    memcpy(pack,(listBuffer[i]).toArray(),64);
@@ -114,21 +113,13 @@ void Message::send(int fd) {
 		CDC_Receive_FS(pack, NULL);
 	    else
 		write(fd, pack, SIZE_BUFFER);
-	    
-	    //listBuffer[i].describe();
-            //int index = 0, c = 0;
-	
-	    // while (read(fd, &c, 1) > 0) {
-	    //     buf[index] = c;
-	    //     index ++;
-	    // }
+
+	    ack.setAck(fd);
+	    ack.describe();
 	}
 	// else
 	//     CDC_Receive_FS(listBuffer+i, NULL);
-	
-    // 	Ack ack(buf[0], buf[1],
-    // 		(buf[2] << 8) + buf[3], (buf[4] << 8) + buf[5]);
-	
+		
     // 	ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
     // 	ack.handleAck(fd, *this);
      }

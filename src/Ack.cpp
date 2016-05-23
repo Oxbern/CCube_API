@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <iostream>
 
 #include "Ack.h"
 
@@ -71,4 +72,10 @@ void Ack::setAck(int fd) {
     this->opCode = buf[1];
     this->sizeLeft = (buf[2] << 8) + buf[3];
     this->crc = (buf[4] << 8) + buf[5];
+}
+
+void Ack::describe(void) {
+    std::cout << "ACK: ";
+    std::cout << (int)ackType << " | " << (int)opCode << " | "
+	      << (int)sizeLeft << " | " << (int)crc << "\n";
 }

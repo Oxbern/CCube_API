@@ -23,6 +23,7 @@ public :
     void handleAck(int fd, Message msg);
     bool checkAck(uint16_t crc);
     void setAck(int fd);
+    void describe(void);
 };
 
 #endif
