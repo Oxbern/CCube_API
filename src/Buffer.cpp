@@ -81,8 +81,15 @@ void Buffer::setCrc(uint16_t crcCheck) {
  * @param fd file descriptor
  */
 void Buffer::send(int fd) {
-
-    write(fd, this, SIZE_BUFFER);
+    uint8_t pack[SIZE_BUFFER];
+    memcpy(pack, this->toArray(), SIZE_BUFFER);
+    for (int j = 0; j < SIZE_BUFFER; j++)
+        std::cout << (int) pack[j] << " | ";
+    std::cout << "\n";
+    if (fd == 1)
+        CDC_Receive_FS(pack, NULL);
+    else 
+        write(fd, pack, SIZE_BUFFER);
 }
 
 /**
