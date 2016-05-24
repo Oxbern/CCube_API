@@ -95,8 +95,8 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
     for (int i = 0; i < NbBuffers(); i++) {
 	if (listBuffer[i].opCode == opCode && listBuffer[i].sizeLeft == sizeLeft)
 	    return listBuffer[i];
-        else
-            throw "Buffer not found \n";
+        //else
+        //   throw "Buffer not found \n";
     }
 }
 
@@ -107,13 +107,13 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
 void Message::send(int fd) {    
     std::cout << "Sending Ok :" << fd << "\n";
     Ack ack;
-
+    
     for (int i = 0; i < NbBuffers(); i++) {
         
         
 	if (fd) {
             listBuffer[i].send(fd);
-            sleep(1);
+            //sleep(1);
             
 	    ack.setAck(fd);
 	    ack.describe();

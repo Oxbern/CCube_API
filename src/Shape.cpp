@@ -73,26 +73,52 @@ void Shape::describe() const
 
 void Shape::loadOkShape(){
     clearShape();
-    // The O
+    // The O layer 1
     addPoint(4, 3, 6);
+    addPoint(4, 2, 6);
     addPoint(4, 4, 5);
-    addPoint(4, 2, 5);
+    addPoint(4, 1, 5);
     addPoint(4, 1, 4);
-    addPoint(4, 5, 4);
+    addPoint(4, 4, 4);
     addPoint(4, 4, 3);
-    addPoint(4, 2, 3);
+    addPoint(4, 1, 3);
     addPoint(4, 3, 2);
-            
+    addPoint(4, 2, 2);
+
+    // The O layer 2
+    addPoint(3, 3, 6);
+    addPoint(3, 2, 6);
+    addPoint(3, 4, 5);
+    addPoint(3, 1, 5);
+    addPoint(3, 1, 4);
+    addPoint(3, 4, 4);
+    addPoint(3, 4, 3);
+    addPoint(3, 1, 3);
+    addPoint(3, 3, 2);
+    addPoint(3, 2, 2);
+
+
     // The K
-    addPoint(4, 6, 6);
+    addPoint(4, 5, 6);
+    addPoint(4, 5, 5);
+    addPoint(4, 5, 4);
+    addPoint(4, 5, 3);
+    addPoint(4, 5, 2);
+    addPoint(4, 7, 6);
     addPoint(4, 6, 5);
-    addPoint(4, 6, 4);
     addPoint(4, 6, 3);
-    addPoint(4, 6, 2);
-    addPoint(4, 8, 6);
-    addPoint(4, 7, 5);
-    addPoint(4, 7, 3);
-    addPoint(4, 8, 2);
+    addPoint(4, 7, 2);
+
+    // The K
+    addPoint(3, 5, 6);
+    addPoint(3, 5, 5);
+    addPoint(3, 5, 4);
+    addPoint(3, 5, 3);
+    addPoint(3, 5, 2);
+    addPoint(3, 7, 6);
+    addPoint(3, 6, 5);
+    addPoint(3, 6, 3);
+    addPoint(3, 7, 2);
 
     on();
 }
