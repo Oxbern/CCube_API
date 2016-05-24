@@ -11,12 +11,12 @@ Controller::~Controller()
 }
 
 
-bool Controller::addListener(Listener l)
+bool Controller::addListener(Listener &l)
 {
     return false;
 }
 
-bool Controller::removeListener(Listener l)
+bool Controller::removeListener(Listener &l)
 {
     return false;
 }
@@ -31,8 +31,7 @@ bool Controller::connectDevice(Device d)
     return false;
 }
 
-Device Controller::getConnectedDevice()
+Device* Controller::getConnectedDevice()
 {
-    Device d;
-    return d;
+    return NULL;
 }
