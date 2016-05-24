@@ -112,15 +112,7 @@ void Message::send(int fd) {
         
         
 	if (fd) {
-	    uint8_t pack[64];
-	    memcpy(pack,(listBuffer[i]).toArray(),64);
-	    // for (int j = 0; j < 64; j++) 
-            //     std::cout<< (int) pack[j] << " | ";
-            // std::cout<<"\n";
-	    if (fd == 1)
-		CDC_Receive_FS(pack, NULL);
-	    else
-		write(fd, pack, SIZE_BUFFER);
+            listBuffer[i].send(fd);
             sleep(1);
             
 	    ack.setAck(fd);

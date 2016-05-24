@@ -42,7 +42,7 @@ class Buffer {
 
     void describe();
 
-    uint8_t* toArray();
+    void toArray(uint8_t* buffLinear);
 };
 
 #endif

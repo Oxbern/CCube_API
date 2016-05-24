@@ -89,14 +89,17 @@ void Buffer::setCrc(uint16_t crcCheck) {
  */
 void Buffer::send(int fd) {
     uint8_t pack[SIZE_BUFFER];
-    memcpy(pack, this->toArray(), SIZE_BUFFER);
-    for (int j = 0; j < SIZE_BUFFER; j++)
-        std::cout << (int) pack[j] << " | ";
-    std::cout << "\n";
+    uint8_t *buff = new uint8_t[SIZE_BUFFER];
+    this->toArray(buff);
+    memcpy(pack, buff, SIZE_BUFFER);
+    // for (int j = 0; j < SIZE_BUFFER; j++)
+    //     std::cout << (int) pack[j] << " | ";
+    // std::cout << "\n";
     if (fd == 1)
         CDC_Receive_FS(pack, NULL);
     else 
         write(fd, pack, SIZE_BUFFER);
+    delete [] buff;
 }
 
 /**
@@ -117,10 +120,11 @@ void Buffer::describe(){
 
 /**
  * @brief Converts a buffer into an array
- * @return array
+ * @param buffLinear the filled array
  */
-uint8_t * Buffer::toArray() {
-    uint8_t *buffLinear = new uint8_t[SIZE_BUFFER];
+void Buffer::toArray(uint8_t* buffLinear) {
+
+    //    uint8_t *buffLinear = new uint8_t[SIZE_BUFFER];
     buffLinear[HEADER_INDEX] = header;
     buffLinear[OPCODE_INDEX] = opCode;
     buffLinear[SIZE_INDEX] = (uint8_t)(sizeLeft >> 8);
@@ -135,5 +139,4 @@ uint8_t * Buffer::toArray() {
     std::cout << "CRC : " << (buffLinear[CRC_INDEX] << 8) +
 	buffLinear[CRC_INDEX + 1] << "\n";
     
-    return buffLinear;
 }

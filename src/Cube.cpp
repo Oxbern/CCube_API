@@ -100,7 +100,7 @@ void Cube::toggle(int x, int y, int z) {
 
 /**
  * @brief Converts ledBuffer into an array
- * @return array
+ * @param ledStatus the filled array
  */
 void Cube::toArray(uint8_t * ledStatus) {
 
