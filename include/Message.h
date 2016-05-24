@@ -26,7 +26,7 @@ enum OPCODE {
 
 class Message {
  private :
-    uint16_t size;
+    uint16_t sizeData;
     uint8_t opCode;
     Buffer *listBuffer;
 
@@ -37,8 +37,6 @@ class Message {
 
     int NbBuffers();
     void encode(uint8_t *dataToEncode, uint16_t sizeData);
-    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft);
-    void send(int fd);
 };
 
 #endif
