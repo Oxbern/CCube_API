@@ -3,17 +3,8 @@
 
 #include <cstdint>
 
-#define DATA_MAX_SIZE 58
-#define SIZE_BUFFER 64
-#define HEADER_INDEX 0
-#define OPCODE_INDEX 1
-#define SIZE_INDEX 2
-#define DATA_INDEX 4
-#define CRC_INDEX 62
-
 /**
  * @class Buffer
- * @brief TODO
  */
 
 class Buffer {
@@ -23,8 +14,8 @@ class Buffer {
     uint16_t sizeLeft;
     uint8_t *data;
     uint16_t crc;
-public :
 
+ public :
     Buffer();
     Buffer(uint8_t header, uint8_t opCode, uint16_t size, uint16_t crcCheck);
     ~Buffer();
@@ -35,7 +26,13 @@ public :
     void setOpCode(uint8_t code);
     void setSizeLeft(uint16_t size);
     void setCrc(uint16_t crcCheck);
-    void setData(uint8_t *data);
+    void setData(int index, uint8_t dataIndex);
+
+    uint8_t getHeader();
+    uint8_t getOpCode();
+    uint16_t getSizeLeft();
+    uint8_t *getData();
+    uint16_t getCrc();
 };
 
 #endif
