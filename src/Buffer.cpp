@@ -4,10 +4,15 @@
 #include <cerrno>
 #include <unistd.h>
 #include <iostream>
-
+#include <string.h>
 
 #include "Buffer.h"
 #include "Ack.h"
+
+extern "C" {
+#include "crc.h"
+#include "virtualCube.h"
+}
 
 
 /**
