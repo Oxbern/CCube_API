@@ -1,8 +1,6 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-#include <cstdbool>
-
 #include "DeviceShape.h"
 #include "Message.h"
 
@@ -18,7 +16,7 @@ private :
     char* firmwareVersion;
     DeviceShape *currentConfig;
 public :
-    Device();
+    Device(char* port, int portLength, char* id, int idLength, int sizeX, int sizeY, int sizeZ);
     ~Device();
 
     bool available();
@@ -32,5 +30,6 @@ public :
     bool send(Message m);
 
     //TODO Rajouter les setters et getters
+    char* getId();
 };
 #endif //CUBEAPI_DEVICE_H
