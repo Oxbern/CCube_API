@@ -11,11 +11,11 @@ public:
     ErrorException( const char * Msg )
     {
         std::ostringstream oss;
-        oss << "File  " << __FILE__ << " | Function : " << __FUNCTION__ << " : " << Msg;
+        oss << "[ERROR] File  " << __FILE__ << " | Function : " << __FUNCTION__ << " : " << Msg << std::endl;
         this->msg = oss.str();
     }
 
-    virtual ~my_exception() throw()
+    virtual ~ErrorException() throw()
     {
 
     }
