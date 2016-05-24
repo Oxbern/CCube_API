@@ -1,6 +1,6 @@
 #include "DeviceShape.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 void DeviceShape::clearLed()
 {
@@ -13,7 +13,7 @@ void DeviceShape::clearLed()
 DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ)
 {
 #if DEBUG
-    std::cout << "DeviceShape constructor called\n";
+    std::cout << "DeviceShape constructor called" << std::endl;
 #endif
     //Allocation
     ledStatus = new bool**[sizeX];
@@ -30,7 +30,7 @@ DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(
 DeviceShape::~DeviceShape()
 {
 #if DEBUG
-    std::cout << "DeviceShape destructor called\n";
+    std::cout << "DeviceShape destructor called" << std::endl;
 #endif
     //Deallocation
     for(int x = 0; x < sizeX; ++x) {
@@ -54,7 +54,7 @@ DeviceShape::~DeviceShape()
 bool DeviceShape::on(int x, int y, int z)
 {
     if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
-        std::cerr << "Index of led out of bounds";
+        std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] = true);
@@ -80,7 +80,7 @@ bool DeviceShape::off()
 bool DeviceShape::off(int x, int y, int z)
 {
     if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
-        std::cerr << "Index of led out of bounds";
+        std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] = false);
@@ -96,7 +96,7 @@ bool DeviceShape::off(int x, int y, int z)
 bool DeviceShape::toggle(int x, int y, int z)
 {
     if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
-        std::cerr << "Index of led out of bounds";
+        std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] == true) ?
