@@ -28,8 +28,6 @@ Cube::Cube() {
     }
     this->ledBuffer[9][9] = (uint16_t)0b0000000000;
 
-    std::cout << "constructeur que j'ai ecrit \n";
-
 }
 
 
@@ -40,8 +38,6 @@ Cube::~Cube() {
     for (int i = 0; i < 10; i++)
         delete [] ledBuffer[i];
     delete [] ledBuffer;
-
-    std::cout << "mon destructeur \n";
 }
 
 /** 
@@ -106,9 +102,9 @@ void Cube::toggle(int x, int y, int z) {
  * @brief Converts ledBuffer into an array
  * @return array
  */
-uint8_t* Cube::toArray() {
+void Cube::toArray(uint8_t * ledStatus) {
 
-    uint8_t *ledStatus = new uint8_t[SIZE_DATA_LED];
+    //uint8_t *ledStatus = new uint8_t[SIZE_DATA_LED];
     int i = 0, x = 0, y = 0;
 
     while (x < 10 && y < 10) {
@@ -129,7 +125,7 @@ uint8_t* Cube::toArray() {
         }
         i += 2;
     }
-    return ledStatus;
+    //return ledStatus;
 }
 
 /**
@@ -148,10 +144,11 @@ void Cube::display(const char *dev) {
         perror("Unable to open connection\n");
         exit(EXIT_FAILURE);
     } else if (fd > 0) {
-        uint8_t *data = toArray(); //converts ledBuffer to an array
+        uint8_t *data = new uint8_t[SIZE_DATA_LED];
+        toArray(data); //converts ledBuffer to an array
         message.encode(data, SIZE_DATA_LED);
-
         message.send(fd);
+        delete [] data;
         
     } else {
 	perror("Error in open_connection function\n");

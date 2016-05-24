@@ -130,7 +130,7 @@ void Message::send(int fd) {
 	//     CDC_Receive_FS(listBuffer+i, NULL);
 		
      	//ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
-     	ack.handleAck(fd, *this);
+     	//ack.handleAck(fd, *this);
      }
 }
 
