@@ -38,6 +38,7 @@ Message::Message(uint16_t size, uint8_t code) {
     }    
 }
 
+
 /**
  * @brief Destructor
  */
@@ -46,6 +47,7 @@ Message::~Message() {
     //     delete (&listBuffer[i]);
     
     delete [] listBuffer;
+
 }
 
 /**
@@ -94,6 +96,8 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
     for (int i = 0; i < NbBuffers(); i++) {
 	if (listBuffer[i].opCode == opCode && listBuffer[i].sizeLeft == sizeLeft)
 	    return listBuffer[i];
+        else
+            throw "Buffer not found \n";
     }
 }
 
@@ -104,21 +108,21 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
 void Message::send(int fd) {    
     std::cout << "Sending Ok :" << fd << "\n";
     Ack ack;
-    
+
     for (int i = 0; i < NbBuffers(); i++) {
         
         
 	if (fd) {
 	    uint8_t pack[64];
 	    memcpy(pack,(listBuffer[i]).toArray(),64);
-	    for (int j = 0; j < 64; j++) 
-                std::cout<< (int) pack[j] << " | ";
-            std::cout<<"\n";
+	    // for (int j = 0; j < 64; j++) 
+            //     std::cout<< (int) pack[j] << " | ";
+            // std::cout<<"\n";
 	    if (fd == 1)
 		CDC_Receive_FS(pack, NULL);
 	    else
 		write(fd, pack, SIZE_BUFFER);
-            //sleep(1);
+            sleep(1);
             
 	    ack.setAck(fd);
 	    ack.describe();

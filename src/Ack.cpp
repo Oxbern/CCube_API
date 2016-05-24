@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <iostream>
+#include <fcntl.h>
 
 #include "Ack.h"
 
@@ -63,7 +64,8 @@ void Ack::setAck(int fd) {
 	c = 0;
 
     uint8_t buf[6];
-    
+
+    fcntl(fd, F_SETLK);
     while (read(fd, &c, 1) > 0) {
 	buf[index] = c;
 	index ++;
