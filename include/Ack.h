@@ -5,7 +5,6 @@
 
 /**
  * @class ACK
- * @brief TODO
  */
 
 class Ack {
@@ -23,6 +22,11 @@ public :
     void handleAck(int fd, Message &msg);
     bool checkAck(uint16_t crc);
     void setAck(int fd);
+
+    uint8_t getAckType();
+    uint8_t getOpCode();
+    uint16_t getSizeLeft();
+    uint16_t getCrc();
 };
 
 #endif
