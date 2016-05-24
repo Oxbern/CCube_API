@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 2.8.9)
 project (cubeAPI)
 
 # Compilers options
-set(CMAKE_C_FLAGS "-O0 -g -std=c99")
-set(CMAKE_CXX_FLAGS "-O0 -Wall -std=c++11")
+set(CMAKE_C_FLAGS "-O0 -g -Wall -Werror -std=c99")
+set(CMAKE_CXX_FLAGS "-O0 -Wall -Werror -std=c++11")
 
 # Bring the headers into the project
 include_directories(include)
