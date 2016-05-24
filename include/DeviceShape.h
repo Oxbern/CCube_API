@@ -1,9 +1,8 @@
 #ifndef DEVICESHAPE_H
 #define DEVICESHAPE_H
 
-#include <cstdbool>
 #include <cstdint>
-
+#include <iostream>
 
 //TODO : DOC
 class DeviceShape {
@@ -23,6 +22,6 @@ public :
     bool off(int x, int y, int z);
     bool toggle(int x, int y, int z);
     uint8_t *  toArray();
-    void printAllLeds();
+    friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d);
 };
 #endif //DEVICESHAPE_H

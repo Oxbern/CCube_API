@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
         TEST 1 : display all the leds
      *************************************/
     printf("******* Leds switched off *******\n");
-    d.printAllLeds();
+    std::cout << d;
 
 
     /*************************************
@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
             for (int z = 0; z < size; ++z)
                 d.on(x,y,z);
     printf("******* Leds switched on *******\n");
-    d.printAllLeds();
+    std::cout << d;
 
     /*************************************
             TEST 3 : toArray() method
@@ -42,15 +42,15 @@ int main(int argc, char* argv[]) {
     uint8_t *leds = d.toArray();
     printf("******* toArray() method *******\n");
     for (int i = 0; i < (size*size*size); i++)
-        printf("%u", leds[i]);
-    printf("\n");
+        std::cout << (int)leds[i];
+    std::cout << std::endl;
     delete [] leds;
 
     /*************************************
         TEST 4 : toggle(x,y,z) method
     *************************************/
     printf("******* Before toggle *******\n");
-    d.printAllLeds();
+    std::cout << d;
     for (int z = 0; z < size; ++z) {
         for (int y = 0; y < size; ++y) {
             for (int x = 0; x < size; ++x){
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
         }
     }
     printf("******* After toggle *******\n");
-    d.printAllLeds();
+    std::cout << d;
 
 
     /*************************************
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
     *************************************/
     printf("******* off() method *******\n");
     d.off();
-    d.printAllLeds();
+    std::cout << d;
 
     return EXIT_SUCCESS;
 }

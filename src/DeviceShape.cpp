@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "DeviceShape.h"
 
 #define DEBUG 1
@@ -126,21 +124,21 @@ uint8_t * DeviceShape::toArray()
 /**
  * @brief : TODO
  */
-void DeviceShape::printAllLeds()
+std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
 {
-    std::cout << "------ Led status ------\n";
-    for (int z = 0; z < sizeZ; ++z) {
-        std::cout << "Z = " << z << "\n";
-        for (int y = 0; y < sizeY; ++y) {
-            std::cout << "Y = " << y << "\n";
-            for (int x = 0; x < sizeX; ++x) {
-                if (ledStatus[x][y][z])
-                    std::cout << "1 ";
+    for (int z = 0; z < d.sizeZ; ++z) {
+        os << "Z = " << z << "\n";
+        for (int y = 0; y < d.sizeY; ++y) {
+            os << "Y = " << y << "\n";
+            for (int x = 0; x < d.sizeX; ++x) {
+                if (d.ledStatus[x][y][z])
+                    os << "1 ";
                 else
-                    std::cout << "0 ";
+                    os << "0 ";
             }
-            std::cout << "\n";
+            os << "\n";
         }
-        std::cout << "\n";
+        os << "\n";
     }
+    return os;
 }
