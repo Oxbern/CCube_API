@@ -1,15 +1,28 @@
 #ifndef DEVICESHAPE_H
 #define DEVICESHAPE_H
 
+#include <cstdbool>
+#include <cstdint>
+
+
+//TODO : DOC
 class DeviceShape {
-protected :
+private :
+    void clearLed();
     int sizeX;
     int sizeY;
     int sizeZ;
-    bool ***ledBuffer;
+    bool ***ledStatus;
 
 public :
-    DeviceShape();
+    DeviceShape(int sizeX, int sizeY, int sizeZ);
     ~DeviceShape();
+
+    bool on(int x, int y, int z);
+    bool off();
+    bool off(int x, int y, int z);
+    bool toggle(int x, int y, int z);
+    uint8_t *  toArray();
+    void printAllLeds();
 };
-#endif //CUBEAPI_DEVICESHAPE_H
+#endif //DEVICESHAPE_H
