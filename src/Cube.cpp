@@ -16,6 +16,10 @@
  * @brief Creates a cube
  */
 Cube::Cube() {
+    ledBuffer = new uint16_t*[10];
+    for (int k = 0; k < 10; k++)
+        ledBuffer[k] = new uint16_t[10];
+    
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 9; j++) {
             ledBuffer[i][j] = (uint16_t)0b0000000000;
@@ -23,12 +27,21 @@ Cube::Cube() {
         ledBuffer[i][9] = (uint16_t)(1 << i);
     }
     this->ledBuffer[9][9] = (uint16_t)0b0000000000;
+
+    std::cout << "constructeur que j'ai ecrit \n";
+
 }
+
 
 /**
  * @brief Destructor
  */
 Cube::~Cube() {
+    for (int i = 0; i < 10; i++)
+        delete [] ledBuffer[i];
+    delete [] ledBuffer;
+
+    std::cout << "mon destructeur \n";
 }
 
 /** 

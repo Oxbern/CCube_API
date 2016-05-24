@@ -12,7 +12,7 @@
 
 class Cube {
  private :
-    uint16_t ledBuffer[10][10];
+    uint16_t **ledBuffer;
     
  public :
     Cube();

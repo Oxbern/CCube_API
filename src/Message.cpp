@@ -43,7 +43,7 @@ Message::Message(uint16_t size, uint8_t code) {
  * @brief Destructor
  */
 Message::~Message() {
-    // delete [] listBuffer;
+    delete [] listBuffer;
 }
 
 /**
