@@ -50,10 +50,11 @@ bool Ack::checkAck(uint16_t crc) {
  * @param fd file descriptor
  * @param msg Message
  */
-void Ack::handleAck(int fd, Message msg) {
+void Ack::handleAck(int fd, Message &msg) {
     if (ackType != ACK_OK) {
-	Buffer buf = msg.getBuffer(opCode, sizeLeft);
-	buf.send(fd);
+	Buffer buf;
+        buf = msg.getBuffer(opCode, sizeLeft);
+	(buf).send(fd);
     }
 }
 

@@ -40,6 +40,8 @@ Buffer::Buffer(uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) {
  * @brief Destructor
  */
 Buffer::~Buffer() {
+    // for (int i = 0; i < DATA_MAX_SIZE; i ++)
+    //     delete (&data[i]);
     delete [] data;
 }
 
