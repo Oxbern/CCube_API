@@ -1,30 +1,38 @@
+#include <iostream>
+
 #include "Listener.h"
+#include "Controller.h"
 
-void onConnect()
+void Listener::onInit(Controller & c)
 {
+    std::cout << "Initialization of Listener" << std::endl;
+}
 
+void Listener::onConnect(Controller & c)
+{
+    std::cout << "Device " << c.getConnectedDevice()->getId() << " connected" << std::endl;
 }
 
 
-void onDisconnect()
+void Listener::onDisconnect(Controller &)
 {
-
+    std::cout << "Disconnected" << std::endl;
 }
 
 
-void onData()
+void Listener::onData(Controller &)
 {
-
+    std::cout << "Data received" << std::endl;
 }
 
 
-void onDeviceChange()
+void Listener::onDeviceChange(Controller &)
 {
-
+    std::cout << "Device changed" << std::endl;
 }
 
 
-void onExit()
+void Listener::onExit(Controller &)
 {
-
+    std::cout << "Listener removed from the controller" << std::endl;
 }
