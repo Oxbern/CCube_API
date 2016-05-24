@@ -92,6 +92,8 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
     for (int i = 0; i < NbBuffers(); i++) {
 	if (listBuffer[i].opCode == opCode && listBuffer[i].sizeLeft == sizeLeft)
 	    return listBuffer[i];
+        else
+            throw "Buffer not found \n";
     }
 }
 
