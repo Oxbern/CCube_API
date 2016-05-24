@@ -3,25 +3,8 @@
 
 #include "Buffer.h"
 
-enum OPCODE {
-    ACK_OK = 0x01,
-    ACK_ERR = 0x02,
-    ACK_NOK = 0x03,
-    BUFF_SENDING = 0x10,
-    LIGHT_SENDING = 0x11,
-    BUFF_RECEPTION =  0XA0,
-    LIGHT_RECEPTION = 0XA1,
-    SIZE_RECEPTION = 0XB0,
-    VERSION_RECEPTION = 0XB1,
-    ID_RECEPTION = 0XB2,
-    FIRMWARE_SENDING = 0x21,
-    TFT_SENDING = 0x20,
-    TOUCH_DETECTION = 0xC0
-};
-
 /**
  * @class Message
- * @brief TODO
  */
 
 class Message {
