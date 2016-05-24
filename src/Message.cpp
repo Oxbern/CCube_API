@@ -43,6 +43,9 @@ Message::Message(uint16_t size, uint8_t code) {
  * @brief Destructor
  */
 Message::~Message() {
+    // for (int i = 0; i< NbBuffers(); i++) 
+    //     delete (&listBuffer[i]);
+    
     delete [] listBuffer;
 }
 
@@ -102,11 +105,11 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
  * @param fd file descriptor
  */
 void Message::send(int fd) {    
-    // std::cout << "Sending Ok :" << fd << "\n";
+    std::cout << "Sending Ok :" << fd << "\n";
+    Ack ack;
 
     for (int i = 0; i < NbBuffers(); i++) {
         
-	Ack ack;
         
 	if (fd) {
 	    uint8_t pack[64];
@@ -127,7 +130,7 @@ void Message::send(int fd) {
 	//     CDC_Receive_FS(listBuffer+i, NULL);
 		
      	//ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
-     	ack.handleAck(fd, this);
+     	ack.handleAck(fd, *this);
      }
 }
 
