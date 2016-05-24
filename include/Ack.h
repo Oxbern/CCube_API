@@ -20,7 +20,7 @@ public :
     Ack(uint8_t ackType, uint8_t opCode, uint16_t sizeLeft, uint16_t crc);
     ~Ack();
 
-    void handleAck(int fd, Message msg);
+    void handleAck(int fd, Message *msg);
     bool checkAck(uint16_t crc);
     void setAck(int fd);
     void describe(void);

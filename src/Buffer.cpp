@@ -7,6 +7,8 @@
 
 
 #include "Buffer.h"
+#include "Ack.h"
+
 
 /**
  * @brief Creates a buffer
@@ -40,7 +42,7 @@ Buffer::Buffer(uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) {
  * @brief Destructor
  */
 Buffer::~Buffer() {
-    delete [] data;
+    // delete [] data;
 }
 
 /**
@@ -79,6 +81,7 @@ void Buffer::setCrc(uint16_t crcCheck) {
  * @param fd file descriptor
  */
 void Buffer::send(int fd) {
+
     write(fd, this, SIZE_BUFFER);
 }
 
