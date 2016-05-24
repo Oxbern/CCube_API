@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <iostream>
+#include <fcntl.h>
 
 #include "Ack.h"
 
@@ -50,9 +51,10 @@ bool Ack::checkAck(uint16_t crc) {
  * @param fd file descriptor
  * @param msg Message
  */
-void Ack::handleAck(int fd, Message msg) {
+void Ack::handleAck(int fd, Message *msg) {
     if (ackType != ACK_OK) {
-	Buffer buf = msg.getBuffer(opCode, sizeLeft);
+	std::cout << "Trying to re-send buffer\n";
+	Buffer buf = (*msg).getBuffer(opCode, sizeLeft);
 	buf.send(fd);
     }
 }
@@ -62,7 +64,8 @@ void Ack::setAck(int fd) {
 	c = 0;
 
     uint8_t buf[6];
-    
+
+    fcntl(fd, F_SETLK);
     while (read(fd, &c, 1) > 0) {
 	buf[index] = c;
 	index ++;
