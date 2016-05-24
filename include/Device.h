@@ -16,7 +16,7 @@ private :
     int sizeY;
     int sizeZ;
     char* firmwareVersion;
-    DeviceShape currentConfig;
+    DeviceShape *currentConfig;
 public :
     Device();
     ~Device();
