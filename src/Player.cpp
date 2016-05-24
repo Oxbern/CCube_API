@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(Cube cube, int number) : Shape(cube) {
+Player::Player(Cube *cube, int number) : Shape(cube) {
     if (number == 1)
 	this->positionPlayer = Point(3,0,3);
     else if (number == 2)

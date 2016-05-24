@@ -13,7 +13,7 @@ private:
     Vec3 directionBall;
 
 public:
-    Ball(Cube cube,Point origine,Vec3 dir);
+    Ball(Cube *cube,Point origine,Vec3 dir);
 
     Vec3 getDirection();
     Point getPosition();

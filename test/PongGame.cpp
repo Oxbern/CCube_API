@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[]) {
     
-    Cube cube;
+    Cube *cube;
     Player p1(cube,1);
     Player p2(cube,2);
     Point origine(3,4,6);

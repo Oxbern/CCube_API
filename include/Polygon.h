@@ -11,8 +11,8 @@ class Polygon : Shape
 private: 
     
 public:
-  Polygon(Cube cube);
-  Polygon(Cube cube, list<Point> vertices);
+  Polygon(Cube *cube);
+  Polygon(Cube *cube, list<Point> vertices);
 
   void on();
   void addPoint(Point p);

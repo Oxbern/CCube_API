@@ -1,6 +1,6 @@
 #include "Ball.h"
 
-Ball::Ball(Cube cube,Point origine, Vec3 dir) : Shape(cube) {
+Ball::Ball(Cube *cube,Point origine, Vec3 dir) : Shape(cube) {
     this->positionBall = origine;
     this->directionBall = dir;
     this->loadCubeShape(0,origine,true);

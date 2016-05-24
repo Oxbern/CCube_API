@@ -1,28 +1,28 @@
 #include "Shape.h"
 using namespace std;
 
-Shape::Shape(Cube cube): cube(cube) {}
+Shape::Shape(Cube *cube): cube(cube) {}
 
-Shape::Shape(Cube cube, list<Point> l) : cube(cube), vertices(l) {}
+Shape::Shape(Cube *cube, list<Point> l) : cube(cube), vertices(l) {}
 
 list<Point> Shape::getPoints() const{
     return vertices;
 }
 
-Cube Shape::getCube() const{
+Cube *Shape::getCube() const{
     return cube;
 }
 
 void Shape::on(){
     std::list<Point>::iterator iter ;
-    cube.off();
+    cube->off();
     for(iter = vertices.begin() ; (iter != vertices.end()) ;iter++){
-    	cube.on(iter->getX(), iter->getY(), iter->getZ());
+    	cube->on(iter->getX(), iter->getY(), iter->getZ());
     }
 }
 
 void Shape::display(const char *dev){
-    cube.display(dev);
+    cube->display(dev);
 }
 
 void Shape::addPoint(Point p)

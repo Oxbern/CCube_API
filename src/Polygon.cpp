@@ -1,14 +1,14 @@
 #include "Polygon.h"
 using namespace std;
 
-Polygon::Polygon(Cube cube): Shape(cube) {}
+Polygon::Polygon(Cube* cube): Shape(cube) {}
 
-Polygon::Polygon(Cube cube, list<Point> l) : Shape(cube,l) {}
+Polygon::Polygon(Cube* cube, list<Point> l) : Shape(cube,l) {}
 
 void Polygon::on(){
     std::list<Point>::iterator iter ;
     for(iter = getPoints().begin() ; (iter != getPoints().end()) ;iter++){
-    	getCube().on(iter->getX(), iter->getY(), iter->getZ());
+    	getCube()->on(iter->getX(), iter->getY(), iter->getZ());
     }
 }
 void Polygon::addPoint(Point p)

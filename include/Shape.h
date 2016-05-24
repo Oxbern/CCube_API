@@ -20,10 +20,10 @@ class Shape
 
 private: 
     list<Point> vertices;
-    Cube cube;
+    Cube *cube;
 public:
-  Shape(Cube cube);
-  Shape(Cube cube, list<Point> vertices);
+  Shape(Cube *cube);
+  Shape(Cube *cube, list<Point> vertices);
 
   void display(const char *dev);
   void on();
@@ -46,7 +46,7 @@ public:
   void loadCubeShape(int radius, Point origin, bool full);
 
   list<Point> getPoints() const;
-  Cube getCube() const;
+  Cube* getCube() const;
 
   void describe() const;
 
