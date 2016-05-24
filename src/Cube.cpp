@@ -128,7 +128,7 @@ void Cube::display(const char *dev) {
     if (strcmp(dev, "local")) 
 	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
 
-    std::cout << "Connection Ok :" << fd << "\n";
+    // std::cout << "Connection Ok :" << fd << "\n";
     Message message(SIZE_DATA_LED,1);
 
     if (fd == -1) {
@@ -137,7 +137,6 @@ void Cube::display(const char *dev) {
     } else if (fd > 0) {
         uint8_t *data = toArray(); //converts ledBuffer to an array
         message.encode(data, SIZE_DATA_LED);
-        
 
         message.send(fd);
         
