@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "DeviceShape.h"
-#include "Message.h"
+#include "DataMessage.h"
 #include "Debug.h"
 
 class Device {

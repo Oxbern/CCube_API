@@ -45,7 +45,7 @@ Device::~Device()
 
 bool Device::available()
 {
-    Message m(0, OPCODE(AVAILABLE));
+    DataMessage m(0, OPCODE(AVAILABLE));
     while (!this->send(m)) {
         //TODO Timeout
         continue;
