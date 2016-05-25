@@ -1,11 +1,8 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <pthread.h>
+#include <thread>
+#include <cstring>
 
-#include "virtualCube.h"
-#include "crc.h"
+#include "VirtualCube.h"
+#include "Crc.h"
 
 #define APP_RX_DATA_SIZE  512
 #define BEGINNING_DATA 0x01
@@ -33,7 +30,7 @@ typedef struct _Control_Args {
 	uint16_t size;
 } Control_Args;
 
-static void CDC_Control_FS(void *args) {
+static void *CDC_Control_FS(void *args) {
 
 	Control_Args *control_args = (Control_Args*)args;
 
@@ -43,7 +40,7 @@ static void CDC_Control_FS(void *args) {
 		break;
 	}
 
-	return;
+	return NULL;
 }
 
 
@@ -175,8 +172,8 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
 
 
-uint8_t *CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
-	uint8_t *buff_TX = calloc(512, sizeof(uint8_t));
+uint8_t *CDC_Receive_FS (uint8_t *buff_RX) {
+	uint8_t *buff_TX = (uint8_t *) calloc(512, sizeof(uint8_t));
 
 	if (Is_CMD_Known(buff_RX[CMD_INDEX])) { /* Only handle buffer that can be understood */
 		memcpy(buff_TX, CDC_Set_ACK(buff_RX), ACK_SIZE*sizeof(uint8_t));
@@ -194,11 +191,11 @@ uint8_t *CDC_Receive_FS (uint8_t *buff_RX, uint32_t *Len) {
 
 		Control_Args args = {.cmd = UserRxBufferFS_Current_CMD,
 		                     .Buf = UserRxBufferFS,
-		                     .size = UserRxBufferFS_Current_Index*sizeof(uint8_t)};
+		                     .size = (uint16_t )(UserRxBufferFS_Current_Index*sizeof(uint8_t))};
 		pthread_t Control_FS_thread;
 
 
-		if(pthread_create(&Control_FS_thread, NULL, (void *)CDC_Control_FS, &args)) {
+		if(pthread_create(&Control_FS_thread, NULL, CDC_Control_FS, &args)) {
 			/* Do something smart to handle error */
 		}
 
