@@ -1,5 +1,5 @@
-#include "Utils.h"
 #include "Message.h"
+#include "Utils.h"
 
 extern "C" {
 #include "crc.h"
@@ -8,9 +8,9 @@ extern "C" {
 /**
  * @brief Creates an empty message
  */
-Message::Message() : sizeData(0), opCode(0)
+Message::Message() : sizeBuffer(0), sizeData(0), opCode(0), crc(0)
 {
-    listBuffer = new Buffer[0];
+    listBuffer = std::vector<Buffer*> (0);
 }
 
 /**
@@ -18,39 +18,47 @@ Message::Message() : sizeData(0), opCode(0)
  * @param size of the message
  * @param code operation code
  */
-Message::Message(uint16_t size, uint8_t code) : sizeData(size), opCode(code)
+Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
+    sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
 {
     int n = this->NbBuffers();
-    listBuffer = new Buffer[n];
-    
-    listBuffer[0].setHeader(1);
+    listBuffer = std::vector<Buffer*> (n);
 
+    for (int i = 0; i < n; i++)
+        listBuffer[i] = new Buffer(sizeBuff);
+
+    listBuffer[0]->header=1;
+    
     for (int i = 0; i < n; i++) {
-        listBuffer[i].setOpCode(code);
-        listBuffer[i].setSizeLeft(size - i * DATA_MAX_SIZE);
+        listBuffer[i]->setOpCode(code);
+        listBuffer.at(i)->setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
     }
 }
-
 
 /**
  * @brief Destructor
  */
 Message::~Message()
 {
-    delete [] listBuffer;
+    for (std::vector<Buffer*>::iterator it = listBuffer.begin();
+         it != listBuffer.end(); ++it)
+        delete (*it);
 }
 
 /**
- * @brief Calculates the number of buffers necessary to create Message
- * @return number of buffers
+ * @brief Calculates the number of buffers necessary to create a message
+ * @return number of buffers needed
  */
 int Message::NbBuffers()
 {
-    if ((sizeData % DATA_MAX_SIZE) == 0)
-        return sizeData/DATA_MAX_SIZE;
+    if ((sizeData % (sizeBuffer - DATA_INDEX - SIZE_CRC)) == 0)
+        return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC);
     else
-        return sizeData/DATA_MAX_SIZE + 1;
+        return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC) + 1;
 }
+
+
+
 
 /**
  * @brief Fills the buffers with the data
@@ -61,18 +69,35 @@ void Message::encode(uint8_t *dataToEncode, uint16_t sizeData)
 {
     int j = 0; int k= 0; int n = NbBuffers();
     for (int i = 0; i < n; i ++) {
-        while (j < DATA_MAX_SIZE) {
+        while (j < (sizeBuffer - DATA_INDEX - SIZE_CRC)) {
             if (k < sizeData)
-                listBuffer[i].setData(j, dataToEncode[k]);
+                listBuffer.at(i)->setData(j, dataToEncode[k]);
             else
-                listBuffer[i].setData(j,0);
+                listBuffer.at(i)->setData(j,0);
             j++; k++;
         }
 	j = 0;
 
 
-        uint16_t crcComputed = computeCRC(listBuffer[i].getData(),
-                                          sizeof(uint8_t)*DATA_MAX_SIZE);
-        listBuffer[i].setCrc(crcComputed);
+        uint16_t crcComputed = computeCRC(listBuffer.at(i)->getData(),
+                                          sizeof(uint8_t)*(sizeBuffer - DATA_INDEX - SIZE_CRC));
+        listBuffer.at(i)->setCrc(crcComputed);
     }
 }
+
+/**
+ * @todo else throw exception
+ * @brief Finds a buffer based on its opCode and sizeLeft
+ * @param opCode 
+ * @param sizeLeft
+ * @return buffer
+ */
+
+Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
+    for (int i = 0; i < NbBuffers(); i++) {
+	if (listBuffer.at(i)->getOpCode() == opCode && listBuffer.at(i)->getSizeLeft() == sizeLeft)
+	    return listBuffer.at(i);
+    }
+    return NULL;
+}
+
