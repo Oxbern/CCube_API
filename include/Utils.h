@@ -1,6 +1,17 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <cstdint>
+#include <cstdlib>
+
+#define DATA_MAX_SIZE 58
+#define SIZE_BUFFER 64
+#define HEADER_INDEX 0
+#define OPCODE_INDEX 1
+#define SIZE_INDEX 2
+#define DATA_INDEX 4
+#define CRC_INDEX 62
+
 enum OPCODE {
     ACK_OK = 0x01,
     ACK_ERR = 0x02,
@@ -17,16 +28,6 @@ enum OPCODE {
     TOUCH_DETECTION = 0xC0
 };
 
-#define DATA_MAX_SIZE 58
-#define SIZE_BUFFER 64
-#define HEADER_INDEX 0
-#define OPCODE_INDEX 1
-#define SIZE_INDEX 2
-#define DATA_INDEX 4
-#define CRC_INDEX 62
-
-#define CUBE_X 10
-#define CUBE_Y 10
-#define CUBE_Z 10
+void convert16to8(uint16_t val, uint8_t tab[2]);
 
 #endif
