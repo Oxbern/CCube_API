@@ -7,17 +7,13 @@
  * @class ACK
  */
 
-class Ack {
-private :
-    uint8_t ackType;
-    uint8_t opCode;
-    uint16_t sizeLeft;
-    uint16_t crc;
-    
+class AckMessage : public Message {
 public :
-    Ack();
-    Ack(uint8_t ackType, uint8_t opCode, uint16_t sizeLeft, uint16_t crc);
-    ~Ack();
+    AckMessage();
+    AckMessage(uint8_t ackType);
+    ~AckMessage();
+
+    void encode(uint16_t sizeLeftPack, uint8_t opCodePack);
 
     void handleAck(int fd, Message &msg);
     bool checkAck(uint16_t crc);
