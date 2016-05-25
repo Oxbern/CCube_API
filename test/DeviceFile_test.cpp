@@ -5,10 +5,12 @@
 
 int main(int argc, char *argv[]) {
     int size = 9;
-    Device dev("/dev/stdin", "NoId", size, size, size);
-    dev.connect();
+    Device dev("/dev/stdout", "NoId", size, size, size);
 
-    dev.write("Write in a file in C++");
+    if (dev.connect())
+        dev.write("Write in a file in C++");
+    else
+        std:: cerr << "Wrong file" << std::endl;
 
     dev.disconnect();
 
