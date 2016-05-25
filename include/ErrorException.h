@@ -8,23 +8,11 @@
 class ErrorException : public std::exception
 {
 public:
-    ErrorException( const char * Msg )
-    {
-        std::ostringstream oss;
-        oss << "[ERROR] File  " << __FILE__ << " | Function : " << __FUNCTION__ << " : " << Msg << std::endl;
-        this->msg = oss.str();
-    }
+    ErrorException( const char * Msg );
+    virtual ~ErrorException() throw();
 
-    virtual ~ErrorException() throw()
-    {
 
-    }
-
-    virtual const char * what() const throw()
-    {
-        return this->msg.c_str();
-    }
-
+    virtual const char * what() const throw();
 private:
     std::string msg;
 };
