@@ -2,6 +2,7 @@
 #define BUFFER_H
 
 #include <cstdint>
+#include <iostream>
 
 /**
  * @class Buffer
@@ -9,15 +10,17 @@
 
 class Buffer {
  private :
-    uint8_t header;
+    int sizeBuffer;
     uint8_t opCode;
     uint16_t sizeLeft;
     uint8_t *data;
     uint16_t crc;
 
  public :
+    uint8_t header;
     Buffer();
-    Buffer(uint8_t header, uint8_t opCode, uint16_t size, uint16_t crcCheck);
+    Buffer(int sizeBuff);
+    Buffer(int sizeBuff, uint8_t header, uint8_t opCode, uint16_t size, uint16_t crcCheck);
     ~Buffer();
 
     void toArray(uint8_t* buffLinear);
@@ -33,6 +36,8 @@ class Buffer {
     uint16_t getSizeLeft();
     uint8_t *getData();
     uint16_t getCrc();
+
+    bool operator==(Buffer b);
 };
 
 #endif

@@ -1,26 +1,33 @@
 #include "Utils.h"
 #include "Buffer.h"
-
+#include <iostream>
 /**
- * @brief Creates a buffer
+ * @brief Creates a buffer with no data place
  */
-Buffer::Buffer() : header(0), opCode(0), sizeLeft(0), crc(0)
+Buffer::Buffer() : sizeBuffer(0), opCode(0), sizeLeft(0), crc(0), header(0)
 {
-    data = new uint8_t[DATA_MAX_SIZE];
+    data = new uint8_t[0];
 }
 
 /**
- * @todo is this buffer useful ?
+ * @brief Creates a right sized buffer
+ */
+Buffer::Buffer(int sizeBuff) : sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0), header(0)
+{
+    data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC];
+}
+
+/**
  * @brief Creates a buffer
  * @param header : indicates if it is the first buffer of the message or not
  * @param opCode 
  * @param sizeLeft
  * @param crcCheck
  */
-Buffer::Buffer(uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) :
-    header(head), opCode(code), sizeLeft(size), crc(crcCheck)
+Buffer::Buffer(int sizeBuff, uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) :
+    sizeBuffer(sizeBuff), opCode(code), sizeLeft(size), crc(crcCheck), header(head)
 {
-    data = new uint8_t[DATA_MAX_SIZE];
+    data = new uint8_t[sizeBuff - DATA_INDEX - SIZE_CRC];
 }
 
 /**
@@ -28,7 +35,9 @@ Buffer::Buffer(uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) :
  */
 Buffer::~Buffer()
 {
-    delete [] data;
+    if (data != NULL)
+        delete [] data;
+    data = NULL;
 }
 
 /**
@@ -113,4 +122,18 @@ uint8_t * Buffer::getData() {
  */
 uint16_t Buffer::getCrc() {
     return this->crc;
+}
+
+bool Buffer::operator==(Buffer b){
+    bool ret = (this->header == b.header &&
+                this->opCode == b.opCode &&
+                this->sizeLeft == b.sizeLeft &&
+                this->crc == b.crc &&
+                this->sizeBuffer == b.sizeBuffer);
+    if (ret) {
+        for (int i = 0; i < (this->sizeBuffer - DATA_INDEX - SIZE_CRC); i ++) {            
+            ret = (this->data[i] == b.getData()[i]);            
+        }
+    }
+    return ret;
 }
