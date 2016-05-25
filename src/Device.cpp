@@ -4,6 +4,7 @@
 #include "Device.h"
 #include "ErrorException.h"
 #include "Utils.h"
+#include "VirtualCube.h"
 
 Device::Device(std::string port, std::string id, int sizeX, int sizeY, int sizeZ)
 {
@@ -109,8 +110,16 @@ bool Device::send(Message mess)
     }
     for (int i = 0; i < mess.NbBuffers(); i++) {
         std::string buff= mess.getBuffer(i)->toString();
-        while(!write(buff)){
-            continue;
+        if (this->port.compare("/dev/stdout") == 0) {
+            //VirtualCube
+            uint8_t * bufferArray = new uint8_t[mess.getBuffer(i)->getSizeBuffer()];
+            mess.getBuffer(i)->toArray(bufferArray);
+            CDC_Receive_FS(bufferArray);
+            delete [] bufferArray;
+        } else {
+            while (!write(buff)) {
+                continue;
+            }
         }
     }
 
