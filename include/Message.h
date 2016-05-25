@@ -24,7 +24,7 @@ class Message {
 
 
     void encode(uint8_t *dataToEncode);
-
+    Buffer* getBuffer(int index);
     Buffer* getBuffer(uint8_t opCode, uint16_t sizeLeft);
 };
 

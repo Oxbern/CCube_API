@@ -84,6 +84,11 @@ void Message::encode(uint8_t *dataToEncode)
     }
 }
 
+Buffer* Message::getBuffer(int index)
+{
+    return this->listBuffer.at(index); //Can throw out_of_range exception
+}
+
 /**
  * @todo else throw exception
  * @brief Finds a buffer based on its opCode and sizeLeft
