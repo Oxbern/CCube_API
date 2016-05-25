@@ -2,7 +2,10 @@
 #include <cstring>
 
 #include "VirtualCube.h"
-#include "Crc.h"
+
+extern "C" {
+#include "crc.h"
+}
 
 #define APP_RX_DATA_SIZE  512
 #define BEGINNING_DATA 0x01
