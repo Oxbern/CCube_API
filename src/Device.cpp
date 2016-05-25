@@ -2,6 +2,9 @@
 
 #include "Device.h"
 #include "ErrorException.h"
+#include "Debug.h"
+
+
 
 Device::Device(char* port, int portLength, char* id, int idLength, int sizeX, int sizeY, int sizeZ)
 {

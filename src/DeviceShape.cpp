@@ -1,6 +1,5 @@
 #include "DeviceShape.h"
-
-#define DEBUG 0
+#include "Debug.h"
 
 void DeviceShape::clearLed()
 {
@@ -12,9 +11,7 @@ void DeviceShape::clearLed()
 
 DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ)
 {
-#if DEBUG
-    std::cout << "DeviceShape constructor called" << std::endl;
-#endif
+    log(1, "DeviceShape constructor called");
     //Allocation
     ledStatus = new bool**[sizeX];
     for (int x = 0; x < sizeX; ++x) {
@@ -29,9 +26,7 @@ DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(
 
 DeviceShape::~DeviceShape()
 {
-#if DEBUG
-    std::cout << "DeviceShape destructor called" << std::endl;
-#endif
+    log(1, "DeviceShape destructor called");
     //Deallocation
     for(int x = 0; x < sizeX; ++x) {
         for(int y = 0; y < sizeY; ++y) {
