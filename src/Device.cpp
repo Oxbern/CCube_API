@@ -7,7 +7,7 @@
 
 Device::Device(std::string port, std::string id, int sizeX, int sizeY, int sizeZ)
 {
-    log(1, "DeviceShape constructor called");
+    LOG(1, "DeviceShape constructor called");
     //Copy device's port
     if (port.length() > 0) {
         this->port = std::string(port);
@@ -40,7 +40,7 @@ Device::Device(std::string port, std::string id, int sizeX, int sizeY, int sizeZ
 
 Device::~Device()
 {
-    log(1, "DeviceShape destructor called");
+    LOG(1, "DeviceShape destructor called");
 }
 
 bool Device::available()
@@ -55,22 +55,22 @@ bool Device::available()
 }
 
 bool Device::connect(){
-    log(1, "Trying to connect the device");
+    LOG(1, "Trying to connect the device");
     if (!file.is_open()) {
         file.open(port, std::ios::in | std::ios::out);
     }
 
-    log(1, "Device connected");
+    LOG(1, "Device connected");
     return (file.is_open());
 }
 
 bool Device::disconnect()
 {
-    log(1, "Trying to disconnect the device");
+    LOG(1, "Trying to disconnect the device");
     if (file.is_open()) {
         file.close();
     }
-    log(1, "Device disconnected");
+    LOG(1, "Device disconnected");
     return (!file.is_open());
 }
 
@@ -101,13 +101,13 @@ bool Device::askForDisplaySize()
 
 bool Device::send(Message mess)
 {
-    log(1, "Sending message");
+    LOG(1, "Sending message");
     /*if (!file.is_open()) {
         while (!connect()){
             continue;
         }
     }*/
-    log(1, "Message sended");
+    LOG(1, "Message sended");
     return true;
 }
 

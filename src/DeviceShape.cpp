@@ -10,7 +10,7 @@ void DeviceShape::clearLed()
 
 DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ)
 {
-    log(1, "DeviceShape constructor called");
+    LOG(1, "DeviceShape constructor called");
     //Allocation
     ledStatus = new bool**[sizeX];
     for (int x = 0; x < sizeX; ++x) {
@@ -24,7 +24,7 @@ DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(
 }
 
 DeviceShape::~DeviceShape() {
-    log(1, "DeviceShape destructor called");
+    LOG(1, "DeviceShape destructor called");
     //Deallocation
     if (ledStatus != NULL) {
         for (int x = 0; x < sizeX; ++x) {
