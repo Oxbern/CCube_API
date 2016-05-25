@@ -1,22 +1,27 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
+#include <iostream>
+#include <fstream>
+
 #include "DeviceShape.h"
 #include "Message.h"
+#include "Debug.h"
 
 class Device {
 private :
-    char* id;
-    int fd;
-    char *port;
+    std::string id;
+    std::fstream file;
+    std::string port;
+    std::string firmwareVersion;
     float luminosity;
     int sizeX;
     int sizeY;
     int sizeZ;
-    char* firmwareVersion;
+    bool isAvailable;
     DeviceShape *currentConfig;
 public :
-    Device(char* port, int portLength, char* id, int idLength, int sizeX, int sizeY, int sizeZ);
+    Device(std::string port, std::string id, int sizeX, int sizeY, int sizeZ);
     ~Device();
 
     bool available();
@@ -25,11 +30,13 @@ public :
     bool display();
     bool updateFirmware(); //TODO Set binary file as arg
     float getLuminosity();
-    char* getFirmwareVersion();
+    std::string getFirmwareVersion();
     bool askForDisplaySize();
-    bool send(Message m);
+    bool send(Message mess);
+    void write(std::string data);
 
     //TODO Rajouter les setters et getters
-    char* getId();
+    std::string getId();
+
 };
 #endif //CUBEAPI_DEVICE_H

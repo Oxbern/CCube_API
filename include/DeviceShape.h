@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <iostream>
 
+#include "Debug.h"
+
 //TODO : DOC
 class DeviceShape {
 private :

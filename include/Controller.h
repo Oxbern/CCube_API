@@ -9,6 +9,20 @@
 #include "Listener.h"
 //class Listener; //Needed to avoid recursive includes
 
+#include <stdbool.h>
+#include <unistd.h>
+#include <cstring>
+#include <string>
+#include <iostream>
+#include <algorithm>
+
+struct Dictionnary{
+    int bus;
+    int Device;
+} typedef Dictionnary;
+
+
+
 class Controller {
 private:
     std::list<Listener> listeners;
@@ -27,4 +41,8 @@ public:
 
 };
 
+char ** getTtyList(int *size);
+char * getNextWord(char *path, int *j);
+Dictionnary *getDictSTM( int *nbSTM);
+bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic);
 #endif //CONTROLLER_H

@@ -1,5 +1,4 @@
 #include "DeviceShape.h"
-#include "Debug.h"
 
 void DeviceShape::clearLed()
 {
@@ -11,7 +10,7 @@ void DeviceShape::clearLed()
 
 DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ)
 {
-    log(1, "DeviceShape constructor called");
+    LOG(1, "DeviceShape constructor called");
     //Allocation
     ledStatus = new bool**[sizeX];
     for (int x = 0; x < sizeX; ++x) {
@@ -24,17 +23,18 @@ DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(
     clearLed();
 }
 
-DeviceShape::~DeviceShape()
-{
-    log(1, "DeviceShape destructor called");
+DeviceShape::~DeviceShape() {
+    LOG(1, "DeviceShape destructor called");
     //Deallocation
-    for(int x = 0; x < sizeX; ++x) {
-        for(int y = 0; y < sizeY; ++y) {
-            delete[] ledStatus[x][y];
+    if (ledStatus != NULL) {
+        for (int x = 0; x < sizeX; ++x) {
+            for (int y = 0; y < sizeY; ++y) {
+                delete[] ledStatus[x][y];
+            }
+            delete[] ledStatus[x];
         }
-        delete[] ledStatus[x];
-    }
     delete[] ledStatus;
+    }
     ledStatus = NULL;
 }
 

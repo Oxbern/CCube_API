@@ -11,7 +11,7 @@
 /**
  * DEBUG print to display one message
  */
-#define log(level, x) do { \
+#define LOG(level, x) do { \
 if (LOG_LEVEL && (LOG_LEVEL >= level)) { std::cerr << x << std::endl; } } while (0)
 
 #endif //DEBUG_H

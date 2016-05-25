@@ -8,6 +8,17 @@ project (cubeAPITest)
 find_package(Threads REQUIRED)
 find_package(Curses REQUIRED)
 
+FIND_PATH(LIBUSB_INCLUDE_DIR libusb.h
+    HINTS $ENV{LIBUSB_ROOT}
+    PATHS ${PC_LIBUSB_INCLUDEDIR} ${PC_LIBUSB_INCLUDE_DIRS}
+    PATH_SUFFIXES include)
+
+FIND_LIBRARY(LIBUSB_LIBRARIES NAMES usb-1.0
+    HINTS $ENV{LIBUSB_ROOT}
+    PATHS ${PC_LIBUSB_LIBDIR} ${PC_LIBUSB_LIBRARY_DIRS}
+    PATH_SUFFIXES lib)
+
+
 LINK_DIRECTORIES(../src)
 
 # Headers files and sources files 
@@ -28,7 +39,7 @@ foreach( testsourcefile ${TESTS_C})
     string( REPLACE ".c" "" testname ${testsourcefile})
     get_filename_component(FILE_NAME ${testsourcefile} NAME_WE)
     add_executable(${FILE_NAME} ${testsourcefile} ${HEADERS})
-    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES})
+    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES} )
 endforeach( testsourcefile ${TESTS_C} )
 
 foreach( testsourcefile ${TESTS_CXX})
@@ -36,7 +47,7 @@ foreach( testsourcefile ${TESTS_CXX})
     string( REPLACE ".cpp" "" testname ${testsourcefile})
     get_filename_component(FILE_NAME ${testsourcefile} NAME_WE)
     add_executable(${FILE_NAME} ${testsourcefile} ${HEADERS})
-    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES})
+    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES} usb)
 endforeach( testsourcefile ${TESTS_CXX} )
 
 # Target to execute all test files
