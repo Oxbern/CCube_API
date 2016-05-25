@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <cstdlib>
 
-#define DATA_MAX_SIZE 58//TODO : enlever avant de commiter
 #define SIZE_ACK 9
 #define SIZE_BUFFER 64
 
