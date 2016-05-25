@@ -1,6 +1,7 @@
 #include "Utils.h"
 #include "Buffer.h"
-#include <iostream>
+#include <sstream>
+
 /**
  * @brief Creates a buffer with no data place
  */
@@ -38,6 +39,10 @@ Buffer::~Buffer()
     if (data != NULL)
         delete [] data;
     data = NULL;
+}
+
+int sizeData(int sizeBuffer) {
+    return (sizeBuffer - DATA_INDEX - SIZE_CRC);
 }
 
 /**
@@ -136,4 +141,28 @@ bool Buffer::operator==(Buffer b){
         }
     }
     return ret;
+}
+
+std::string Buffer::toString()
+{
+    std::ostringstream convert;
+    uint8_t tab[2];
+    convert << (int) header;
+    convert << (int) opCode;
+
+    //split sizeLeft into two uint8_t
+    convert16to8(sizeLeft, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+
+    //Convert data
+    for (int i = 0; i < sizeData(sizeBuffer); i++)
+        convert << (int)data[i];
+
+    //split crc into two uint8_t
+    convert16to8(crc, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+
+    return convert.str();
 }

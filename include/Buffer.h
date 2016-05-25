@@ -24,6 +24,7 @@ class Buffer {
     ~Buffer();
 
     void toArray(uint8_t* buffLinear);
+    std::string toString();
 
     void setHeader(uint8_t head);
     void setOpCode(uint8_t code);
