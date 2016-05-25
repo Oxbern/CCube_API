@@ -102,21 +102,35 @@ bool Device::askForDisplaySize()
 bool Device::send(Message mess)
 {
     LOG(1, "Sending message");
-    /*if (!file.is_open()) {
-        while (!connect()){
+    if (!file.is_open()) {
+        while (!connect()) {
             continue;
         }
-    }*/
+    }
+    for (int i = 0; i < mess.NbBuffers(); i++) {
+        std::string buff= mess.getBuffer(i)->toString();
+        while(!write(buff)){
+            continue;
+        }
+    }
+
     LOG(1, "Message sended");
     return true;
 }
 
-std::string Device::getId()
+std::string Device::getId() const
 {
     return this->id;
 }
 
-void Device::write(std::string data)
+bool Device::write(std::string data)
 {
-    this->file << data << std::endl;
+    if(this->file.is_open()) {
+        this->file << data << std::endl;
+        LOG(1, "Data written to file");
+        return true;
+    }else {
+        LOG(1, "Unable to write data to file");
+        return false;
+    }
 }

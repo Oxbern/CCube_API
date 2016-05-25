@@ -33,10 +33,10 @@ public :
     std::string getFirmwareVersion();
     bool askForDisplaySize();
     bool send(Message mess);
-    void write(std::string data);
+    bool write(std::string data);
 
     //TODO Rajouter les setters et getters
-    std::string getId();
+    std::string getId() const;
 
 };
 #endif //CUBEAPI_DEVICE_H
