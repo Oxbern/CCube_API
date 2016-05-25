@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 
+#define DATA_MAX_SIZE 58//TODO : enlever avant de commiter
 #define SIZE_ACK 9
 #define SIZE_BUFFER 64
 
@@ -23,6 +24,7 @@ enum OPCODE {
     ACK_NOK = 0x03,
     BUFF_SENDING = 0x10,
     LIGHT_SENDING = 0x11,
+    AVAILABLE = 0x12,
     BUFF_RECEPTION =  0XA0,
     LIGHT_RECEPTION = 0XA1,
     SIZE_RECEPTION = 0XB0,
