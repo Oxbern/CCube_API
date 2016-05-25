@@ -129,6 +129,11 @@ uint16_t Buffer::getCrc() {
     return this->crc;
 }
 
+int Buffer::getSizeBuffer()
+{
+    return this->sizeBuffer;
+}
+
 bool Buffer::operator==(Buffer b){
     bool ret = (this->header == b.header &&
                 this->opCode == b.opCode &&

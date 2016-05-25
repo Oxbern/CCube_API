@@ -37,6 +37,7 @@ class Buffer {
     uint16_t getSizeLeft();
     uint8_t *getData();
     uint16_t getCrc();
+    int getSizeBuffer();
 
     bool operator==(Buffer b);
 };
