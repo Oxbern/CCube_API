@@ -27,17 +27,23 @@ AckMessage::~AckMessage()
 {
 }
 
+/**
+ *@brief Fills the buffers with data
+ *@param data
+ */
+void AckMessage::encode(uint8_t *dataToEncode)
+{}
 
 /**
  * @brief Fills the buffers with the data : id of pack
  * @param sizeLeft
  * @param opCode
  */
-void AckMessage::encode(uint16_t sizeLeftPack, uint8_t opCodePack)
+void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
 {
     uint8_t *tab = new uint8_t[3];
     packID(sizeLeftPack, opCodePack, tab);
-    Message::encode(tab, sizeData);
+    this->encode(tab);
 
     delete [] tab;
 }

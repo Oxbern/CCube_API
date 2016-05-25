@@ -12,8 +12,9 @@ public :
     AckMessage();
     AckMessage(uint8_t ackType);
     ~AckMessage();
-
-    void encode(uint16_t sizeLeftPack, uint8_t opCodePack);
+    
+    void encode(uint8_t *dataToEncode);
+    void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack);
 
     void handleAck(int fd, Message &msg);
     bool checkAck(uint16_t crc);

@@ -63,9 +63,8 @@ int Message::NbBuffers()
 /**
  * @brief Fills the buffers with the data
  * @param data to encode
- * @param sizeData data's size
  */
-void Message::encode(uint8_t *dataToEncode, uint16_t sizeData)
+void Message::encode(uint8_t *dataToEncode)
 {
     int j = 0; int k= 0; int n = NbBuffers();
     for (int i = 0; i < n; i ++) {

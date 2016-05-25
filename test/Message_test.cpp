@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     uint8_t *data = new uint8_t[92];
     for (int i = 0 ; i < 92; i++)
         data[i] = i;
-    dataMess.encode(data, 92);
+    dataMess.encode(data);
 
     delete [] data;
 

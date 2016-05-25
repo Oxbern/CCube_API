@@ -29,9 +29,8 @@ DataMessage::~DataMessage()
 /**
  * @brief Fills the buffers with the data
  * @param data to encode
- * @param sizeData data's size
  */
-void DataMessage::encode(uint8_t *dataToEncode, uint16_t sizeData)
+void DataMessage::encode(uint8_t *dataToEncode)
 {}
 
 

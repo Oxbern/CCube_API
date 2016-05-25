@@ -14,7 +14,7 @@ class DataMessage : public Message {
     DataMessage(uint16_t size, uint8_t code);
     ~DataMessage();
 
-    void encode(uint8_t *dataToEncode, uint16_t sizeData);                
+    void encode(uint8_t *dataToEncode);
 };
 
 #endif
