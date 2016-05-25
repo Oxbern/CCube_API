@@ -34,5 +34,5 @@ enum OPCODE {
 };
 
 void convert16to8(uint16_t val, uint8_t tab[2]);
-
+void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]);
 #endif

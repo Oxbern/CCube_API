@@ -11,3 +11,18 @@ void convert16to8(uint16_t val, uint8_t tab[2]) {
         tab[1] = 0xFF & val;
     }
 }
+
+/**
+ * @brief Creates an array with the pack ID
+ * @param sizeLeftPack
+ * @param opCodePack
+ * @param tab array 
+ */
+void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]) {
+    if (tab != NULL) {
+        tab[0] = sizeLeftPack >> 8;
+        tab[1] = 0xFF & sizeLeftPack;
+        tab[2] = opCodePack;
+    }
+
+}
