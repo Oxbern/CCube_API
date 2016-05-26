@@ -36,7 +36,8 @@ public :
     bool write(std::string data);
 
     //TODO Rajouter les setters et getters
-    std::string getId() const;
+    std::string getId();
+    std::fstream & getFile();
 
 };
 #endif //CUBEAPI_DEVICE_H
