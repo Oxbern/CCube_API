@@ -38,19 +38,6 @@ Message::Message(uint16_t size, uint8_t code) {
     }    
 }
 
-Message::Message(Buffer buff) {
-    this->size = DATA_MAX_SIZE;
-    this->opCode = buff.opCode;
-    listBuffer = new Buffer[1];
-    listBuffer[0].setHeader(1); // first one
-    for (int i = 0; i< NbBuffers(); i++) {
-        listBuffer[i].setOpCode(buff.opCode);
-        listBuffer[i].setSizeLeft(size - i*DATA_MAX_SIZE);
-    }
-    encode(buff.data, buff.sizeLeft);
-}
-
-
 /**
  * @brief Destructor
  */
