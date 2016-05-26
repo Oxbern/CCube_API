@@ -68,7 +68,7 @@ char ** getTtyList(int *size){
     /* close */
     pclose(fp);
 
-    char ** ttyList = (char **) malloc(i*sizeof(char *));
+    char ** ttyList= new char*[i];
     /* Open the command for reading. */
     fp = popen("ls /dev/tty*  ", "r"); 
     if (fp == NULL) {
@@ -77,12 +77,12 @@ char ** getTtyList(int *size){
     }
     
     for (int j = 0; j < *size; j++) {
-        ttyList[j] = (char * ) malloc(20*sizeof(char));
+        ttyList[j] = new char[20];
         char * chaine = fgets(path, 19, fp);
         strcpy(ttyList[j],chaine);
     }        
     pclose(fp);
-    
+        
     return ttyList;
 }
 
@@ -121,7 +121,7 @@ Dictionnary *getDictSTM( int *nbSTM){
     /* close */
     pclose(fp);
 
-    Dictionnary *dic = (Dictionnary *) malloc(*nbSTM * sizeof(struct Dictionnary));
+    Dictionnary *dic = new Dictionnary[*nbSTM];
      //Open the command for reading.
     fp = popen("lsusb | grep STM ", "r"); 
     if (fp == NULL) {
@@ -131,7 +131,6 @@ Dictionnary *getDictSTM( int *nbSTM){
     int j = 0, k = 0;
     //Read the output a line at a time - output it.
     while (fgets(path, sizeof(path)-1, fp) != NULL) {
-        printf("STM : %s",path);
         while(path[j] != '\0'){
             if (path[j] == 'B'){
                 j++;
@@ -142,6 +141,7 @@ Dictionnary *getDictSTM( int *nbSTM){
                         j++;
                         char * bus =  getNextWord(path,&j);
                         dic[k].bus = atoi(bus);
+                        delete [] bus;
                     }
                 }
             }
@@ -160,6 +160,7 @@ Dictionnary *getDictSTM( int *nbSTM){
                                     j++;
                                     char * device =  getNextWord(path,&j);
                                     dic[k].Device = atoi(device);
+                                    delete [] device;
                                 }
                             }
                         }
@@ -177,34 +178,37 @@ Dictionnary *getDictSTM( int *nbSTM){
 }
 
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
-    const char * busSDev = echo.c_str();
+    char busSDev[echo.length()+1] = {};
+    strcpy(busSDev,echo.c_str());
     int bus = 0;
-    char wordB[10];
+    char wordB[10] = {};
     int w = 0;
     while(busSDev[w] != '/'){
         wordB[w]=busSDev[w];
         w++;
     }
     wordB[w]='\0';
-    char * wordBreturn = (char *)malloc(10*sizeof(char));
+    char wordBreturn[w+1] = {};
     strcpy(wordBreturn,wordB);
     bus = atoi(wordBreturn);
     int Device = 0;
-    char wordD[10];
-    w+=1;
+    char wordD[10] = {};
+    w++;
     int k = 0;
-    while(busSDev[w] != '/'){
+    while(busSDev[w] != '\0'){
         wordD[k]=busSDev[w];
         w++;
         k++;
     }
     wordD[w]='\0';
-    char * wordDreturn = (char *)malloc(10*sizeof(char));
+    char wordDreturn[k+1] = {};
+                            
     strcpy(wordDreturn,wordD);
     Device = atoi(wordDreturn);
     for (int i = 0; i<sizeOfDic; i++){
-        if (bus == dic[i].bus && Device == dic[i].Device )
+        if (bus == dic[i].bus && Device == dic[i].Device ){
             return true;
+        }
     }
     return false;
 }
@@ -214,12 +218,14 @@ void Controller::listUSBConnectedDevices(){
     char ** ttyList = getTtyList(&size);
 
     int nbSTM = 0;
-    Dictionnary *dic = getDictSTM(&nbSTM);
+    Dictionnary *dic =  getDictSTM(&nbSTM);
     
     printf("--- List of USB Connected Devices : ---\n");
-    
+    int DeviceID = 1;
+
     for (int i = 0; i < size; i++){
         std::string name = ttyList[i];
+
         name.erase(std::remove(name.begin(), name.end(), '\n'), name.end());
         std::string cmd = "echo /dev/bus/usb/`udevadm info --name="  + name +   " --attribute-walk | sed -n 's/\\s*ATTRS{\\(\\(devnum\\)\\|\\(busnum\\)\\)}==\\\"\\([^\\\"]\\+\\)\\\"/\\4/p' | head -n 2 | awk '{$1 = sprintf(\"%03d\", $1); print}'` | tr \" \" \"\\/\"";
         //Open the command for reading.
@@ -230,7 +236,6 @@ void Controller::listUSBConnectedDevices(){
             exit(1);
         }
         char path[50];
-        int DeviceID = 1;
         //Read the output a line at a time - output it.
         while (fgets(path, sizeof(path)-1, fp) != NULL) {
             if (strcmp(path,"/dev/bus/usb/\n")){
@@ -238,11 +243,12 @@ void Controller::listUSBConnectedDevices(){
                 std::string s = "/dev/bus/usb/";
                 
                 std::string::size_type i = t.find(s);
-                
+
                 if (i != std::string::npos)
                     t.erase(i, s.length());
+                
                 if (isInDico(t,dic,nbSTM)){
-                    printf("%s\n",name.c_str());
+                    printf("Found Device : %s\n",name.c_str());
                     // We have a device here with his port name (string)
                     Device *d = new Device(name,DeviceID);
                     devices.push_back(d);
@@ -250,6 +256,10 @@ void Controller::listUSBConnectedDevices(){
                 }
             }
         }
-        
+               
     }
+    for (int i = 0; i < size; i++)
+            delete [] (ttyList[i]);
+    delete [] (ttyList);
+    delete [] dic;
 }
