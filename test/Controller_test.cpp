@@ -26,7 +26,6 @@ int main(int argc, char* argv[]) {
     Device *chosen;
     std::list<Device*> listDevice = c.getListDevices();
     for(iter = listDevice.begin() ; (iter != listDevice.end()) ;iter++){
-        std::cout << "Hello\n";
         if (choice == (*iter)->getId())
             chosen = *iter;
     }
@@ -34,7 +33,14 @@ int main(int argc, char* argv[]) {
     std::cout << "You choose Device " << (int) chosen->getId() << std::endl;
     if (c.connectDevice(chosen))
         std::cout << "You are connected" << std::endl;
-    
+
+    DeviceShape *ds = c.getConnectedDevice()->getcurrentConfig();
+    (*ds).on(4,4,4);
+    std::cout << "DeviceShape on (4,4,4)" << std::endl;
+
+    c.getConnectedDevice()->display();
+    std::cout << "DeviceShape displayed" << std::endl;
+
     return 0;
 }
 

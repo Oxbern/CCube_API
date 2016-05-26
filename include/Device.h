@@ -40,6 +40,7 @@ public :
     //TODO Rajouter les setters et getters
     int getId() const;
     std::string getPort() const;
+    DeviceShape *getcurrentConfig() const;
     std::fstream & getFile();
 
 };
