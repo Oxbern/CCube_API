@@ -16,6 +16,24 @@ int main(int argc, char* argv[]) {
     
     Controller c;
     c.listAllDevices();
+
+    int choice = 0;
+    
+    std::cout << "Enter the device's ID you want to connect : " << std::endl;
+    std::cin >> choice;
+
+    std::list<Device*>::iterator iter ;
+    Device *chosen;
+    std::list<Device*> listDevice = c.getListDevices();
+    for(iter = listDevice.begin() ; (iter != listDevice.end()) ;iter++){
+        std::cout << "Hello\n";
+        if (choice == (*iter)->getId())
+            chosen = *iter;
+    }
+
+    std::cout << "You choose Device " << (int) chosen->getId() << std::endl;
+    if (c.connectDevice(chosen))
+        std::cout << "You are connected" << std::endl;
     
     return 0;
 }

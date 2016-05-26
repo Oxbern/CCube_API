@@ -22,6 +22,7 @@ private :
     DeviceShape *currentConfig;
 public :
     // Port is found by Controller's constructor and id is defined there.
+    Device();
     Device(std::string port, int id);
     ~Device();
 
@@ -38,7 +39,7 @@ public :
 
     //TODO Rajouter les setters et getters
     int getId() const;
-
+    std::string getPort() const;
     std::fstream & getFile();
 
 };

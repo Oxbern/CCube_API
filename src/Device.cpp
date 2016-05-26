@@ -6,6 +6,10 @@
 #include "Utils.h"
 #include "VirtualCube.h"
 
+Device::Device(){
+    
+}
+
 Device::Device(std::string port, int id)
 {
     LOG(1, "DeviceShape constructor called");
@@ -136,6 +140,11 @@ bool Device::send(Message mess)
 int Device::getId() const
 {
     return this->id;
+}
+
+std::string Device::getPort() const
+{
+    return this->port;
 }
 
 bool Device::write(std::string data)
