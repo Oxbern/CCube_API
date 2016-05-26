@@ -6,7 +6,7 @@
 #include "Utils.h"
 #include "VirtualCube.h"
 
-Device::Device(std::string port, std::string id, int sizeX, int sizeY, int sizeZ)
+Device::Device(std::string port, int id)
 {
     LOG(1, "DeviceShape constructor called");
     //Copy device's port
@@ -17,20 +17,20 @@ Device::Device(std::string port, std::string id, int sizeX, int sizeY, int sizeZ
     }
 
     //Copy device's id
-    if (id.length() > 0) {
-        this->id = std::string(id);
-    } else {
-        throw ErrorException("Wrong id");
-    }
+    //if (id.length() > 0) {
+        this->id = id;
+        //} else {
+        //throw ErrorException("Wrong id");
+        //}
 
     //Size initialization
-    if (sizeX < 0 || sizeY < 0 || sizeZ < 0) {
-        throw ErrorException("Invalid size of display");
-    } else{
-        this->sizeX = sizeX;
-        this->sizeY = sizeY;
-        this->sizeZ = sizeZ;
-    }
+    // if (sizeX < 0 || sizeY < 0 || sizeZ < 0) {
+    //     throw ErrorException("Invalid size of display");
+    // } else{
+    //     this->sizeX = sizeX;
+    //     this->sizeY = sizeY;
+    //     this->sizeZ = sizeZ;
+    // }
 
     //Luminosity initialization
     this->luminosity = -1.0;
@@ -127,7 +127,7 @@ bool Device::send(Message mess)
     return true;
 }
 
-std::string Device::getId() const
+int Device::getId() const
 {
     return this->id;
 }

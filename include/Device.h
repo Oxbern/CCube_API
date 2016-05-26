@@ -10,7 +10,7 @@
 
 class Device {
 private :
-    std::string id;
+    int id;
     std::fstream file;
     std::string port;
     std::string firmwareVersion;
@@ -21,7 +21,8 @@ private :
     bool isAvailable;
     DeviceShape *currentConfig;
 public :
-    Device(std::string port, std::string id, int sizeX, int sizeY, int sizeZ);
+    // Port is found by Controller's constructor and id is defined there.
+    Device(std::string port, int id);
     ~Device();
 
     bool available();
@@ -36,7 +37,7 @@ public :
     bool write(std::string data);
 
     //TODO Rajouter les setters et getters
-    std::string getId() const;
+    int getId() const;
 
 };
 #endif //CUBEAPI_DEVICE_H

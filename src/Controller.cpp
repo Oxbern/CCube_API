@@ -216,7 +216,7 @@ void Controller::listUSBConnectedDevices(){
     int nbSTM = 0;
     Dictionnary *dic = getDictSTM(&nbSTM);
     
-    printf("--- Liste des cubes disponibles : ---\n");
+    printf("--- List of USB Connected Devices : ---\n");
     
     for (int i = 0; i < size; i++){
         std::string name = ttyList[i];
@@ -230,7 +230,7 @@ void Controller::listUSBConnectedDevices(){
             exit(1);
         }
         char path[50];
-
+        int DeviceID = 1;
         //Read the output a line at a time - output it.
         while (fgets(path, sizeof(path)-1, fp) != NULL) {
             if (strcmp(path,"/dev/bus/usb/\n")){
@@ -244,8 +244,9 @@ void Controller::listUSBConnectedDevices(){
                 if (isInDico(t,dic,nbSTM)){
                     printf("%s\n",name.c_str());
                     // We have a device here with his port name (string)
-                    // Device d(name);
-                    // devices.push_back(d);
+                    Device d(name,DeviceID);
+                    devices.push_back(d);
+                    DeviceID++;
                 }
             }
         }
