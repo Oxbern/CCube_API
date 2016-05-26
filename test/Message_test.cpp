@@ -21,15 +21,13 @@ int main(int argc, char *argv[]) {
 
      AckMessage ack;
      AckMessage ack2(ACK_OK);
-     if (ack2.checkAck(0))
-         std::cout << "The crc matches : " << ack2.getCrc() << "\n";
 
-       Buffer buff;
+     Buffer buff;
        Buffer buff2(SIZE_BUFFER);
     if (buff2.getHeader() == 1)
         std::cout << "It is the first buffer \n";
     
-    std::cout << "PASSED";
+    std::cout << "PASSED \n";
     return 0;
 }
 
