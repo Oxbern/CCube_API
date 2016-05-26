@@ -7,9 +7,13 @@
 #include "VirtualCube.h"
 #include "Message.h"
 
+Device::Device(){
+    
+}
+
 Device::Device(std::string port, int id)
 {
-    LOG(1, "DeviceShape constructor called");
+    LOG(1, "Device constructor called");
     //Copy device's port
     if (port.length() > 0) {
         this->port = std::string(port);
@@ -19,7 +23,7 @@ Device::Device(std::string port, int id)
 
     //Copy device's id
     //if (id.length() > 0) {
-        this->id = id;
+    this->id = id;
         //} else {
         //throw ErrorException("Wrong id");
         //}
@@ -32,12 +36,16 @@ Device::Device(std::string port, int id)
     //     this->sizeY = sizeY;
     //     this->sizeZ = sizeZ;
     // }
-
+        this->sizeX = 9;
+        this->sizeY = 9;
+        this->sizeZ = 9;
     //Luminosity initialization
     this->luminosity = -1.0;
 
     //Not available by default
     this->isAvailable = false;
+
+    this->currentConfig = new DeviceShape(sizeX,sizeY,sizeZ);
 }
 
 Device::~Device()
@@ -78,7 +86,14 @@ bool Device::disconnect()
 
 bool Device::display()
 {
-    return false;
+    uint16_t size = sizeX*sizeY*sizeZ/8; // Convert to bytes
+    DataMessage dm(size,OPCODE(BUFF_SENDING));
+    dm.encode(currentConfig->toArray());
+    if (!send(dm)){
+        std::cerr << "Error while sending ledBuffer"<<std::endl;
+        return false;
+    }
+    return true;
 }
 
 bool Device::updateFirmware()
@@ -137,6 +152,16 @@ int Device::getId() const
 {
     return this->id;
 }
+
+std::string Device::getPort() const
+{
+    return this->port;
+}
+
+DeviceShape *Device::getcurrentConfig() const{
+    return this->currentConfig;
+}
+
 
 bool Device::write(std::string data)
 {

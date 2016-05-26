@@ -49,7 +49,7 @@ DeviceShape::~DeviceShape() {
 bool DeviceShape::on(int x, int y, int z)
 {
     if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
-        std::cerr << "Index of led out of bounds" << std::endl;
+        std::cerr << "Index of led out of bounds" << sizeX << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] = true);

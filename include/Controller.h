@@ -36,9 +36,11 @@ public:
     bool addListener(Listener &l);
     bool removeListener(Listener &l);
     void listAllDevices();
-    void listUSBConnectedDevices();
-    bool connectDevice(Device d);
+    void listAndGetUSBConnectedDevices();
+    bool connectDevice(Device *d);
     Device* getConnectedDevice();
+
+    std::list<Device*> getListDevices();    
     
 
 };

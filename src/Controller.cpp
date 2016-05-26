@@ -2,7 +2,7 @@
 
 Controller::Controller()
 {
-    listUSBConnectedDevices();
+    listAndGetUSBConnectedDevices();
 }
 
 Controller::~Controller()
@@ -23,25 +23,32 @@ bool Controller::removeListener(Listener &l)
 
 void Controller::listAllDevices()
 {
+    std::cout << "--- List of USB Connected Devices : ---" << std::endl;
     std::list<Device*>::iterator iter ;
     int i = 1;
     for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
-        std::cout << "Device  "  << i << ": Id = " << (*iter)->getId() <<  "\n";
+        std::cout << "Device  "  << i << ": Id = " << (*iter)->getId() << ", Port :" << (*iter)->getPort() <<  "\n";
         i++;
     }
 }
 
-bool Controller::connectDevice(Device d)
+bool Controller::connectDevice(Device *d)
 {
-    return false;
+    if ((*d).connect()){
+        this->connectedDevice = d;
+        return true;
+    }
+    return false; 
 }
 
 Device* Controller::getConnectedDevice()
 {
-    return NULL;
+    return this->connectedDevice;
 }
 
-
+std::list<Device*> Controller::getListDevices(){
+    return this->devices;
+}
 
 /*****************************************************
  *****************************************************
@@ -213,14 +220,13 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
     return false;
 }
 
-void Controller::listUSBConnectedDevices(){
+void Controller::listAndGetUSBConnectedDevices(){
     int size = 0;
     char ** ttyList = getTtyList(&size);
 
     int nbSTM = 0;
     Dictionnary *dic =  getDictSTM(&nbSTM);
     
-    printf("--- List of USB Connected Devices : ---\n");
     int DeviceID = 1;
 
     for (int i = 0; i < size; i++){
@@ -248,7 +254,7 @@ void Controller::listUSBConnectedDevices(){
                     t.erase(i, s.length());
                 
                 if (isInDico(t,dic,nbSTM)){
-                    printf("Found Device : %s\n",name.c_str());
+                    //std::cout << "Found Device : " << name.c_str() << std::endl;
                     // We have a device here with his port name (string)
                     Device *d = new Device(name,DeviceID);
                     devices.push_back(d);
