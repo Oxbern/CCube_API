@@ -5,42 +5,39 @@
 /**
  * @brief Creates a buffer with no data place
  */
-Buffer::Buffer() : header(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
+Buffer::Buffer() :
+    header(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
 {
+    std::cout << "Buffer()1\n";
     data = new uint8_t[0];
+    std::cout << "Buffer()2\n";    
 }
 
 /**
  * @brief Creates a right sized buffer
  */
-Buffer::Buffer(int sizeBuff) : header(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
+Buffer::Buffer(int sizeBuff) :
+    sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
 {
+    header = 0;
+    std::cout << "Buffer(sizebuff)1\n";    
     data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC];
+    std::cout << "Buffer(sizeBuff)2\n";    
 }
 
-/**
- * @brief Creates a buffer
- * @param header : indicates if it is the first buffer of the message or not
- * @param opCode 
- * @param sizeLeft
- * @param crcCheck
- */
-Buffer::Buffer(int sizeBuff, uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) :
-        header(head), sizeBuffer(sizeBuff), opCode(code), sizeLeft(size), crc(crcCheck)
-{
-    data = new uint8_t[sizeBuff - DATA_INDEX - SIZE_CRC];
-}
 
 /**
  * @brief Destructor
  */
 Buffer::~Buffer()
 {
-    if (data != NULL) {
-        LOG(1, "Destructor for Buffer called");
-        delete[] data;
-    }
-    data = NULL;
+    std::cout << "~Buffer()1\n";        
+    // if (data != NULL) {
+    //     LOG(1, "Destructor for Buffer called");
+    //     delete[] data;
+    // }
+    // data = NULL;
+    std::cout << "~Buffer()2\n";            
 }
 
 int dataSize(int sizeBuffer) {

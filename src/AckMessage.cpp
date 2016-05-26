@@ -97,12 +97,12 @@ uint8_t AckMessage::getOpCode() {
  * @brief Gets the SizeLeft of the last received buffer
  */
 uint16_t AckMessage::getSizeLeft() {
-    return this->listBuffer[0]->getSizeLeft();
+    return this->listBuffer[0].getSizeLeft();
 }
 
 /**
  * @brief Gets the crc
  */
 uint16_t AckMessage::getCrc() {
-    return this->listBuffer[0]->getCrc();
+    return this->listBuffer[0].getCrc();
 }

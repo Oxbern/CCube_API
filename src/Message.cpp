@@ -10,7 +10,9 @@ extern "C" {
  */
 Message::Message() : sizeBuffer(0), sizeData(0), opCode(0), crc(0)
 {
-    listBuffer = std::vector<Buffer*> (0);
+    std::cout << "Message()1\n";
+    listBuffer = new Buffer[0];
+    std::cout << "Message()2\n";
 }
 
 /**
@@ -21,18 +23,27 @@ Message::Message() : sizeBuffer(0), sizeData(0), opCode(0), crc(0)
 Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
     sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
 {
+    std::cout << "Message(sizebuff, size, code)1\n";
     int n = this->NbBuffers();
-    listBuffer = std::vector<Buffer*> (n);
-
-    for (int i = 0; i < n; i++)
-        listBuffer[i] = new Buffer(sizeBuff);
-
-    listBuffer[0]->setHeader(1);
+    std::cout << "le nombre : " << n << "\n";
+    //std::vector<Buffer*> l(n);
+    //listBuffer = l;
+    //std::cout << "Message(sizebuff, size, code)2\n";
+    //listBuffer.resize(n);
+    listBuffer = new Buffer[n];
+    
+    for (int i = 0; i < n; i++){        
+        Buffer b(sizeBuff);
+        listBuffer[i] = b;
+    }
+    listBuffer[0].setHeader(1);
+    std::cout << "Message(sizebuff, size, code)3\n";
     
     for (int i = 0; i < n; i++) {
-        listBuffer[i]->setOpCode(code);
-        listBuffer.at(i)->setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
-    }
+        listBuffer[i].setOpCode(code);
+        listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
+        }
+    std::cout << "Message(sizebuff, size, code)4\n";    
 }
 
 /**
@@ -40,10 +51,9 @@ Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
  */
 Message::~Message()
 {
-    for (std::vector<Buffer*>::iterator it = listBuffer.begin(); it != listBuffer.end(); ++it) {
-        delete *it;
-    }
-    listBuffer.clear();
+    // std::cout << "~Message()1\n";    
+    //     delete [] listBuffer;
+    // std::cout << "~Message()2\n";        
 }
 
 /**
@@ -71,38 +81,49 @@ void Message::encode(uint8_t *dataToEncode)
     for (int i = 0; i < n; i ++) {
         while (j < (sizeBuffer - DATA_INDEX - SIZE_CRC)) {
             if (k < sizeData)
-                listBuffer.at(i)->setData(j, dataToEncode[k]);
+                listBuffer[i].setData(j, dataToEncode[k]);
             else
-                listBuffer.at(i)->setData(j,0);
+                listBuffer[i].setData(j,0);
             j++; k++;
         }
-	j = 0;
+        j = 0;
 
 
-        uint16_t crcComputed = computeCRC(listBuffer.at(i)->getData(),
+        uint16_t crcComputed = computeCRC(listBuffer[i].getData(),
                                           sizeof(uint8_t)*(sizeBuffer - DATA_INDEX - SIZE_CRC));
-        listBuffer.at(i)->setCrc(crcComputed);
+        listBuffer[i].setCrc(crcComputed);
     }
-}
-
-Buffer* Message::getBuffer(int index)
-{
-    return this->listBuffer.at(index); //Can throw out_of_range exception
 }
 
 /**
- * @todo else throw exception
+ * @brief Finds a buffer based on its index
+ * @param index
+ * @return buffer desired
+ */
+Buffer* Message::getBuffer(int index)
+{
+    if (index > NbBuffers() || index < 0)
+        throw std::out_of_range("Buffer not found\n");
+    if (this->listBuffer  == NULL)
+        throw std::out_of_range("Buffer null\n");
+
+    return (this->listBuffer); //Can throw out_of_range exception
+}
+
+/**
  * @brief Finds a buffer based on its opCode and sizeLeft
  * @param opCode 
  * @param sizeLeft
- * @return buffer
+ * @return buffer desired
  */
 
-Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
+Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
     for (int i = 0; i < NbBuffers(); i++) {
-	if (listBuffer.at(i)->getOpCode() == opCode && listBuffer.at(i)->getSizeLeft() == sizeLeft)
-	    return listBuffer.at(i);
+        if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
+            return listBuffer[i];
+        else
+            throw std::out_of_range("Buffer not found\n");                
     }
-    return NULL;
+    return Buffer();
 }
 

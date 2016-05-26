@@ -5,6 +5,7 @@
 #include "ErrorException.h"
 #include "Utils.h"
 #include "VirtualCube.h"
+#include "Message.h"
 
 Device::Device(std::string port, int id)
 {
@@ -110,15 +111,14 @@ bool Device::send(Message mess)
         }
     }
     for (int i = 0; i < mess.NbBuffers(); i++) {
-        Buffer *buff = mess.getBuffer(i);
 
-        std::string buffString = buff->toString();
+        std::string buffString = mess.getBuffer(i)[i].toString();
         LOG(1, "Message toString : " + buffString);
 
-        if (this->port.compare("/dev/stdout") == 0) {
+        if (this->port.compare("/dev/stdin") == 0) {
             //VirtualCube
-            uint8_t * bufferArray = new uint8_t[buff->getSizeBuffer()];
-            buff->toArray(bufferArray);
+            uint8_t * bufferArray = new uint8_t[mess.getBuffer(i)[i].getSizeBuffer()];
+            mess.getBuffer(i)[i].toArray(bufferArray);
             //Virtual sending
             CDC_Receive_FS(bufferArray);
             delete [] bufferArray;

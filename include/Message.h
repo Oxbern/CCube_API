@@ -13,7 +13,7 @@ class Message {
     int sizeBuffer;
     uint16_t sizeData;
     uint8_t opCode;
-    std::vector<Buffer*> listBuffer;
+    Buffer* listBuffer;
     uint16_t crc;
     
  public :     
@@ -24,8 +24,8 @@ class Message {
 
 
     void encode(uint8_t *dataToEncode);
-    Buffer* getBuffer(int index);
-    Buffer* getBuffer(uint8_t opCode, uint16_t sizeLeft);
+    Buffer *getBuffer(int index);
+    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft);
 };
 
 
