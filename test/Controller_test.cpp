@@ -15,6 +15,7 @@
 int main(int argc, char* argv[]) {
     
     Controller c;
+    c.listAllDevices();
     
     return 0;
 }

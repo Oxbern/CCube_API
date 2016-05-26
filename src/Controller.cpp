@@ -23,12 +23,12 @@ bool Controller::removeListener(Listener &l)
 
 void Controller::listAllDevices()
 {
-    // std::list<Device>::iterator iter ;
-    // int i = 0;
-    // for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
-    //     std::cout << "Device  "  << i << iter->getId() <<  "\n";
-    //     i++;
-    // }
+    std::list<Device*>::iterator iter ;
+    int i = 1;
+    for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
+        std::cout << "Device  "  << i << ": Id = " << (*iter)->getId() <<  "\n";
+        i++;
+    }
 }
 
 bool Controller::connectDevice(Device d)
