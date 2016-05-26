@@ -34,7 +34,7 @@ public :
     float getLuminosity();
     std::string getFirmwareVersion();
     bool askForDisplaySize();
-    bool send(Message mess);
+    bool send(Message *mess);
     bool write(std::string data);
 
     //TODO Rajouter les setters et getters

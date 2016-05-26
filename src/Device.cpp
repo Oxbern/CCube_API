@@ -51,12 +51,14 @@ Device::Device(std::string port, int id)
 Device::~Device()
 {
     LOG(1, "DeviceShape destructor called");
+    std::cout << "~Device()\n";
+    delete this->currentConfig;
 }
 
 bool Device::available()
 {
     DataMessage m(0, OPCODE(AVAILABLE));
-    while (!this->send(m)) {
+    while (!this->send(&m)) {
         //TODO Timeout
         continue;
     }
@@ -89,7 +91,7 @@ bool Device::display()
     uint16_t size = sizeX*sizeY*sizeZ/8; // Convert to bytes
     DataMessage dm(size,OPCODE(BUFF_SENDING));
     dm.encode(currentConfig->toArray());
-    if (!send(dm)){
+    if (!send(&dm)){
         std::cerr << "Error while sending ledBuffer"<<std::endl;
         return false;
     }
@@ -116,7 +118,7 @@ bool Device::askForDisplaySize()
     return false;
 }
 
-bool Device::send(Message mess)
+bool Device::send(Message *mess)
 {
     LOG(1, "Sending message");
     if (!file.is_open()) {
@@ -125,17 +127,18 @@ bool Device::send(Message mess)
             continue;
         }
     }
-    for (int i = 0; i < mess.NbBuffers(); i++) {
+    int n = mess->NbBuffers();
+    for (int i = 0; i < n; i++) {
 
-        std::string buffString = mess.getBuffer(i)[i].toString();
+        std::string buffString = mess->getBuffer(i)[i].toString();
         LOG(1, "Message toString : " + buffString);
 
         if (this->port.compare("/dev/stdin") == 0) {
             //VirtualCube
-            uint8_t * bufferArray = new uint8_t[mess.getBuffer(i)[i].getSizeBuffer()];
-            mess.getBuffer(i)[i].toArray(bufferArray);
+            uint8_t * bufferArray = new uint8_t[mess->getBuffer(i)[i].getSizeBuffer()];
+            mess->getBuffer(i)[i].toArray(bufferArray);
             //Virtual sending
-            CDC_Receive_FS(bufferArray);
+            // CDC_Receive_FS(bufferArray);
             delete [] bufferArray;
         } else {
             while (!write(buffString)) {
