@@ -195,11 +195,7 @@ int main(int argc, char* argv[]) {
     
     int nbSTM = 0;
     Dictionnaire *dic = getDictSTM(&nbSTM);
-    // printf("\n-------------------- DICO -----------------\n");
-    // for (int i = 0; i < nbSTM; i++)
-    //     printf("%i %i\n",dic[i].bus, dic[i].Device);
-    // printf("\n-------------------- ECHO -----------------\n");
-
+    
     printf("--- Liste des cubes disponibles : ---\n");
     
     for (int i = 0; i < size; i++){
