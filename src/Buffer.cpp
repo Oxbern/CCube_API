@@ -8,21 +8,18 @@
 Buffer::Buffer() :
     header(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
 {
-    std::cout << "Buffer()1\n";
     data = new uint8_t[0];
-    std::cout << "Buffer()2\n";    
+    std::cout << "Buffer()\n";    
 }
 
 /**
  * @brief Creates a right sized buffer
  */
 Buffer::Buffer(int sizeBuff) :
-    sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
+    header(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
 {
-    header = 0;
-    std::cout << "Buffer(sizebuff)1\n";    
     data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC];
-    std::cout << "Buffer(sizeBuff)2\n";    
+    std::cout << "Buffer(sizeBuff)\n";    
 }
 
 
@@ -31,13 +28,12 @@ Buffer::Buffer(int sizeBuff) :
  */
 Buffer::~Buffer()
 {
-    std::cout << "~Buffer()1\n";        
-    // if (data != NULL) {
-    //     LOG(1, "Destructor for Buffer called");
-    //     delete[] data;
-    // }
-    // data = NULL;
-    std::cout << "~Buffer()2\n";            
+    if (data != NULL) {
+        LOG(1, "Destructor for Buffer called");
+        delete[] data;
+    }
+    data = NULL;
+    std::cout << "~Buffer()\n";            
 }
 
 int dataSize(int sizeBuffer) {

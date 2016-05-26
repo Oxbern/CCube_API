@@ -16,7 +16,6 @@ class Buffer {
     uint8_t opCode;
     uint16_t sizeLeft;
     uint8_t *data;
-
     uint16_t crc;
 public :
     Buffer();
