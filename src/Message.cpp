@@ -27,7 +27,7 @@ Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
     for (int i = 0; i < n; i++)
         listBuffer[i] = new Buffer(sizeBuff);
 
-    listBuffer[0]->header=1;
+    listBuffer[0]->setHeader(1);
     
     for (int i = 0; i < n; i++) {
         listBuffer[i]->setOpCode(code);
@@ -40,9 +40,10 @@ Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
  */
 Message::~Message()
 {
-    for (std::vector<Buffer*>::iterator it = listBuffer.begin();
-         it != listBuffer.end(); ++it)
-        delete (*it);
+    for (std::vector<Buffer*>::iterator it = listBuffer.begin(); it != listBuffer.end(); ++it) {
+        delete *it;
+    }
+    listBuffer.clear();
 }
 
 /**

@@ -105,19 +105,26 @@ bool Device::send(Message mess)
     LOG(1, "Sending message");
     if (!file.is_open()) {
         while (!connect()) {
+            //TODO Timeout
             continue;
         }
     }
     for (int i = 0; i < mess.NbBuffers(); i++) {
-        std::string buff= mess.getBuffer(i)->toString();
+        Buffer *buff = mess.getBuffer(i);
+
+        std::string buffString = buff->toString();
+        LOG(1, "Message toString : " + buffString);
+
         if (this->port.compare("/dev/stdout") == 0) {
             //VirtualCube
-            uint8_t * bufferArray = new uint8_t[mess.getBuffer(i)->getSizeBuffer()];
-            mess.getBuffer(i)->toArray(bufferArray);
+            uint8_t * bufferArray = new uint8_t[buff->getSizeBuffer()];
+            buff->toArray(bufferArray);
+            //Virtual sending
             CDC_Receive_FS(bufferArray);
             delete [] bufferArray;
         } else {
-            while (!write(buff)) {
+            while (!write(buffString)) {
+                //TODO Timeout
                 continue;
             }
         }
