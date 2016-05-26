@@ -21,7 +21,6 @@ class Buffer {
 public :
     Buffer();
     Buffer(int sizeBuff);
-    Buffer(int sizeBuff, uint8_t header, uint8_t opCode, uint16_t size, uint16_t crcCheck);
     ~Buffer();
 
     void toArray(uint8_t* buffLinear);

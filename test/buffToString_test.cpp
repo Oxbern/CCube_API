@@ -7,8 +7,13 @@ int main(int argc, char *argv[]) {
           TEST 1 : Method toString for Buffer
     ***********************************************/
     int sizeAckData = SIZE_ACK - SIZE_OPCODE - SIZE_CRC - SIZE_SIZE - 1;
-    Buffer ackBuff (SIZE_ACK, 1, OPCODE(ACK_OK), sizeAckData, 0);
+    Buffer ackBuff (SIZE_ACK);
 
+    ackBuff.setHeader(1);
+    ackBuff.setOpCode(ACK_OK);
+    ackBuff.setSizeLeft(sizeAckData);
+    ackBuff.setCrc(0);
+    
     for (int i = 0; i < (SIZE_ACK - SIZE_CRC - DATA_INDEX); i++)
         ackBuff.setData(i, 0xFF);
 
