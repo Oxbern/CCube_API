@@ -209,7 +209,7 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
     return false;
 }
 
-void listUSBConnectedDevices(){
+void Controller::listUSBConnectedDevices(){
     int size = 0;
     char ** ttyList = getTtyList(&size);
 
