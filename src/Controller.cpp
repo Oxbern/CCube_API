@@ -2,49 +2,7 @@
 
 Controller::Controller()
 {
-    int size = 0;
-    char ** ttyList = getTtyList(&size);
-
-    
-    
-    int nbSTM = 0;
-    Dictionnary *dic = getDictSTM(&nbSTM);
-    
-    printf("--- Liste des cubes disponibles : ---\n");
-    
-    for (int i = 0; i < size; i++){
-        std::string name = ttyList[i];
-        name.erase(std::remove(name.begin(), name.end(), '\n'), name.end());
-        std::string cmd = "echo /dev/bus/usb/`udevadm info --name="  + name +   " --attribute-walk | sed -n 's/\\s*ATTRS{\\(\\(devnum\\)\\|\\(busnum\\)\\)}==\\\"\\([^\\\"]\\+\\)\\\"/\\4/p' | head -n 2 | awk '{$1 = sprintf(\"%03d\", $1); print}'` | tr \" \" \"\\/\"";
-        //Open the command for reading.
-        FILE *fp;
-        fp = popen(cmd.c_str(), "r"); 
-        if (fp == NULL) {
-            printf("Failed to run command\n" );
-            exit(1);
-        }
-        char path[50];
-
-        //Read the output a line at a time - output it.
-        while (fgets(path, sizeof(path)-1, fp) != NULL) {
-            if (strcmp(path,"/dev/bus/usb/\n")){
-                std::string t = path;
-                std::string s = "/dev/bus/usb/";
-                
-                std::string::size_type i = t.find(s);
-                
-                if (i != std::string::npos)
-                    t.erase(i, s.length());
-                if (isInDico(t,dic,nbSTM)){
-                    printf("%s\n",name.c_str());
-                    // We have a device here with his port name (string)
-                    // Device d(name);
-                    // devices.push_back(d);
-                }
-            }
-        }
-        
-    }
+    listUSBConnectedDevices();
 }
 
 Controller::~Controller()
@@ -249,4 +207,48 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
             return true;
     }
     return false;
+}
+
+void listUSBConnectedDevices(){
+    int size = 0;
+    char ** ttyList = getTtyList(&size);
+
+    int nbSTM = 0;
+    Dictionnary *dic = getDictSTM(&nbSTM);
+    
+    printf("--- Liste des cubes disponibles : ---\n");
+    
+    for (int i = 0; i < size; i++){
+        std::string name = ttyList[i];
+        name.erase(std::remove(name.begin(), name.end(), '\n'), name.end());
+        std::string cmd = "echo /dev/bus/usb/`udevadm info --name="  + name +   " --attribute-walk | sed -n 's/\\s*ATTRS{\\(\\(devnum\\)\\|\\(busnum\\)\\)}==\\\"\\([^\\\"]\\+\\)\\\"/\\4/p' | head -n 2 | awk '{$1 = sprintf(\"%03d\", $1); print}'` | tr \" \" \"\\/\"";
+        //Open the command for reading.
+        FILE *fp;
+        fp = popen(cmd.c_str(), "r"); 
+        if (fp == NULL) {
+            printf("Failed to run command\n" );
+            exit(1);
+        }
+        char path[50];
+
+        //Read the output a line at a time - output it.
+        while (fgets(path, sizeof(path)-1, fp) != NULL) {
+            if (strcmp(path,"/dev/bus/usb/\n")){
+                std::string t = path;
+                std::string s = "/dev/bus/usb/";
+                
+                std::string::size_type i = t.find(s);
+                
+                if (i != std::string::npos)
+                    t.erase(i, s.length());
+                if (isInDico(t,dic,nbSTM)){
+                    printf("%s\n",name.c_str());
+                    // We have a device here with his port name (string)
+                    // Device d(name);
+                    // devices.push_back(d);
+                }
+            }
+        }
+        
+    }
 }
