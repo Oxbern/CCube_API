@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include "Debug.h"
 
 /**
  * @class Buffer
@@ -32,12 +33,12 @@ class Buffer {
     void setCrc(uint16_t crcCheck);
     void setData(int index, uint8_t dataIndex);
 
-    uint8_t getHeader();
-    uint8_t getOpCode();
-    uint16_t getSizeLeft();
-    uint8_t *getData();
-    uint16_t getCrc();
-    int getSizeBuffer();
+    uint8_t getHeader() const;
+    uint8_t getOpCode() const;
+    uint16_t getSizeLeft() const;
+    uint8_t *getData() const;
+    uint16_t getCrc() const;
+    int getSizeBuffer() const;
 
     bool operator==(Buffer b);
 };

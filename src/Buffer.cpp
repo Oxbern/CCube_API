@@ -36,8 +36,10 @@ Buffer::Buffer(int sizeBuff, uint8_t head, uint8_t code, uint16_t size, uint16_t
  */
 Buffer::~Buffer()
 {
-    if (data != NULL)
-        delete [] data;
+    if (data != NULL) {
+        LOG(1, "Destructor for Buffer called");
+        delete[] data;
+    }
     data = NULL;
 }
 
@@ -97,39 +99,43 @@ void Buffer::setData(int index, uint8_t dataIndex) {
 /**
  * @brief Gets the header
  */
-uint8_t Buffer::getHeader() {
+uint8_t Buffer::getHeader() const
+{
     return this->header;
 }
 
 /**
  * @brief Gets the operation code
  */
-uint8_t Buffer::getOpCode() {
+uint8_t Buffer::getOpCode() const {
     return this->opCode;
 }
 
 /**
  * @brief Gets the sizeLeft
  */
-uint16_t Buffer::getSizeLeft() {
+uint16_t Buffer::getSizeLeft() const
+{
     return this->sizeLeft;
 }
 
 /**
  * @brief Gets the data
  */
-uint8_t * Buffer::getData() {
+uint8_t * Buffer::getData() const
+{
     return this->data;
 }
 
 /**
  * @brief Gets the crc
  */
-uint16_t Buffer::getCrc() {
+uint16_t Buffer::getCrc() const
+{
     return this->crc;
 }
 
-int Buffer::getSizeBuffer()
+int Buffer::getSizeBuffer() const
 {
     return this->sizeBuffer;
 }
