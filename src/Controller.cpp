@@ -23,12 +23,12 @@ bool Controller::removeListener(Listener &l)
 
 void Controller::listAllDevices()
 {
-    std::list<Device>::iterator iter ;
-    int i = 0;
-    for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
-        std::cout << "Device  "  << i << iter->getId() <<  "\n";
-        i++;
-    }
+    // std::list<Device>::iterator iter ;
+    // int i = 0;
+    // for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
+    //     std::cout << "Device  "  << i << iter->getId() <<  "\n";
+    //     i++;
+    // }
 }
 
 bool Controller::connectDevice(Device d)
@@ -244,7 +244,7 @@ void Controller::listUSBConnectedDevices(){
                 if (isInDico(t,dic,nbSTM)){
                     printf("%s\n",name.c_str());
                     // We have a device here with his port name (string)
-                    Device d(name,DeviceID);
+                    Device *d = new Device(name,DeviceID);
                     devices.push_back(d);
                     DeviceID++;
                 }

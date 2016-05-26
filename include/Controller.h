@@ -26,7 +26,7 @@ struct Dictionnary{
 class Controller {
 private:
     std::list<Listener> listeners;
-    std::list<Device> devices;
+    std::list<Device*> devices;
     Device *connectedDevice;
     std::queue<Message> messages; //FIFO of last messages
 public:

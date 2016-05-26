@@ -122,8 +122,7 @@ bool Device::send(Message mess)
             }
         }
     }
-
-    LOG(1, "Message sended");
+    LOG(1, "Message sended" );
     return true;
 }
 
@@ -142,4 +141,9 @@ bool Device::write(std::string data)
         LOG(1, "Unable to write data to file");
         return false;
     }
+}
+
+std::fstream & Device::getFile()
+{
+    return this->file;
 }

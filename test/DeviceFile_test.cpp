@@ -4,8 +4,7 @@
 
 
 int main(int argc, char *argv[]) {
-    int size = 9;
-    Device dev("/dev/stdout", "NoId", size, size, size);
+    Device dev("/dev/stdout", 1);
 
     if (dev.connect())
         dev.write("Write in a file in C++");

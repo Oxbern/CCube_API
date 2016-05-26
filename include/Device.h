@@ -39,5 +39,7 @@ public :
     //TODO Rajouter les setters et getters
     int getId() const;
 
+    std::fstream & getFile();
+
 };
 #endif //CUBEAPI_DEVICE_H
