@@ -10,9 +10,9 @@ extern "C" {
  */
 Message::Message() : sizeBuffer(0), sizeData(0), opCode(0), crc(0)
 {
-    std::cout << "Message()1\n";
-    listBuffer = new Buffer[0];
-    std::cout << "Message()2\n";
+    listBuffer = reinterpret_cast<Buffer *>(new char[0 * sizeof(Buffer)]);
+    //    listBuffer = new Buffer[0];
+    std::cout << "Message()\n";
 }
 
 /**
@@ -23,27 +23,38 @@ Message::Message() : sizeBuffer(0), sizeData(0), opCode(0), crc(0)
 Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
     sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
 {
-    std::cout << "Message(sizebuff, size, code)1\n";
     int n = this->NbBuffers();
-    std::cout << "le nombre : " << n << "\n";
-    //std::vector<Buffer*> l(n);
-    //listBuffer = l;
-    //std::cout << "Message(sizebuff, size, code)2\n";
-    //listBuffer.resize(n);
-    listBuffer = new Buffer[n];
+
+    listBuffer = reinterpret_cast<Buffer *>(new char[n * sizeof(Buffer)]);    
+    //listBuffer = new Buffer[n];
     
-    for (int i = 0; i < n; i++){        
-        Buffer b(sizeBuff);
-        listBuffer[i] = b;
-    }
+    for (int i = 0; i < n; i++)
+        new(&listBuffer[i]) Buffer(sizeBuff);
+
     listBuffer[0].setHeader(1);
-    std::cout << "Message(sizebuff, size, code)3\n";
     
     for (int i = 0; i < n; i++) {
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
         }
-    std::cout << "Message(sizebuff, size, code)4\n";    
+    std::cout << "Message(sizebuff, size, code)\n";    
+}
+
+/**
+ * @brief Constructor by copy
+ */
+Message::Message(const Message& M) {
+    std::cout << "Message(const &message)\n";
+    sizeBuffer= M.getSizeBuffer();
+    sizeData = M.getSizeData();
+    opCode = M.getOpCode();
+    crc = M.getCrc();
+    int n = M.NbBuffers();
+    
+    listBuffer = reinterpret_cast<Buffer *>(new char[n*sizeof(Buffer)]);
+    
+    for (int i = 0; i<n; i++)
+        listBuffer[i] = M.getBuffer(i)[i];
 }
 
 /**
@@ -51,16 +62,24 @@ Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
  */
 Message::~Message()
 {
-    // std::cout << "~Message()1\n";    
+    int n = this->NbBuffers();
+
+    for (int i = 0; i < n; i++)
+        listBuffer[i].Buffer::~Buffer();
+
+    // if (listBuffer != NULL)
     //     delete [] listBuffer;
-    // std::cout << "~Message()2\n";        
+    // listBuffer = NULL;
+    
+    delete[] reinterpret_cast<char *>(listBuffer);
+    std::cout << "Message()\n";        
 }
 
 /**
  * @brief Calculates the number of buffers necessary to create a message
  * @return number of buffers needed
  */
-int Message::NbBuffers()
+int Message::NbBuffers() const
 {
     if ((sizeData % (sizeBuffer - DATA_INDEX - SIZE_CRC)) == 0)
         return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC);
@@ -100,7 +119,7 @@ void Message::encode(uint8_t *dataToEncode)
  * @param index
  * @return buffer desired
  */
-Buffer* Message::getBuffer(int index)
+Buffer* Message::getBuffer(int index) const
 {
     if (index > NbBuffers() || index < 0)
         throw std::out_of_range("Buffer not found\n");
@@ -127,3 +146,30 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
     return Buffer();
 }
 
+/**
+ * @brief Returns the size of the buffers created
+ */
+int Message::getSizeBuffer() const {
+    return this->sizeBuffer;
+}
+
+/**
+ * @brief Returns the size of the data
+ */
+uint16_t Message::getSizeData() const {
+    return this->sizeData;
+}
+
+/**
+ * @brief Returns the opCode
+ */
+uint8_t Message::getOpCode() const {
+    return this->opCode;
+}
+
+/**
+ * @brief Returns the crc
+ */
+uint16_t Message::getCrc() const {
+    return this->crc;
+}
