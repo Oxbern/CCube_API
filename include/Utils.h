@@ -8,13 +8,15 @@
 #define SIZE_BUFFER 64
 
 #define SIZE_OPCODE 1
+#define SIZE_ID 1
 #define SIZE_SIZE 2
 #define SIZE_CRC 2
 
 #define HEADER_INDEX 0
-#define OPCODE_INDEX 1
-#define SIZE_INDEX 2
-#define DATA_INDEX 4
+#define ID_INDEX 1
+#define OPCODE_INDEX 2
+#define SIZE_INDEX 3
+#define DATA_INDEX 5
 
 
 enum OPCODE {

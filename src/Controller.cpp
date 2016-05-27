@@ -44,7 +44,7 @@ void Controller::listAllDevices()
     std::list<Device*>::iterator iter ;
     int i = 1;
     for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
-        std::cout << "Device  "  << i << ": Id = " << (*iter)->getId() << ", Port :" << (*iter)->getPort() <<  "\n";
+        std::cout << "Device  "  << i << ": Id = " << (*iter)->getID() << ", Port :" << (*iter)->getPort() <<  "\n";
         i++;
     }
 }

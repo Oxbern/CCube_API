@@ -20,6 +20,7 @@ private :
     int sizeZ;
     bool isAvailable;
     DeviceShape *currentConfig;
+    
 public :
     // Port is found by Controller's constructor and id is defined there.
     Device();
@@ -38,7 +39,7 @@ public :
     bool write(std::string data);
 
     //TODO Rajouter les setters et getters
-    int getId() const;
+    int getID() const;
     std::string getPort() const;
     DeviceShape *getcurrentConfig() const;
     std::fstream & getFile();

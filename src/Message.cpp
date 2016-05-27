@@ -96,6 +96,9 @@ int Message::NbBuffers() const
 void Message::encode(uint8_t *dataToEncode)
 {
     int j = 0; int k= 0; int n = NbBuffers();
+    uint8_t *entireBuffer = new uint8_t [this->sizeBuffer];
+    uint8_t *tab = new uint8_t[2];
+    
     for (int i = 0; i < n; i ++) {
         while (j < (sizeBuffer - DATA_INDEX - SIZE_CRC)) {
             if (k < sizeData)
@@ -105,12 +108,21 @@ void Message::encode(uint8_t *dataToEncode)
             j++; k++;
         }
         j = 0;
+        entireBuffer[0] = listBuffer[i].getHeader();
+        entireBuffer[1] = listBuffer[i].getID();
+        entireBuffer[2] = listBuffer[i].getOpCode();
+        convert16to8(listBuffer[i].getSizeBuffer(), tab);
+        entireBuffer[3] = tab[0];
+        entireBuffer[4] = tab[1];
+        for (int ii = DATA_INDEX; ii < (this->sizeBuffer - SIZE_CRC); ii++)
+            entireBuffer[ii] = listBuffer[i].getData()[ii-DATA_INDEX];
 
-
-        uint16_t crcComputed = computeCRC(listBuffer[i].getData(),
-                                          sizeof(uint8_t)*(sizeBuffer - DATA_INDEX - SIZE_CRC));
+        uint16_t crcComputed = computeCRC(entireBuffer,
+                                          sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         listBuffer[i].setCrc(crcComputed);
     }
+    delete [] entireBuffer;
+    delete [] tab;
 }
 
 /**
@@ -135,7 +147,7 @@ Buffer* Message::getBuffer(int index) const
  * @return buffer desired
  */
 
-Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
+Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const{
     for (int i = 0; i < NbBuffers(); i++) {
         if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
             return listBuffer[i];
