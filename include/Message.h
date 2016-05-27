@@ -2,6 +2,8 @@
 #define MESSAGE_H
 
 #include "Buffer.h"
+#include <vector>
+#include <iostream>
 
 /**
  * @class Message 
@@ -25,13 +27,15 @@ class Message {
 
     void encode(uint8_t *dataToEncode);
 
-    Buffer *getBuffer(int index) const;
+    Buffer *getBuffer() const;
     Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft) const;
     int getSizeBuffer() const;
     uint16_t getSizeData() const;
     uint8_t getOpCode() const;
     uint16_t getCrc() const;
     int getID() const;
+    
+    std::string toStringDebug();
 };
 
 

@@ -1,4 +1,6 @@
 #include <stdexcept>
+#include <sstream>
+
 #include "Message.h"
 #include "Utils.h"
 
@@ -22,8 +24,7 @@ Message::Message(int id, int sizeBuff, uint16_t size, uint8_t code) :
 {
     int n = this->NbBuffers();
 
-    listBuffer = reinterpret_cast<Buffer *>(new char[n * sizeof(Buffer)]);    
-    //listBuffer = new Buffer[n];
+    listBuffer = reinterpret_cast<Buffer *>(new char[n * sizeof(Buffer)]);
     
     for (int i = 0; i < n; i++)
         new(&listBuffer[i]) Buffer(sizeBuff);
@@ -53,7 +54,7 @@ Message::Message(const Message& M) {
     listBuffer = reinterpret_cast<Buffer *>(new char[n*sizeof(Buffer)]);
     
     for (int i = 0; i<n; i++)
-        listBuffer[i] = M.getBuffer(i)[i];
+        listBuffer[i] = M.getBuffer()[i];
 }
 
 /**
@@ -85,8 +86,6 @@ int Message::NbBuffers() const
     else
         return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC) + 1;
 }
-
-
 
 
 /**
@@ -130,13 +129,8 @@ void Message::encode(uint8_t *dataToEncode)
  * @param index
  * @return buffer desired
  */
-Buffer* Message::getBuffer(int index) const
+Buffer* Message::getBuffer() const
 {
-    if (index > NbBuffers() || index < 0)
-        throw std::out_of_range("Buffer not found\n");
-    if (this->listBuffer  == NULL)
-        throw std::out_of_range("Buffer null\n");
-
     return (this->listBuffer); //Can throw out_of_range exception
 }
 
@@ -190,4 +184,18 @@ uint16_t Message::getCrc() const {
  */
 int Message::getID() const {
     return this->idDevice;
+}
+
+/*
+ * @brief Todo
+ */
+std::string Message::toStringDebug()
+{
+    std::ostringstream convert;
+    convert << "Message :" << std::endl;
+    int n = NbBuffers();
+    for (int i = 0; i < n; i++)
+        convert << getBuffer()[i].toStringDebug(i);
+
+    return convert.str();
 }
