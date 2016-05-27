@@ -8,7 +8,7 @@
 
 //TODO : DOC
 class DeviceShape {
-private :
+protected :
     void clearLed();
     int sizeX;
     int sizeY;
@@ -25,5 +25,7 @@ public :
     bool toggle(int x, int y, int z);
     uint8_t *  toArray();
     friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d);
+
+    void print(std::ostream &str) const;
 };
 #endif //DEVICESHAPE_H

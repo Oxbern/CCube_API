@@ -49,7 +49,7 @@ DeviceShape::~DeviceShape() {
 bool DeviceShape::on(int x, int y, int z)
 {
     if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
-        std::cerr << "Index of led out of bounds" << sizeX << std::endl;
+        std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] = true);
@@ -121,19 +121,24 @@ uint8_t * DeviceShape::toArray()
  */
 std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
 {
-    for (int z = 0; z < d.sizeZ; ++z) {
-        os << "Z = " << z << "\n";
-        for (int y = 0; y < d.sizeY; ++y) {
-            os << "Y = " << y << "\n";
-            for (int x = 0; x < d.sizeX; ++x) {
-                if (d.ledStatus[x][y][z])
-                    os << "1 ";
-                else
-                    os << "0 ";
-            }
-            os << "\n";
-        }
-        os << "\n";
-    }
+    d.print(os);
     return os;
+}
+
+void DeviceShape::print(std::ostream &str) const
+{
+    for (int z = 0; z < sizeZ; ++z) {
+        str << "Z = " << z << std::endl;
+        for (int y = 0; y < sizeY; ++y) {
+            str << "Y = " << y << std::endl;
+            for (int x = 0; x < sizeX; ++x) {
+                if (ledStatus[x][y][z])
+                    str << "1 ";
+                else
+                    str << "0 ";
+            }
+            str << std::endl;
+        }
+        str << std::endl;
+    }
 }

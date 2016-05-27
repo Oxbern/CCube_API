@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Message.h"
 #include "Utils.h"
 
