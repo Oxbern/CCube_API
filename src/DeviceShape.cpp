@@ -106,12 +106,22 @@ bool DeviceShape::toggle(int x, int y, int z)
 uint8_t * DeviceShape::toArray()
 {
     uint8_t *ledArray = new uint8_t[sizeX*sizeY*sizeZ];
-    int i = 0;
+    int i = 0; int j = 7;
+    uint8_t tmp = 0; uint8_t val;
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)
             for (int z = 0; z < sizeZ; ++z) {
-                ledStatus[x][y][z] ? ledArray[i] = 1 : ledArray[i] = 0;
-                ++i;
+                val = ledStatus[x][y][z] ? 1 : 0;
+                tmp += (val << j);
+
+                if (j == 0) {
+                    ledArray[i] = tmp;
+                    j = 7;
+                    tmp = 0;
+                    ++i;
+                }else {
+                    --j;
+                }
             }
     return ledArray;
 }
