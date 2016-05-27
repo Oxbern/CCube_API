@@ -151,7 +151,7 @@ bool Device::send(Message *mess)
     return true;
 }
 
-int Device::getId() const
+int Device::getID() const
 {
     return this->id;
 }

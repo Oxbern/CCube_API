@@ -135,7 +135,7 @@ Buffer* Message::getBuffer(int index) const
  * @return buffer desired
  */
 
-Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
+Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const{
     for (int i = 0; i < NbBuffers(); i++) {
         if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
             return listBuffer[i];

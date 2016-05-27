@@ -26,11 +26,11 @@ int main(int argc, char* argv[]) {
     Device *chosen;
     std::list<Device*> listDevice = c.getListDevices();
     for(iter = listDevice.begin() ; (iter != listDevice.end()) ;iter++){
-        if (choice == (*iter)->getId())
+        if (choice == (*iter)->getID())
             chosen = *iter;
     }
 
-    std::cout << "You choose Device " << (int) chosen->getId() << std::endl;
+    std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
     if (c.connectDevice(chosen))
         std::cout << "You are connected" << std::endl;
 

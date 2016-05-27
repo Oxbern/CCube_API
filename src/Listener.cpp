@@ -10,7 +10,7 @@ void Listener::onInit(Controller & c)
 
 void Listener::onConnect(Controller & c)
 {
-    std::cout << "Device " << c.getConnectedDevice()->getId() << " connected" << std::endl;
+    std::cout << "Device " << c.getConnectedDevice()->getID() << " connected" << std::endl;
 }
 
 

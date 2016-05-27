@@ -23,10 +23,10 @@ class Message {
     ~Message();
     int NbBuffers() const;
 
-
     void encode(uint8_t *dataToEncode);
+
     Buffer *getBuffer(int index) const;
-    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft);
+    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft) const;
     int getSizeBuffer() const;
     uint16_t getSizeData() const;
     uint8_t getOpCode() const;
