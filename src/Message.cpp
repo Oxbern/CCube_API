@@ -103,25 +103,12 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
  * @param fd file descriptor
  */
 void Message::send(int fd) {    
-    std::cout << "Sending Ok :" << fd << "\n";
-    Ack ack;
     
     for (int i = 0; i < NbBuffers(); i++) {
-        
-        
-	if (fd) {
-            listBuffer[i].send(fd);
-            //sleep(1);
-            
-	    ack.setAck(fd);
-	    ack.describe();
-	}
-	// else
-	//     CDC_Receive_FS(listBuffer+i, NULL);
-		
-     	//ack.checkAck(computeCRC(buf+1, 3*sizeof(uint8_t)));
-     	//ack.handleAck(fd, *this);
-     }
+	    if (fd) {
+		    listBuffer[i].send(fd);
+	    }
+    }
 }
 
 
