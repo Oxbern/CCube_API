@@ -206,6 +206,7 @@ std::string Buffer::toString()
     uint8_t tab[2];
     convert << (int) header;
     convert << (int) opCode;
+    convert << idDevice;
 
     //split sizeLeft into two uint8_t
     convert16to8(sizeLeft, tab);
@@ -235,6 +236,8 @@ std::string Buffer::toStringDebug(int indexInMess)
     uint8_t tab[2];
     convert << "Buffer n°" << indexInMess << " : | ";
     convert << (int) header;
+    convert << " | " ;
+    convert << (int) idDevice;
     convert << " | " ;
     convert << (int) opCode;
 
