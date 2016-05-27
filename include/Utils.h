@@ -36,4 +36,10 @@ enum OPCODE {
 
 void convert16to8(uint16_t val, uint8_t tab[2]);
 void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]);
+
+#define CRC16 0x1021
+
+uint16_t computeCRC(uint8_t *data, uint16_t size);
+
+
 #endif
