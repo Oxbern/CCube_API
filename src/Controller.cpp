@@ -1,26 +1,43 @@
 #include "Controller.h"
 
+/**
+ * @brief Constructor of Controller object, list all USB connected devices and 
+ *        add them to the Device list 
+ */ 
 Controller::Controller()
 {
     listAndGetUSBConnectedDevices();
 }
 
+/**
+ * @brief Destructor of Controller object
+ */ 
 Controller::~Controller()
 {
 
 }
 
-
+/**
+ * @brief Add a Listener to the Controller's list of Listener
+ * @param Listener to add
+ */ 
 bool Controller::addListener(Listener &l)
 {
     return false;
 }
 
+/**
+ * @brief Remove a Listener to the Controller's list of Listener
+ * @param Listener to remove
+ */ 
 bool Controller::removeListener(Listener &l)
 {
     return false;
 }
 
+/**
+ * @brief List all devices which are connected via USB
+ */ 
 void Controller::listAllDevices()
 {
     std::cout << "--- List of USB Connected Devices : ---" << std::endl;
@@ -32,6 +49,10 @@ void Controller::listAllDevices()
     }
 }
 
+/**
+ * @brief Connected the controller to the device 
+ * @param Device to connect
+ */ 
 bool Controller::connectDevice(Device *d)
 {
     if ((*d).connect()){
@@ -41,11 +62,17 @@ bool Controller::connectDevice(Device *d)
     return false; 
 }
 
+/**
+ * @brief Accessor to the current connected device
+ */ 
 Device* Controller::getConnectedDevice()
 {
     return this->connectedDevice;
 }
 
+/**
+ * @brief Accessor to the list of USB connected sevices
+ */ 
 std::list<Device*> Controller::getListDevices(){
     return this->devices;
 }
@@ -56,7 +83,10 @@ std::list<Device*> Controller::getListDevices(){
  *****************************************************
  ****************************************************/
 
-
+/**
+ * @brief Get the list of tty ports open on the computer
+ * @param size : number of tty ports to return 
+ */ 
 char ** getTtyList(int *size){
     FILE *fp;
     char path[20];
@@ -93,6 +123,11 @@ char ** getTtyList(int *size){
     return ttyList;
 }
 
+/**
+ * @brief Gets the next word in a char * line from the j's char
+ * @param path : the line to parse
+ * @param j : begining of the future parsing
+ */ 
 char * getNextWord(char *path, int *j){
     char word[10];
     int w = 0;
@@ -108,7 +143,10 @@ char * getNextWord(char *path, int *j){
     return wordreturn;
 }
 
-
+/**
+ * @brief Gets the result of a "lsusb | grep STM" system call in a Dictionnary(Bus:Device) structure
+ * @param nbSTM : number of STM devices connected to return
+ */ 
 Dictionnary *getDictSTM( int *nbSTM){
     FILE *fp;
     char path[100];
@@ -184,6 +222,12 @@ Dictionnary *getDictSTM( int *nbSTM){
     return dic;
 }
 
+/**
+ * @brief Return true if the ttyPort corresponds to a STM device
+ * @param echo : the ttyPort
+ * @param dic : the Dictionnary to look in
+ * @param sizOfDic : size of the Dictionnary
+ */ 
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
     char busSDev[echo.length()+1] = {};
     strcpy(busSDev,echo.c_str());
@@ -220,6 +264,10 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
     return false;
 }
 
+
+/**
+ * @brief Display the list of all USB connected devices and push them in the device list 
+ */ 
 void Controller::listAndGetUSBConnectedDevices(){
     int size = 0;
     char ** ttyList = getTtyList(&size);
