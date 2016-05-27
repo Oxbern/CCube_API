@@ -130,13 +130,13 @@ bool Device::send(Message *mess)
     int n = mess->NbBuffers();
     for (int i = 0; i < n; i++) {
 
-        std::string buffString = mess->getBuffer(i)[i].toString();
-        LOG(1, "Message toString : " + buffString);
+        std::string buffString = mess->getBuffer()[i].toString();
+        LOG(1, "Message toString : " + mess->getBuffer()[i].toStringDebug(i));
 
         if (this->port.compare("/dev/stdin") == 0) {
             //VirtualCube
-            uint8_t * bufferArray = new uint8_t[mess->getBuffer(i)[i].getSizeBuffer()];
-            mess->getBuffer(i)[i].toArray(bufferArray);
+            uint8_t * bufferArray = new uint8_t[mess->getBuffer()[i].getSizeBuffer()];
+            mess->getBuffer()[i].toArray(bufferArray);
             //Virtual sending
             // CDC_Receive_FS(bufferArray);
             delete [] bufferArray;
