@@ -7,6 +7,7 @@
  * Simple test to switch on some LEDs using methods of the API
  */
 int main(int argc, char *argv[]) {
+
     std::string port = "dev/ttyACM0";
     Device dev(port, 1);
 
