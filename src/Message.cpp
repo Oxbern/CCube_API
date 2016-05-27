@@ -1,14 +1,10 @@
 #include "Message.h"
 #include "Utils.h"
 
-extern "C" {
-#include "crc.h"
-}
-
 /**
  * @brief Creates an empty message
  */
-Message::Message() : sizeBuffer(0), sizeData(0), opCode(0), crc(0)
+Message::Message() : idDevice(0), sizeBuffer(0), sizeData(0), opCode(0), crc(0)
 {
     listBuffer = reinterpret_cast<Buffer *>(new char[0 * sizeof(Buffer)]);
     //    listBuffer = new Buffer[0];
@@ -20,8 +16,8 @@ Message::Message() : sizeBuffer(0), sizeData(0), opCode(0), crc(0)
  * @param size of the message
  * @param code operation code
  */
-Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
-    sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
+Message::Message(int id, int sizeBuff, uint16_t size, uint8_t code) :
+    idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
 {
     int n = this->NbBuffers();
 
@@ -34,6 +30,7 @@ Message::Message(int sizeBuff, uint16_t size, uint8_t code) :
     listBuffer[0].setHeader(1);
     
     for (int i = 0; i < n; i++) {
+        listBuffer[i].setID(id);
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
         }
@@ -49,6 +46,7 @@ Message::Message(const Message& M) {
     sizeData = M.getSizeData();
     opCode = M.getOpCode();
     crc = M.getCrc();
+    idDevice = M.getID();
     int n = M.NbBuffers();
     
     listBuffer = reinterpret_cast<Buffer *>(new char[n*sizeof(Buffer)]);
@@ -172,4 +170,11 @@ uint8_t Message::getOpCode() const {
  */
 uint16_t Message::getCrc() const {
     return this->crc;
+}
+
+/**
+ * @brief Returns the id of the device
+ */
+int Message::getID() const {
+    return this->idDevice;
 }

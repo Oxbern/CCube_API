@@ -2,7 +2,6 @@
 #define MESSAGE_H
 
 #include "Buffer.h"
-#include <vector>
 
 /**
  * @class Message 
@@ -10,6 +9,7 @@
 
 class Message {
  protected :
+    int idDevice;
     int sizeBuffer;
     uint16_t sizeData;
     uint8_t opCode;
@@ -18,7 +18,7 @@ class Message {
     
  public :     
     Message();
-    Message(int sizeBuff, uint16_t size, uint8_t code);
+    Message(int id, int sizeBuff, uint16_t size, uint8_t code);
     Message(const Message &M);
     ~Message();
     int NbBuffers() const;
@@ -31,6 +31,7 @@ class Message {
     uint16_t getSizeData() const;
     uint8_t getOpCode() const;
     uint16_t getCrc() const;
+    int getID() const;
 };
 
 
