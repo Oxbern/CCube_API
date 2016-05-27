@@ -10,8 +10,8 @@ int main(int argc, char *argv[]) {
 
     int sizeAckData = SIZE_ACK - SIZE_OPCODE - SIZE_CRC - SIZE_SIZE - 1;
     uint8_t data[3] = {1,2,3};
-
-    Message m (SIZE_BUFFER, sizeAckData, ACK_OK);
+    
+    Message m (dev.getId(), SIZE_BUFFER, sizeAckData, ACK_OK);
     m.encode(data);
 
     dev.send(&m);

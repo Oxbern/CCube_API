@@ -57,7 +57,7 @@ Device::~Device()
 
 bool Device::available()
 {
-    DataMessage m(0, OPCODE(AVAILABLE));
+    DataMessage m(this->id, 0, OPCODE(AVAILABLE));
     while (!this->send(&m)) {
         //TODO Timeout
         continue;
@@ -89,7 +89,7 @@ bool Device::disconnect()
 bool Device::display()
 {
     uint16_t size = sizeX*sizeY*sizeZ/8; // Convert to bytes
-    DataMessage dm(size,OPCODE(BUFF_SENDING));
+    DataMessage dm(this->id, size,OPCODE(BUFF_SENDING));
     dm.encode(currentConfig->toArray());
     if (!send(&dm)){
         std::cerr << "Error while sending ledBuffer"<<std::endl;

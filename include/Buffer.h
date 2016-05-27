@@ -12,6 +12,7 @@
 class Buffer {
  private :
     uint8_t header;
+    int idDevice;
     int sizeBuffer;
     uint8_t opCode;
     uint16_t sizeLeft;
@@ -26,6 +27,7 @@ public :
     std::string toString();
 
     void setHeader(uint8_t head);
+    void setID(int id);
     void setOpCode(uint8_t code);
     void setSizeLeft(uint16_t size);
     void setCrc(uint16_t crcCheck);
@@ -37,7 +39,8 @@ public :
     uint8_t *getData() const;
     uint16_t getCrc() const;
     int getSizeBuffer() const;
-
+    int getID() const;
+    
     bool operator==(Buffer b);
 };
 

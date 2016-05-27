@@ -15,7 +15,7 @@ AckMessage::AckMessage() : Message()
  * @param sizeLeft : size left of message to send
  * @param crc : crc of ACK 
  */
-AckMessage::AckMessage(uint8_t ackType) : Message(SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
+AckMessage::AckMessage(int id, uint8_t ackType) : Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
 {
 
 }
@@ -82,27 +82,6 @@ void AckMessage::setAck(int fd)
 /**
  * @brief Gets the ackType
  */
-uint8_t AckMessage::getAckType() {
-    return this->opCode;
-}
-
-/**
- * @brief Gets the OpCode of the last received buffer
- */
-uint8_t AckMessage::getOpCode() {
-    return this->opCode;
-}
-
-/**
- * @brief Gets the SizeLeft of the last received buffer
- */
-uint16_t AckMessage::getSizeLeft() {
-    return this->listBuffer[0].getSizeLeft();
-}
-
-/**
- * @brief Gets the crc
- */
-uint16_t AckMessage::getCrc() {
-    return this->listBuffer[0].getCrc();
+uint8_t AckMessage::getAckType() const {
+    return Message::getOpCode();
 }

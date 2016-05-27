@@ -6,7 +6,7 @@
  * @brief Creates a buffer with no data place
  */
 Buffer::Buffer() :
-    header(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
+    header(0), idDevice(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
 {
     data = new uint8_t[0];
     std::cout << "Buffer()\n";    
@@ -16,7 +16,7 @@ Buffer::Buffer() :
  * @brief Creates a right sized buffer
  */
 Buffer::Buffer(int sizeBuff) :
-    header(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
+    header(0), idDevice(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
 {
     data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC];
     std::cout << "Buffer(sizeBuff)\n";    
@@ -28,18 +28,25 @@ Buffer::Buffer(int sizeBuff) :
  */
 Buffer::~Buffer()
 {
-    if (data != NULL) {
+    // if (data != NULL) {
         LOG(1, "Destructor for Buffer called");
         delete[] data;
-    }
-    data = NULL;
+    // }
+    // data = NULL;
     std::cout << "~Buffer()\n";            
 }
-
+/**
+ * @brief Returns the size available for the data
+ * @param entire size of the buffer
+ */
 int dataSize(int sizeBuffer) {
     return (sizeBuffer - DATA_INDEX - SIZE_CRC);
 }
 
+/**
+ * @brief Returns the index of the crc
+ * @param entire size of the buffer
+ */
 int crcIndex(int sizeBuffer) {
     return (sizeBuffer - SIZE_CRC);
 }
@@ -53,12 +60,21 @@ void Buffer::setHeader(uint8_t head) {
 }
 
 /**
+ * @brief Sets the id of the Device 
+ * @param idDevice
+ */
+void Buffer::setID(int id) {
+    this->idDevice = id;
+}
+
+/**
  * @brief Sets the opCode
  * @param code
  */
 void Buffer::setOpCode(uint8_t code) {
     this->opCode = code;
 }
+
 /**
  * @brief Sets the sizeLeft
  * @param size
@@ -123,11 +139,23 @@ uint16_t Buffer::getCrc() const
     return this->crc;
 }
 
+/**
+ * @brief Gets the size of the buffer
+ */
 int Buffer::getSizeBuffer() const
 {
     return this->sizeBuffer;
 }
 
+int Buffer::getID() const
+{
+    return this->idDevice;
+}
+
+/**
+ * @brief Operator == 
+ * @param buffer
+ */
 bool Buffer::operator==(Buffer b){
     bool ret = (this->header == b.header &&
                 this->opCode == b.opCode &&
