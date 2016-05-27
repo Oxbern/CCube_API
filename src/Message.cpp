@@ -107,6 +107,7 @@ void Message::send(int fd) {
     for (int i = 0; i < NbBuffers(); i++) {
 	    if (fd) {
 		    listBuffer[i].send(fd);
+		    sleep(1);
 	    }
     }
 }
