@@ -9,7 +9,7 @@ Buffer::Buffer() :
     header(0), idDevice(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
 {
     data = new uint8_t[0];
-    std::cout << "Buffer()\n";    
+    LOG(1, "Buffer()");
 }
 
 /**
@@ -19,7 +19,7 @@ Buffer::Buffer(int sizeBuff) :
     header(0), idDevice(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
 {
     data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC];
-    std::cout << "Buffer(sizeBuff)\n";    
+    LOG(1, "Buffer(sizeBuffer)");
 }
 
 
@@ -28,12 +28,12 @@ Buffer::Buffer(int sizeBuff) :
  */
 Buffer::~Buffer()
 {
-    // if (data != NULL) {
+    LOG(1, "~Buffer()");
+    if (data != NULL) {
         LOG(1, "Destructor for Buffer called");
         delete[] data;
-    // }
-    // data = NULL;
-    std::cout << "~Buffer()\n";            
+    }
+    data = NULL;
 }
 /**
  * @brief Returns the size available for the data
@@ -171,7 +171,6 @@ bool Buffer::operator==(Buffer b){
 }
 
 /**
- * @todo choose between Buffer.toArray, Message.toArray, both or neither
  * @brief Converts a buffer into an array
  * @param buffLinear the filled array
  */
@@ -198,7 +197,8 @@ void Buffer::toArray(uint8_t* buffLinear)
 }
 
 /**
- * @brief todo
+ * @brief Prints a buffer
+ * @return string
  */
 std::string Buffer::toString()
 {
@@ -226,7 +226,8 @@ std::string Buffer::toString()
 
 
 /**
- * @biref Todo
+ * @brief Prints a buffer for debugging
+ * @return string
  */
 std::string Buffer::toStringDebug(int indexInMess)
 {

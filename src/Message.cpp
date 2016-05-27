@@ -10,8 +10,7 @@
 Message::Message() : idDevice(0), sizeBuffer(0), sizeData(0), opCode(0), crc(0)
 {
     listBuffer = reinterpret_cast<Buffer *>(new char[0 * sizeof(Buffer)]);
-    //    listBuffer = new Buffer[0];
-    std::cout << "Message()\n";
+    LOG(1, "Message() \n");
 }
 
 /**
@@ -36,14 +35,13 @@ Message::Message(int id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
         }
-    std::cout << "Message(sizebuff, size, code)\n";    
+    LOG(1, "Message(idDevice, sizeBuffer, sizeMessage, opCode)");
 }
 
 /**
  * @brief Constructor by copy
  */
 Message::Message(const Message& M) {
-    std::cout << "Message(const &message)\n";
     sizeBuffer= M.getSizeBuffer();
     sizeData = M.getSizeData();
     opCode = M.getOpCode();
@@ -55,6 +53,7 @@ Message::Message(const Message& M) {
     
     for (int i = 0; i<n; i++)
         listBuffer[i] = M.getBuffer()[i];
+    LOG(1, "Message(const &message)");
 }
 
 /**
@@ -67,12 +66,8 @@ Message::~Message()
     for (int i = 0; i < n; i++)
         listBuffer[i].Buffer::~Buffer();
 
-    // if (listBuffer != NULL)
-    //     delete [] listBuffer;
-    // listBuffer = NULL;
-    
     delete[] reinterpret_cast<char *>(listBuffer);
-    std::cout << "Message()\n";        
+    LOG(1, "~Message()");
 }
 
 /**
@@ -187,7 +182,8 @@ int Message::getID() const {
 }
 
 /*
- * @brief Todo
+ * @brief Prints the message
+ * @return string
  */
 std::string Message::toStringDebug()
 {

@@ -6,6 +6,7 @@
  */
 AckMessage::AckMessage() : Message()
 {
+    LOG(1, "AckMessage()");
 }
 
 /**
@@ -17,7 +18,7 @@ AckMessage::AckMessage() : Message()
  */
 AckMessage::AckMessage(int id, uint8_t ackType) : Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
 {
-
+    LOG(1, "AckMessage(idDevice, ackType)");
 }
 
 /**
@@ -25,15 +26,8 @@ AckMessage::AckMessage(int id, uint8_t ackType) : Message(id, SIZE_ACK, SIZE_OPC
  */
 AckMessage::~AckMessage()
 {
+    LOG(1, "~AckMessage()");
 }
-
-/**
- *@brief Fills the buffers with data
- *@param data
- */
-void AckMessage::encode(uint8_t *dataToEncode)
-{}
-
 /**
  * @brief Fills the buffers with the data : id of pack
  * @param sizeLeft
@@ -81,6 +75,7 @@ void AckMessage::setAck(int fd)
 
 /**
  * @brief Gets the ackType
+ * @return opCode 
  */
 uint8_t AckMessage::getAckType() const {
     return Message::getOpCode();

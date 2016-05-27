@@ -6,6 +6,7 @@
  */
 DataMessage::DataMessage() : Message()
 {
+    LOG(1, "DataMessage()");
 }
 
 /**
@@ -15,6 +16,7 @@ DataMessage::DataMessage() : Message()
  */
 DataMessage::DataMessage(int idDevice, uint16_t size, uint8_t code) : Message(idDevice, SIZE_BUFFER, size, code)
 {
+    LOG(1, "DataMessage(idDevice, sizeMessage, opCode)");
 }
 
 
@@ -23,15 +25,8 @@ DataMessage::DataMessage(int idDevice, uint16_t size, uint8_t code) : Message(id
  */
 DataMessage::~DataMessage()
 {
+    LOG(1, "~DataMessage()");
 }
-
-
-/**
- * @brief Fills the buffers with the data
- * @param data to encode
- */
-void DataMessage::encode(uint8_t *dataToEncode)
-{}
 
 
 
