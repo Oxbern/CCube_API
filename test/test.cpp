@@ -1,5 +1,11 @@
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
+#include <string.h>
+       #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <fcntl.h>
+
 
 #include "Device.h"
 
@@ -8,13 +14,60 @@ int main(int argc, char *argv[]) {
 
     Message m(1, SIZE_BUFFER, 20, 0x1);
 
-    std::fstream file;
+   /* std::fstream file;
     file.open("/dev/ttyACM0", std::ios::in | std::ios::out);
 
-    std::cout << m.getBuffer()[0].toString() << std::endl;
-    file << m.getBuffer()[0].toString();
+    if (!file.is_open()) {
+        perror("Erreur");
+        return EXIT_FAILURE;
+    }*/
+
+    int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
+    if (fd != -1) {
+
+        uint8_t * buff = new uint8_t[64];
+
+        Buffer buffer(64);
+        buffer.setHeader(1);
+        buffer.setOpCode(1);
+        buffer.setSizeLeft(50);
+        buffer.setCrc(0);
+
+
+
+        buffer.toArray(buff);
+
+        for (int i = 0; i < 64; i++)
+            std::cout << (int)buff[i];
+
+        for (int i = 4; i < 57; i++)
+            buffer.setData(i-4, 1);
+
+        std::cout << buffer.toString() << "\n";
+
+        write(fd, buff, 64);
+
+    }else{
+        perror("Unable to open file");
+        return EXIT_FAILURE;
+    }
+
+
+/*
+
+    for (int i = 0; i < 64; i++)
+        std::cout << (int)buff[i];
+    std::cout << "\n";
+
+    std::cout << buffer.toStringDebug(0);
+
+
+
+    file.write((char *)buff, 64);
 
     file.close();
+*/
+    close(fd);
 
 
 
