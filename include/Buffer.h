@@ -25,6 +25,7 @@ public :
 
     void toArray(uint8_t* buffLinear);
     std::string toString();
+    std::string toStringDebug(int indexInMess); //TODO to remove ?
 
     void setHeader(uint8_t head);
     void setID(int id);

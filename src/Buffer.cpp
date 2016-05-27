@@ -223,3 +223,40 @@ std::string Buffer::toString()
 
     return convert.str();
 }
+
+
+/**
+ * @biref Todo
+ */
+std::string Buffer::toStringDebug(int indexInMess)
+{
+    std::ostringstream convert;
+    uint8_t tab[2];
+    convert << "Buffer n°" << indexInMess << " : | ";
+    convert << (int) header;
+    convert << " | " ;
+    convert << (int) opCode;
+
+    convert << " | " ;
+
+    //split sizeLeft into two uint8_t
+    convert16to8(sizeLeft, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+
+    convert << " | " ;
+
+    //Convert data
+    for (int i = 0; i < dataSize(sizeBuffer); i++)
+        convert << (int)data[i];
+
+    convert << " | " ;
+
+    //split crc into two uint8_t
+    convert16to8(crc, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+    convert << std::endl;
+
+    return convert.str();
+}
