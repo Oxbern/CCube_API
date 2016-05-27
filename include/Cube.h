@@ -21,7 +21,5 @@ class Cube : public ShapeToDisplay
     bool moveRight();
     bool moveForward();
     bool moveBackward();
-
-
 };
 

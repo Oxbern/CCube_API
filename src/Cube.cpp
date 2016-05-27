@@ -1,7 +1,8 @@
 #include "Cube.h"
 
 
-Cube::Cube(int s, int x, int y, int z, Point p, bool b) : ShapeToDisplay(s, x, y, z, p, b)
+Cube::Cube(int s, int x, int y, int z, Point p, bool b) : 
+ShapeToDisplay(s, x, y, z, p, b)
 {
     init();
     std::cout << "Constructor Cube" << std::endl;
@@ -53,9 +54,12 @@ Cube::~Cube()
 
 bool Cube::incrSize() 
 {
-    if (origin.getX() + size == 8 
-	|| origin.getY() + size == 8 
-	|| origin.getZ() + size == 8) 
+    std::cout << "X = " << origin.getX() + size 
+            << ", Y = " << origin.getY() + size 
+            <<", Z = " << origin.getZ() + size << std::endl;
+    if (origin.getX() + size == 9 
+	|| origin.getY() + size == 9 
+	|| origin.getZ() + size == 9) 
 	{
 	    std::cout << "Cube size cannot increase more" << std::endl;
 	    return false;
@@ -80,7 +84,7 @@ bool Cube::decrSize()
 
 bool Cube::moveUp() 
 {
-    if (origin.getZ() + size < 10)
+    if (origin.getZ() + size < 9)
 	{
 	    DeviceShape::off();
 	    origin.incrZ();
@@ -128,7 +132,7 @@ bool Cube::moveLeft()
 
 bool Cube::moveRight() 
 {
-    if (origin.getY() + size < 10)
+    if (origin.getY() + size < 9)
 	{
 	    DeviceShape::off();
 	    origin.incrY();
@@ -144,7 +148,7 @@ bool Cube::moveRight()
 
 bool Cube::moveForward() 
 {
-    if (origin.getX() + size < 10)
+    if (origin.getX() + size < 9)
 	{
 	    DeviceShape::off();
 	    origin.incrX();
