@@ -35,7 +35,7 @@ Message::Message(int id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
         }
-    LOG(1, "Message(idDevice, sizeBuffer, sizeMessage, opCode)");
+    std::cout << "Message("<< (int)sizeBuff << " , " << (int)size << " , " << (int)code << ")\n";    
 }
 
 /**
