@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-#define SIZE_ACK 9
+#define SIZE_ACK 10
 #define SIZE_BUFFER 64
 
 #define SIZE_OPCODE 1
