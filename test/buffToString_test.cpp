@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
     Buffer ackBuff (SIZE_ACK);
 
     ackBuff.setHeader(1);
+    ackBuff.setID(1);
     ackBuff.setOpCode(ACK_OK);
     ackBuff.setSizeLeft(sizeAckData);
     ackBuff.setCrc(0);
@@ -18,12 +19,12 @@ int main(int argc, char *argv[]) {
         ackBuff.setData(i, 0xFF);
 
     std::cout << "Test buff toString Method" << std::endl;
-    std::cout << "Expected : " << 1 << OPCODE(ACK_OK) << 0 << sizeAckData
+    std::cout << "Expected : " << 1 << 1 << OPCODE(ACK_OK) << 0 << sizeAckData
     << 0XFF << 0xFF << 0xFF << 0 << 0 << std::endl;
 
     std::cout << "Result   : " << ackBuff.toString() << std::endl;
 
-
+    std::cout <<"PASSED\n";
 
 
     return EXIT_SUCCESS;
