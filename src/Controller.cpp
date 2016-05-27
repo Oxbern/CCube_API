@@ -229,21 +229,21 @@ Dictionnary *getDictSTM( int *nbSTM){
  * @param sizOfDic : size of the Dictionnary
  */ 
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
-    char busSDev[echo.length()+1] = {};
+    char busSDev[echo.length()+1];
     strcpy(busSDev,echo.c_str());
     int bus = 0;
-    char wordB[10] = {};
+    char wordB[10];
     int w = 0;
     while(busSDev[w] != '/'){
         wordB[w]=busSDev[w];
         w++;
     }
     wordB[w]='\0';
-    char wordBreturn[w+1] = {};
+    char wordBreturn[w+1];
     strcpy(wordBreturn,wordB);
     bus = atoi(wordBreturn);
     int Device = 0;
-    char wordD[10] = {};
+    char wordD[10];
     w++;
     int k = 0;
     while(busSDev[w] != '\0'){
@@ -252,7 +252,7 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
         k++;
     }
     wordD[w]='\0';
-    char wordDreturn[k+1] = {};
+    char wordDreturn[k+1];
                             
     strcpy(wordDreturn,wordD);
     Device = atoi(wordDreturn);
