@@ -1,0 +1,63 @@
+ordinateur : on %%%%%%%%%%, >>> no devices connected
+
+-- on branche le cube --
+
+ordinateur : on %%%%%%% >>> there are ** devices connected, choose one
+>> idDevice enregistré
+
+ordinateur : on choisit le cube => on envoie un message (DataMessage ou nouvelle classe à définir) pour demander "qui es-tu ?"
+
+SI NOUVELLE CLASSE, MESSAGE AVEC 1 BUFFER
+cube :
+     - si je ne recois pas le message : {ref 1}
+     - si je recois un message :
+          -- je check le CRC :
+                --- s'il est faux => j'envoie ACK_ERR
+                --- s'il est juste :
+                         ---- je check si idDevice = myID ?? ou c'est fait ailleurs ??
+                         ---- je check le header, si 1 OK, sinon PAS OK => j'envoie ACK_NOK (avec l'idBuffer que j'veux recevoir, pour savoir : je lis opCode et sizeLeft)
+                         ---- je traite le message, ie je lis le buffer : opCode et sizeLeft
+                                 sizeLeft < sizeBuffer de ce type d'opCode ?? ici oui donc message fini (oui oui composé que de 1 buffer)
+                                 Comme il s'agit d'un message "qui es-tu ?",
+                                 => je dois renvoyer un message (de même type, donc 1 buffer) avec mes attributs pour l'instant sizeX, sizeY, sizeZ
+
+ordinateur :
+     - si on ne recoit rien :
+          -- {ref 1}, le cube n'avait pas reçu mon message de base => TIMEOUT à implémenter
+          -- on ne recoit pas le message du cube => TIMEOUT ou ACK_NOK ?
+     - si on recoit un message :
+          -- on check le CRC :
+                --- s'il est faux : j'envoie ACK_ERR
+                --- s'il est juste :
+                         ---- je check s'il vient bien de idDevice, si non => j'envoie ACK_ERR
+                         ---- je check le header, si 1 OK, sinon => j'envoie ACK_NOK
+                         ---- je traite le message, ie je lis le buffer : opCode et sizeLeft
+                              ----- le message est-il fini ? sizeLeft < sizeBuffer(opCode)
+                                    si non => je renvois un ACK_OK et j'attends le suite du message                              
+                                    si oui, je lis le opCode :
+                                            ------ si c'est un ACK_ERR || un ACK_NOK => je renvoie mon message d'avant (compteur ++, au bout de 3 essais, on arrête)
+                                            ------ si c'est un opCode € reponse_possible(opCode de "qui es-tu ?") => je renvoie ACK_OK
+                                                      >> sizeX, sizeY, sizeZ enregistrés
+                                                   sinon => je renvoie mon message d'avant (compteur ++, au bout de 3 essais, on arrête)
+
+cube :
+     - si on ne recoit rien (au bout TIMEOUT_TIME secondes) :
+
+     - si on recoit un message :
+          -- on check le CRC :
+             --- s'il est faux : j'envoie ACK_ERR
+             --- s'il est juste :
+                          ---- je check si idDevice = myID, si non : ???
+                          ---- je check le header, si 1 OK, sinon => j'envoie ACK_NOK
+                          ---- je traite le message :
+                               si opCode != ACK_*** => j'envoie ACK_ERR ???
+                               sinon,
+                                        ----- si ACK_OK : OK
+                                        ----- si ACK_ERR : je renvois le message d'avant (compteur ++)
+                                        ----- si ACK_NOK : je renvois le buffer qu'il faut : ici le message d'avant
+
+-- je débranche le cube --
+
+ordinateur :
+    - je veux demander les états des LEDs du cube => j'envoie un message (Message de type question avec l'opCode qu'il faut)
+    %%%%% ???
