@@ -178,6 +178,7 @@ void Buffer::toArray(uint8_t* buffLinear)
 {
     if (buffLinear != NULL) {
         buffLinear[HEADER_INDEX] = header;
+        buffLinear[ID_INDEX] = idDevice;
         buffLinear[OPCODE_INDEX] = opCode;
         uint8_t tab[2];
         convert16to8(sizeLeft, tab);
