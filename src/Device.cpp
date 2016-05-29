@@ -177,8 +177,8 @@ bool Device::send(Message* mess)
         uint8_t * buffString = new uint8_t[sizeBuffer];
         mess->getBuffer()[i].toArray(buffString);
 
-        LOG(1, "DataSize : " + std::to_string(sizeBuffer));
-        LOG(1, "Buffer send : " + uint8ArrayToString(buffString, sizeBuffer));
+        LOG(2, "DataSize : " + std::to_string(sizeBuffer));
+        LOG(2, "Buffer send : " + uint8ArrayToString(buffString, sizeBuffer));
 
         if ((this->port.compare("/dev/stdin") == 0) || (this->port.compare("/dev/stdout") == 0)) {
             //VirtualCube

@@ -2,7 +2,7 @@
 #define DEBUG_H
 
 
-#define LOG_LEVEL 1
+#define LOG_LEVEL 0
 
 #ifndef LOG_LEVEL
     #define LOG_LEVEL 0
@@ -12,6 +12,6 @@
  * DEBUG print to display one message
  */
 #define LOG(level, x) do { \
-if (LOG_LEVEL && (LOG_LEVEL >= level)) { std::cerr << x << std::endl; } } while (0)
+if (LOG_LEVEL && (level >= LOG_LEVEL)) { std::cerr << x << std::endl; } } while (0)
 
 #endif //DEBUG_H
