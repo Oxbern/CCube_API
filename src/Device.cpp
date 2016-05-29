@@ -173,10 +173,16 @@ bool Device::send(Message* mess)
     for (int i = 0; i < n; i++) {
         int sizeBuffer = mess->getBuffer()[i].getSizeBuffer();
         uint8_t * buffString = new uint8_t[sizeBuffer];
-        
+
         mess->getBuffer()[i].toArray(buffString);
 
-        LOG(1, mess->getBuffer()[i].toStringDebug(1));
+        //TODO : remove when debug is OK
+        std::string sDebug;
+        for(int k = 0; k < sizeBuffer; ++k)
+            sDebug += std::to_string(buffString[k]);
+
+        LOG(1, "DataSize : " + std::to_string(sizeBuffer));
+        LOG(1, "Buffer send : " + sDebug);
 
         if ((this->port.compare("/dev/stdin") == 0) || (this->port.compare("/dev/stdout") == 0)) {
             //VirtualCube
@@ -185,8 +191,6 @@ bool Device::send(Message* mess)
             CDC_Receive_FS(buffString);
 
         } else {
-            LOG(1, mess->getBuffer()[i].toStringDebug(1));
-
             while (!write(buffString, sizeBuffer)) {
                 //TODO Timeout
                 continue;

@@ -8,7 +8,7 @@
  */
 int main(int argc, char *argv[]) {
 
-    std::string port = "dev/ttyACM0";
+    std::string port = "/dev/stdout";
     Device dev(port, 1);
 
     if (dev.connect()){
