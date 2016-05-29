@@ -22,7 +22,10 @@ int main(int argc, char* argv[]) {
     std::cout << "=> on(0, 0, 0) and on(4, 4, 4) and on(8, 8, 8)" << std::endl;
     std::cout << std::endl;
     std::cout << "DeviceShape.toArray () : " << std::endl;
-    printArray(d.toArray(), sizeArray);
+    uint8_t *ledArray = d.toArray();
+    printArray(ledArray, sizeArray);
+
+    delete [] ledArray;
 
     return EXIT_SUCCESS;
 }
