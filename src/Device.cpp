@@ -169,7 +169,7 @@ DeviceShape *Device::getcurrentConfig() const{
 bool Device::write(std::string data)
 {
     if(this->file.is_open()) {
-        this->file << data << std::endl;
+        this->file << data << std::endl; //TODO use write (instead)
         LOG(1, "Data written to file");
         return true;
     }else {

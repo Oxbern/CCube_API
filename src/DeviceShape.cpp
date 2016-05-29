@@ -1,5 +1,10 @@
+#include <cmath>
+
 #include "DeviceShape.h"
 
+/**
+ * @brief TODO
+ */
 void DeviceShape::clearLed()
 {
     for (int x = 0; x < sizeX; ++x)
@@ -8,6 +13,9 @@ void DeviceShape::clearLed()
                 ledStatus[x][y][z] = false;
 }
 
+/**
+ * @brief TODO
+ */
 DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ)
 {
     LOG(1, "DeviceShape constructor called");
@@ -23,6 +31,9 @@ DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(
     clearLed();
 }
 
+/**
+ * @brief TODO
+ */
 DeviceShape::~DeviceShape() {
     LOG(1, "DeviceShape destructor called");
     //Deallocation
@@ -101,20 +112,24 @@ bool DeviceShape::toggle(int x, int y, int z)
 
 /**
  * @brief Converts ledBuffer into an array
- * @param ledStatus the filled array
+ * @param ledStatus : the filled array
  */
 uint8_t * DeviceShape::toArray()
 {
-    uint8_t *ledArray = new uint8_t[sizeX*sizeY*sizeZ];
-    int i = 0; int j = 7;
-    uint8_t tmp = 0; uint8_t val;
+    uint8_t tmp = 0;
+    uint8_t val;
+    int i = 0;
+    int j = 7;
+    int iMax = ceil(double(sizeX * sizeY * sizeZ) / 8.0); //Nb of uint8_t in the array
+    uint8_t *ledArray = new uint8_t[iMax];
+
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)
             for (int z = 0; z < sizeZ; ++z) {
                 val = ledStatus[x][y][z] ? 1 : 0;
-                tmp += (val << j);
+                tmp |= (val << j);
 
-                if (j == 0) {
+                if (j == 0 || (x == 8 && y == 8 && z == 8)) {
                     ledArray[i] = tmp;
                     j = 7;
                     tmp = 0;
@@ -123,6 +138,7 @@ uint8_t * DeviceShape::toArray()
                     --j;
                 }
             }
+
     return ledArray;
 }
 
