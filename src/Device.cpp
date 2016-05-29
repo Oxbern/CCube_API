@@ -187,6 +187,7 @@ bool Device::send(Message* mess)
             LOG(2, "Buffer send (size = " + std::to_string(sizeBuffer)
                    + " Bytes) : " + uint8ArrayToString(buffString, sizeBuffer));
 
+	        LOG(1, "Virtual sending");
             //Virtual sending
             uint8_t* buffer = CDC_Receive_FS(buffString);
             delete []buffer;
