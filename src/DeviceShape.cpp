@@ -109,6 +109,13 @@ bool DeviceShape::toggle(int x, int y, int z)
            (ledStatus[x][y][z] = false) : (ledStatus[x][y][z] = true);
 }
 
+/**
+ * @brief TODO
+ */
+int DeviceShape::getSizeInBytes()
+{
+    return ceil(double(sizeX * sizeY * sizeZ) / 8.0); //Nb of uint8_t in the array
+}
 
 /**
  * @brief Converts ledBuffer into an array
@@ -120,8 +127,7 @@ uint8_t * DeviceShape::toArray()
     uint8_t val;
     int i = 0;
     int j = 7;
-    int iMax = ceil(double(sizeX * sizeY * sizeZ) / 8.0); //Nb of uint8_t in the array
-    uint8_t *ledArray = new uint8_t[iMax];
+    uint8_t *ledArray = new uint8_t[getSizeInBytes()];
 
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)

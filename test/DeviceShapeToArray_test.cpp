@@ -11,8 +11,8 @@
 int main(int argc, char* argv[]) {
     int size = 9;
     DeviceShape d(size, size, size);
-    int sizeArray = ceil((double)(size * size * size) / 8.0);
-    std::cout << "Size of uint8_t array : " << sizeArray << std::endl;
+    int sizeArray = d.getSizeInBytes();
+    std::cout << "Size of uint8_t array : " << sizeArray << " Bytes" << std::endl;
     std::cout << std::endl;
 
     d.on(0, 0, 0); //Switch on the first led
