@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Utils.h"
 
 /**
@@ -80,3 +81,15 @@ uint16_t computeCRC(uint8_t *data, uint16_t size) {
     return crc;
 }
 
+/**
+ * Function to print an array of uint8_t
+ */
+void printArray(uint8_t *array, int arraySize)
+{
+    if (array != NULL) {
+        for (int i = 0; i < arraySize; ++i) {
+            std::cout << (int) array[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+}

@@ -42,6 +42,6 @@ void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]);
 #define CRC16 0x1021
 
 uint16_t computeCRC(uint8_t *data, uint16_t size);
-
+void printArray(uint8_t *array, int arraySize);
 
 #endif
