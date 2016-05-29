@@ -63,7 +63,7 @@ void Buffer::setHeader(uint8_t head) {
  * @brief Sets the id of the Device 
  * @param idDevice
  */
-void Buffer::setID(int id) {
+void Buffer::setID(uint8_t id) {
     this->idDevice = id;
 }
 
@@ -147,7 +147,7 @@ int Buffer::getSizeBuffer() const
     return this->sizeBuffer;
 }
 
-int Buffer::getID() const
+uint8_t Buffer::getID() const
 {
     return this->idDevice;
 }
@@ -207,7 +207,7 @@ std::string Buffer::toString()
     uint8_t tab[2];
     convert << (int) header;
     convert << (int) opCode;
-    convert << idDevice;
+    convert << (int) idDevice;
 
     //split sizeLeft into two uint8_t
     convert16to8(sizeLeft, tab);

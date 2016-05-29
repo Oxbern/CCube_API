@@ -11,7 +11,7 @@
 
 class Message {
  protected :
-    int idDevice;
+    uint8_t idDevice;
     int sizeBuffer;
     uint16_t sizeData;
     uint8_t opCode;
@@ -20,7 +20,7 @@ class Message {
     
  public :     
     Message();
-    Message(int id, int sizeBuff, uint16_t size, uint8_t code);
+    Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code);
     Message(const Message &M);
     ~Message();
     int NbBuffers() const;
@@ -33,7 +33,7 @@ class Message {
     uint16_t getSizeData() const;
     uint8_t getOpCode() const;
     uint16_t getCrc() const;
-    int getID() const;
+    uint8_t getID() const;
     
     std::string toStringDebug();
 };

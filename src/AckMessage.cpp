@@ -16,7 +16,7 @@ AckMessage::AckMessage() : Message()
  * @param sizeLeft : size left of message to send
  * @param crc : crc of ACK 
  */
-AckMessage::AckMessage(int id, uint8_t ackType) : Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
+AckMessage::AckMessage(uint8_t id, uint8_t ackType) : Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
 {
     LOG(1, "AckMessage(idDevice, ackType)");
 }

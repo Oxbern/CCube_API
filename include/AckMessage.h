@@ -10,7 +10,7 @@
 class AckMessage : public Message {
 public :
     AckMessage();
-    AckMessage(int id, uint8_t ackType);
+    AckMessage(uint8_t id, uint8_t ackType);
     ~AckMessage();
     
     void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack);

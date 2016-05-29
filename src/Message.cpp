@@ -18,7 +18,7 @@ Message::Message() : idDevice(0), sizeBuffer(0), sizeData(0), opCode(0), crc(0)
  * @param size of the message
  * @param code operation code
  */
-Message::Message(int id, int sizeBuff, uint16_t size, uint8_t code) :
+Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
     idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
 {
     int n = this->NbBuffers();
@@ -177,7 +177,7 @@ uint16_t Message::getCrc() const {
 /**
  * @brief Returns the id of the device
  */
-int Message::getID() const {
+uint8_t Message::getID() const {
     return this->idDevice;
 }
 
