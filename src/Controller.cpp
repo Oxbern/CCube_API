@@ -38,15 +38,21 @@ bool Controller::removeListener(Listener &l)
 /**
  * @brief List all devices which are connected via USB
  */ 
-void Controller::listAllDevices()
+bool Controller::listAllDevices()
 {
     std::cout << "--- List of USB Connected Devices : ---" << std::endl;
     std::list<Device*>::iterator iter ;
     int i = 1;
     for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
-        std::cout << "Device  "  << i << ": Id = " << (*iter)->getID() << ", Port :" << (*iter)->getPort() <<  "\n";
+        std::cout << "Device  "  << i << ": Id = " << (*iter)->getID()
+                  << ", Port :" << (*iter)->getPort() <<  "\n";
         i++;
     }
+    if (i == 1) {
+	    std::cout << "No device connected\n";
+	    return false;
+    }
+    return true;
 }
 
 /**

@@ -15,32 +15,32 @@
 int main(int argc, char* argv[]) {
     
     Controller c;
-    c.listAllDevices();
+    if (c.listAllDevices()) {
 
-    int choice = 0;
+	    int choice = 0;
     
-    std::cout << "Enter the device's ID you want to connect : " << std::endl;
-    std::cin >> choice;
+	    std::cout << "Enter the device's ID you want to connect : " << std::endl;
+	    std::cin >> choice;
 
-    std::list<Device*>::iterator iter ;
-    Device *chosen;
-    std::list<Device*> listDevice = c.getListDevices();
-    for(iter = listDevice.begin() ; (iter != listDevice.end()) ;iter++){
-        if (choice == (*iter)->getID())
-            chosen = *iter;
+	    std::list<Device*>::iterator iter ;
+	    Device *chosen;
+	    std::list<Device*> listDevice = c.getListDevices();
+	    for(iter = listDevice.begin() ; (iter != listDevice.end()) ;iter++){
+		    if (choice == (*iter)->getID())
+			    chosen = *iter;
+	    }
+
+	    std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
+	    if (c.connectDevice(chosen))
+		    std::cout << "You are connected" << std::endl;
+
+	    DeviceShape *ds = c.getConnectedDevice()->getcurrentConfig();
+	    (*ds).on(4,4,4);
+	    std::cout << "DeviceShape on (4,4,4)" << std::endl;
+
+	    c.getConnectedDevice()->display();
+	    std::cout << "DeviceShape displayed" << std::endl;
     }
-
-    std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
-    if (c.connectDevice(chosen))
-        std::cout << "You are connected" << std::endl;
-
-    DeviceShape *ds = c.getConnectedDevice()->getcurrentConfig();
-    (*ds).on(4,4,4);
-    std::cout << "DeviceShape on (4,4,4)" << std::endl;
-
-    c.getConnectedDevice()->display();
-    std::cout << "DeviceShape displayed" << std::endl;
-
     return 0;
 }
 
