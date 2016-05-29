@@ -188,7 +188,7 @@ int Message::getID() const {
 std::string Message::toStringDebug()
 {
     std::ostringstream convert;
-    convert << "Message :" << std::endl;
+    convert << "Message (debug) :" << std::endl;
     int n = NbBuffers();
     for (int i = 0; i < n; i++)
         convert << getBuffer()[i].toStringDebug(i);

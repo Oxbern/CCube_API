@@ -146,6 +146,9 @@ bool Device::askForDisplaySize()
 bool Device::write(uint8_t* data, int dataSize)
 {
     if(this->file.is_open()) {
+        LOG(2, "Buffer send (size = " + std::to_string(dataSize)
+               + " Bytes) : " + uint8ArrayToString(data, dataSize));
+
         if (this->file.write((char *)data, dataSize)){
             LOG(1, "Data written to file");
             return true;
@@ -177,11 +180,12 @@ bool Device::send(Message* mess)
         uint8_t * buffString = new uint8_t[sizeBuffer];
         mess->getBuffer()[i].toArray(buffString);
 
-        LOG(2, "DataSize : " + std::to_string(sizeBuffer));
-        LOG(2, "Buffer send : " + uint8ArrayToString(buffString, sizeBuffer));
+        LOG(3, mess->toStringDebug());
 
         if ((this->port.compare("/dev/stdin") == 0) || (this->port.compare("/dev/stdout") == 0)) {
             //VirtualCube
+            LOG(2, "Buffer send (size = " + std::to_string(sizeBuffer)
+                   + " Bytes) : " + uint8ArrayToString(buffString, sizeBuffer));
 
             //Virtual sending
             uint8_t* buffer = CDC_Receive_FS(buffString);
