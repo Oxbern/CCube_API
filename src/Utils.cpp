@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Utils.h"
 
 /**
@@ -92,4 +91,17 @@ void printArray(uint8_t *array, int arraySize)
         }
         std::cout << std::endl;
     }
+}
+
+/**
+ * Convert an uint8_t array into a string object
+ */
+std::string uint8ArrayToString(uint8_t *array, int arraySize)
+{
+    std::string sDebug;
+    if (array != NULL && arraySize > 0) {
+        for (int k = 0; k < arraySize; ++k)
+            sDebug += std::to_string(array[k]);
+    }
+    return sDebug;
 }
