@@ -36,7 +36,7 @@ public :
     std::string getFirmwareVersion();
     bool askForDisplaySize();
     bool send(Message* mess);
-    bool write(std::string data); //TODO set as private later
+    bool write(uint8_t* data, int dataSize); //TODO set as private later
     bool on(int x, int y, int z);
     bool off();
     bool off(int x, int y, int z);

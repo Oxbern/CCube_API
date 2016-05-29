@@ -74,7 +74,7 @@ bool Device::connect(){
         file.open(port, std::ios::in | std::ios::out); //TODO app flag usefull ?
     }
 
-    LOG(1, "Device connected");
+    LOG(1, "Device " + std::string((file.is_open() ? "connected" : "not connected")));
     return (file.is_open());
 }
 
@@ -141,10 +141,10 @@ bool Device::askForDisplaySize()
 /**
  * @brief TODO
  */
-bool Device::write(std::string data)
+bool Device::write(uint8_t* data, int dataSize)
 {
     if(this->file.is_open()) {
-        if (this->file.write(data.c_str(), data.length())){
+        if (this->file.write((char *)data, dataSize)){
             LOG(1, "Data written to file");
             return true;
         }else{
@@ -172,21 +172,24 @@ bool Device::send(Message* mess)
     int n = mess->NbBuffers();
     for (int i = 0; i < n; i++) {
 
-        std::string buffString = mess->getBuffer()[i].toString();
-        LOG(1, "Message toString : " + mess->getBuffer()[i].toStringDebug(i));
-
         if ((this->port.compare("/dev/stdin") == 0) || (this->port.compare("/dev/stdout") == 0)) {
+            std::string buffString = mess->getBuffer()[i].toString();
+            LOG(1, "Message toString : " + mess->getBuffer()[i].toStringDebug(i));
             //VirtualCube
             uint8_t * bufferArray = new uint8_t[mess->getBuffer()[i].getSizeBuffer()];
             mess->getBuffer()[i].toArray(bufferArray);
             //Virtual sending
-            // CDC_Receive_FS(bufferArray);
+            CDC_Receive_FS(bufferArray);
             delete [] bufferArray;
         } else {
-            while (!write(buffString)) {
+            uint8_t * buffString = new uint8_t[mess->getSizeBuffer()];
+            mess->getBuffer()[i].toArray(buffString);
+
+            while (!write(buffString, mess->getSizeBuffer())) {
                 //TODO Timeout
                 continue;
             }
+            delete []buffString;
         }
     }
     LOG(1, "Message sended" );
