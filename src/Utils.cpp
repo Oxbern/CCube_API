@@ -36,7 +36,7 @@ void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]) {
 */
 uint16_t computeCRC(uint8_t *data, uint16_t size) {
     uint16_t out = 0;
-    int bits_read = 0, bit_flag;
+    int bits_read = 0, bit_flag = 0;
 
     if(data == NULL)
         return 0;
