@@ -42,6 +42,8 @@ public :
     bool off(int x, int y, int z);
     bool toggle(int x, int y, int z);
 
+    uint8_t *getAck(int fd);
+    
     //TODO Rajouter les setters et getters
     int getID() const;
     std::string getPort() const;

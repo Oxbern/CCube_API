@@ -1,6 +1,10 @@
 #include <cstring>
 #include <fstream>
 
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include "Device.h"
 #include "ErrorException.h"
 #include "Utils.h"
@@ -105,6 +109,7 @@ bool Device::display()
         std::cerr << "Error while sending ledBuffer" << std::endl;
         return false;
     }
+    
     return true;
 }
 
@@ -167,7 +172,8 @@ bool Device::write(uint8_t* data, int dataSize)
  */
 bool Device::send(Message* mess)
 {
-    LOG(1, "Sending message");
+	
+	LOG(1, "Sending message");
     if (!file.is_open()) {
         while (!connect()) {
             //TODO Timeout
@@ -193,15 +199,41 @@ bool Device::send(Message* mess)
             delete []buffer;
 
         } else {
-            while (!write(buffString, sizeBuffer)) {
-                //TODO Timeout
-                continue;
-            }
+	        write(buffString, sizeBuffer);
+	        uint8_t ack[10];
+
+	        file.close();
+	        int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
+
+	        memcpy(ack, getAck(fd), 10);
+
+	        for (int k = 0; k < 10; ++k)
+		        std::cout << (int)ack[k] << "| ";
+
+	        close(fd);
+	        this->connect();
         }
         delete []buffString;
     }
     LOG(1, "Message sended" );
+
     return true;
+}
+
+uint8_t *Device::getAck(int fd) {
+	int index = 0,
+		c = 0;
+	
+	uint8_t *buf = (uint8_t *)malloc(10*sizeof(uint8_t));
+	
+	fcntl(fd, F_SETFL, 0);
+	
+	while (read(fd, &c, 1) > 0) {
+		buf[index] = c;
+		index ++;
+	}
+	
+	return buf;
 }
 
 /**
