@@ -6,7 +6,9 @@
  */ 
 Controller::Controller()
 {
+    
     listAndGetUSBConnectedDevices();
+    LOG(1, "Controller()");
 }
 
 /**
@@ -14,7 +16,7 @@ Controller::Controller()
  */ 
 Controller::~Controller()
 {
-
+    LOG(1,"~Controller()");
 }
 
 /**
@@ -316,7 +318,6 @@ void Controller::listAndGetUSBConnectedDevices(){
                 }
             }
         }
-               
     }
     for (int i = 0; i < size; i++)
             delete [] (ttyList[i]);
