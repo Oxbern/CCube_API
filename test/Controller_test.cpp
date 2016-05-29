@@ -22,8 +22,9 @@ int main(int argc, char* argv[]) {
 	    std::cout << "Enter the device's ID you want to connect : " << std::endl;
 	    std::cin >> choice;
 
-	    std::list<Device*>::iterator iter ;
 	    Device *chosen;
+
+	    std::list<Device*>::iterator iter ;
 	    std::list<Device*> listDevice = c.getListDevices();
 	    for(iter = listDevice.begin() ; (iter != listDevice.end()) ;iter++){
 		    if (choice == (*iter)->getID())
@@ -31,6 +32,7 @@ int main(int argc, char* argv[]) {
 	    }
 
 	    std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
+
 	    if (c.connectDevice(chosen))
 		    std::cout << "You are connected" << std::endl;
 
