@@ -97,7 +97,9 @@ bool Device::disconnect()
 bool Device::display()
 {
     DataMessage dm (this->id, currentConfig->getSizeInBytes(), OPCODE(BUFF_SENDING));
-    dm.encode(currentConfig->toArray());
+    uint8_t *buffer = currentConfig->toArray();
+    dm.encode(buffer);
+    delete[](buffer);
 
     if (!send(&dm)){
         std::cerr << "Error while sending ledBuffer" << std::endl;
@@ -173,22 +175,17 @@ bool Device::send(Message* mess)
     for (int i = 0; i < n; i++) {
         int sizeBuffer = mess->getBuffer()[i].getSizeBuffer();
         uint8_t * buffString = new uint8_t[sizeBuffer];
-
         mess->getBuffer()[i].toArray(buffString);
 
-        //TODO : remove when debug is OK
-        std::string sDebug;
-        for(int k = 0; k < sizeBuffer; ++k)
-            sDebug += std::to_string(buffString[k]);
-
         LOG(1, "DataSize : " + std::to_string(sizeBuffer));
-        LOG(1, "Buffer send : " + sDebug);
+        LOG(1, "Buffer send : " + uint8ArrayToString(buffString, sizeBuffer));
 
         if ((this->port.compare("/dev/stdin") == 0) || (this->port.compare("/dev/stdout") == 0)) {
             //VirtualCube
 
             //Virtual sending
-            CDC_Receive_FS(buffString);
+            uint8_t* buffer = CDC_Receive_FS(buffString);
+            delete []buffer;
 
         } else {
             while (!write(buffString, sizeBuffer)) {
