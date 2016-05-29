@@ -126,7 +126,13 @@ bool Device::updateFirmware()
  */
 float Device::getLuminosity()
 {
-    return 0.0;
+    DataMessage dm(this->id, 0, OPCODE(LIGHT_RECEPTION));
+
+    if (!send(&dm)){
+        std::cerr << "Error while asking the device brightness" << std::endl;
+        return false; //TODO See if unavailable or just error while sending buffer
+    }
+    return this->luminosity;
 }
 
 /**
