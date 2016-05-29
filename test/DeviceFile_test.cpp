@@ -5,9 +5,10 @@
 
 int main(int argc, char *argv[]) {
     Device dev("/dev/stdout", 1);
+    uint8_t buff[24] = "Write in a file in C++\n";
 
     if (dev.connect())
-        dev.write("Write in a file in C++");
+        dev.write(buff, 24);
     else
         std:: cerr << "Wrong file" << std::endl;
 
