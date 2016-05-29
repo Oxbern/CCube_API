@@ -1,5 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <fcntl.h>
+#include <unistd.h>
+
+
 
 #include "Device.h"
 
@@ -16,12 +20,12 @@ int main(int argc, char *argv[]) {
 
         //Switch on some LEDs
         if (!dev.on(0, 0, 0) || !dev.on(4, 4, 4) || !dev.on(8, 8, 8)) {
-            std::cout << "TEST FAILED 1 " << std::endl;
+            std::cout << "Unable to turn on the LEDs" << std::endl;
             return EXIT_FAILURE;
         }
 
         if (!dev.display()) {
-            std::cout << "TEST FAILED 2" << std::endl;
+            std::cout << "Unable to display" << std::endl;
             return EXIT_FAILURE;
         }
 
@@ -34,6 +38,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    std::cout << "TEST FAILED 3" << std::endl;
+    std::cout << "Unable to connect" << std::endl;
     return EXIT_FAILURE;
 }
