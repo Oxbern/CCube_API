@@ -171,26 +171,28 @@ bool Device::send(Message* mess)
     }
     int n = mess->NbBuffers();
     for (int i = 0; i < n; i++) {
+        int sizeBuffer = mess->getBuffer()[i].getSizeBuffer();
+        uint8_t * buffString = new uint8_t[sizeBuffer];
+        
+        mess->getBuffer()[i].toArray(buffString);
+
+        LOG(1, mess->getBuffer()[i].toStringDebug(1));
 
         if ((this->port.compare("/dev/stdin") == 0) || (this->port.compare("/dev/stdout") == 0)) {
-            std::string buffString = mess->getBuffer()[i].toString();
-            LOG(1, "Message toString : " + mess->getBuffer()[i].toStringDebug(i));
             //VirtualCube
-            uint8_t * bufferArray = new uint8_t[mess->getBuffer()[i].getSizeBuffer()];
-            mess->getBuffer()[i].toArray(bufferArray);
-            //Virtual sending
-            CDC_Receive_FS(bufferArray);
-            delete [] bufferArray;
-        } else {
-            uint8_t * buffString = new uint8_t[mess->getSizeBuffer()];
-            mess->getBuffer()[i].toArray(buffString);
 
-            while (!write(buffString, mess->getSizeBuffer())) {
+            //Virtual sending
+            CDC_Receive_FS(buffString);
+
+        } else {
+            LOG(1, mess->getBuffer()[i].toStringDebug(1));
+
+            while (!write(buffString, sizeBuffer)) {
                 //TODO Timeout
                 continue;
             }
-            delete []buffString;
         }
+        delete []buffString;
     }
     LOG(1, "Message sended" );
     return true;
