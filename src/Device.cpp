@@ -51,7 +51,7 @@ Device::Device(std::string port, int id)
  */
 Device::~Device()
 {
-    LOG(1, "DeviceShape destructor called");
+    LOG(1, "Device destructor called");
     delete this->currentConfig;
 }
 
@@ -200,7 +200,7 @@ bool Device::send(Message* mess)
 
         } else {
 	        write(buffString, sizeBuffer);
-	        uint8_t ack[10];
+	        uint8_t ack[10] = "initializ";
 
 	        file.close();
 	        int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);

@@ -7,6 +7,14 @@
 Controller::Controller()
 {
     listAndGetUSBConnectedDevices();
+
+    if (devices.size() == 0){
+        // Connect to stdout to write messages
+         Device *dev = new Device("/dev/stdout", 1);
+         devices.push_back(dev);    
+         connectDevice(dev);
+    }
+        
     LOG(1, "Controller()\n");
 }
 
@@ -16,6 +24,8 @@ Controller::Controller()
 Controller::~Controller()
 {
     LOG(1,"~Controller()");
+    
+    while(!devices.empty()) delete devices.front(), devices.pop_front();
 }
 
 /**
@@ -53,9 +63,8 @@ bool Controller::listAllDevices()
                   << ", Port :" << (*iter)->getPort() <<  "\n";
         i++;
     }
-
-    if (i == 1) {
-	    std::cout << "No device connected\n";
+    if (!strcmp((*(devices.begin()))->getPort().c_str(),"/dev/stdout") ) {
+	    std::cout << "No device connected, connection to stdout\n";
 	    return false;
     }
     return true;
@@ -74,6 +83,13 @@ bool Controller::connectDevice(Device *d)
         return true;
     }
     return false; 
+}
+
+bool Controller::disconnectDevice()
+{
+    LOG(1, "disconnectDevice() \n");
+
+    return this->connectedDevice->disconnect();
 }
 
 /**
