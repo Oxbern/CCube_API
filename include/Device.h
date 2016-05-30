@@ -1,3 +1,4 @@
+
 #ifndef DEVICE_H
 #define DEVICE_H
 
@@ -23,7 +24,6 @@ private :
 
 public :
     // Port is found by Controller's constructor and id is defined there.
-    Device();
     Device(std::string port, int id);
     ~Device();
 
@@ -50,5 +50,6 @@ public :
     DeviceShape *getcurrentConfig() const;
     std::fstream & getFile();
 
-};
+    void setCurrentConfig(DeviceShape* ds);
+    };
 #endif //CUBEAPI_DEVICE_H

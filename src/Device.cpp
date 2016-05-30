@@ -298,3 +298,8 @@ std::fstream& Device::getFile()
 {
     return this->file;
 }
+
+void Device::setCurrentConfig(DeviceShape* ds) 
+{
+    this->currentConfig = ds;
+}

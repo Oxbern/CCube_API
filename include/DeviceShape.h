@@ -28,5 +28,13 @@ public :
     friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d);
 
     void print(std::ostream &str) const;
+    
+    DeviceShape& operator=(const DeviceShape &ds);
+
+    int getSizeX() const;
+    int getSizeY() const;
+    int getSizeZ() const;
+    
+    bool*** getLedStatus() const;
 };
 #endif //DEVICESHAPE_H
