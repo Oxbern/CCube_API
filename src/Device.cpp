@@ -20,7 +20,7 @@
  */
 Device::Device(std::string port, int id)
 {
-    LOG(1, "Device constructor called");
+    LOG(1, "Device(port, id)");
     //Copy device's port
     if (port.length() > 0) {
         this->port = std::string(port);
@@ -57,7 +57,7 @@ Device::Device(std::string port, int id)
  */
 Device::~Device()
 {
-    LOG(1, "Device destructor called");
+    LOG(1, "~Device()");
     if (this->currentConfig != NULL) {
         delete this->currentConfig;
     }

@@ -78,7 +78,7 @@ Controller::Controller()
         connectDevice(dev);
     }
         
-    LOG(1, "Controller()\n");
+    LOG(1, "Controller()");
 }
 
 /**

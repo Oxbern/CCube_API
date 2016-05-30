@@ -6,7 +6,7 @@
 Cube::Cube(int s, Device *d, Point p, bool b) : 
     ShapeToDisplay(s, d, p, b)
 {
-    LOG(1,"Constructor cube");
+    LOG(1,"Cube(size, device, point, boolean");
     init();
 }
 
@@ -40,7 +40,7 @@ void Cube::init()
  */
 Cube::~Cube()
 {
-    LOG(1,"Destructor cube");
+    LOG(1,"~Cube()");
 }
 
 /**

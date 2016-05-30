@@ -26,7 +26,8 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
     }
-    std::cout << "Message("<< (int)id << " , " << (int)sizeBuff << " , " << (int)size << " , " << (int)code << ")\n";    
+    std::cout << "Message("<< (int)id << " , " << (int)sizeBuff
+              << " , " << (int)size << " , " << (int)code << ")\n";    
 }
 
 /**
