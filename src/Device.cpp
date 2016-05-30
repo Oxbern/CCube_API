@@ -205,7 +205,7 @@ bool Device::send(Message* mess)
 	        file.close();
 	        int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
 
-	        memcpy(ack, getAck(fd), 10);
+	        //memcpy(ack, getAck(fd), 10);
 
 	        for (int k = 0; k < 10; ++k)
 		        std::cout << (int)ack[k] << "| ";

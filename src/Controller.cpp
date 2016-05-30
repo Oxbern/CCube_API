@@ -148,7 +148,7 @@ char ** getTtyList(int *size){
  * @param j : begining of the future parsing
  */ 
 void getNextWord(char *path, int *j, char * wordreturn){
-    char word[10];
+    char word[10] = "initializ";
     int w = 0;
     
     while(path[*j] != ' '){
@@ -264,7 +264,7 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
     strcpy(wordBreturn,wordB);
     bus = atoi(wordBreturn);
     int Device = 0;
-    char wordD[10];
+    char wordD[10] = "initializ";
     w++;
     int k = 0;
     while(busSDev[w] != '\0'){
@@ -301,7 +301,7 @@ void Controller::listAndGetUSBConnectedDevices(){
     int DeviceID = 1;
 
     for (int i = 0; i < size; i++){
-        std::string name = "hello";// = ttyList[i];
+        std::string name = ttyList[i];
 
         name.erase(std::remove(name.begin(), name.end(), '\n'), name.end());
         std::string cmd = "echo /dev/bus/usb/`udevadm info --name="  + name +   " --attribute-walk | sed -n 's/\\s*ATTRS{\\(\\(devnum\\)\\|\\(busnum\\)\\)}==\\\"\\([^\\\"]\\+\\)\\\"/\\4/p' | head -n 2 | awk '{$1 = sprintf(\"%03d\", $1); print}'` | tr \" \" \"\\/\"";
