@@ -78,6 +78,8 @@ int Message::NbBuffers() const
 
 /**
  * @brief Fills the buffers with the data
+ *        if size(dataToEncode) > sizeData, 
+ *        only the first sizeData values of dataToEncode will be encoded           
  * @param data to encode
  */
 void Message::encode(uint8_t *dataToEncode)
