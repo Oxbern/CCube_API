@@ -195,8 +195,8 @@ bool Device::send(Message* mess)
 
 	        LOG(1, "Virtual sending");
             //Virtual sending
-            uint8_t* buffer = CDC_Receive_FS(buffString);
-            delete []buffer;
+            // uint8_t* buffer = CDC_Receive_FS(buffString);
+            // delete []buffer;
 
         } else {
 	        write(buffString, sizeBuffer);
