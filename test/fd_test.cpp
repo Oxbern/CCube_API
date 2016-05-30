@@ -2,22 +2,64 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-
 #include <stdio.h>
-#include <sys/ioctl.h>
-#include <termios.h>
+
+#include <pthread.h>
 
 #include "DeviceShape.h"
 
-
 #define Response_MAX_SIZE 512
+
+pthread_t ack_thread;
+
+
+void *waitForACK(void *arg) {
+
+	int *fd = (int *)arg;
+
+	uint8_t ack[10] = {0};
+	uint8_t emptyAck[10] = {0};
+		
+	// Get ack
+	read(*fd, &ack[0], Response_MAX_SIZE);
+
+	if (memcmp(ack, emptyAck, 10)) {
+		fprintf(stdout, "ACK: ");
+		for (int i = 0; i < 10; ++i)
+			fprintf(stdout, "%u |", ack[i]);
+		fprintf(stdout, "\n");
+	}
+
+	return NULL;
+}
+
+int getAck(int fd){
+	if(pthread_join(ack_thread, NULL)) {
+		fprintf(stderr, "Error joining thread\n");
+		return EXIT_FAILURE;
+	}
+
+	if(pthread_create(&ack_thread, NULL, waitForACK, &fd)) {
+		fprintf(stderr, "Error creating thread\n");
+		return EXIT_FAILURE;	
+	}
+
+	return 0;
+}
+
 
 int main () {
 
 	int fd = open("/dev/ttyACM0",O_RDWR | O_NOCTTY);
+	fcntl(fd, F_SETFL, 0);
 
+	if(pthread_create(&ack_thread, NULL, waitForACK, &fd)) {
+		fprintf(stderr, "Error creating thread\n");
+		return EXIT_FAILURE;	
+	}
+	
 	if (fd < 0) {
-		fprintf(stderr, "Error openning file\n");
+		fprintf(stderr, "Error opening file\n");
 		close(fd);
 		return EXIT_FAILURE;
 	}
@@ -30,7 +72,7 @@ int main () {
 
 	myDataMessage[0] = 1;
 	myDataMessage[1] = 1;
-	myDataMessage[2] = 0x10;
+	myDataMessage[2] = 0x42;
 	myDataMessage[3] = 0;
 	myDataMessage[4] = 92;
 
@@ -43,20 +85,8 @@ int main () {
 
 	write(fd, &myDataMessage[0], 64);
 
-
-	uint8_t ack[10];
-
-	fcntl(fd, F_SETFL, 0);
-
-	read(fd, &ack[0], Response_MAX_SIZE);
-
-	printf("ACK:");
-	for (int i = 0; i < 10; ++i)
-		printf("%u |", ack[i]);
-	printf("\n");
-
-
-
+	getAck(fd);
+	
 	// myDataMessage[0] = 0;
 	myDataMessage[4] = 35;
 
@@ -66,16 +96,10 @@ int main () {
 	for (int i = 0; i < 64; ++i)
 		printf("%u |", myDataMessage[i]);
 	printf("\n");
-
-
+	
 	write(fd, &myDataMessage[0], 64);
 
-	read(fd, &ack[0], Response_MAX_SIZE);
-
-	printf("ACK:");
-	for (int i = 0; i < 10; ++i)
-		printf("%u |", ack[i]);
-	printf("\n");
+	getAck(fd);
 	
 	close(fd);
 
