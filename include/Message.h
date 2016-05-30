@@ -2,6 +2,7 @@
 #define MESSAGE_H
 
 #include "Buffer.h"
+#include "Utils.h"
 #include <vector>
 #include <iostream>
 
