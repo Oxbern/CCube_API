@@ -20,7 +20,6 @@ class Message {
     uint16_t crc;
     
  public :     
-    Message();
     Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code);
     Message(const Message &M);
     ~Message();
