@@ -35,10 +35,10 @@ RequestMessage
           1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 0 | CRC(2)
 
 AnswerMessage
-          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1 - 3) | CRC(2)        
+          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1) | CRC(2)        
 
 SetMessage
           1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1) | CRC(2)
 
 FirstMessage
-          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1 - 3) | CRC(2)        
+          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(3) | CRC(2)        
