@@ -209,83 +209,85 @@ bool Device::send(Message* mess)
             delete []buffer;
 
         } else {
-	        write(buffString, sizeBuffer);
-	        uint8_t ack[10] = "initializ";
+	        while (!write(buffString, sizeBuffer)) {
+		        continue;
+	        }
+	        // uint8_t ack[10] = "initializ";
 
-	        // // Send the buffer
-	        // write(buffString, sizeBuffer);
+	        // // // Send the buffer
+	        // // write(buffString, sizeBuffer);
 	
-	        // Disconnect from the cube
-	        file.close();
+	        // // Disconnect from the cube
+	        // file.close();
 
-	        //memcpy(ack, getAck(fd), 10);
+	        // //memcpy(ack, getAck(fd), 10);
 
-	        int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
+	        // int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
 
-	        uint8_t *output = new uint8_t[sizeBuffer];
-	        aiocb output_cb;
+	        // uint8_t *output = new uint8_t[sizeBuffer];
+	        // aiocb output_cb;
 	        
-	        memcpy(output, buffString, sizeBuffer);
+	        // memcpy(output, buffString, sizeBuffer);
 
-	        memset(&output_cb, 0, sizeof(aiocb));
-	        output_cb.aio_nbytes = sizeBuffer;
-	        output_cb.aio_fildes = fd;
-	        output_cb.aio_offset = 0;
-	        output_cb.aio_buf = output;
+	        // memset(&output_cb, 0, sizeof(aiocb));
+	        // output_cb.aio_nbytes = sizeBuffer;
+	        // output_cb.aio_fildes = fd;
+	        // output_cb.aio_offset = 0;
+	        // output_cb.aio_buf = output;
 
-	        aio_write(&output_cb);
-	        fdatasync(fd);
+	        // aio_write(&output_cb);
+	        // fdatasync(fd);
 	        
-	        // create the buffer
-	        uint8_t* input = new uint8_t[10];
+	        // // create the buffer
+	        // uint8_t* input = new uint8_t[10];
 	
-	        // create the control block structure
-	        aiocb input_cb;
+	        // // create the control block structure
+	        // aiocb input_cb;
 	
-	        memset(&input_cb, 0, sizeof(aiocb));
-	        input_cb.aio_nbytes = 10;
-	        input_cb.aio_fildes = fd;
-	        input_cb.aio_offset = 0;
-	        input_cb.aio_buf = input;
+	        // memset(&input_cb, 0, sizeof(aiocb));
+	        // input_cb.aio_nbytes = 10;
+	        // input_cb.aio_fildes = fd;
+	        // input_cb.aio_offset = 0;
+	        // input_cb.aio_buf = input;
 	
-	        // read!
-	        if (aio_read(&input_cb) == -1)
-		        {
-			        std::cout << "Unable to create request!" << std::endl;
-			        close(fd);
-		        }
+	        // // read!
+	        // if (aio_read(&input_cb) == -1)
+		    //     {
+			//         std::cout << "Unable to create request!" << std::endl;
+			//         close(fd);
+		    //     }
 	
-	        std::cout << "Request enqueued!" << std::endl;
+	        // std::cout << "Request enqueued!" << std::endl;
 	
-	        // wait until the request has finished
-	        while(aio_error(&input_cb) == EINPROGRESS)
-		        {
-			        std::cout << "Working..." << std::endl;
-		        }
+	        // // wait until the request has finished
+	        // while(aio_error(&input_cb) == EINPROGRESS)
+		    //     {
+			//         std::cout << "Working..." << std::endl;
+		    //     }
 	
-	        // success?
-	        int numBytes = aio_return(&input_cb);
+	        // // success?
+	        // int numBytes = aio_return(&input_cb);
 	
-	        if (numBytes != -1)
-		        std::cout << "Success!" << std::endl;
-	        else
-		        std::cout << "Error!" << std::endl;
+	        // if (numBytes != -1)
+		    //     std::cout << "Success!" << std::endl;
+	        // else
+		    //     std::cout << "Error!" << std::endl;
 	
-	        // now clean up
-	        close(fd);
+	        // // now clean up
+	        // close(fd);
 	        
 	        // // Wait for the ack response
 	        // uint8_t ack[10];
 
 	        // memcpy(ack, getAck(), 10);
 
-	        // Print ack message
-	        for (int k = 0; k < 10; ++k)
-		        std::cout << (int)input[k] << "| ";
-	        std::cout << "\n";
+	        // // Print ack message
+	        // for (int k = 0; k < 10; ++k)
+		    //     std::cout << (int)ack[k] << "| ";
+	        // std::cout << "\n";
 
-	        // Re-connect with the cube
-	        this->connect();
+	        // // Re-connect with the cube
+	        // this->connect();
 	        
         }
         delete []buffString;
