@@ -219,25 +219,11 @@ bool Device::send(Message* mess) {
             // delete []buffer;
 
         } else {
-
-            write(buffString, sizeBuffer);
-            uint8_t ack[10] = "initializ";
-
-            file.close();
-            int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
-
-            //memcpy(ack, getAck(fd), 10);
-
-            for (int k = 0; k < 10; ++k)
-                std::cout << (int) ack[k] << "| ";
-
-            close(fd);
-            this->connect();
-
-	        while (!write(buffString, sizeBuffer)) {
+            
+            while (!write(buffString, sizeBuffer)) {
 	        continue;
-	        }
-
+            }
+            
         }
         delete []buffString;
     }
