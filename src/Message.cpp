@@ -5,15 +5,6 @@
 #include "Utils.h"
 
 /**
- * @brief Creates an empty message
- */
-Message::Message() : idDevice(0), sizeBuffer(0), sizeData(0), opCode(0), crc(0)
-{
-    listBuffer = reinterpret_cast<Buffer *>(new char[0 * sizeof(Buffer)]);
-    LOG(1, "Message() \n");
-}
-
-/**
  * @brief Creates a message with list of buffers with opcode and sizeLeft
  * @param size of the message
  * @param code operation code
@@ -35,7 +26,7 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
         }
-    std::cout << "Message("<< (int)sizeBuff << " , " << (int)size << " , " << (int)code << ")\n";    
+    std::cout << "Message("<< (int)id << " , " << (int)sizeBuff << " , " << (int)size << " , " << (int)code << ")\n";    
 }
 
 /**
@@ -76,7 +67,9 @@ Message::~Message()
  */
 int Message::NbBuffers() const
 {
-    if ((sizeData % (sizeBuffer - DATA_INDEX - SIZE_CRC)) == 0)
+    if (sizeData == 0)
+        return 1;    
+    else if ((sizeData % (sizeBuffer - DATA_INDEX - SIZE_CRC)) == 0)
         return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC);
     else
         return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC) + 1;
