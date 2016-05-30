@@ -2,8 +2,12 @@
 #include <fstream>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <termios.h>
+#include <aio.h>
+
 
 #include "Device.h"
 #include "ErrorException.h"
@@ -208,16 +212,81 @@ bool Device::send(Message* mess)
 	        write(buffString, sizeBuffer);
 	        uint8_t ack[10] = "initializ";
 
+	        // // Send the buffer
+	        // write(buffString, sizeBuffer);
+	
+	        // Disconnect from the cube
 	        file.close();
-	        int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
 
 	        //memcpy(ack, getAck(fd), 10);
 
-	        for (int k = 0; k < 10; ++k)
-		        std::cout << (int)ack[k] << "| ";
+	        int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
 
+	        uint8_t *output = new uint8_t[sizeBuffer];
+	        aiocb output_cb;
+	        
+	        memcpy(output, buffString, sizeBuffer);
+
+	        memset(&output_cb, 0, sizeof(aiocb));
+	        output_cb.aio_nbytes = sizeBuffer;
+	        output_cb.aio_fildes = fd;
+	        output_cb.aio_offset = 0;
+	        output_cb.aio_buf = output;
+
+	        aio_write(&output_cb);
+	        fdatasync(fd);
+	        
+	        // create the buffer
+	        uint8_t* input = new uint8_t[10];
+	
+	        // create the control block structure
+	        aiocb input_cb;
+	
+	        memset(&input_cb, 0, sizeof(aiocb));
+	        input_cb.aio_nbytes = 10;
+	        input_cb.aio_fildes = fd;
+	        input_cb.aio_offset = 0;
+	        input_cb.aio_buf = input;
+	
+	        // read!
+	        if (aio_read(&input_cb) == -1)
+		        {
+			        std::cout << "Unable to create request!" << std::endl;
+			        close(fd);
+		        }
+	
+	        std::cout << "Request enqueued!" << std::endl;
+	
+	        // wait until the request has finished
+	        while(aio_error(&input_cb) == EINPROGRESS)
+		        {
+			        std::cout << "Working..." << std::endl;
+		        }
+	
+	        // success?
+	        int numBytes = aio_return(&input_cb);
+	
+	        if (numBytes != -1)
+		        std::cout << "Success!" << std::endl;
+	        else
+		        std::cout << "Error!" << std::endl;
+	
+	        // now clean up
 	        close(fd);
+	        
+	        // // Wait for the ack response
+	        // uint8_t ack[10];
+
+	        // memcpy(ack, getAck(), 10);
+
+	        // Print ack message
+	        for (int k = 0; k < 10; ++k)
+		        std::cout << (int)input[k] << "| ";
+	        std::cout << "\n";
+
+	        // Re-connect with the cube
 	        this->connect();
+	        
         }
         delete []buffString;
     }
@@ -226,20 +295,107 @@ bool Device::send(Message* mess)
     return true;
 }
 
-uint8_t *Device::getAck(int fd) {
-	int index = 0,
-		c = 0;
+uint8_t *Device::getAck() {
+	// Open connection (not blocking mode)
+	int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
+	fcntl(fd, F_SETFL, FNDELAY);
+
+	// create the buffer
+	char* buffer = new char[10];
 	
-	uint8_t *buf = (uint8_t *)malloc(10*sizeof(uint8_t));
+	// create the control block structure
+	aiocb cb;
 	
-	fcntl(fd, F_SETFL, 0);
+	memset(&cb, 0, sizeof(aiocb));
+	cb.aio_nbytes = 10;
+	cb.aio_fildes = fd;
+	cb.aio_offset = 0;
+	cb.aio_buf = buffer;
 	
-	while (read(fd, &c, 1) > 0) {
-		buf[index] = c;
-		index ++;
+	// read!
+	if (aio_read(&cb) == -1)
+	{
+		std::cout << "Unable to create request!" << std::endl;
+		close(fd);
 	}
 	
-	return buf;
+	std::cout << "Request enqueued!" << std::endl;
+	
+	// wait until the request has finished
+	while(aio_error(&cb) == EINPROGRESS)
+	{
+		std::cout << "Working..." << std::endl;
+	}
+	
+	// success?
+	int numBytes = aio_return(&cb);
+	
+	if (numBytes != -1)
+		std::cout << "Success!" << std::endl;
+	else
+		std::cout << "Error!" << std::endl;
+	
+	// now clean up
+	close(fd);
+
+	return (uint8_t *)buffer;
+	
+	
+	// if(fd == -1) {
+	// 	printf( "failed to open port\n" );
+	// }
+
+	// // Config the serial communication
+	// struct termios  config;
+
+	// // Check if this actually is a TTY device
+	// if(!isatty(fd)) { printf("Not a TTY device\n"); }
+
+	// // Get the current configuration
+	// if(tcgetattr(fd, &config) < 0) { printf("Unable to retrieve the configuration\n"); }
+
+	// // Config input flags
+	// config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |
+	//                     INLCR | PARMRK | INPCK | ISTRIP | IXON);
+	// config.c_iflag |= IGNPAR;
+	// config.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
+	// config.c_cflag &= ~(CSIZE | PARENB);
+	// config.c_cflag |= CS8 | CREAD | CLOCAL;
+
+	// config.c_cc[VMIN]  = 0;
+	// config.c_cc[VTIME] = 1;
+ 
+	// if(cfsetispeed(&config, B9600) < 0 || cfsetospeed(&config, B9600) < 0) {
+	// 	printf("Unable to set the speed\n");
+	// }
+
+	// if(tcsetattr(fd, TCSANOW, &config) < 0) { printf("Unable to set the config\n"); }
+
+
+	// FILE *input = fdopen(fd, "w+");
+	
+	// // int index = 0,
+	// // 	c = 0;
+	
+	// uint8_t *buf = (uint8_t *)calloc(10, sizeof(uint8_t));
+	
+	// // fcntl(fd, F_SETFL, 0);
+
+	// // while (read(fd, &c, 1) > 0) {
+	// // 	buf[index] = c;
+	// // 	index ++;
+	// // 	printf("Byte read: %d\n", c);
+	// // }
+
+	// int c;
+	// do {
+	// 	c = fgetc(input);
+	// 	printf("Byte read: %d\n", c);
+	// } while (c != EOF);
+	
+	// close(fd);
+	
+	// return buf;
 }
 
 /**

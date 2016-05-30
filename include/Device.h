@@ -42,7 +42,7 @@ public :
     bool off(int x, int y, int z);
     bool toggle(int x, int y, int z);
 
-    uint8_t *getAck(int fd);
+    uint8_t *getAck();
     
     //TODO Rajouter les setters et getters
     int getID() const;
