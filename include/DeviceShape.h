@@ -23,6 +23,7 @@ public :
     bool off();
     bool off(int x, int y, int z);
     bool toggle(int x, int y, int z);
+    int getSizeInBytes();
     uint8_t *  toArray();
     friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d);
 

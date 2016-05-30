@@ -168,7 +168,7 @@ static uint8_t *CDC_Set_ACK(uint8_t *buff_RX) {
 
 
 uint8_t *CDC_Receive_FS (uint8_t *buff_RX) {
-	uint8_t *buff_TX = (uint8_t *) calloc(512, sizeof(uint8_t));
+	uint8_t *buff_TX = new uint8_t[512]();
 
 	if (Is_CMD_Known(buff_RX[OPCODE_INDEX])) { /* Only handle buffer that can be understood */
 		memcpy(buff_TX, CDC_Set_ACK(buff_RX), SIZE_ACK*sizeof(uint8_t));

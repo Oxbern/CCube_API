@@ -6,8 +6,8 @@
  */ 
 Controller::Controller()
 {
-    //listAndGetUSBConnectedDevices();
-    LOG(1, "Controller() \n");
+    listAndGetUSBConnectedDevices();
+    LOG(1, "Controller()\n");
 }
 
 /**
@@ -15,7 +15,7 @@ Controller::Controller()
  */ 
 Controller::~Controller()
 {
-    LOG(1, "~Message() \n");
+    LOG(1,"~Controller()");
 }
 
 /**
@@ -41,7 +41,7 @@ bool Controller::removeListener(Listener &l)
 /**
  * @brief List all devices which are connected via USB
  */ 
-void Controller::listAllDevices()
+bool Controller::listAllDevices()
 {
     LOG(1, "listAllDevices()\n");
 
@@ -49,10 +49,16 @@ void Controller::listAllDevices()
     std::list<Device*>::iterator iter ;
     int i = 1;
     for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
-        std::cout << "Device  "  << i << ": Id = " << (*iter)->getID() << ", Port :" << (*iter)->getPort() <<  "\n";
+        std::cout << "Device  "  << i << ": Id = " << (*iter)->getID()
+                  << ", Port :" << (*iter)->getPort() <<  "\n";
         i++;
     }
 
+    if (i == 1) {
+	    std::cout << "No device connected\n";
+	    return false;
+    }
+    return true;
 }
 
 /**
@@ -327,7 +333,6 @@ void Controller::listAndGetUSBConnectedDevices(){
                 }
             }
         }
-
         pclose(fp);
     }
     for (int i = 0; i < size; i++)

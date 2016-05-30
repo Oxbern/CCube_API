@@ -1,0 +1,59 @@
+Computer : we %%%%% >>> no devices connected
+
+-- we plug in the cube --
+
+Computer : we %%%%% >>> there are ** devices connected, choose one
+>> idDevice registered
+
+Computer : we decide to choose the cube => Sending of a ****Message to ask the cube "who are you ?"
+
+Cube :
+    if I do not receive any messages then [ref1]
+    else I have received a buffer 
+          HEADER(1) | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(**) | CRC(2)
+        if (!(ID_DEVICE == myID && OP_CODE in(BUFF_SENDING, LIGHT_SENDING, FIRMWARE_SENDING, TFT_SENDING)) then I do not process the buffer
+        else
+            if (!(check(CRC))) then I send ACK_ERR
+            else
+                if (HEADER == 0) then
+                    I send ACK_NOK(ID_PACK),
+                    ID_PACK is based on the last SIZE_LEFT, OP_CODE received
+                    1 | ID_DEVICE(1) | ACK_NOK | 3 | ID_PACK(3) | CRC(2)
+                    if I were waiting for the first buffer of a message then I ID_PACK = 000
+                    else (in this case)
+                          if SIZE_LEFT > sizeBuffer(OP_CODE) then
+                              I send ACK_OK(ID_PACK) and wait for the rest of the message
+                          else
+                              I have received the entire message, (in this case)
+                                => I answer by sending a message containing my info
+                                1 | ID_DEVICE(1) | OP_CODE | 3 | SIZE_X | SIZE_Y | SIZE_Z | CRC(2)
+
+Computer :
+    if we do not receive any messages then
+        if ([ref1]) then the cube never received our first message => TIMEOUT
+        else
+            we did not receive the cube's answer => TIMEOUT
+    else, we received a buffer :
+        HEADER(1) | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(**) | CRC(2)
+        if (!(check(CRC))) then
+            I send my first message again (why ? compromise between buffer_length and the cube's ability to store data)
+        else
+            if (ID_DEVICE != myID) then do not process buffer
+            else
+                if (HEADER == 0) then TIMEOUT
+                else
+                    if SIZE_LEFT > sizeBuffer(OP_CODE) then
+                        I wait for the rest of the message
+                    else
+                        if (OP_CODE == ACK_ERR || OP_CODE == ACK_NOK) then
+                            I send the Buffer(opCode = DATA[0], sizeLeft = DATA[1,2])
+                               and if DATA := 0, then I send the 1st buffer of the message
+                        else if (OP_CODE in(possible_answers_to(previousOP_CODE))) then
+                                 >> sizeX, sizeY, sizeZ registered
+                             else
+                                 we do not process the buffer
+
+-- the cube is no longer plugged in --
+
+Computer :
+    if we send a message then >>> this device is no longer available

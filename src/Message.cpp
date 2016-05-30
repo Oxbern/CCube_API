@@ -18,7 +18,7 @@ Message::Message() : idDevice(0), sizeBuffer(0), sizeData(0), opCode(0), crc(0)
  * @param size of the message
  * @param code operation code
  */
-Message::Message(int id, int sizeBuff, uint16_t size, uint8_t code) :
+Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
     idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
 {
     int n = this->NbBuffers();
@@ -35,7 +35,7 @@ Message::Message(int id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
         }
-    LOG(1, "Message(idDevice, sizeBuffer, sizeMessage, opCode)");
+    std::cout << "Message("<< (int)sizeBuff << " , " << (int)size << " , " << (int)code << ")\n";    
 }
 
 /**
@@ -177,7 +177,7 @@ uint16_t Message::getCrc() const {
 /**
  * @brief Returns the id of the device
  */
-int Message::getID() const {
+uint8_t Message::getID() const {
     return this->idDevice;
 }
 
@@ -188,7 +188,7 @@ int Message::getID() const {
 std::string Message::toStringDebug()
 {
     std::ostringstream convert;
-    convert << "Message :" << std::endl;
+    convert << "Message (debug) :" << std::endl;
     int n = NbBuffers();
     for (int i = 0; i < n; i++)
         convert << getBuffer()[i].toStringDebug(i);

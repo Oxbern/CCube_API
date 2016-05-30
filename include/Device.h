@@ -20,7 +20,7 @@ private :
     int sizeZ;
     bool isAvailable;
     DeviceShape *currentConfig;
-    
+
 public :
     // Port is found by Controller's constructor and id is defined there.
     Device();
@@ -35,9 +35,15 @@ public :
     float getLuminosity();
     std::string getFirmwareVersion();
     bool askForDisplaySize();
-    bool send(Message *mess);
-    bool write(std::string data);
+    bool send(Message* mess);
+    bool write(uint8_t* data, int dataSize); //TODO set as private later
+    bool on(int x, int y, int z);
+    bool off();
+    bool off(int x, int y, int z);
+    bool toggle(int x, int y, int z);
 
+    uint8_t *getAck(int fd);
+    
     //TODO Rajouter les setters et getters
     int getID() const;
     std::string getPort() const;

@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 
     uint8_t *leds = d.toArray();
     printf("******* toArray() method *******\n");
-    for (int i = 0; i < (size*size*size); i++)
+    for (int i = 0; i < d.getSizeInBytes(); i++)
         std::cout << (int)leds[i];
     std::cout << std::endl;
     delete [] leds;

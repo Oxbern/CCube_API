@@ -35,7 +35,7 @@ public:
 
     bool addListener(Listener &l);
     bool removeListener(Listener &l);
-    void listAllDevices();
+    bool listAllDevices();
     void listAndGetUSBConnectedDevices();
     bool connectDevice(Device *d);
     Device* getConnectedDevice();

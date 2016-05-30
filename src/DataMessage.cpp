@@ -14,7 +14,7 @@ DataMessage::DataMessage() : Message()
  * @param size of the message
  * @param code operation code
  */
-DataMessage::DataMessage(int idDevice, uint16_t size, uint8_t code) : Message(idDevice, SIZE_BUFFER, size, code)
+DataMessage::DataMessage(uint8_t idDevice, uint16_t size, uint8_t code) : Message(idDevice, SIZE_BUFFER, size, code)
 {
     LOG(1, "DataMessage(idDevice, sizeMessage, opCode)");
 }
