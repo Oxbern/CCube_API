@@ -246,22 +246,6 @@ bool Device::send(Message* mess) {
     return true;
 }
 
-uint8_t *Device::getAck(int fd) {
-    int index = 0,
-            c = 0;
-
-    uint8_t *buf = (uint8_t *) malloc(10 * sizeof (uint8_t));
-
-    fcntl(fd, F_SETFL, 0);
-
-    while (read(fd, &c, 1) > 0) {
-        buf[index] = c;
-        index++;
-    }
-
-    return buf;
-}
-
 /**
  * @brief TODO
  */
@@ -317,12 +301,3 @@ bool Device::toggle(int x, int y, int z) {
 std::fstream& Device::getFile() {
     return this->file;
 }
-
-/*
-void Device::setCurrentConfig(DeviceShape *ds) {
-    std::cout << "D setCurrentConfig" << std::endl;
-    DeviceShape *tmp = new DeviceShape(9, 9, 9);
-    memcpy(tmp->getLedStatus(), ds->getLedStatus(), ds->getSizeX()*9*9*sizeof(bool));
-    this->currentConfig = tmp;
-}
-*/

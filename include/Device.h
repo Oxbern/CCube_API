@@ -51,6 +51,5 @@ public :
     DeviceShape *getcurrentConfig() const;
     std::fstream & getFile();
 
-    // void setCurrentConfig(DeviceShape *ds);
     };
 #endif //CUBEAPI_DEVICE_H
