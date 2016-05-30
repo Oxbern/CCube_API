@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdio>
 
 #include "DeviceShape.h"
 #include "DataMessage.h"
@@ -26,6 +27,8 @@ public :
     Device();
     Device(std::string port, int id);
     ~Device();
+
+    int fileR;
 
     bool available();
     bool connect();
