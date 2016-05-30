@@ -22,7 +22,7 @@ There are 6 different types of messages which can be received nor sent by the cu
 0 | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(57) | CRC(2)
 --- | --- | --- | --- | --- | ---
 
-                        [...]
+[...]
 
 0 | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(57) | CRC(2)
 --- | --- | --- | --- | --- | ---
