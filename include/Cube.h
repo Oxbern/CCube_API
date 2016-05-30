@@ -1,31 +1,26 @@
-#ifndef CUBE_H
-#define CUBE_H
+#include "ShapeToDisplay.h"
 
-#include <cstdint>
+class Cube : public ShapeToDisplay
+{
+ public:
+    Cube(int s = 0, Device *d = new Device("usb", 1), Point p = Point (0,0,0),
+            bool b =  true);
 
-#define SIZE_DATA_LED 200
+    virtual ~Cube();
 
-/**
- * @class Cube
- * @brief TODO
- */
+    void init();
 
-class Cube {
- private :
-    uint16_t **ledBuffer;
-    
- public :
-    Cube();
-    
-    ~Cube();
+    bool incrSize();
+    bool decrSize();
 
-    void on(int x, int y, int z);
-    void off();
-    void off(int x, int y, int z);
-    void toggle(int x, int y, int z);
-    void toArray(uint8_t * ledStatus);
-    void display(const char *dev);
-    uint8_t getLedBuffer(int x, int y, int z);
+    bool moveUp();
+    bool moveDown();
+    bool moveLeft();
+    bool moveRight();
+    bool moveForward();
+    bool moveBackward();
+
+    void print(std::ostream &str);
 };
 
-#endif
+// std::ostream& operator<<(std::ostream &out, Cube &c);

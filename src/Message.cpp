@@ -1,115 +1,192 @@
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cerrno>
-#include <unistd.h>
-#include <iostream>
-#include <string.h>
+#include <stdexcept>
+#include <sstream>
 
 #include "Message.h"
-#include "Ack.h"
-
-extern "C" {
-#include "crc.h"
-#include "virtualCube.h"
-}
-/**
- * @brief Creates an empty message
- */
-Message::Message() {
-    size = 0;
-    opCode = 0;
-    listBuffer = new Buffer[0];
-}
+#include "Utils.h"
 
 /**
- * @brief Creates a message without any data or crc
+ * @brief Creates a message with list of buffers with opcode and sizeLeft
  * @param size of the message
  * @param code operation code
  */
-Message::Message(uint16_t size, uint8_t code) {
-    this->size = size;
-    this->opCode = code;
-    listBuffer = new Buffer[NbBuffers()];
-    listBuffer[0].setHeader(1); // first one
-    for (int i = 0; i< NbBuffers(); i++) {
+Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
+    idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
+{
+    int n = this->NbBuffers();
+
+    listBuffer = reinterpret_cast<Buffer *>(new char[n * sizeof(Buffer)]);
+    
+    for (int i = 0; i < n; i++)
+        new(&listBuffer[i]) Buffer(sizeBuff);
+
+    listBuffer[0].setHeader(1);
+    
+    for (int i = 0; i < n; i++) {
+        listBuffer[i].setID(id);
         listBuffer[i].setOpCode(code);
-        listBuffer[i].setSizeLeft(size - i*DATA_MAX_SIZE);
-    }    
+        listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
+        }
+    std::cout << "Message("<< (int)id << " , " << (int)sizeBuff << " , " << (int)size << " , " << (int)code << ")\n";    
+}
+
+/**
+ * @brief Constructor by copy
+ */
+Message::Message(const Message& M) {
+    sizeBuffer= M.getSizeBuffer();
+    sizeData = M.getSizeData();
+    opCode = M.getOpCode();
+    crc = M.getCrc();
+    idDevice = M.getID();
+    int n = M.NbBuffers();
+    
+    listBuffer = reinterpret_cast<Buffer *>(new char[n*sizeof(Buffer)]);
+    
+    for (int i = 0; i<n; i++)
+        listBuffer[i] = M.getBuffer()[i];
+    LOG(1, "Message(const &message)");
 }
 
 /**
  * @brief Destructor
  */
-Message::~Message() {
-    // for (int i = 0; i< NbBuffers(); i++) 
-    //     delete (&listBuffer[i]);
-    delete [] listBuffer;
+Message::~Message()
+{
+    int n = this->NbBuffers();
+
+    for (int i = 0; i < n; i++)
+        listBuffer[i].Buffer::~Buffer();
+
+    delete[] reinterpret_cast<char *>(listBuffer);
+    LOG(1, "~Message()");
 }
 
 /**
- * @brief Calculates the number of buffers necessary to create Message
- * @return number of buffers
+ * @brief Calculates the number of buffers necessary to create a message
+ * @return number of buffers needed
  */
-int Message::NbBuffers() {
-    if ((size % DATA_MAX_SIZE) == 0)
-        return size/DATA_MAX_SIZE;
+int Message::NbBuffers() const
+{
+    if (sizeData == 0)
+        return 1;    
+    else if ((sizeData % (sizeBuffer - DATA_INDEX - SIZE_CRC)) == 0)
+        return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC);
     else
-        return size/DATA_MAX_SIZE + 1;
+        return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC) + 1;
 }
+
 
 /**
  * @brief Fills the buffers with the data
+ *        if size(dataToEncode) > sizeData, 
+ *        only the first sizeData values of dataToEncode will be encoded           
  * @param data to encode
- * @param sizeData data's size
  */
-void Message::encode(uint8_t *dataToEncode, uint16_t sizeData) {
-    int j = 0; int k= 0;
-    for (int i = 0; i < NbBuffers(); i ++) {
-        while (j < DATA_MAX_SIZE) {
+void Message::encode(uint8_t *dataToEncode)
+{
+    int j = 0; int k= 0; int n = NbBuffers();
+    uint8_t *entireBuffer = new uint8_t [this->sizeBuffer];
+    uint8_t *tab = new uint8_t[2];
+    
+    for (int i = 0; i < n; i ++) {
+        while (j < (sizeBuffer - DATA_INDEX - SIZE_CRC)) {
             if (k < sizeData)
-                listBuffer[i].data[j] = dataToEncode[k];
+                listBuffer[i].setData(j, dataToEncode[k]);
             else
-                listBuffer[i].data[j] = 0;
+                listBuffer[i].setData(j,0);
             j++; k++;
         }
-	j = 0;
+        j = 0;
+        entireBuffer[0] = listBuffer[i].getHeader();
+        entireBuffer[1] = listBuffer[i].getID();
+        entireBuffer[2] = listBuffer[i].getOpCode();
+        convert16to8(listBuffer[i].getSizeBuffer(), tab);
+        entireBuffer[3] = tab[0];
+        entireBuffer[4] = tab[1];
+        for (int ii = DATA_INDEX; ii < (this->sizeBuffer - SIZE_CRC); ii++)
+            entireBuffer[ii] = listBuffer[i].getData()[ii-DATA_INDEX];
 
-
-        uint16_t crcComputed = computeCRC(listBuffer[i].data, sizeof(uint8_t)*DATA_MAX_SIZE);
+        uint16_t crcComputed = computeCRC(entireBuffer,
+                                          sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         listBuffer[i].setCrc(crcComputed);
     }
+    delete [] entireBuffer;
+    delete [] tab;
+}
+
+/**
+ * @brief Finds a buffer based on its index
+ * @param index
+ * @return buffer desired
+ */
+Buffer* Message::getBuffer() const
+{
+    return (this->listBuffer); //Can throw out_of_range exception
 }
 
 /**
  * @brief Finds a buffer based on its opCode and sizeLeft
  * @param opCode 
  * @param sizeLeft
- * @todo return for else
- * @return buffer
+ * @return buffer desired
  */
 
-Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) {
+Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const{
     for (int i = 0; i < NbBuffers(); i++) {
-	if (listBuffer[i].opCode == opCode && listBuffer[i].sizeLeft == sizeLeft)
-	    return listBuffer[i];
-        //else
-        //   throw "Buffer not found \n";
+        if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
+            return listBuffer[i];
+        else
+            throw std::out_of_range("Buffer not found\n");                
     }
+    return Buffer();
 }
 
 /**
- * @brief Sends a message
- * @param fd file descriptor
+ * @brief Returns the size of the buffers created
  */
-void Message::send(int fd) {    
-    
-    for (int i = 0; i < NbBuffers(); i++) {
-	    if (fd) {
-		    listBuffer[i].send(fd);
-		    sleep(1);
-	    }
-    }
+int Message::getSizeBuffer() const {
+    return this->sizeBuffer;
 }
 
+/**
+ * @brief Returns the size of the data
+ */
+uint16_t Message::getSizeData() const {
+    return this->sizeData;
+}
 
+/**
+ * @brief Returns the opCode
+ */
+uint8_t Message::getOpCode() const {
+    return this->opCode;
+}
+
+/**
+ * @brief Returns the crc
+ */
+uint16_t Message::getCrc() const {
+    return this->crc;
+}
+
+/**
+ * @brief Returns the id of the device
+ */
+uint8_t Message::getID() const {
+    return this->idDevice;
+}
+
+/*
+ * @brief Prints the message
+ * @return string
+ */
+std::string Message::toStringDebug()
+{
+    std::ostringstream convert;
+    convert << "Message (debug) :" << std::endl;
+    int n = NbBuffers();
+    for (int i = 0; i < n; i++)
+        convert << getBuffer()[i].toStringDebug(i);
+
+    return convert.str();
+}
