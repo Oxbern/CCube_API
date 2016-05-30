@@ -27,6 +27,7 @@ enum OPCODE {
     ACK_NOK = 0x03,
 
     // REQUESTMESSAGE TYPE
+    WHO_ARE_YOU = 0x0A,
     ID_ASKING = 0x10,
     AVAILABLE = 0x11,
     BUFF_ASKING = 0x12,
@@ -36,8 +37,7 @@ enum OPCODE {
 
     // ANSWERMESSAGE TYPE
     ID_RECEPTION = 0x20,
-    LIGHT_SENDING = 0x23,
-    LIGHT_RECEPTION = 0x33,
+    LIGHT_RECEPTION = 0x23,
     SCREEN_SIZE_RECEPTION = 0x24,
     FIRMWARE_VERSION_RECEPTION = 0x25, 
 
@@ -47,7 +47,13 @@ enum OPCODE {
     BUFF_RECEPTION = 0x52,
     
     TFT_SENDING = 0xA0,
-    TOUCH_DETECTION = 0xC0
+    TOUCH_DETECTION = 0xC0,
+
+    // SETMESSAGE TYPE
+    LIGHT_SENDING = 0x23,
+
+    // FIRSTMESSAGE TYPE
+    DEVICE_INFO = 0x0B
 };
 
 void convert16to8(uint16_t val, uint8_t tab[2]);

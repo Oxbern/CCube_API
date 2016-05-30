@@ -1,13 +1,14 @@
 The Computer can send several kinds of messages :
     - BUFF_SENDING : DataMessage
-    - LIGHT_SENDING : AnswerMessage
+    - LIGHT_SENDING : SetMessage
     - BUFF_ASKING, asking for the buffer : RequestMessage
     - LIGHT_ASKING, asking for the light : RequestMessage
     - SCREEN_SIZE_ASKING, asking for the screen size : RequestMessage
     - FIRMWARE_VERSION_ASKING, asking for the firmware version : RequestMessage
-    - FIRMWARE_UPDATE_SENDING, updating the firmware : DataMessage
+    - FIRMWARE_UPDATE_SENDING, updating the firmware : DataMessage (for now)
     - ID_ASKING, asking for the product's ID : RequestMessage
     - AVAILABLE, asking if the device is available : RequestMessage
+    - WHO_ARE_YOU, asking the device for its personal info : RequestMessage
 
 The cube can send several kinds of messages :
     - ACK_OK, ACK_NOK, ACK_ERR : AckMessage
@@ -17,6 +18,8 @@ The cube can send several kinds of messages :
     - FIRMWARE_VERSION_RECEPTION, firmware version : AnswerMessage
     - ID_RECEPTION, product ID : AnswerMessage
     - ACK_OK, to say that it is available : AckMessage
+    - DEVICE_INFO, for now size_x, size_y and size_z
+      which represents the needed info to continue communicating with the cube: FirstMessage
 
 
 DataMessage
@@ -32,4 +35,10 @@ RequestMessage
           1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 0 | CRC(2)
 
 AnswerMessage
-          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1) | CRC(2)        
+          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1 - 3) | CRC(2)        
+
+SetMessage
+          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1) | CRC(2)
+
+FirstMessage
+          1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1 - 3) | CRC(2)        
