@@ -21,30 +21,41 @@ dataBuffer buffer;
  */
 void Controller::readingTask()
 {
-    LOG(2, "ReadingTask started");
+    LOG(2, "[THREAD] ReadingTask started");
     if (this->connectedDevice != NULL) {
+        LOG(2, "[THREAD] Fcntl set");
         fcntl(connectedDevice->fileR, F_SETFL, 0);
     }
 
     while (1) {
+        LOG(2, "[THREAD] ReadingTask running");
         if (this->connectedDevice == NULL) {
+            LOG(2, "[THREAD] Device disconnected");
             break;
         }
 
-        uint8_t data[10];
-        int n = read(connectedDevice->fileR, data, 10);
+        std::cout << "[THREAD] FileR = " << connectedDevice->fileR << "\n";
+        uint8_t data[2];
+        int n = 1;
+        read(connectedDevice->fileR, data, 2);
 
-        if (n >= 0) {
-            LOG(2, "Reading...");
+        if (n > 0) {
+            LOG(2, "[THREAD] Reading...");
             printf("ACK : ");
-            for (int i = 0; i < 10; ++i) {
+            for (int i = 0; i < 2; ++i) {
                 printf("%u | ", data[i]);
-                std::cout << (int) data[i] << " \\ ";
             }
+        }else if (n == 0) {
+            LOG(2, "[THREAD] No data");
+            //std::cerr << "No data to read\n" ;
         }else{
-            std::cerr << errno;
+            LOG(2, "[THREAD] Error while reading");
+
+
+            std::cerr << "ERROR " << std::strerror(errno);
         }
         std::cout << " END" << std::endl;
+        break;
     }
     LOG(2, "ReadingTask finished");
 }
@@ -132,7 +143,7 @@ bool Controller::connectDevice(Device *d)
 
     if ((*d).connect()){
         this->connectedDevice = d;
-        this->t = std::thread(&Controller::readingTask, this);
+        //this->t = std::thread(&Controller::readingTask, this);
         return true;
     }
     return false; 
@@ -141,7 +152,7 @@ bool Controller::connectDevice(Device *d)
 bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
-    t.join();
+    //t.join();
     return this->connectedDevice->disconnect();
 }
 
