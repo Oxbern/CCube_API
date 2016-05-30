@@ -1,13 +1,4 @@
-#include "Utils.h"
 #include "DataMessage.h"
-
-/**
- * @brief Creates an empty message
- */
-DataMessage::DataMessage() : Message()
-{
-    LOG(1, "DataMessage()");
-}
 
 /**
  * @brief Creates a message with list of buffers with opcode and sizeLeft

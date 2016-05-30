@@ -3,6 +3,7 @@
 
 #include <list>
 #include <queue>
+#include <thread>
 
 #include "Device.h"
 #include "Message.h"
@@ -29,6 +30,7 @@ private:
     std::list<Device*> devices;
     Device *connectedDevice;
     std::queue<Message> messages; //FIFO of last messages
+    std::thread t;
 public:
     Controller();
     ~Controller();
@@ -40,9 +42,10 @@ public:
     bool connectDevice(Device *d);
     bool disconnectDevice();
     Device* getConnectedDevice();
+    std::list<Device*> getListDevices();
 
-    std::list<Device*> getListDevices();    
-    
+    void readingTask();
+
 
 };
 

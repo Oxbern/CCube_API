@@ -2,8 +2,12 @@
 #include <fstream>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <termios.h>
+#include <aio.h>
+
 
 #include "Device.h"
 #include "ErrorException.h"
@@ -43,6 +47,8 @@ Device::Device(std::string port, int id) {
     this->isAvailable = false;
 
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
+
+    this->fileR = -1;
 }
 
 /**
@@ -76,7 +82,16 @@ bool Device::available() {
 bool Device::connect() {
     LOG(1, "Trying to connect the device");
     if (!file.is_open()) {
-        file.open(port, std::ios::in | std::ios::out); //TODO app flag usefull ?
+        file.open(port, std::ios::in | std::ios::out | std::ios::app); //TODO app flag usefull ?
+    }
+
+    if (this->fileR == -1) {
+        this->fileR = open(port.c_str(), O_RDONLY | O_RDONLY | O_APPEND);
+        if (this->fileR == -1) {
+            std::cerr << errno << std::endl;
+        }else{
+            LOG(2, "File open for reading");
+        }
     }
 
     LOG(1, "Device " + std::string((file.is_open() ? "connected" : "not connected")));
@@ -91,6 +106,11 @@ bool Device::disconnect() {
     if (file.is_open()) {
         file.close();
     }
+
+    if (this->fileR != -1) {
+        close(this->fileR);
+    }
+
     LOG(1, "Device disconnected");
     return (!file.is_open());
 }
@@ -122,8 +142,15 @@ bool Device::updateFirmware() {
 /**
  * @brief TODO
  */
-float Device::getLuminosity() {
-    return 0.0;
+float Device::getLuminosity()
+{
+    DataMessage dm(this->id, 0, OPCODE(LIGHT_RECEPTION));
+
+    if (!send(&dm)){
+        std::cerr << "Error while asking the device brightness" << std::endl;
+        return false; //TODO See if unavailable or just error while sending buffer
+    }
+    return this->luminosity;
 }
 
 /**
@@ -192,6 +219,7 @@ bool Device::send(Message* mess) {
             delete []buffer;
 
         } else {
+
             write(buffString, sizeBuffer);
             uint8_t ack[10] = "initializ";
 
@@ -205,6 +233,11 @@ bool Device::send(Message* mess) {
 
             close(fd);
             this->connect();
+
+	        while (!write(buffString, sizeBuffer)) {
+	        continue;
+	        }
+
         }
         delete []buffString;
     }

@@ -1,11 +1,63 @@
+//#include <mutex>
+#include <unistd.h>
+#include <fcntl.h>
+
+
 #include "Controller.h"
 
+
+//Shared buffer of data received
+typedef struct dataBuffer_ {
+    uint8_t dataBuffer[512];
+    int lastAddedIndex = 0;
+    //std::mutex mutex;
+} dataBuffer;
+
+dataBuffer buffer;
+
 /**
- * @brief Constructor of Controller object, list all USB connected devices and 
- *        add them to the Device list 
- */ 
+ * Function waiting for new data send by the current cube
+ * @brief TODO
+ */
+void Controller::readingTask()
+{
+    LOG(2, "ReadingTask started");
+    if (this->connectedDevice != NULL) {
+        fcntl(connectedDevice->fileR, F_SETFL, 0);
+    }
+
+    while (1) {
+        if (this->connectedDevice == NULL) {
+            break;
+        }
+
+        uint8_t data[10];
+        int n = read(connectedDevice->fileR, data, 10);
+
+        if (n >= 0) {
+            LOG(2, "Reading...");
+            printf("ACK : ");
+            for (int i = 0; i < 10; ++i) {
+                printf("%u | ", data[i]);
+                std::cout << (int) data[i] << " \\ ";
+            }
+        }else{
+            std::cerr << errno;
+        }
+        std::cout << " END" << std::endl;
+    }
+    LOG(2, "ReadingTask finished");
+}
+
+
+/**
+ * @brief Constructor of Controller object, list all USB connected devices and
+ *        add them to the Device list
+ */
 Controller::Controller()
 {
+
+
     listAndGetUSBConnectedDevices();
 
     if (devices.size() == 0){
@@ -80,6 +132,7 @@ bool Controller::connectDevice(Device *d)
 
     if ((*d).connect()){
         this->connectedDevice = d;
+        this->t = std::thread(&Controller::readingTask, this);
         return true;
     }
     return false; 
@@ -88,7 +141,7 @@ bool Controller::connectDevice(Device *d)
 bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
-
+    t.join();
     return this->connectedDevice->disconnect();
 }
 

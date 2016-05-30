@@ -1,20 +1,9 @@
-#include "Utils.h"
 #include "AckMessage.h"
 
 /**
- * @brief Creates an ack with all parameters set to 0
- */
-AckMessage::AckMessage() : Message()
-{
-    LOG(1, "AckMessage()");
-}
-
-/**
  * @brief Creates an ack
+ * @param idDevice
  * @param ackType : ACK_OK, ACK_ERR, ACK_NOK
- * @param opCode : command of message
- * @param sizeLeft : size left of message to send
- * @param crc : crc of ACK 
  */
 AckMessage::AckMessage(uint8_t id, uint8_t ackType) : Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
 {
