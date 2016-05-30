@@ -24,6 +24,8 @@ Controller::Controller()
 Controller::~Controller()
 {
     LOG(1,"~Controller()");
+    
+    while(!devices.empty()) delete devices.front(), devices.pop_front();
 }
 
 /**
@@ -81,6 +83,13 @@ bool Controller::connectDevice(Device *d)
         return true;
     }
     return false; 
+}
+
+bool Controller::disconnectDevice()
+{
+    LOG(1, "disconnectDevice() \n");
+
+    return this->connectedDevice->disconnect();
 }
 
 /**

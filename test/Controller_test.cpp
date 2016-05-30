@@ -41,11 +41,19 @@ int main(int argc, char* argv[]) {
     }
     Device *dc = c.getConnectedDevice();
     dc->on(4,4,4);
+    dc->on(3,4,4);
+    dc->on(4,3,4);
+    dc->on(5,4,4);
+    dc->on(4,5,4);
+    dc->on(3,3,4);
+    dc->on(5,5,4);
+
     std::cout << "DeviceShape on (4,4,4)" << std::endl;
     
     dc->display();
     std::cout << "DeviceShape displayed" << std::endl;
 
+    c.disconnectDevice();
     return 0;
 }
 

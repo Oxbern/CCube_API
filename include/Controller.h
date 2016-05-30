@@ -38,6 +38,7 @@ public:
     bool listAllDevices();
     void listAndGetUSBConnectedDevices();
     bool connectDevice(Device *d);
+    bool disconnectDevice();
     Device* getConnectedDevice();
 
     std::list<Device*> getListDevices();    
