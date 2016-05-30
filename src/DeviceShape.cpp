@@ -1,4 +1,5 @@
 #include <cmath>
+#include <string.h>
 
 #include "DeviceShape.h"
 #include "AckMessage.h"
@@ -167,11 +168,14 @@ void DeviceShape::print(std::ostream &str) const {
  * @return Point
  */
 DeviceShape& DeviceShape::operator=(const DeviceShape &ds) {
+    std::cout << "DS =" << std::endl;
+    
     if (&ds != this) {
         this->sizeX = ds.getSizeX();
         this->sizeY = ds.getSizeY();
         this->sizeZ = ds.getSizeZ();
-        this->ledStatus = ds.getLedStatus();
+
+        memcpy(this->ledStatus, ds.ledStatus, sizeX*sizeY*sizeZ*sizeof(bool));
     }
     return *this;
 }
@@ -180,8 +184,7 @@ DeviceShape& DeviceShape::operator=(const DeviceShape &ds) {
  * @brief Overload of the operator = 
  * @return Point
  */
-int DeviceShape::getSizeX() const 
-{
+int DeviceShape::getSizeX() const {
     return this->sizeX;
 }
 
@@ -189,8 +192,7 @@ int DeviceShape::getSizeX() const
  * @brief Overload of the operator = 
  * @return Point
  */
-int DeviceShape::getSizeY() const 
-{
+int DeviceShape::getSizeY() const {
     return this->sizeY;
 }
 
@@ -198,16 +200,14 @@ int DeviceShape::getSizeY() const
  * @brief Overload of the operator = 
  * @return Point
  */
-int DeviceShape::getSizeZ() const 
-{
+int DeviceShape::getSizeZ() const {
     return this->sizeZ;
 }
-   
+
 /**
  * @brief Overload of the operator = 
  * @return Point
  */
-bool*** DeviceShape::getLedStatus() const 
-{
+bool*** DeviceShape::getLedStatus() const {
     return this->ledStatus;
 }

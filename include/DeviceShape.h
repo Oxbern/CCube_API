@@ -16,7 +16,7 @@ protected :
     bool ***ledStatus;
 
 public :
-    DeviceShape(int sizeX, int sizeY, int sizeZ);
+    DeviceShape(int sizeX = 9, int sizeY = 9, int sizeZ = 9);
     ~DeviceShape();
 
     bool on(int x, int y, int z);

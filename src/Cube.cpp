@@ -1,55 +1,43 @@
 #include "Cube.h"
 
 
-Cube::Cube(int s, int x, int y, int z, Point p, bool b) : 
-ShapeToDisplay(s, x, y, z, p, b)
+Cube::Cube(int s, int x, int y, int z, Device *d, Point p, bool b) : 
+ShapeToDisplay(s, x, y, z, d, p, b)
 {
+    LOG(1,"Constructor cube");
     init();
-    std::cout << "Constructor Cube" << std::endl;
 }
 
 void Cube::init()
 {
-    for (int x = 0; x < 9; x++) {
-	for (int y = 0; y < 9; y++) {	    
-	    for (int z = 0; z < 9; z++) {
+    for (int x = 0; x < device->getcurrentConfig()->getSizeX(); x++) {
+	for (int y = 0; y < device->getcurrentConfig()->getSizeY(); y++) {	    
+	    for (int z = 0; z < device->getcurrentConfig()->getSizeZ(); z++) {
 		if (full) 
 		    {
 			if (x >= origin.getX() && x < origin.getX() + size
 			    && y >= origin.getY() && y < origin.getY() + size
 			    && z >= origin.getZ() && z < origin.getZ() + size) 
-			    on(x, y, z);
+			    device->getcurrentConfig()->on(x, y, z);
 		    }
 		else		    
 		    if (x == origin.getX() || x == origin.getX() + size - 1
 			|| y == origin.getY() || y == origin.getY() + size - 1
 			|| z == origin.getZ() || z == origin.getZ() + size - 1) 
-			on(x, y, z);	
+			device->getcurrentConfig()->on(x, y, z);	
 	    }
 	}
     }
 }
-
+/*
 Cube::Cube() : ShapeToDisplay()
 {
-    on(origin.getX(), origin.getY(), origin.getZ());
+    device->getcurrentConfig()->on(origin.getX(), origin.getY(), origin.getZ());
 }
-
-void Cube::print(std::ostream &str) const 
+*/
+Cube::~Cube()
 {
-    if (full)
-	str << "Full Shape";
-    else
-	str << "Empty Shape";
-    str << " of size " << size;
-    str << " where origin is " << origin << std::endl;
-
-    this->DeviceShape::print(str);
-}
-
-Cube::~Cube() 
-{
-    std::cout << "Destructor of Cube" << std::endl;
+    LOG(1,"Destructor cube");
 }
 
 bool Cube::incrSize() 
@@ -65,7 +53,7 @@ bool Cube::incrSize()
 	    return false;
 	}
     size++;
-    DeviceShape::off();
+    device->getcurrentConfig()->off();
     init();
     return true;
 }
@@ -77,7 +65,7 @@ bool Cube::decrSize()
 	return false;
     }
     size--;
-    DeviceShape::off();
+    device->getcurrentConfig()->off();
     init();
     return true;
 }
@@ -86,7 +74,7 @@ bool Cube::moveUp()
 {
     if (origin.getZ() + size < 9)
 	{
-	    DeviceShape::off();
+	    device->getcurrentConfig()->off();
 	    origin.incrZ();
 	    init();
 	    return true;
@@ -102,7 +90,7 @@ bool Cube::moveDown()
 {
     if (origin.getZ() > 0)
 	{
-	    DeviceShape::off();
+	    device->getcurrentConfig()->off();
 	    origin.decrZ();
 	    init();
 	    return true;
@@ -118,7 +106,7 @@ bool Cube::moveLeft()
 {
     if (origin.getY()  > 0)
 	{
-	    DeviceShape::off();
+	    device->getcurrentConfig()->off();
 	    origin.decrY();
 	    init();
 	    return true;
@@ -134,7 +122,7 @@ bool Cube::moveRight()
 {
     if (origin.getY() + size < 9)
 	{
-	    DeviceShape::off();
+	    device->getcurrentConfig()->off();
 	    origin.incrY();
 	    init();
 	    return true;
@@ -150,7 +138,7 @@ bool Cube::moveForward()
 {
     if (origin.getX() + size < 9)
 	{
-	    DeviceShape::off();
+	    device->getcurrentConfig()->off();
 	    origin.incrX();
 	    init();
 	    return true;
@@ -166,7 +154,7 @@ bool Cube::moveBackward()
 {
     if (origin.getX() > 0)
 	{
-	    DeviceShape::off();
+	    device->getcurrentConfig()->off();
 	    origin.decrX();
 	    init();
 	    return true;
@@ -176,4 +164,14 @@ bool Cube::moveBackward()
 	    std::cout << "Cannot move more backward" << std::endl; 
 	    return false;
 	}
+}
+
+
+void Cube::print(std::ostream &str) {
+    ShapeToDisplay::print(str);
+}
+
+std::ostream& operator<<(std::ostream &out, Cube &c) {
+    c.print(out);
+    return out;
 }
