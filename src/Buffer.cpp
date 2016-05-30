@@ -18,7 +18,7 @@ Buffer::Buffer() :
 Buffer::Buffer(int sizeBuff) :
     header(0), idDevice(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
 {
-    data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC];
+    data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC]();
     LOG(1, "Buffer(sizeBuffer)");
 }
 
@@ -254,7 +254,6 @@ std::string Buffer::toStringDebug(int indexInMess)
     //Convert data
     for (int i = 0; i < dataSize(sizeBuffer); i++)
         convert << (int)data[i];
-
     convert << " | " ;
 
     //split crc into two uint8_t
