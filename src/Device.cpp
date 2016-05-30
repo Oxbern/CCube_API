@@ -2,8 +2,12 @@
 #include <fstream>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <termios.h>
+#include <aio.h>
+
 
 #include "Device.h"
 #include "ErrorException.h"
@@ -44,6 +48,8 @@ Device::Device(std::string port, int id)
     this->isAvailable = false;
 
     this->currentConfig = new DeviceShape(sizeX,sizeY,sizeZ);
+
+    this->fileR = -1;
 }
 
 /**
@@ -75,7 +81,16 @@ bool Device::available()
 bool Device::connect(){
     LOG(1, "Trying to connect the device");
     if (!file.is_open()) {
-        file.open(port, std::ios::in | std::ios::out); //TODO app flag usefull ?
+        file.open(port, std::ios::in | std::ios::out | std::ios::app); //TODO app flag usefull ?
+    }
+
+    if (this->fileR == -1) {
+        this->fileR = open(port.c_str(), O_RDONLY | O_RDONLY | O_APPEND);
+        if (this->fileR == -1) {
+            std::cerr << errno << std::endl;
+        }else{
+            LOG(2, "File open for reading");
+        }
     }
 
     LOG(1, "Device " + std::string((file.is_open() ? "connected" : "not connected")));
@@ -91,6 +106,11 @@ bool Device::disconnect()
     if (file.is_open()) {
         file.close();
     }
+
+    if (this->fileR != -1) {
+        close(this->fileR);
+    }
+
     LOG(1, "Device disconnected");
     return (!file.is_open());
 }
@@ -205,41 +225,15 @@ bool Device::send(Message* mess)
             // delete []buffer;
 
         } else {
-	        write(buffString, sizeBuffer);
-	        uint8_t ack[10] = "initializ";
-
-	        file.close();
-	        int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
-
-	        //memcpy(ack, getAck(fd), 10);
-
-	        for (int k = 0; k < 10; ++k)
-		        std::cout << (int)ack[k] << "| ";
-
-	        close(fd);
-	        this->connect();
+	        while (!write(buffString, sizeBuffer)) {
+	        continue;
+	        }
         }
         delete []buffString;
     }
     LOG(1, "Message sended" );
 
     return true;
-}
-
-uint8_t *Device::getAck(int fd) {
-	int index = 0,
-		c = 0;
-	
-	uint8_t *buf = (uint8_t *)malloc(10*sizeof(uint8_t));
-	
-	fcntl(fd, F_SETFL, 0);
-	
-	while (read(fd, &c, 1) > 0) {
-		buf[index] = c;
-		index ++;
-	}
-	
-	return buf;
 }
 
 /**

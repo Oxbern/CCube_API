@@ -1,4 +1,7 @@
 //#include <mutex>
+#include <unistd.h>
+#include <fcntl.h>
+
 
 #include "Controller.h"
 
@@ -19,19 +22,29 @@ dataBuffer buffer;
 void Controller::readingTask()
 {
     LOG(2, "ReadingTask started");
-    uint8_t elem;
+    if (this->connectedDevice != NULL) {
+        fcntl(connectedDevice->fileR, F_SETFL, 0);
+    }
 
     while (1) {
         if (this->connectedDevice == NULL) {
             break;
         }
 
-        std::fstream& file = this->connectedDevice->getFile();
-        while (file) {
-            file >> elem;
-            std::cout << (int) elem;
+        uint8_t data[10];
+        int n = read(connectedDevice->fileR, data, 10);
+
+        if (n >= 0) {
+            LOG(2, "Reading...");
+            printf("ACK : ");
+            for (int i = 0; i < 10; ++i) {
+                printf("%u | ", data[i]);
+                std::cout << (int) data[i] << " \\ ";
+            }
+        }else{
+            std::cerr << errno;
         }
-        std::cout << std::endl;
+        std::cout << " END" << std::endl;
     }
     LOG(2, "ReadingTask finished");
 }

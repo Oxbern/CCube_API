@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdio>
 
 #include "DeviceShape.h"
 #include "DataMessage.h"
@@ -27,6 +28,8 @@ public :
     Device(std::string port, int id);
     ~Device();
 
+    int fileR;
+
     bool available();
     bool connect();
     bool disconnect();
@@ -41,8 +44,6 @@ public :
     bool off();
     bool off(int x, int y, int z);
     bool toggle(int x, int y, int z);
-
-    uint8_t *getAck(int fd);
     
     //TODO Rajouter les setters et getters
     int getID() const;

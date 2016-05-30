@@ -8,9 +8,10 @@ project (cubeAPITest C CXX)
 find_package(Threads REQUIRED)
 find_package(Curses REQUIRED)
 
+
 # Compilers options
 set(CMAKE_C_FLAGS "-O0 -g -Wall -Werror -std=c99")
-set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11")
+set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lrt")
 
 LINK_DIRECTORIES(../src)
 

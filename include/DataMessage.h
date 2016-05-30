@@ -2,7 +2,6 @@
 #define DATAMESSAGE_H
 
 #include "Message.h"
-#include "Utils.h"
 
 /**
  * @class Message creation when sending data
