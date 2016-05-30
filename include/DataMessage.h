@@ -9,7 +9,6 @@
 
 class DataMessage : public Message {
  public :
-    DataMessage();
     DataMessage(uint8_t id, uint16_t size, uint8_t code);
     ~DataMessage();
 };

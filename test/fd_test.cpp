@@ -18,6 +18,7 @@ int main () {
 
 	if (fd < 0) {
 		fprintf(stderr, "Error openning file\n");
+		close(fd);
 		return EXIT_FAILURE;
 	}
 		
@@ -56,7 +57,7 @@ int main () {
 
 
 
-	myDataMessage[0] = 0;
+	// myDataMessage[0] = 0;
 	myDataMessage[4] = 35;
 
 	memcpy(&myDataMessage[5], ds.toArray() + 57, 57);

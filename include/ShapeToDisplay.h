@@ -1,27 +1,32 @@
 #include "DeviceShape.h"
 #include "Point.h"
+#include "Device.h"
 
-class ShapeToDisplay : public DeviceShape
+class ShapeToDisplay
 {
  protected:
     int size;
     Point origin;
     bool full;
+    Device *device;
+    int sizeX;
+    int sizeY;
+    int sizeZ;
 
  public:
-    /**
+    /** 
      * \brief Constructor
      * Constructor of the class ShapeToDisplay
      * If there is no argument given, the device is a cube with a 9 side length
      */
-    ShapeToDisplay(int i = 0, int x = 9, int y = 9, int z = 9, 
+    ShapeToDisplay(int i = 0, int x = 9, int y = 9, int z = 9, Device *d = new Device("usb", 1),
 		   Point p = Point (0, 0, 0), bool b = true);
 
     /**
      * \brief Destructor
      * Destructor of the class ShapeToDisplay
      */
-    ~ShapeToDisplay();
+    virtual ~ShapeToDisplay();
 
     /** 
      * \fn void ShapeToDisplay::print(std::ostream &str)

@@ -11,23 +11,23 @@ Cube :
     if I do not receive any messages then [ref1]
     else I have received a buffer 
           HEADER(1) | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(**) | CRC(2)
-        if (!(ID_DEVICE == myID && OP_CODE in(BUFF_SENDING, LIGHT_SENDING, FIRMWARE_SENDING, TFT_SENDING)) then I do not process the buffer
+        if (!(ID_DEVICE == myID && OP_CODE in(BUFF_SENDING, LIGHT_SENDING, FIRMWARE_SENDING, TFT_SENDING)) then I do not process the buffer (I do a simple echo)
         else
-            if (!(check(CRC))) then I send ACK_ERR
-            else
-                if (HEADER == 0) then
-                    I send ACK_NOK(ID_PACK),
-                    ID_PACK is based on the last SIZE_LEFT, OP_CODE received
-                    1 | ID_DEVICE(1) | ACK_NOK | 3 | ID_PACK(3) | CRC(2)
-                    if I were waiting for the first buffer of a message then I ID_PACK = 000
-                    else (in this case)
-                          if SIZE_LEFT > sizeBuffer(OP_CODE) then
-                              I send ACK_OK(ID_PACK) and wait for the rest of the message
-                          else
-                              I have received the entire message, (in this case)
-                                => I answer by sending a message containing my info
-                                1 | ID_DEVICE(1) | OP_CODE | 3 | SIZE_X | SIZE_Y | SIZE_Z | CRC(2)
+              if (HEADER == 1) then
+                 if (Current_Size_Left) <- Data size I have yet to receive      
+                    ACK_NOK(Current_CMD, Current_Size_Left);
+                 else
+                    >> Current_CMD = buffer[2]
+                    >> Current_Size_Left = (buffer[4] << 8) + buffer[5]
 
+              if (computedCRC != retrievedCRC)
+                 ACK_ERR(Current_CMD, Current_Size_Left);
+
+              if (Current_CMD != buffer[1] || Current_Size_Left != (buffer[4] << 8) + buffer[5])
+                 ACK_NOK(Current_CMD, Current_Size_Left)
+
+              ACK_OK(Current_CMD, Current_Size_Left);
+                    
 Computer :
     if we do not receive any messages then
         if ([ref1]) then the cube never received our first message => TIMEOUT

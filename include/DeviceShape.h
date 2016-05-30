@@ -16,7 +16,7 @@ protected :
     bool ***ledStatus;
 
 public :
-    DeviceShape(int sizeX, int sizeY, int sizeZ);
+    DeviceShape(int sizeX = 9, int sizeY = 9, int sizeZ = 9);
     ~DeviceShape();
 
     bool on(int x, int y, int z);
@@ -28,5 +28,13 @@ public :
     friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d);
 
     void print(std::ostream &str) const;
+    
+    DeviceShape& operator=(const DeviceShape &ds);
+
+    int getSizeX() const;
+    int getSizeY() const;
+    int getSizeZ() const;
+    
+    bool*** getLedStatus() const;
 };
 #endif //DEVICESHAPE_H

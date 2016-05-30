@@ -1,12 +1,13 @@
 #include <cmath>
+#include <string.h>
 
 #include "DeviceShape.h"
+#include "AckMessage.h"
 
 /**
  * @brief TODO
  */
-void DeviceShape::clearLed()
-{
+void DeviceShape::clearLed() {
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)
             for (int z = 0; z < sizeZ; ++z)
@@ -16,8 +17,7 @@ void DeviceShape::clearLed()
 /**
  * @brief TODO
  */
-DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ)
-{
+DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) {
     LOG(1, "DeviceShape constructor called");
     //Allocation
     ledStatus = new bool**[sizeX];
@@ -44,12 +44,10 @@ DeviceShape::~DeviceShape() {
             }
             delete[] ledStatus[x];
         }
-    delete[] ledStatus;
+        delete[] ledStatus;
     }
     ledStatus = NULL;
 }
-
-
 
 /**
  * @brief Switchs on a led
@@ -57,25 +55,21 @@ DeviceShape::~DeviceShape() {
  * @param y
  * @param z
  */
-bool DeviceShape::on(int x, int y, int z)
-{
-    if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
+bool DeviceShape::on(int x, int y, int z) {
+    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] = true);
 }
 
-
 /**
  * @brief Turns off the cube
  */
-bool DeviceShape::off()
-{
+bool DeviceShape::off() {
     clearLed();
     return true;
 }
-
 
 /**
  * @brief Turns off a led
@@ -83,15 +77,13 @@ bool DeviceShape::off()
  * @param y
  * @param z
  */
-bool DeviceShape::off(int x, int y, int z)
-{
-    if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
+bool DeviceShape::off(int x, int y, int z) {
+    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] = false);
 }
-
 
 /**
  * @brief Toggles a led
@@ -99,21 +91,19 @@ bool DeviceShape::off(int x, int y, int z)
  * @param y
  * @param z
  */
-bool DeviceShape::toggle(int x, int y, int z)
-{
-    if (x > (sizeX - 1) || y > (sizeY-1) || z > (sizeZ-1)) {
+bool DeviceShape::toggle(int x, int y, int z) {
+    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] == true) ?
-           (ledStatus[x][y][z] = false) : (ledStatus[x][y][z] = true);
+            (ledStatus[x][y][z] = false) : (ledStatus[x][y][z] = true);
 }
 
 /**
  * @brief TODO
  */
-int DeviceShape::getSizeInBytes()
-{
+int DeviceShape::getSizeInBytes() {
     return ceil(double(sizeX * sizeY * sizeZ) / 8.0); //Nb of uint8_t in the array
 }
 
@@ -121,8 +111,7 @@ int DeviceShape::getSizeInBytes()
  * @brief Converts ledBuffer into an array
  * @param ledStatus : the filled array
  */
-uint8_t * DeviceShape::toArray()
-{
+uint8_t * DeviceShape::toArray() {
     uint8_t tmp = 0;
     uint8_t val;
     int i = 0;
@@ -140,7 +129,7 @@ uint8_t * DeviceShape::toArray()
                     j = 7;
                     tmp = 0;
                     ++i;
-                }else {
+                } else {
                     --j;
                 }
             }
@@ -151,14 +140,12 @@ uint8_t * DeviceShape::toArray()
 /**
  * @brief : TODO
  */
-std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
-{
+std::ostream& operator<<(std::ostream& os, const DeviceShape& d) {
     d.print(os);
     return os;
 }
 
-void DeviceShape::print(std::ostream &str) const
-{
+void DeviceShape::print(std::ostream &str) const {
     for (int z = 0; z < sizeZ; ++z) {
         str << "Z = " << z << std::endl;
         for (int y = 0; y < sizeY; ++y) {
@@ -173,4 +160,54 @@ void DeviceShape::print(std::ostream &str) const
         }
         str << std::endl;
     }
+}
+
+/**
+ * @brief Overload of the operator =
+ * @param p : Point 
+ * @return Point
+ */
+DeviceShape& DeviceShape::operator=(const DeviceShape &ds) {
+    std::cout << "DS =" << std::endl;
+    
+    if (&ds != this) {
+        this->sizeX = ds.getSizeX();
+        this->sizeY = ds.getSizeY();
+        this->sizeZ = ds.getSizeZ();
+
+        memcpy(this->ledStatus, ds.ledStatus, sizeX*sizeY*sizeZ*sizeof(bool));
+    }
+    return *this;
+}
+
+/**
+ * @brief Overload of the operator = 
+ * @return Point
+ */
+int DeviceShape::getSizeX() const {
+    return this->sizeX;
+}
+
+/**
+ * @brief Overload of the operator = 
+ * @return Point
+ */
+int DeviceShape::getSizeY() const {
+    return this->sizeY;
+}
+
+/**
+ * @brief Overload of the operator = 
+ * @return Point
+ */
+int DeviceShape::getSizeZ() const {
+    return this->sizeZ;
+}
+
+/**
+ * @brief Overload of the operator = 
+ * @return Point
+ */
+bool*** DeviceShape::getLedStatus() const {
+    return this->ledStatus;
 }

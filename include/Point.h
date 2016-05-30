@@ -44,8 +44,6 @@ public:
 
   Point& operator=(const Point &p);
   
-  void describe() const;
-
   void print(std::ostream &str) const;
 };
 

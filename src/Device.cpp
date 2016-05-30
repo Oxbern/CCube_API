@@ -18,8 +18,7 @@
 /**
  * @brief TODO
  */
-Device::Device(std::string port, int id)
-{
+Device::Device(std::string port, int id) {
     LOG(1, "Device constructor called");
     //Copy device's port
     if (port.length() > 0) {
@@ -47,7 +46,7 @@ Device::Device(std::string port, int id)
     //Not available by default
     this->isAvailable = false;
 
-    this->currentConfig = new DeviceShape(sizeX,sizeY,sizeZ);
+    this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
     this->fileR = -1;
 }
@@ -55,20 +54,22 @@ Device::Device(std::string port, int id)
 /**
  * @brief TODO
  */
-Device::~Device()
-{
+Device::~Device() {
+    std::cout << "Device destructor" << std::endl;
     LOG(1, "Device destructor called");
-    delete this->currentConfig;
+    if (this->currentConfig != NULL) {
+        delete this->currentConfig;
+    }
+    this->currentConfig = NULL;
 }
 
 /**
  * @brief TODO
  */
-bool Device::available()
-{
+bool Device::available() {
     DataMessage dm(this->id, 0, OPCODE(AVAILABLE));
 
-    if (!send(&dm)){
+    if (!send(&dm)) {
         std::cerr << "Error while checking if the device availability" << std::endl;
         return false; //TODO See if unavailable or just error while sending buffer
     }
@@ -78,7 +79,7 @@ bool Device::available()
 /**
  * @brief TODO
  */
-bool Device::connect(){
+bool Device::connect() {
     LOG(1, "Trying to connect the device");
     if (!file.is_open()) {
         file.open(port, std::ios::in | std::ios::out | std::ios::app); //TODO app flag usefull ?
@@ -100,8 +101,7 @@ bool Device::connect(){
 /**
  * @brief TODO
  */
-bool Device::disconnect()
-{
+bool Device::disconnect() {
     LOG(1, "Trying to disconnect the device");
     if (file.is_open()) {
         file.close();
@@ -118,26 +118,24 @@ bool Device::disconnect()
 /**
  * @brief TODO
  */
-bool Device::display()
-{
-    DataMessage dm (this->id, currentConfig->getSizeInBytes(), OPCODE(BUFF_SENDING));
+bool Device::display() {
+    DataMessage dm(this->id, currentConfig->getSizeInBytes(), OPCODE(BUFF_SENDING));
     uint8_t *buffer = currentConfig->toArray();
     dm.encode(buffer);
     delete[](buffer);
 
-    if (!send(&dm)){
+    if (!send(&dm)) {
         std::cerr << "Error while sending ledBuffer" << std::endl;
         return false;
     }
-    
+
     return true;
 }
 
 /**
  * @brief TODO
  */
-bool Device::updateFirmware()
-{
+bool Device::updateFirmware() {
     return false;
 }
 
@@ -158,36 +156,33 @@ float Device::getLuminosity()
 /**
  * @brief TODO
  */
-std::string Device::getFirmwareVersion()
-{
+std::string Device::getFirmwareVersion() {
     return 0;
 }
 
 /**
  * @brief TODO
  */
-bool Device::askForDisplaySize()
-{
+bool Device::askForDisplaySize() {
     return false;
 }
 
 /**
  * @brief TODO
  */
-bool Device::write(uint8_t* data, int dataSize)
-{
-    if(this->file.is_open()) {
+bool Device::write(uint8_t* data, int dataSize) {
+    if (this->file.is_open()) {
         LOG(2, "Buffer send (size = " + std::to_string(dataSize)
-               + " Bytes) : " + uint8ArrayToString(data, dataSize));
+                + " Bytes) : " + uint8ArrayToString(data, dataSize));
 
-        if (this->file.write((char *)data, dataSize)){
+        if (this->file.write((char *) data, dataSize)) {
             LOG(1, "Data written to file");
             return true;
-        }else{
+        } else {
             LOG(1, "Error while writing data to file");
         }
 
-    }else {
+    } else {
         LOG(1, "Unable to write data to file");
     }
     return false;
@@ -196,10 +191,9 @@ bool Device::write(uint8_t* data, int dataSize)
 /**
  * @brief TODO
  */
-bool Device::send(Message* mess)
-{
-	
-	LOG(1, "Sending message");
+bool Device::send(Message* mess) {
+
+    LOG(1, "Sending message");
     if (!file.is_open()) {
         while (!connect()) {
             //TODO Timeout
@@ -217,21 +211,37 @@ bool Device::send(Message* mess)
         if ((this->port.compare("/dev/stdin") == 0) || (this->port.compare("/dev/stdout") == 0)) {
             //VirtualCube
             LOG(2, "Buffer send (size = " + std::to_string(sizeBuffer)
-                   + " Bytes) : " + uint8ArrayToString(buffString, sizeBuffer));
+                    + " Bytes) : " + uint8ArrayToString(buffString, sizeBuffer));
 
-	        LOG(1, "Virtual sending");
+            LOG(1, "Virtual sending");
             //Virtual sending
             // uint8_t* buffer = CDC_Receive_FS(buffString);
             // delete []buffer;
 
         } else {
+
+            write(buffString, sizeBuffer);
+            uint8_t ack[10] = "initializ";
+
+            file.close();
+            int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
+
+            //memcpy(ack, getAck(fd), 10);
+
+            for (int k = 0; k < 10; ++k)
+                std::cout << (int) ack[k] << "| ";
+
+            close(fd);
+            this->connect();
+
 	        while (!write(buffString, sizeBuffer)) {
 	        continue;
 	        }
+
         }
         delete []buffString;
     }
-    LOG(1, "Message sended" );
+    LOG(1, "Message sended");
 
     return true;
 }
@@ -239,62 +249,55 @@ bool Device::send(Message* mess)
 /**
  * @brief TODO
  */
-int Device::getID() const
-{
+int Device::getID() const {
     return this->id;
 }
 
 /**
  * @brief TODO
  */
-std::string Device::getPort() const
-{
+std::string Device::getPort() const {
     return this->port;
 }
 
 /**
  * @brief TODO
  */
-DeviceShape *Device::getcurrentConfig() const{
+DeviceShape *Device::getcurrentConfig() const {
     return this->currentConfig;
 }
 
 /**
  * @brief TODO
  */
-bool Device::on(int x, int y, int z)
-{
+bool Device::on(int x, int y, int z) {
     return currentConfig->on(x, y, z);
 }
 
 /**
  * @brief TODO
  */
-bool Device::off()
-{
+bool Device::off() {
     return currentConfig->off();
 }
 
 /**
  * @brief TODO
  */
-bool Device::off(int x, int y, int z)
-{
+bool Device::off(int x, int y, int z) {
     return currentConfig->off(x, y, z);
 }
 
 /**
  * @brief TODO
  */
-bool Device::toggle(int x, int y, int z)
-{
+bool Device::toggle(int x, int y, int z) {
     return currentConfig->toggle(x, y, z);
 }
 
 /**
  * @brief TODO
  */
-std::fstream& Device::getFile()
-{
+std::fstream& Device::getFile() {
     return this->file;
 }

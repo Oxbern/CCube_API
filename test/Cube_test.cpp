@@ -1,12 +1,15 @@
 #include "Cube.h"
 
 int main(int argc, char* argv[]) {
+    
+    Device *d = new Device("usb", 1);
+    
     Point p(0, 0, 0);
-    Cube c(5, 9, 9, 9, p);
+    Cube c(5, 9, 9, 9, d, p, true);
 
-    std::cout << "Start" << std::endl;
     c.print(std::cout);
-
+    
+/*
     if (c.moveDown()) {
         std::cout << "Down" << std::endl;
         c.print(std::cout);
@@ -17,7 +20,7 @@ int main(int argc, char* argv[]) {
         c.print(std::cout);
     }
 
-    /* for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
         if (c.moveRight())
             {
                 std::cout << "Right number " << (int) (i + 1) << std::endl;
@@ -30,7 +33,7 @@ int main(int argc, char* argv[]) {
             c.print(std::cout);
         }
     }
-     */
+     
 
     std::cout << "INCREASE" << std::endl;
     c.decrSize();
@@ -51,6 +54,6 @@ int main(int argc, char* argv[]) {
     c.print(std::cout);
     
     c.decrSize();
-
+*/
     return 0;
 }

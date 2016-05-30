@@ -7,6 +7,10 @@
 
 #define SIZE_ACK 10
 #define SIZE_BUFFER 64
+#define SIZE_REQUEST 7
+#define SIZE_ANSWER 8
+#define SIZE_SET 8
+#define SIZE_FIRST 10
 
 #define SIZE_OPCODE 1
 #define SIZE_ID 1
