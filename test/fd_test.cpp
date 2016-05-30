@@ -7,6 +7,7 @@
 #include <pthread.h>
 
 #include "DeviceShape.h"
+#include "Utils.h"
 
 #define Response_MAX_SIZE 512
 
@@ -75,9 +76,14 @@ int main () {
 	myDataMessage[2] = 0x42;
 	myDataMessage[3] = 0;
 	myDataMessage[4] = 92;
-
+	
 	memcpy(&myDataMessage[5], ds.toArray(), 57);
 
+	uint16_t crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
+
+	myDataMessage[62] = crc >> 8;
+	myDataMessage[63] = crc & 0xFF;
+	
 	printf("My Data Message:");
 	for (int i = 0; i < 64; ++i)
 		printf("%u |", myDataMessage[i]);
@@ -87,10 +93,15 @@ int main () {
 
 	getAck(fd);
 	
-	// myDataMessage[0] = 0;
+	myDataMessage[0] = 0;
 	myDataMessage[4] = 35;
 
-	memcpy(&myDataMessage[5], ds.toArray() + 57, 57);
+	memcpy(&myDataMessage[5], ds.toArray() + 57, 35);
+
+	crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
+
+	myDataMessage[62] = crc >> 8;
+	myDataMessage[63] = crc & 0xFF;
 
 	printf("My Data Message:");
 	for (int i = 0; i < 64; ++i)
@@ -103,5 +114,7 @@ int main () {
 	
 	close(fd);
 
+	free(myDataMessage);
+	
 	return 0;
 }
