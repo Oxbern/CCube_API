@@ -46,7 +46,7 @@ public:
 };
 
 char ** getTtyList(int *size);
-char * getNextWord(char *path, int *j);
+void getNextWord(char *path, int *j, char * wordreturn);
 Dictionnary *getDictSTM( int *nbSTM);
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic);
 #endif //CONTROLLER_H

@@ -6,7 +6,8 @@
  */ 
 Controller::Controller()
 {
-    listAndGetUSBConnectedDevices();
+    //listAndGetUSBConnectedDevices();
+    LOG(1, "Controller() \n");
 }
 
 /**
@@ -14,7 +15,7 @@ Controller::Controller()
  */ 
 Controller::~Controller()
 {
-
+    LOG(1, "~Message() \n");
 }
 
 /**
@@ -23,6 +24,7 @@ Controller::~Controller()
  */ 
 bool Controller::addListener(Listener &l)
 {
+    LOG(1, "addListener(Listener &l) \n");
     return false;
 }
 
@@ -32,6 +34,7 @@ bool Controller::addListener(Listener &l)
  */ 
 bool Controller::removeListener(Listener &l)
 {
+    LOG(1, "removeListener(Listener &l) \n");
     return false;
 }
 
@@ -40,6 +43,8 @@ bool Controller::removeListener(Listener &l)
  */ 
 void Controller::listAllDevices()
 {
+    LOG(1, "listAllDevices()\n");
+
     std::cout << "--- List of USB Connected Devices : ---" << std::endl;
     std::list<Device*>::iterator iter ;
     int i = 1;
@@ -47,14 +52,17 @@ void Controller::listAllDevices()
         std::cout << "Device  "  << i << ": Id = " << (*iter)->getID() << ", Port :" << (*iter)->getPort() <<  "\n";
         i++;
     }
+
 }
 
 /**
- * @brief Connected the controller to the device 
+ * @brief Connects the controller to the device 
  * @param Device to connect
  */ 
 bool Controller::connectDevice(Device *d)
 {
+    LOG(1, "connectDevice() \n");
+
     if ((*d).connect()){
         this->connectedDevice = d;
         return true;
@@ -64,16 +72,21 @@ bool Controller::connectDevice(Device *d)
 
 /**
  * @brief Accessor to the current connected device
+ * @return The current connected device
  */ 
 Device* Controller::getConnectedDevice()
 {
+    LOG(1, "getConnectedDevice() \n");
     return this->connectedDevice;
 }
 
 /**
  * @brief Accessor to the list of USB connected sevices
+ * @return The list of USB Connected Devices
  */ 
 std::list<Device*> Controller::getListDevices(){
+    LOG(1, "getListDevices() \n");
+
     return this->devices;
 }
 
@@ -94,7 +107,7 @@ char ** getTtyList(int *size){
     /* Open the command for reading. */
     fp = popen("ls /dev/tty*  ", "r"); 
     if (fp == NULL) {
-        printf("Failed to run command\n" );
+        std::cerr << "Failed to run command\n";
         exit(1);
     }
     /* Read the output a line at a time - output it. */
@@ -109,7 +122,7 @@ char ** getTtyList(int *size){
     /* Open the command for reading. */
     fp = popen("ls /dev/tty*  ", "r"); 
     if (fp == NULL) {
-        printf("Failed to run command\n" );
+        std::cerr << "Failed to run command\n";
         exit(1);
     }
     
@@ -128,7 +141,7 @@ char ** getTtyList(int *size){
  * @param path : the line to parse
  * @param j : begining of the future parsing
  */ 
-char * getNextWord(char *path, int *j){
+void getNextWord(char *path, int *j, char * wordreturn){
     char word[10];
     int w = 0;
     
@@ -138,9 +151,9 @@ char * getNextWord(char *path, int *j){
         (*j)++;
     }
     word[*j]='\0';
-    char * wordreturn = (char *)malloc(10*sizeof(char));
+    //char * wordreturn = (char *)malloc(10*sizeof(char));
     strcpy(wordreturn,word);
-    return wordreturn;
+    //return wordreturn;
 }
 
 /**
@@ -154,7 +167,7 @@ Dictionnary *getDictSTM( int *nbSTM){
     //Open the command for reading.
     fp = popen("lsusb | grep STM ", "r"); 
     if (fp == NULL) {
-        printf("Failed to run command\n" );
+        std::cerr << "Failed to run command\n";
         exit(1);
     }
     
@@ -170,7 +183,7 @@ Dictionnary *getDictSTM( int *nbSTM){
      //Open the command for reading.
     fp = popen("lsusb | grep STM ", "r"); 
     if (fp == NULL) {
-        printf("Failed to run command\n" );
+        std::cerr << "Failed to run command\n";
         exit(1);
     }
     int j = 0, k = 0;
@@ -184,9 +197,10 @@ Dictionnary *getDictSTM( int *nbSTM){
                     if (path[j] == 's'){
                         j++;
                         j++;
-                        char * bus =  getNextWord(path,&j);
+                        char bus[10];
+                        getNextWord(path,&j, (char *) &bus);
                         dic[k].bus = atoi(bus);
-                        delete [] bus;
+                        //delete [] bus;
                     }
                 }
             }
@@ -203,9 +217,10 @@ Dictionnary *getDictSTM( int *nbSTM){
                                 if (path[j] == 'e'){
                                     j++;
                                     j++;
-                                    char * device =  getNextWord(path,&j);
+                                    char device[10];
+                                    getNextWord(path,&j,(char *) &device);
                                     dic[k].Device = atoi(device);
-                                    delete [] device;
+                                    //delete [] device;
                                 }
                             }
                         }
@@ -269,6 +284,8 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
  * @brief Display the list of all USB connected devices and push them in the device list 
  */ 
 void Controller::listAndGetUSBConnectedDevices(){
+    LOG(1, "listAndGetUSBConnectedDevices() \n");
+
     int size = 0;
     char ** ttyList = getTtyList(&size);
 
@@ -278,7 +295,7 @@ void Controller::listAndGetUSBConnectedDevices(){
     int DeviceID = 1;
 
     for (int i = 0; i < size; i++){
-        std::string name = ttyList[i];
+        std::string name = "hello";// = ttyList[i];
 
         name.erase(std::remove(name.begin(), name.end(), '\n'), name.end());
         std::string cmd = "echo /dev/bus/usb/`udevadm info --name="  + name +   " --attribute-walk | sed -n 's/\\s*ATTRS{\\(\\(devnum\\)\\|\\(busnum\\)\\)}==\\\"\\([^\\\"]\\+\\)\\\"/\\4/p' | head -n 2 | awk '{$1 = sprintf(\"%03d\", $1); print}'` | tr \" \" \"\\/\"";
@@ -286,7 +303,7 @@ void Controller::listAndGetUSBConnectedDevices(){
         FILE *fp;
         fp = popen(cmd.c_str(), "r"); 
         if (fp == NULL) {
-            printf("Failed to run command\n" );
+        std::cerr << "Failed to run command\n";
             exit(1);
         }
         char path[50];
@@ -310,7 +327,8 @@ void Controller::listAndGetUSBConnectedDevices(){
                 }
             }
         }
-               
+
+        pclose(fp);
     }
     for (int i = 0; i < size; i++)
             delete [] (ttyList[i]);
