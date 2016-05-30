@@ -23,15 +23,18 @@ struct Dictionnary{
 } typedef Dictionnary;
 
 
-
-class Controller {
-private:
+/**
+ * @class Controller
+ */
+class Controller
+{
+ private:
     std::list<Listener> listeners;
     std::list<Device*> devices;
     Device *connectedDevice;
     std::queue<Message> messages; //FIFO of last messages
     std::thread t;
-public:
+ public:
     Controller();
     ~Controller();
 

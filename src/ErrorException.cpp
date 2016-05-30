@@ -1,5 +1,8 @@
 #include "ErrorException.h"
 
+/**
+ * @brief TODO
+ */
 ErrorException::ErrorException( const char * Msg )
 {
     std::ostringstream oss;
@@ -7,8 +10,16 @@ ErrorException::ErrorException( const char * Msg )
     this->msg = oss.str();
 }
 
-ErrorException::~ErrorException() throw() {}
+/**
+ * @brief TODO
+ */
+ErrorException::~ErrorException() throw()
+{
+}
 
+/**
+ * @brief TODO
+ */
 const char * ErrorException::what() const throw()
 {
     return this->msg.c_str();

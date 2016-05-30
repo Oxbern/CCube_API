@@ -6,7 +6,8 @@
  * @class Message creation when answering to a question
  */
 
-class AnswerMessage : public Message {
+class AnswerMessage : public Message
+{
  public :
     AnswerMessage(uint8_t id, uint8_t code);
     ~AnswerMessage();

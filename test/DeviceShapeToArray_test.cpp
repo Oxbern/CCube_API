@@ -8,7 +8,8 @@
 /**
  * Test file for the method toArray
  */
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     int size = 9;
     DeviceShape d(size, size, size);
     int sizeArray = d.getSizeInBytes();

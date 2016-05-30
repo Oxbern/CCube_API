@@ -1,17 +1,29 @@
 #include "ShapeToDisplay.h"
 
+
+/**
+ * @brief TODO
+ */
 ShapeToDisplay::ShapeToDisplay(int i, Device *d, Point p, bool b)
-: size(i), origin(p), full(b), device(d)
+    : size(i), origin(p), full(b), device(d)
 {
     LOG(1,"Constructor ShapeToDisplay");
 }
 
-ShapeToDisplay::~ShapeToDisplay() {
+/**
+ * @brief TODO
+ */
+ShapeToDisplay::~ShapeToDisplay()
+{
     LOG(1,"Destructor ShapeToDisplay");
     delete device;
 }
 
-void ShapeToDisplay::print(std::ostream &str) {
+/**
+ * @brief TODO
+ */
+void ShapeToDisplay::print(std::ostream &str)
+{
     if (full)
         str << "This is a full shape :" << std::endl;
     else
@@ -22,28 +34,40 @@ void ShapeToDisplay::print(std::ostream &str) {
     device->getcurrentConfig()->print(str);
 }
 
-std::ostream& operator<<(std::ostream &out, ShapeToDisplay &std) {
+/**
+ * @brief TODO
+ */
+std::ostream& operator<<(std::ostream &out, ShapeToDisplay &std)
+{
     std.print(out);
     return out;
 }
 
-bool ShapeToDisplay::incrSize() {
+/**
+ * @brief TODO
+ */
+bool ShapeToDisplay::incrSize()
+{
     size++;
     if (size > device->getcurrentConfig()->getSizeX() 
-            || size > device->getcurrentConfig()->getSizeY() 
-            || size > device->getcurrentConfig()->getSizeZ()) {
+        || size > device->getcurrentConfig()->getSizeY() 
+        || size > device->getcurrentConfig()->getSizeZ()) {
         std::cout << "size bigger than device dimensions" << std::endl;
         std::cout << "size = " << size << std::endl;
         std::cout << "sizeX = " << device->getcurrentConfig()->getSizeX() 
-                << ", sizeY = " << device->getcurrentConfig()->getSizeY()
-                << ", sizeZ = " << device->getcurrentConfig()->getSizeZ() << std::endl;
+                  << ", sizeY = " << device->getcurrentConfig()->getSizeY()
+                  << ", sizeZ = " << device->getcurrentConfig()->getSizeZ() << std::endl;
         size--;
         return false;
     }
     return true;
 }
 
-bool ShapeToDisplay::decrSize() {
+/**
+ * @brief TODO
+ */
+bool ShapeToDisplay::decrSize()
+{
     size--;
     if (size < 0) {
         std::cout << "negative size" << std::endl;
@@ -52,6 +76,9 @@ bool ShapeToDisplay::decrSize() {
     return true;
 }
 
+/**
+ * @brief TODO
+ */
 Device * ShapeToDisplay::getDevice() const 
 {
     return this->device;

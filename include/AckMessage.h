@@ -7,8 +7,9 @@
  * @class ACK
  */
 
-class AckMessage : public Message {
-public :
+class AckMessage : public Message
+{
+ public :
     AckMessage(uint8_t id, uint8_t ackType);
     ~AckMessage();
     

@@ -6,16 +6,19 @@
 
 #include "Debug.h"
 
-//TODO : DOC
-class DeviceShape {
-protected :
+/**
+ * @class DeviceShape
+ */
+class DeviceShape
+{
+ protected :
     void clearLed();
     int sizeX;
     int sizeY;
     int sizeZ;
     bool ***ledStatus;
 
-public :
+ public :
     DeviceShape(int sizeX = 9, int sizeY = 9, int sizeZ = 9);
     ~DeviceShape();
 
@@ -37,4 +40,5 @@ public :
     
     bool*** getLedStatus() const;
 };
+
 #endif //DEVICESHAPE_H

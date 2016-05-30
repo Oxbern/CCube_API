@@ -1,13 +1,18 @@
 #include "Cube.h"
 
-
+/**
+ * @brief TODO
+ */
 Cube::Cube(int s, Device *d, Point p, bool b) : 
-ShapeToDisplay(s, d, p, b)
+    ShapeToDisplay(s, d, p, b)
 {
     LOG(1,"Constructor cube");
     init();
 }
 
+/**
+ * @brief TODO
+ */
 void Cube::init()
 {
     for (int x = 0; x < device->getcurrentConfig()->getSizeX(); x++) {
@@ -30,16 +35,22 @@ void Cube::init()
     }
 }
 
+/**
+ * @brief TODO
+ */
 Cube::~Cube()
 {
     LOG(1,"Destructor cube");
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::incrSize() 
 {
     std::cout << "X = " << origin.getX() + size 
-            << ", Y = " << origin.getY() + size 
-            <<", Z = " << origin.getZ() + size << std::endl;
+              << ", Y = " << origin.getY() + size 
+              <<", Z = " << origin.getZ() + size << std::endl;
     if (origin.getX() + size == 9 
 	|| origin.getY() + size == 9 
 	|| origin.getZ() + size == 9) 
@@ -53,6 +64,9 @@ bool Cube::incrSize()
     return true;
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::decrSize() 
 {
     if (size == 0) {
@@ -65,6 +79,9 @@ bool Cube::decrSize()
     return true;
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::moveUp() 
 {
     if (origin.getZ() + size < 9)
@@ -76,11 +93,14 @@ bool Cube::moveUp()
 	}
     else
 	{
-	std::cout << "Cannot go higher" << std::endl; 
-	return false;
+            std::cout << "Cannot go higher" << std::endl; 
+            return false;
 	}
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::moveDown() 
 {
     if (origin.getZ() > 0)
@@ -97,6 +117,9 @@ bool Cube::moveDown()
 	}
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::moveLeft() 
 {
     if (origin.getY()  > 0)
@@ -113,6 +136,9 @@ bool Cube::moveLeft()
 	}
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::moveRight() 
 {
     if (origin.getY() + size < 9)
@@ -129,6 +155,9 @@ bool Cube::moveRight()
 	}
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::moveForward() 
 {
     if (origin.getX() + size < 9)
@@ -145,6 +174,9 @@ bool Cube::moveForward()
 	}
 }
 
+/**
+ * @brief TODO
+ */
 bool Cube::moveBackward() 
 {
     if (origin.getX() > 0)
@@ -162,11 +194,19 @@ bool Cube::moveBackward()
 }
 
 
-void Cube::print(std::ostream &str) {
+/**
+ * @brief TODO
+ */
+void Cube::print(std::ostream &str)
+{
     ShapeToDisplay::print(str);
 }
 
-std::ostream& operator<<(std::ostream &out, Cube &c) {
+/**
+ * @brief TODO
+ */
+std::ostream& operator<<(std::ostream &out, Cube &c)
+{
     c.print(out);
     return out;
 }

@@ -9,7 +9,8 @@
  * @class Buffer
  */
 
-class Buffer {
+class Buffer
+{
  private :
     uint8_t header;
     uint8_t idDevice;
@@ -18,7 +19,7 @@ class Buffer {
     uint16_t sizeLeft;
     uint8_t *data;
     uint16_t crc;
-public :
+ public :
     Buffer();
     Buffer(int sizeBuff);
     ~Buffer();

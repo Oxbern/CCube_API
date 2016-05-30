@@ -35,7 +35,8 @@ void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
  * @param crc
  * @return boolean
  */
-bool AckMessage::checkAck(uint16_t crc) {
+bool AckMessage::checkAck(uint16_t crc)
+{
     return (this->crc == crc ? true : false);
 }
 
@@ -66,6 +67,7 @@ void AckMessage::setAck(int fd)
  * @brief Gets the ackType
  * @return opCode 
  */
-uint8_t AckMessage::getAckType() const {
+uint8_t AckMessage::getAckType() const
+{
     return Message::getOpCode();
 }

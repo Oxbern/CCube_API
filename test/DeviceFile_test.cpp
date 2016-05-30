@@ -2,8 +2,8 @@
 
 #include "Device.h"
 
-
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     Device dev("/dev/stdout", 1);
     uint8_t buff[24] = "Write in a file in C++\n";
 

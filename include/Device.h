@@ -1,4 +1,3 @@
-
 #ifndef DEVICE_H
 #define DEVICE_H
 
@@ -10,8 +9,12 @@
 #include "DataMessage.h"
 #include "Debug.h"
 
-class Device {
-private :
+/**
+ * @class Device
+ */
+class Device
+{
+ private :
     int id;
     std::fstream file;
     std::string port;
@@ -23,7 +26,7 @@ private :
     bool isAvailable;
     DeviceShape *currentConfig;
 
-public :
+ public :
     // Port is found by Controller's constructor and id is defined there.
     Device(std::string port, int id);
     ~Device();
@@ -51,5 +54,6 @@ public :
     DeviceShape *getcurrentConfig() const;
     std::fstream & getFile();
 
-    };
+};
+
 #endif //CUBEAPI_DEVICE_H

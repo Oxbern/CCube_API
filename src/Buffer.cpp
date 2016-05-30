@@ -37,9 +37,11 @@ Buffer::~Buffer()
 }
 /**
  * @brief Returns the size available for the data
- * @param entire size of the buffer
+ * @param the entire size of the buffer
+ * @return the data size
  */
-int dataSize(int sizeBuffer) {
+int dataSize(int sizeBuffer)
+{
     return (sizeBuffer - DATA_INDEX - SIZE_CRC);
 }
 
@@ -47,7 +49,8 @@ int dataSize(int sizeBuffer) {
  * @brief Returns the index of the crc
  * @param entire size of the buffer
  */
-int crcIndex(int sizeBuffer) {
+int crcIndex(int sizeBuffer)
+{
     return (sizeBuffer - SIZE_CRC);
 }
 
@@ -55,7 +58,8 @@ int crcIndex(int sizeBuffer) {
  * @brief Sets the header
  * @param head
  */
-void Buffer::setHeader(uint8_t head) {
+void Buffer::setHeader(uint8_t head)
+{
     this->header = head;
 }
 
@@ -63,7 +67,8 @@ void Buffer::setHeader(uint8_t head) {
  * @brief Sets the id of the Device 
  * @param idDevice
  */
-void Buffer::setID(uint8_t id) {
+void Buffer::setID(uint8_t id)
+{
     this->idDevice = id;
 }
 
@@ -71,7 +76,8 @@ void Buffer::setID(uint8_t id) {
  * @brief Sets the opCode
  * @param code
  */
-void Buffer::setOpCode(uint8_t code) {
+void Buffer::setOpCode(uint8_t code)
+{
     this->opCode = code;
 }
 
@@ -79,7 +85,8 @@ void Buffer::setOpCode(uint8_t code) {
  * @brief Sets the sizeLeft
  * @param size
  */
-void Buffer::setSizeLeft(uint16_t size) {
+void Buffer::setSizeLeft(uint16_t size)
+{
     this->sizeLeft = size;
 }
 
@@ -87,7 +94,8 @@ void Buffer::setSizeLeft(uint16_t size) {
  * @brief Sets the crc
  * @param crcCheck
  */
-void Buffer::setCrc(uint16_t crcCheck) {
+void Buffer::setCrc(uint16_t crcCheck)
+{
     this->crc = crcCheck;
 }
 
@@ -96,7 +104,8 @@ void Buffer::setCrc(uint16_t crcCheck) {
  * @param index
  * @param dataIndex
  */
-void Buffer::setData(int index, uint8_t dataIndex) {
+void Buffer::setData(int index, uint8_t dataIndex)
+{
     this->data[index] = dataIndex;
 }
 
@@ -111,7 +120,8 @@ uint8_t Buffer::getHeader() const
 /**
  * @brief Gets the operation code
  */
-uint8_t Buffer::getOpCode() const {
+uint8_t Buffer::getOpCode() const
+{
     return this->opCode;
 }
 
@@ -156,7 +166,8 @@ uint8_t Buffer::getID() const
  * @brief Operator == 
  * @param buffer
  */
-bool Buffer::operator==(Buffer b){
+bool Buffer::operator==(Buffer b)
+{
     bool ret = (this->header == b.header &&
                 this->opCode == b.opCode &&
                 this->sizeLeft == b.sizeLeft &&
@@ -229,6 +240,7 @@ std::string Buffer::toString()
 
 /**
  * @brief Prints a buffer for debugging
+ * @param buffer index in message
  * @return string
  */
 std::string Buffer::toStringDebug(int indexInMess)

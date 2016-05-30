@@ -5,7 +5,8 @@
  * @param val to convert
  * @param tab array : the converted values destination
  */ 
-void convert16to8(uint16_t val, uint8_t tab[2]) {
+void convert16to8(uint16_t val, uint8_t tab[2])
+{
     if (tab != NULL) {
         tab[0] = val >> 8;
         tab[1] = 0xFF & val;
@@ -18,7 +19,8 @@ void convert16to8(uint16_t val, uint8_t tab[2]) {
  * @param opCodePack
  * @param tab array 
  */
-void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]) {
+void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3])
+{
     if (tab != NULL) {
         tab[0] = sizeLeftPack >> 8;
         tab[1] = 0xFF & sizeLeftPack;
@@ -32,8 +34,9 @@ void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]) {
  * @param data 
  * @param size of the buffers
  * @return crc
-*/
-uint16_t computeCRC(uint8_t *data, uint16_t size) {
+ */
+uint16_t computeCRC(uint8_t *data, uint16_t size)
+{
     uint16_t out = 0;
     int bits_read = 0, bit_flag = 0;
 
@@ -41,26 +44,26 @@ uint16_t computeCRC(uint8_t *data, uint16_t size) {
         return 0;
 
     while(size > 0)
-    {
-        bit_flag = out >> 15;
-
-        out <<= 1;
-        out |= (*data >> bits_read) & 1;
-
-        /* Increment bit counter: */
-        bits_read++;
-        if(bits_read > 7)
         {
-            bits_read = 0;
-            data++;
-            size--;
+            bit_flag = out >> 15;
+
+            out <<= 1;
+            out |= (*data >> bits_read) & 1;
+
+            /* Increment bit counter: */
+            bits_read++;
+            if(bits_read > 7)
+                {
+                    bits_read = 0;
+                    data++;
+                    size--;
+                }
+
+            /* Cycle check: */
+            if(bit_flag)
+                out ^= CRC16;
+
         }
-
-        /* Cycle check: */
-        if(bit_flag)
-            out ^= CRC16;
-
-    }
 
     int i;
     for (i = 0; i < 16; ++i) {

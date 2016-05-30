@@ -4,20 +4,21 @@
 #include "DeviceShape.h"
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     int size = 9;
     DeviceShape d (size, size, size);
 
     /*************************************
         TEST 1 : display all the leds
-     *************************************/
+    *************************************/
     printf("******* Leds switched off *******\n");
     std::cout << d;
 
 
     /*************************************
         TEST 2 : switch on all the leds
-     *************************************/
+    *************************************/
     for (int x = 0; x < size; ++x)
         for (int y = 0; y < size; ++y)
             for (int z = 0; z < size; ++z)
@@ -27,7 +28,7 @@ int main(int argc, char* argv[]) {
 
     /*************************************
             TEST 3 : toArray() method
-     *************************************/
+    *************************************/
 
     for (int z = 0; z < size; ++z) {
         for (int y = 0; y < size; ++y) {

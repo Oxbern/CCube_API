@@ -73,9 +73,9 @@ Controller::Controller()
 
     if (devices.size() == 0){
         // Connect to stdout to write messages
-         Device *dev = new Device("/dev/stdout", 1);
-         devices.push_back(dev);    
-         connectDevice(dev);
+        Device *dev = new Device("/dev/stdout", 1);
+        devices.push_back(dev);    
+        connectDevice(dev);
     }
         
     LOG(1, "Controller()\n");
@@ -127,8 +127,8 @@ bool Controller::listAllDevices()
         i++;
     }
     if (!strcmp((*(devices.begin()))->getPort().c_str(),"/dev/stdout") ) {
-	    std::cout << "No device connected, connection to stdout\n";
-	    return false;
+        std::cout << "No device connected, connection to stdout\n";
+        return false;
     }
     return true;
 }
@@ -170,7 +170,8 @@ Device* Controller::getConnectedDevice()
  * @brief Accessor to the list of USB connected sevices
  * @return The list of USB Connected Devices
  */ 
-std::list<Device*> Controller::getListDevices(){
+std::list<Device*> Controller::getListDevices()
+{
     LOG(1, "getListDevices() \n");
 
     return this->devices;
@@ -186,7 +187,8 @@ std::list<Device*> Controller::getListDevices(){
  * @brief Get the list of tty ports open on the computer
  * @param size : number of tty ports to return 
  */ 
-char ** getTtyList(int *size){
+char ** getTtyList(int *size)
+{
     FILE *fp;
     char path[20];
     int i = 0;
@@ -227,7 +229,8 @@ char ** getTtyList(int *size){
  * @param path : the line to parse
  * @param j : begining of the future parsing
  */ 
-void getNextWord(char *path, int *j, char * wordreturn){
+void getNextWord(char *path, int *j, char * wordreturn)
+{
     char word[10] = "initializ";
     int w = 0;
     
@@ -246,7 +249,8 @@ void getNextWord(char *path, int *j, char * wordreturn){
  * @brief Gets the result of a "lsusb | grep STM" system call in a Dictionnary(Bus:Device) structure
  * @param nbSTM : number of STM devices connected to return
  */ 
-Dictionnary *getDictSTM( int *nbSTM){
+Dictionnary *getDictSTM( int *nbSTM)
+{
     FILE *fp;
     char path[100];
     int i = 0;
@@ -266,7 +270,7 @@ Dictionnary *getDictSTM( int *nbSTM){
     pclose(fp);
 
     Dictionnary *dic = new Dictionnary[*nbSTM];
-     //Open the command for reading.
+    //Open the command for reading.
     fp = popen("lsusb | grep STM ", "r"); 
     if (fp == NULL) {
         std::cerr << "Failed to run command\n";
@@ -329,7 +333,8 @@ Dictionnary *getDictSTM( int *nbSTM){
  * @param dic : the Dictionnary to look in
  * @param sizOfDic : size of the Dictionnary
  */ 
-bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
+bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
+{
     char busSDev[echo.length()+1];
     strcpy(busSDev,echo.c_str());
     int bus = 0;
@@ -369,7 +374,8 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic){
 /**
  * @brief Display the list of all USB connected devices and push them in the device list 
  */ 
-void Controller::listAndGetUSBConnectedDevices(){
+void Controller::listAndGetUSBConnectedDevices()
+{
     LOG(1, "listAndGetUSBConnectedDevices() \n");
 
     int size = 0;
@@ -389,7 +395,7 @@ void Controller::listAndGetUSBConnectedDevices(){
         FILE *fp;
         fp = popen(cmd.c_str(), "r"); 
         if (fp == NULL) {
-        std::cerr << "Failed to run command\n";
+            std::cerr << "Failed to run command\n";
             exit(1);
         }
         char path[50];
@@ -416,7 +422,7 @@ void Controller::listAndGetUSBConnectedDevices(){
         pclose(fp);
     }
     for (int i = 0; i < size; i++)
-            delete [] (ttyList[i]);
+        delete [] (ttyList[i]);
     delete [] (ttyList);
     delete [] dic;
 }

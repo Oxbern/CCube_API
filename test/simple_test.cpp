@@ -14,13 +14,13 @@ int main(int argc, char *argv[]) {
 
     Message m(1, SIZE_BUFFER, 20, 0x1);
 
-   /* std::fstream file;
-    file.open("/dev/ttyACM0", std::ios::in | std::ios::out);
+    /* std::fstream file;
+       file.open("/dev/ttyACM0", std::ios::in | std::ios::out);
 
-    if (!file.is_open()) {
-        perror("Erreur");
-        return EXIT_FAILURE;
-    }*/
+       if (!file.is_open()) {
+       perror("Erreur");
+       return EXIT_FAILURE;
+       }*/
 
     int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd != -1) {
@@ -53,23 +53,21 @@ int main(int argc, char *argv[]) {
     }
 
 
-/*
+    /*
 
-    for (int i = 0; i < 64; i++)
-        std::cout << (int)buff[i];
-    std::cout << "\n";
+      for (int i = 0; i < 64; i++)
+      std::cout << (int)buff[i];
+      std::cout << "\n";
 
-    std::cout << buffer.toStringDebug(0);
+      std::cout << buffer.toStringDebug(0);
 
 
 
-    file.write((char *)buff, 64);
+      file.write((char *)buff, 64);
 
-    file.close();
-*/
+      file.close();
+    */
     close(fd);
-
-
 
     return EXIT_SUCCESS;
 }

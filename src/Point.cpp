@@ -8,7 +8,8 @@ using namespace std;
  * @brief Creates a point of dimension 3 and coordinates x = 0, y = 0, z = 0 
  */
 Point::Point() : x(0), y(0), z(0)
-{}
+{
+}
 
 /**
  * @brief Creates a point for a cube of length 9 LEDs
@@ -22,7 +23,7 @@ Point::Point(uint8_t x, uint8_t y, uint8_t z) : x(x), y(y), z(z)
 	perror("Index (x) of led out of bounds");
 	exit(EXIT_FAILURE);
     }
-	if (y < 0 || y > 8){
+    if (y < 0 || y > 8){
 	perror("Index (y) of led out of bounds");
 	exit(EXIT_FAILURE);
     }
@@ -147,7 +148,8 @@ Point& Point::operator = (const Point &p)
  * @param p : Point to compare with 
  * @return boolean
  */
-bool Point::operator== (Point p){
+bool Point::operator== (Point p)
+{
     return (this->x == p.getX() &&
      	    this->y == p.getY() &&
     	    this->z == p.getZ());
@@ -159,7 +161,8 @@ bool Point::operator== (Point p){
  * @param p : Point to compare with 
  * @return boolean
  */
-std::ostream& operator << (std::ostream &out, const Point &p) {
+std::ostream& operator << (std::ostream &out, const Point &p)
+{
     p.print(out);
     return out;
 }

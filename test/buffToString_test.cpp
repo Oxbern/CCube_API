@@ -2,7 +2,8 @@
 #include "Utils.h"
 #include "iostream"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     /*********************************************
           TEST 1 : Method toString for Buffer
     ***********************************************/
@@ -20,7 +21,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Test buff toString Method" << std::endl;
     std::cout << "Expected : " << 1 << 1 << OPCODE(ACK_OK) << 0 << sizeAckData
-    << 0XFF << 0xFF << 0xFF << 0 << 0 << std::endl;
+              << 0XFF << 0xFF << 0xFF << 0 << 0 << std::endl;
 
     std::cout << "Result   : " << ackBuff.toString() << std::endl;
 

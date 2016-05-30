@@ -5,15 +5,17 @@
 #include <sstream> 
 #include <exception> 
 
+/**
+ * @class Exception
+ */
 class ErrorException : public std::exception
 {
-public:
+ public:
     ErrorException( const char * Msg );
     virtual ~ErrorException() throw();
 
-
     virtual const char * what() const throw();
-private:
+ private:
     std::string msg;
 };
 

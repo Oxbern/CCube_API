@@ -9,7 +9,8 @@
 #include "SetMessage.h"
 #include "FirstMessage.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     Message message();
 
     Message mess(1, SIZE_BUFFER, 1, 0);
@@ -55,7 +56,7 @@ int main(int argc, char *argv[]) {
     FirstMessage one2(4, DEVICE_INFO);
     std::cout << " \n One2\n";
     std::cout << one2.toStringDebug();    
-       one2.encode(data);
+    one2.encode(data);
     std::cout << " \n One2 encoded :\n";
     std::cout << one2.toStringDebug();    
 

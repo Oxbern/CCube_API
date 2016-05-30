@@ -10,7 +10,8 @@
  * @class Message 
  */
 
-class Message {
+class Message
+{
  protected :
     uint8_t idDevice;
     int sizeBuffer;

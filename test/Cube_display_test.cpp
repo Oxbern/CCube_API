@@ -1,8 +1,8 @@
 #include "Cube.h"
 #include "Controller.h"
 
-int main(int argc, char** argv) {
-
+int main(int argc, char** argv)
+{
     Controller c;
     Device *chosen;
 
@@ -25,7 +25,8 @@ int main(int argc, char** argv) {
 
         if (c.connectDevice(chosen)) {
 
-            std::cout << "You are connected to " << c.getConnectedDevice()->getPort() << std::endl;
+            std::cout << "You are connected to " << c.getConnectedDevice()->getPort()
+                      << std::endl;
         }
     }
     Device *dc = c.getConnectedDevice();

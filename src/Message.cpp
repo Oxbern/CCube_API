@@ -25,14 +25,15 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setID(id);
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
-        }
+    }
     std::cout << "Message("<< (int)id << " , " << (int)sizeBuff << " , " << (int)size << " , " << (int)code << ")\n";    
 }
 
 /**
  * @brief Constructor by copy
  */
-Message::Message(const Message& M) {
+Message::Message(const Message& M)
+{
     sizeBuffer= M.getSizeBuffer();
     sizeData = M.getSizeData();
     opCode = M.getOpCode();
@@ -131,7 +132,8 @@ Buffer* Message::getBuffer() const
  * @return buffer desired
  */
 
-Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const{
+Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
+{
     for (int i = 0; i < NbBuffers(); i++) {
         if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
             return listBuffer[i];
@@ -144,35 +146,40 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const{
 /**
  * @brief Returns the size of the buffers created
  */
-int Message::getSizeBuffer() const {
+int Message::getSizeBuffer() const
+{
     return this->sizeBuffer;
 }
 
 /**
  * @brief Returns the size of the data
  */
-uint16_t Message::getSizeData() const {
+uint16_t Message::getSizeData() const
+{
     return this->sizeData;
 }
 
 /**
  * @brief Returns the opCode
  */
-uint8_t Message::getOpCode() const {
+uint8_t Message::getOpCode() const
+{
     return this->opCode;
 }
 
 /**
  * @brief Returns the crc
  */
-uint16_t Message::getCrc() const {
+uint16_t Message::getCrc() const
+{
     return this->crc;
 }
 
 /**
  * @brief Returns the id of the device
  */
-uint8_t Message::getID() const {
+uint8_t Message::getID() const
+{
     return this->idDevice;
 }
 

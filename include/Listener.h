@@ -4,10 +4,11 @@
 class Controller; //Needed to avoid recursive includes
 
 /**
- * @brief : TODO
+ * @class Listener
  */
-class Listener {
-public:
+class Listener
+{
+ public:
     virtual void onInit(Controller & c);
     virtual void onConnect(Controller &c);
     virtual void onDisconnect(Controller &c);

@@ -2,6 +2,9 @@
 #include "Point.h"
 #include "Device.h"
 
+/**
+ * @class ShapeToDisplay
+ */
 class ShapeToDisplay
 {
  protected:

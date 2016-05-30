@@ -1,19 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include <fcntl.h>
-#include <cstring>
-#include <string>
 #include <string.h>
-#include <iostream>
-#include <algorithm>
+
 #include "Controller.h"
 
-
-int main(int argc, char* argv[]) {
-    
+int main(int argc, char* argv[])
+{    
     Controller c;
     Device *chosen;
 
