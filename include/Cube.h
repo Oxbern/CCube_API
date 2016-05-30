@@ -3,9 +3,9 @@
 class Cube : public ShapeToDisplay
 {
  public:
-    Cube(int s = 0, int x = 9, int y = 9, int z = 9, Device *d = new Device("usb", 1),
-	 Point p = Point (0,0,0), bool b =  true);
-    Cube();
+    Cube(int s = 0, Device *d = new Device("usb", 1), Point p = Point (0,0,0),
+            bool b =  true);
+
     virtual ~Cube();
 
     void init();

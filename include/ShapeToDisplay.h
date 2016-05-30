@@ -9,9 +9,6 @@ class ShapeToDisplay
     Point origin;
     bool full;
     Device *device;
-    int sizeX;
-    int sizeY;
-    int sizeZ;
 
  public:
     /** 
@@ -19,7 +16,7 @@ class ShapeToDisplay
      * Constructor of the class ShapeToDisplay
      * If there is no argument given, the device is a cube with a 9 side length
      */
-    ShapeToDisplay(int i = 0, int x = 9, int y = 9, int z = 9, Device *d = new Device("usb", 1),
+    ShapeToDisplay(int i = 0, Device *d = new Device("usb", 1),
 		   Point p = Point (0, 0, 0), bool b = true);
 
     /**
@@ -43,6 +40,8 @@ class ShapeToDisplay
     bool moveRight();
     bool moveForward();
     bool moveBackward();
+    
+    Device * getDevice() const;
 };
 
 std::ostream& operator << (std::ostream &Out, ShapeToDisplay &std);

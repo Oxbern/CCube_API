@@ -1,7 +1,8 @@
 #include "ShapeToDisplay.h"
 
-ShapeToDisplay::ShapeToDisplay(int i, int x, int y, int z, Device *d, Point p, bool b)
-: size(i), origin(p), full(b), device(d), sizeX(x), sizeY(y), sizeZ(z) {
+ShapeToDisplay::ShapeToDisplay(int i, Device *d, Point p, bool b)
+: size(i), origin(p), full(b), device(d)
+{
     LOG(1,"Constructor ShapeToDisplay");
 }
 
@@ -17,7 +18,6 @@ void ShapeToDisplay::print(std::ostream &str) {
         str << "This is an empty shape :" << std::endl;
     str << "Size : " << size << std::endl;
     str << "Origin : " << origin << std::endl;
-    str << "Dimension : X = " << sizeX << ", Y = " << sizeY << ", Z = " << sizeZ << std::endl;
     
     device->getcurrentConfig()->print(str);
 }
@@ -29,11 +29,15 @@ std::ostream& operator<<(std::ostream &out, ShapeToDisplay &std) {
 
 bool ShapeToDisplay::incrSize() {
     size++;
-    if (size > sizeX || size > sizeY || size > sizeZ) {
+    if (size > device->getcurrentConfig()->getSizeX() 
+            || size > device->getcurrentConfig()->getSizeY() 
+            || size > device->getcurrentConfig()->getSizeZ()) {
         std::cout << "size bigger than device dimensions" << std::endl;
         std::cout << "size = " << size << std::endl;
-        std::cout << "sizeX = " << sizeX << ", sizeY = " << sizeY
-                << ", sizeZ = " << sizeZ << std::endl;
+        std::cout << "sizeX = " << device->getcurrentConfig()->getSizeX() 
+                << ", sizeY = " << device->getcurrentConfig()->getSizeY()
+                << ", sizeZ = " << device->getcurrentConfig()->getSizeZ() << std::endl;
+        size--;
         return false;
     }
     return true;
@@ -46,4 +50,9 @@ bool ShapeToDisplay::decrSize() {
         return false;
     }
     return true;
+}
+
+Device * ShapeToDisplay::getDevice() const 
+{
+    return this->device;
 }

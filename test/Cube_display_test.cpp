@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
     Point p(0, 0, 0);
 
-    Cube cube(5, 9, 9, 9, dc, p, true);
+    Cube cube(5, dc, p, true);
 
     dc->display();
     

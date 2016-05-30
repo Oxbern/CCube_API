@@ -55,7 +55,6 @@ Device::Device(std::string port, int id) {
  * @brief TODO
  */
 Device::~Device() {
-    std::cout << "Device destructor" << std::endl;
     LOG(1, "Device destructor called");
     if (this->currentConfig != NULL) {
         delete this->currentConfig;

@@ -1,8 +1,8 @@
 #include "Cube.h"
 
 
-Cube::Cube(int s, int x, int y, int z, Device *d, Point p, bool b) : 
-ShapeToDisplay(s, x, y, z, d, p, b)
+Cube::Cube(int s, Device *d, Point p, bool b) : 
+ShapeToDisplay(s, d, p, b)
 {
     LOG(1,"Constructor cube");
     init();
@@ -29,12 +29,7 @@ void Cube::init()
 	}
     }
 }
-/*
-Cube::Cube() : ShapeToDisplay()
-{
-    device->getcurrentConfig()->on(origin.getX(), origin.getY(), origin.getZ());
-}
-*/
+
 Cube::~Cube()
 {
     LOG(1,"Destructor cube");
