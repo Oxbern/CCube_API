@@ -10,218 +10,219 @@
 void displayC(Device *d )
 {
     d->on(2,8,6);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(3,8,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(4,8,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(5,8,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,8,6);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,8,5);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,8,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,8,3);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,8,2);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(5,8,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(4,8,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(3,8,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,8,2);
-    nanosleep(TIME, NULL);
+     
     d->display();
+
 }
 
 void displayU(Device *d )
 {
     d->on(0,6,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,6,6);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,6,5);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,6,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,6,3);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,6,2);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,5,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,4,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,3,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,2,2);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,2,3);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,2,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,2,5);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,2,6);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(0,2,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
 }
 
 void displayB(Device *d )
 {
     d->on(2,0,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,6);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,5);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,3);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,2);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(3,0,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(4,0,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(5,0,6);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(5,0,5);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(4,0,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(3,0,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(2,0,4);
-    nanosleep(TIME, NULL);
-    d->display();//BOUCLE1
+     
+     //BOUCLE1
     d->on(5,0,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,0,3);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,0,2);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(6,0,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(5,0,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(4,0,1);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(3,0,1);
-    nanosleep(TIME, NULL);
+     
     d->display();
+
 }
 
 
 void displayE(Device *d )
 {
     d->on(8,1,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(8,1,6);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(8,1,5);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(8,1,4);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(8,1,3);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(8,1,2);
-    nanosleep(TIME, NULL); // barre 1
-    d->display();
+      // barre 1
+     
     d->on(8,2,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(8,3,7);
-    nanosleep(TIME, NULL);
-    d->display();
+     
+     
     d->on(8,4,7);
-    nanosleep(TIME, NULL); // barre 2
-    d->display();
+      // barre 2
+     
     d->on(8,3,4);
-    nanosleep(TIME, NULL); 
-    d->display();    
+      
+         
     d->on(8,4,4);
-    nanosleep(TIME, NULL); 
-    d->display();
+      
+     
     d->on(8,4,7);
-    nanosleep(TIME, NULL); // barre 3
-    d->display();
+      // barre 3
+     
+    d->on(8,1,1);
+      
+         
+    d->on(8,2,1);
+      
+     
     d->on(8,3,1);
-    nanosleep(TIME, NULL); 
-    d->display();    
+      
+         
     d->on(8,4,1);
-    nanosleep(TIME, NULL); 
-    d->display();
+      
+     
     d->on(8,5,1);
-    nanosleep(TIME, NULL); 
-    d->display();    
-    d->on(8,6,1);
-    nanosleep(TIME, NULL); 
-    d->display();
-    d->on(8,7,1);
-    nanosleep(TIME, NULL); 
     d->display();
 }
 
@@ -240,6 +241,8 @@ int main(int argc, char* argv[])
     dc->on(5,5,4);
 
     displayC(dc);
+    nanosleep(TIME, NULL); 
+
     displayU(dc);
     displayB(dc);
     displayE(dc);
