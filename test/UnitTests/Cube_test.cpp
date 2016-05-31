@@ -12,22 +12,24 @@ bool arrayCompare(bool ***first, bool ***second, int sizeX, int sizeY, int sizeZ
 
 int main(int argc, char* argv[])
 {
-    Device *d = new Device("usb", 1);
     int size = 5;
     Point p(0, 0, 0);
     bool full = true;
+    int sizeX = 9;
+    int sizeY = 9;
+    int sizeZ = 9;
     
-    Cube c(size, d, p, full);
+    Cube c(size, p, full, sizeX, sizeY, sizeZ);
 
-    int X = c.getDevice()->getcurrentConfig()->getSizeX();
-    int Y = c.getDevice()->getcurrentConfig()->getSizeY();
-    int Z = c.getDevice()->getcurrentConfig()->getSizeZ();
+    int X = sizeX;
+    int Y = sizeY;
+    int Z = sizeZ;
     
-    bool ***cmp = new bool**[c.getDevice()->getcurrentConfig()->getSizeX()];
+    bool ***cmp = new bool**[c.getSizeX()];
     for (int x = 0; x < X; ++x) {
-        cmp[x] = new bool *[c.getDevice()->getcurrentConfig()->getSizeY()];
+        cmp[x] = new bool *[c.getSizeY()];
         for (int y = 0; y < Y; ++y)
-            cmp[x][y] = new bool [c.getDevice()->getcurrentConfig()->getSizeZ()];
+            cmp[x][y] = new bool [c.getSizeZ()];
     }
 
     /* TEST 1 : Full c ube of size 5 and from the origin (0, 0, 0) */
@@ -41,8 +43,7 @@ int main(int argc, char* argv[])
                     cmp[x][y][z] = false;
 
 
-    if (arrayCompare(c.getDevice()->getcurrentConfig()->getLedStatus(),
-                     cmp, X, Y, Z))
+    if (arrayCompare(c.getStatus(), cmp, X, Y, Z))
         std::cout << "Test 1 : PASSED" << std::endl;
 
     else
@@ -106,8 +107,8 @@ int main(int argc, char* argv[])
       c.decrSize();
     */
 
-    for (int x = 0; x < c.getDevice()->getcurrentConfig()->getSizeX(); ++x) {
-        for (int y = 0; y < c.getDevice()->getcurrentConfig()->getSizeY(); ++y) {
+    for (int x = 0; x < c.getSizeX(); ++x) {
+        for (int y = 0; y < c.getSizeY(); ++y) {
             delete[] cmp[x][y];
         }
         delete[] cmp[x];

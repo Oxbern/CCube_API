@@ -31,9 +31,14 @@ int main(int argc, char** argv)
     }
     Device *dc = c.getConnectedDevice();
 
+    int size = 5;
     Point p(0, 0, 0);
-
-    Cube cube(5, dc, p, true);
+    bool full = true;
+    int sizeX = 9;
+    int sizeY = 9;
+    int sizeZ = 9;
+    
+    Cube cube(size, p, full, sizeX, sizeY, sizeZ);
 
     dc->display();
     
