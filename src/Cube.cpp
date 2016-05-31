@@ -3,10 +3,9 @@
 /**
  * @brief TODO
  */
-Cube::Cube(int s, Device *d, Point p, bool b) : 
-    ShapeToDisplay(s, d, p, b)
+Cube::Cube(int i, Point p, bool b, int x, int y, int z) : ShapeToDisplay(i, p, b, x, y, z)
 {
-    LOG(1,"Cube(size, device, point, boolean");
+    LOG(1,"Cube(int i, Point p, bool b, bool ***s, int x, int y, int z)");
     init();
 }
 
@@ -17,21 +16,21 @@ Cube::Cube(int s, Device *d, Point p, bool b) :
  */
 void Cube::init()
 {
-    for (int x = 0; x < device->getcurrentConfig()->getSizeX(); x++) {
-	for (int y = 0; y < device->getcurrentConfig()->getSizeY(); y++) {	    
-	    for (int z = 0; z < device->getcurrentConfig()->getSizeZ(); z++) {
+    for (int x = 0; x < sizeX; x++) {
+	for (int y = 0; y < sizeY; y++) {	    
+	    for (int z = 0; z < sizeZ; z++) {
 		if (full) 
 		    {
 			if (x >= origin.getX() && x < origin.getX() + size
 			    && y >= origin.getY() && y < origin.getY() + size
 			    && z >= origin.getZ() && z < origin.getZ() + size) 
-			    device->getcurrentConfig()->on(x, y, z);
+			    on(x, y, z);
 		    }
 		else		    
 		    if (x == origin.getX() || x == origin.getX() + size - 1
 			|| y == origin.getY() || y == origin.getY() + size - 1
 			|| z == origin.getZ() || z == origin.getZ() + size - 1) 
-			device->getcurrentConfig()->on(x, y, z);	
+			on(x, y, z);	
 	    }
 	}
     }
@@ -68,7 +67,7 @@ bool Cube::incrSize()
 	    return false;
 	}
     size++;
-    device->getcurrentConfig()->off();
+    off();
     init();
     return true;
 }
@@ -83,7 +82,7 @@ bool Cube::decrSize()
 	return false;
     }
     size--;
-    device->getcurrentConfig()->off();
+    off();
     init();
     return true;
 }
@@ -95,7 +94,7 @@ bool Cube::moveUp()
 {
     if (origin.getZ() + size < 9)
 	{
-	    device->getcurrentConfig()->off();
+	    off();
 	    origin.incrZ();
 	    init();
 	    return true;
@@ -114,7 +113,7 @@ bool Cube::moveDown()
 {
     if (origin.getZ() > 0)
 	{
-	    device->getcurrentConfig()->off();
+	    off();
 	    origin.decrZ();
 	    init();
 	    return true;
@@ -133,7 +132,7 @@ bool Cube::moveLeft()
 {
     if (origin.getY()  > 0)
 	{
-	    device->getcurrentConfig()->off();
+	    off();
 	    origin.decrY();
 	    init();
 	    return true;
@@ -152,7 +151,7 @@ bool Cube::moveRight()
 {
     if (origin.getY() + size < 9)
 	{
-	    device->getcurrentConfig()->off();
+	    off();
 	    origin.incrY();
 	    init();
 	    return true;
@@ -171,7 +170,7 @@ bool Cube::moveForward()
 {
     if (origin.getX() + size < 9)
 	{
-	    device->getcurrentConfig()->off();
+	    off();
 	    origin.incrX();
 	    init();
 	    return true;
@@ -190,7 +189,7 @@ bool Cube::moveBackward()
 {
     if (origin.getX() > 0)
 	{
-	    device->getcurrentConfig()->off();
+	    off();
 	    origin.decrX();
 	    init();
 	    return true;

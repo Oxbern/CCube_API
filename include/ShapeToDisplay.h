@@ -6,23 +6,24 @@
  * \class ShapeToDisplay
  * \brief Parent class for all shapes which will be displayed on the device
  */
-class ShapeToDisplay
-{
- protected:
+class ShapeToDisplay {
+protected:
     int size; /**< Size of the shape (radius for a sphere, length for a cube) */
     Point origin; /**< Origin of the shape (center for a sphere, lower left back
                    *  corner for a cube) */
     bool full; /**< Indicate if the shape is full or empty */
-    Device *device; /** device on which the shape will be displayed */
+    bool ***status; /**< 3D array on which the shape is drawn */
+    int sizeX; /**< First dimension of the array */
+    int sizeY; /**< Second dimension of the array */
+    int sizeZ; /**< Third dimension of the array */
 
- public:
+public:
     /** 
      * \brief Constructor
      * Constructor of the class ShapeToDisplay
-     * If there is no argument given, the device is a cube with a 9 side length
      */
-    ShapeToDisplay(int i = 0, Device *d = new Device("usb", 1),
-		   Point p = Point (0, 0, 0), bool b = true);
+    ShapeToDisplay(int i = 0, Point p = Point(0, 0, 0), bool b = true, int x = 9,
+            int y = 9, int z = 9);
 
     /**
      * \brief Destructor
@@ -45,8 +46,17 @@ class ShapeToDisplay
     bool moveRight();
     bool moveForward();
     bool moveBackward();
+
+    bool ***getStatus();
+
+    void initialisation();
+
+    bool on(int x, int y, int z);
+    bool off();
     
-    Device * getDevice() const;
+    int getSizeX() const;
+    int getSizeY() const;
+    int getSizeZ() const;
 };
 
-std::ostream& operator << (std::ostream &Out, ShapeToDisplay &std);
+std::ostream& operator<<(std::ostream &Out, ShapeToDisplay &std);
