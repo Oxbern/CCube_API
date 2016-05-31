@@ -49,6 +49,8 @@ Device::Device(std::string port, int id)
 
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
+    this->fd = -1;
+    
 }
 
 /**
