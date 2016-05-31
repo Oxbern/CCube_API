@@ -30,6 +30,19 @@ void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3])
 }
 
 /**
+ * @brief Convert two uint8_t values into an uint16_t
+ * @param highValue : the first value
+ * @param lowValue : the second value
+ */
+uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue)
+{
+    uint16_t res = 0;
+    res += (highValue << 8);
+    res += lowValue;
+    return res;
+}
+
+/**
  * @brief Computes the crc on an entire buffers
  * @param data 
  * @param size of the buffers
