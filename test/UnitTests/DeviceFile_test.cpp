@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     uint8_t buff[24] = "Write in a file in C++\n";
 
     if (dev.connect())
-        dev.write(buff, 24);
+        dev.writeToFileDescriptor(buff, 24);
     else
         std:: cerr << "Wrong file" << std::endl;
 

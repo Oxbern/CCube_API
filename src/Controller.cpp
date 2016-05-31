@@ -7,58 +7,13 @@
 
 
 //Shared buffer of data received
-typedef struct dataBuffer_ {
+typedef struct {
     uint8_t dataBuffer[512];
     int lastAddedIndex = 0;
     //std::mutex mutex;
 } dataBuffer;
 
 dataBuffer buffer;
-
-/**
- * Function waiting for new data send by the current cube
- * @brief TODO
- */
-void Controller::readingTask()
-{
-    LOG(2, "[THREAD] ReadingTask started");
-    if (this->connectedDevice != NULL) {
-        LOG(2, "[THREAD] Fcntl set");
-        fcntl(connectedDevice->fileR, F_SETFL, 0);
-    }
-
-    while (1) {
-        LOG(2, "[THREAD] ReadingTask running");
-        if (this->connectedDevice == NULL) {
-            LOG(2, "[THREAD] Device disconnected");
-            break;
-        }
-
-        std::cout << "[THREAD] FileR = " << connectedDevice->fileR << "\n";
-        uint8_t data[2];
-        int n = 1;
-        read(connectedDevice->fileR, data, 2);
-
-        if (n > 0) {
-            LOG(2, "[THREAD] Reading...");
-            printf("ACK : ");
-            for (int i = 0; i < 2; ++i) {
-                printf("%u | ", data[i]);
-            }
-        }else if (n == 0) {
-            LOG(2, "[THREAD] No data");
-            //std::cerr << "No data to read\n" ;
-        }else{
-            LOG(2, "[THREAD] Error while reading");
-
-
-            std::cerr << "ERROR " << std::strerror(errno);
-        }
-        std::cout << " END" << std::endl;
-        break;
-    }
-    LOG(2, "ReadingTask finished");
-}
 
 
 /**
@@ -67,8 +22,6 @@ void Controller::readingTask()
  */
 Controller::Controller()
 {
-
-
     listAndGetUSBConnectedDevices();
 
     if (devices.size() == 0){

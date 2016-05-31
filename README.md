@@ -5,10 +5,11 @@
 
 
 ## Introduction
-
+CCube_API is the API used to communicate with Cubicle, a led cube, via USB Serial Communication.
+In this README, you'll find specifications and our general class hierarchy.
 
 ## Definitions
-
+![alt tag](https://github.com/Oxbern/CCube_API/blob/master/UMLDiag.png)
 
 ## Specification
 
@@ -66,6 +67,7 @@ Operation code | Value | Action | Message type
 `LIGHT_ASKING` | 0x13 | computer -> cube | Request
 `SCREEN_SIZE_ASKING` | 0x14 | computer -> cube | Request
 `FIRMWARE_VERSION_ASKING` | 0x15 | computer -> cube | Request
+`RESET` | 0xFF | computer -> cube | Request
 `ID_RECEPTION` | 0x20 | cube -> computer | Answer
 `LIGHT_RECEPTION` | 0x23 | cube -> computer | Answer
 `SCREEN_SIZE_RECEPTION` | 0x24 | cube -> computer | Answer
