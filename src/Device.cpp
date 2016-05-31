@@ -1,5 +1,6 @@
 #include <cstring>
 #include <fstream>
+#include <errno.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -76,8 +77,8 @@ bool Device::connect()
 	    fcntl(fd, F_SETFL, 0);
     }
 
-    LOG(1, "Device " + std::string((fd ? "connected" : "not connected")));
-    return (fd);
+    LOG(1, "Device " + std::string((fd >= 0 ? "" :  "not ")) + "connected");
+    return (fd >= 0);
 }
 
 /**
@@ -90,8 +91,8 @@ bool Device::disconnect()
 	    close(fd);
     }
 
-    LOG(1, "Device disconnected");
-    return (!fd);
+    LOG(1, "Device " + std::string((fd == -1 ? "" :  "not ")) + "disconnected");
+    return (fd == -1);
 }
 
 
@@ -125,18 +126,18 @@ bool Device::askForDisplaySize()
 bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
 {
     if (fd) {
-        LOG(2, "Buffer send (size = " + std::to_string(dataSize)
+        LOG(2, "Trying to write Buffer (size = " + std::to_string(dataSize)
             + " Bytes) : " + uint8ArrayToString(data, dataSize));
 
         if (write(fd, (char *) data, dataSize)) {
-            LOG(1, "Data written to file");
+            LOG(2, "Data written to file");
             return true;
         } else {
-            LOG(1, "Error while writing data to file");
+            LOG(2, "Error while writing data to file : " + std::string(std::strerror(errno)));
         }
 
     } else {
-        LOG(1, "Unable to write data to file");
+        LOG(2, "Unable to write data to file : wrong file descriptor");
     }
     return false;
 }
@@ -234,7 +235,7 @@ bool Device::handleAck(Message mess, AckMessage ack)
 {
     //Check the AckMessage
     if (ack.getOpCode() != ACK_OK) {
-        LOG(3, "Handle a ACK_NOK or ACK_ERR");
+        LOG(3, "Handle an ACK_NOK or ACK_ERR");
         uint8_t ackDataOpcode = ack.getBuffer()[0].getData()[0];
         uint16_t ackDataSize = convertTwo8to16(ack.getBuffer()[0].getData()[1], ack.getBuffer()[0].getData()[2]);
         uint8_t buff[mess.getSizeBuffer()];

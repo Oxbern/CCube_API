@@ -12,22 +12,24 @@
 Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
     idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code), crc(0)
 {
-    int n = this->NbBuffers();
+    int nbBuff = this->NbBuffers();
 
-    listBuffer = reinterpret_cast<Buffer *>(new char[n * sizeof(Buffer)]);
-    
-    for (int i = 0; i < n; i++)
+    listBuffer = reinterpret_cast<Buffer *>(new char[nbBuff * sizeof(Buffer)]);
+
+    for (int i = 0; i < nbBuff; i++)
         new(&listBuffer[i]) Buffer(sizeBuff);
 
+    //First buffer first bit should be 1 and others 0
     listBuffer[0].setHeader(1);
-    
-    for (int i = 0; i < n; i++) {
+
+
+    for (int i = 0; i < nbBuff; i++) {
         listBuffer[i].setID(id);
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
     }
-    std::cout << "Message("<< (int)id << " , " << (int)sizeBuff
-              << " , " << (int)size << " , " << (int)code << ")\n";    
+    LOG(1, "Message(" + std::to_string(id) + ", " + std::to_string(sizeBuff) +
+           ", " + std::to_string(size) + ", " + std::to_string(code) + ")");
 }
 
 /**
@@ -138,8 +140,6 @@ Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
     for (int i = 0; i < NbBuffers(); i++) {
         if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
             return listBuffer[i];
-        else
-            throw std::out_of_range("Buffer not found\n");                
     }
     return Buffer();
 }
