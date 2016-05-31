@@ -49,7 +49,6 @@ Device::Device(std::string port, int id)
 
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
-    this->fileR = -1;
 }
 
 /**
@@ -84,21 +83,13 @@ bool Device::available()
 bool Device::connect()
 {
     LOG(1, "Trying to connect the device");
-    if (!file.is_open()) {
-        file.open(port, std::ios::in | std::ios::out | std::ios::app); //TODO app flag usefull ?
+    if (fd == 0) {
+	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
+	    	fcntl(fd, F_SETFL, 0);
     }
 
-    if (this->fileR == -1) {
-        this->fileR = open(port.c_str(), O_RDONLY | O_RDONLY | O_APPEND);
-        if (this->fileR == -1) {
-            std::cerr << errno << std::endl;
-        }else{
-            LOG(2, "File open for reading");
-        }
-    }
-
-    LOG(1, "Device " + std::string((file.is_open() ? "connected" : "not connected")));
-    return (file.is_open());
+    LOG(1, "Device " + std::string((fd ? "connected" : "not connected")));
+    return (fd);
 }
 
 /**
@@ -107,16 +98,12 @@ bool Device::connect()
 bool Device::disconnect()
 {
     LOG(1, "Trying to disconnect the device");
-    if (file.is_open()) {
-        file.close();
-    }
-
-    if (this->fileR != -1) {
-        close(this->fileR);
+    if (fd) {
+	    close(fd);
     }
 
     LOG(1, "Device disconnected");
-    return (!file.is_open());
+    return (!fd);
 }
 
 /**
@@ -178,14 +165,23 @@ bool Device::askForDisplaySize()
 /**
  * @brief TODO
  */
-bool Device::write(uint8_t* data, int dataSize)
+bool Device::writeToFileDescriptor(uint8_t* data, int dataSize)
 {
-    if (this->file.is_open()) {
+    if (fd) {
         LOG(2, "Buffer send (size = " + std::to_string(dataSize)
             + " Bytes) : " + uint8ArrayToString(data, dataSize));
 
-        if (this->file.write((char *) data, dataSize)) {
+        if (write(fd, (char *) data, dataSize)) {
             LOG(1, "Data written to file");
+
+            uint8_t ack[10] = {0};
+            read(fd, &ack[0], 10);
+
+            fprintf(stdout, "ACK: ");
+            for (int i = 0; i < 10; ++i)
+	            fprintf(stdout, "%u |", ack[i]);
+            fprintf(stdout, "\n");
+
             return true;
         } else {
             LOG(1, "Error while writing data to file");
@@ -203,7 +199,7 @@ bool Device::write(uint8_t* data, int dataSize)
 bool Device::send(Message* mess)
 {
     LOG(1, "Sending message");
-    if (!file.is_open()) {
+    if (!fd) {
         while (!connect()) {
             //TODO Timeout
             continue;
@@ -229,8 +225,8 @@ bool Device::send(Message* mess)
 
         } else {
             
-            while (!write(buffString, sizeBuffer)) {
-	        continue;
+            while (!writeToFileDescriptor(buffString, sizeBuffer)) {
+	            continue;
             }
             
         }
@@ -299,7 +295,7 @@ bool Device::toggle(int x, int y, int z)
 /**
  * @brief TODO
  */
-std::fstream& Device::getFile()
+int Device::getFile()
 {
-    return this->file;
+    return this->fd;
 }
