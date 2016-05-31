@@ -2,14 +2,19 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 # Project Name
-project(cubeAPILib)
+project(cubeAPILib C CXX)
+
+find_package(Threads)
 
 # Compilers options
-set(CMAKE_C_FLAGS "-O0 -std=c99")
-set(CMAKE_CXX_FLAGS "-O0 -Wall -std=c++11")
+set(CMAKE_C_FLAGS "-O0 -g -Wall -Werror -std=c99")
+set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lpthread")
+
+
 
 # Bring the headers into the project
 include_directories(../include)
+
 
 # Headers files and sources files 
 file(GLOB_RECURSE HEADERS "../include/*.h")

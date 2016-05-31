@@ -2,43 +2,42 @@
 #define MESSAGE_H
 
 #include "Buffer.h"
-
-enum OPCODE {
-    ACK_OK = 0x01,
-    ACK_ERR = 0x02,
-    ACK_NOK = 0x03,
-    BUFF_SENDING = 0x10,
-    LIGHT_SENDING = 0x11,
-    BUFF_RECEPTION =  0XA0,
-    LIGHT_RECEPTION = 0XA1,
-    SIZE_RECEPTION = 0XB0,
-    VERSION_RECEPTION = 0XB1,
-    ID_RECEPTION = 0XB2,
-    FIRMWARE_SENDING = 0x21,
-    TFT_SENDING = 0x20,
-    TOUCH_DETECTION = 0xC0
-};
+#include "Utils.h"
+#include <vector>
+#include <iostream>
 
 /**
- * @class Message
- * @brief TODO
+ * @class Message 
  */
 
-class Message {
- private :
-    uint16_t size;
+class Message
+{
+ protected :
+    uint8_t idDevice;
+    int sizeBuffer;
+    uint16_t sizeData;
     uint8_t opCode;
     Buffer *listBuffer;
-
- public :
-    Message();
-    Message(uint16_t size, uint8_t code);
+    uint16_t crc;
+    
+ public :     
+    Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code);
+    Message(const Message &M);
     ~Message();
+    int NbBuffers() const;
 
-    int NbBuffers();
-    void encode(uint8_t *dataToEncode, uint16_t sizeData);
-    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft);
-    void send(int fd);
+    void encode(uint8_t *dataToEncode);
+
+    Buffer *getBuffer() const;
+    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft) const;
+    int getSizeBuffer() const;
+    uint16_t getSizeData() const;
+    uint8_t getOpCode() const;
+    uint16_t getCrc() const;
+    uint8_t getID() const;
+    
+    std::string toStringDebug();
 };
+
 
 #endif

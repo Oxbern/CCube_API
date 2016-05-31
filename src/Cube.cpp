@@ -1,164 +1,212 @@
-#include <cstdint>
-#include <stdio.h>
-#include <cstdlib>
-#include <cerrno>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-#include <iostream>
-
 #include "Cube.h"
-#include "Message.h"
-
-#define BUFFER_MAX_SIZE 64
 
 /**
- * @brief Creates a cube
+ * @brief TODO
  */
-Cube::Cube() {
-    ledBuffer = new uint16_t*[10];
-    for (int k = 0; k < 10; k++)
-        ledBuffer[k] = new uint16_t[10];
-    
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 9; j++) {
-            ledBuffer[i][j] = (uint16_t)0b0000000000;
-        }
-        ledBuffer[i][9] = (uint16_t)(1 << i);
-    }
-    this->ledBuffer[9][9] = (uint16_t)0b0000000000;
-
+Cube::Cube(int s, Device *d, Point p, bool b) : 
+    ShapeToDisplay(s, d, p, b)
+{
+    LOG(1,"Cube(size, device, point, boolean");
+    init();
 }
-
 
 /**
- * @brief Destructor
+ * @brief TODO
  */
-Cube::~Cube() {
-    for (int i = 0; i < 10; i++)
-        delete [] ledBuffer[i];
-    delete [] ledBuffer;
-}
-
-/** 
- * @brief Switchs on a led
- * @param x
- * @param y
- * @param z
- */
-void Cube::on(int x, int y, int z) {
-    if (x > 8 || y > 8 || z > 8) {
-        perror("Index of led out of bounds");
-        exit(EXIT_FAILURE);
-    } else {
-        this->ledBuffer[z][(8-y)] |= (1 << x);
-    }
-}
-
-/** 
- * @brief Turns off the cube
- */
-void Cube::off() {
-    for (int i = 0; i < 9 ; i++) {
-        for (int j = 0; j < 9; j++) {
-            ledBuffer[i][j] = 0b0000000000;
-        }
-    }    
-}
-
-
-/** 
- * @brief Turns off a led
- * @param x
- * @param y
- * @param z
- */
-void Cube::off(int x, int y, int z) {
-
-    if (x > 8 || y > 8 || z > 8) {
-        perror("Index of led out of bounds");
-        exit(EXIT_FAILURE);
-    } else {
-        ledBuffer[z][(8-y)] &= ~(1 << x);
-    }
-}
-
-/** 
- * @brief Toggles a led
- * @param x
- * @param y
- * @param z
- */
-void Cube::toggle(int x, int y, int z) {
-    if (x > 8 || y > 8 || z > 8) {
-        perror("Index of led out of bounds");
-        exit(EXIT_FAILURE);
-    } else {
-        ledBuffer[z][(8-y)] ^= (1 << x);
+void Cube::init()
+{
+    for (int x = 0; x < device->getcurrentConfig()->getSizeX(); x++) {
+	for (int y = 0; y < device->getcurrentConfig()->getSizeY(); y++) {	    
+	    for (int z = 0; z < device->getcurrentConfig()->getSizeZ(); z++) {
+		if (full) 
+		    {
+			if (x >= origin.getX() && x < origin.getX() + size
+			    && y >= origin.getY() && y < origin.getY() + size
+			    && z >= origin.getZ() && z < origin.getZ() + size) 
+			    device->getcurrentConfig()->on(x, y, z);
+		    }
+		else		    
+		    if (x == origin.getX() || x == origin.getX() + size - 1
+			|| y == origin.getY() || y == origin.getY() + size - 1
+			|| z == origin.getZ() || z == origin.getZ() + size - 1) 
+			device->getcurrentConfig()->on(x, y, z);	
+	    }
+	}
     }
 }
 
 /**
- * @brief Converts ledBuffer into an array
- * @param ledStatus the filled array
+ * @brief TODO
  */
-void Cube::toArray(uint8_t * ledStatus) {
-
-    //uint8_t *ledStatus = new uint8_t[SIZE_DATA_LED];
-    int i = 0, x = 0, y = 0;
-
-    while (x < 10 && y < 10) {
-        if (x > 9 || y > 9) {
-            ledStatus[i] = 0;
-            ledStatus[i+1] = 0;
-        } else {
-            ledStatus[i] = (uint8_t)(ledBuffer[x][y] >> 8);
-            ledStatus[i+1] = (uint8_t)(0xFF & ledBuffer[x][y]);
-
-            y = (y + 1) % 10;
-            if (y == 0) {
-                x = (x + 1) % 10;
-                if (x == 0) {
-                    x = 10; y = 10;
-                }
-            }
-        }
-        i += 2;
-    }
-    //return ledStatus;
+Cube::~Cube()
+{
+    LOG(1,"~Cube()");
 }
 
 /**
- * @brief Displays the entire cube
- * @param dev
+ * @brief TODO
  */
-void Cube::display(const char *dev) {
-    int fd = 0;
-    if (strcmp(dev, "local")) 
-	fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);
-
-    // std::cout << "Connection Ok :" << fd << "\n";
-    Message message(SIZE_DATA_LED,1);
-
-    if (fd == -1) {
-        perror("Unable to open connection\n");
-        exit(EXIT_FAILURE);
-    } else if (fd > 0) {
-        uint8_t *data = new uint8_t[SIZE_DATA_LED];
-        toArray(data); //converts ledBuffer to an array
-        message.encode(data, SIZE_DATA_LED);
-        message.send(fd);
-        delete [] data;
-        
-    } else {
-	perror("Error in open_connection function\n");
-	exit(EXIT_FAILURE);
-    }
-    close(fd);
-            
+bool Cube::incrSize() 
+{
+    std::cout << "X = " << origin.getX() + size 
+              << ", Y = " << origin.getY() + size 
+              <<", Z = " << origin.getZ() + size << std::endl;
+    if (origin.getX() + size == 9 
+	|| origin.getY() + size == 9 
+	|| origin.getZ() + size == 9) 
+	{
+	    std::cout << "Cube size cannot increase more" << std::endl;
+	    return false;
+	}
+    size++;
+    device->getcurrentConfig()->off();
+    init();
+    return true;
 }
 
-uint8_t Cube::getLedBuffer(int x, int y, int z) {
-    uint8_t val = (uint8_t)((ledBuffer[z][y] >> x) & 0x1);
-    return val;
+/**
+ * @brief TODO
+ */
+bool Cube::decrSize() 
+{
+    if (size == 0) {
+	std::cout << "Cube size cannot decrease more" << std::endl;
+	return false;
+    }
+    size--;
+    device->getcurrentConfig()->off();
+    init();
+    return true;
+}
+
+/**
+ * @brief TODO
+ */
+bool Cube::moveUp() 
+{
+    if (origin.getZ() + size < 9)
+	{
+	    device->getcurrentConfig()->off();
+	    origin.incrZ();
+	    init();
+	    return true;
+	}
+    else
+	{
+            std::cout << "Cannot go higher" << std::endl; 
+            return false;
+	}
+}
+
+/**
+ * @brief TODO
+ */
+bool Cube::moveDown() 
+{
+    if (origin.getZ() > 0)
+	{
+	    device->getcurrentConfig()->off();
+	    origin.decrZ();
+	    init();
+	    return true;
+	}
+    else 
+	{
+	    std::cout << "Cannot go deeper" << std::endl; 
+	    return false;
+	}
+}
+
+/**
+ * @brief TODO
+ */
+bool Cube::moveLeft() 
+{
+    if (origin.getY()  > 0)
+	{
+	    device->getcurrentConfig()->off();
+	    origin.decrY();
+	    init();
+	    return true;
+	}
+    else
+	{
+	    std::cout << "Cannot move more on the left" << std::endl; 
+	    return false;
+	}
+}
+
+/**
+ * @brief TODO
+ */
+bool Cube::moveRight() 
+{
+    if (origin.getY() + size < 9)
+	{
+	    device->getcurrentConfig()->off();
+	    origin.incrY();
+	    init();
+	    return true;
+	}
+    else 
+	{
+	    std::cout << "Cannot move more on the right" << std::endl; 
+	    return false;
+	}
+}
+
+/**
+ * @brief TODO
+ */
+bool Cube::moveForward() 
+{
+    if (origin.getX() + size < 9)
+	{
+	    device->getcurrentConfig()->off();
+	    origin.incrX();
+	    init();
+	    return true;
+	}
+    else
+	{
+	    std::cout << "Cannot move more forward" << std::endl; 
+	    return false;
+	}
+}
+
+/**
+ * @brief TODO
+ */
+bool Cube::moveBackward() 
+{
+    if (origin.getX() > 0)
+	{
+	    device->getcurrentConfig()->off();
+	    origin.decrX();
+	    init();
+	    return true;
+	}
+    else 
+	{
+	    std::cout << "Cannot move more backward" << std::endl; 
+	    return false;
+	}
+}
+
+
+/**
+ * @brief TODO
+ */
+void Cube::print(std::ostream &str)
+{
+    ShapeToDisplay::print(str);
+}
+
+/**
+ * @brief TODO
+ */
+std::ostream& operator<<(std::ostream &out, Cube &c)
+{
+    c.print(out);
+    return out;
 }

@@ -1,69 +1,83 @@
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cerrno>
-#include <unistd.h>
-#include <iostream>
-#include <string.h>
-
+#include "Utils.h"
 #include "Buffer.h"
-#include "Ack.h"
-
-extern "C" {
-#include "crc.h"
-#include "virtualCube.h"
-}
-
+#include <sstream>
 
 /**
- * @brief Creates a buffer
+ * @brief Creates a buffer with no data place
  */
-Buffer::Buffer() {
-    header = 0;
-    opCode = 0;
-    sizeLeft = 0;
-    data = new uint8_t[DATA_MAX_SIZE];
-    crc = 0;
+Buffer::Buffer() :
+    header(0), idDevice(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
+{
+    data = new uint8_t[0];
+    LOG(1, "Buffer()");
 }
 
 /**
- * @brief Creates a buffer
- * @param header : indicates if it is the first buffer of the message or not
- * @param opCode 
- * @param sizeLeft
- * @param crcCheck
+ * @brief Creates a right sized buffer
  */
-Buffer::Buffer(uint8_t head, uint8_t code, uint16_t size, uint16_t crcCheck) {
-    header = head;
-    opCode = code;
-    sizeLeft = size;
-    data = new uint8_t[DATA_MAX_SIZE];
-    for (int i = 0; i < DATA_MAX_SIZE; i ++)
-        data[i] = 0;
-    crc = crcCheck;
+Buffer::Buffer(int sizeBuff) :
+    header(0), idDevice(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
+{
+    data = new uint8_t[sizeBuff-DATA_INDEX - SIZE_CRC]();
+    LOG(1, "Buffer(sizeBuffer)");
 }
+
 
 /**
  * @brief Destructor
  */
-Buffer::~Buffer() {
-    // for (int i = 0; i < DATA_MAX_SIZE; i ++)
-    //     delete (&data[i]);
-    delete [] data;
+Buffer::~Buffer()
+{
+    LOG(1, "~Buffer()");
+    if (data != NULL) {
+        LOG(1, "Destructor for Buffer called");
+        delete[] data;
+    }
+    data = NULL;
+}
+/**
+ * @brief Returns the size available for the data
+ * @param the entire size of the buffer
+ * @return the data size
+ */
+int dataSize(int sizeBuffer)
+{
+    return (sizeBuffer - DATA_INDEX - SIZE_CRC);
+}
+
+/**
+ * @brief Returns the index of the crc
+ * @param entire size of the buffer
+ */
+int crcIndex(int sizeBuffer)
+{
+    return (sizeBuffer - SIZE_CRC);
 }
 
 /**
  * @brief Sets the header
  * @param head
  */
-void Buffer::setHeader(uint8_t head) {
+void Buffer::setHeader(uint8_t head)
+{
     this->header = head;
 }
-/** 
+
+/**
+ * @brief Sets the id of the Device 
+ * @param idDevice
+ */
+void Buffer::setID(uint8_t id)
+{
+    this->idDevice = id;
+}
+
+/**
  * @brief Sets the opCode
  * @param code
  */
-void Buffer::setOpCode(uint8_t code) {
+void Buffer::setOpCode(uint8_t code)
+{
     this->opCode = code;
 }
 
@@ -71,72 +85,194 @@ void Buffer::setOpCode(uint8_t code) {
  * @brief Sets the sizeLeft
  * @param size
  */
-void Buffer::setSizeLeft(uint16_t size) {
+void Buffer::setSizeLeft(uint16_t size)
+{
     this->sizeLeft = size;
 }
 
-/** 
+/**
  * @brief Sets the crc
  * @param crcCheck
  */
-void Buffer::setCrc(uint16_t crcCheck) {
+void Buffer::setCrc(uint16_t crcCheck)
+{
     this->crc = crcCheck;
 }
 
 /**
- * @brief Sends one buffer
- * @param fd file descriptor
+ * @brief Sets the data
+ * @param index
+ * @param dataIndex
  */
-void Buffer::send(int fd) {
-    uint8_t pack[SIZE_BUFFER];
-    uint8_t *buff = new uint8_t[SIZE_BUFFER];
-    this->toArray(buff);
-    memcpy(pack, buff, SIZE_BUFFER);
-    // for (int j = 0; j < SIZE_BUFFER; j++)
-    //     std::cout << (int) pack[j] << " | ";
-    // std::cout << "\n";
-    if (fd == 1)
-        CDC_Receive_FS(pack, NULL);
-    else 
-        write(fd, pack, SIZE_BUFFER);
-    delete [] buff;
+void Buffer::setData(int index, uint8_t dataIndex)
+{
+    this->data[index] = dataIndex;
 }
 
 /**
- * @brief Prints a buffer
+ * @brief Gets the header
  */
-void Buffer::describe(){
-    std::cout <<"\n";
-    std::cout << "header : "<< std::hex << (int) this->header << "\n"<<
-	"opCode : " << (int) this->opCode <<"\n" <<
-	"sizeLeft : " << (int) this->sizeLeft <<"\n"<<
-	"Data : \n";
-    for (int i = 0; i < DATA_MAX_SIZE; i ++){
-        std::cout << (int) this->data[i] << " | ";
-	
+uint8_t Buffer::getHeader() const
+{
+    return this->header;
+}
+
+/**
+ * @brief Gets the operation code
+ */
+uint8_t Buffer::getOpCode() const
+{
+    return this->opCode;
+}
+
+/**
+ * @brief Gets the sizeLeft
+ */
+uint16_t Buffer::getSizeLeft() const
+{
+    return this->sizeLeft;
+}
+
+/**
+ * @brief Gets the data
+ */
+uint8_t * Buffer::getData() const
+{
+    return this->data;
+}
+
+/**
+ * @brief Gets the crc
+ */
+uint16_t Buffer::getCrc() const
+{
+    return this->crc;
+}
+
+/**
+ * @brief Gets the size of the buffer
+ */
+int Buffer::getSizeBuffer() const
+{
+    return this->sizeBuffer;
+}
+
+uint8_t Buffer::getID() const
+{
+    return this->idDevice;
+}
+
+/**
+ * @brief Operator == 
+ * @param buffer
+ */
+bool Buffer::operator==(Buffer b)
+{
+    bool ret = (this->header == b.header &&
+                this->opCode == b.opCode &&
+                this->sizeLeft == b.sizeLeft &&
+                this->crc == b.crc &&
+                this->sizeBuffer == b.sizeBuffer);
+    if (ret) {
+        for (int i = 0; i < (this->sizeBuffer - DATA_INDEX - SIZE_CRC); i ++) {
+            ret = (this->data[i] == b.getData()[i]);
+        }
     }
-    std::cout << "\nCRC : "<< (int) this->crc <<"\n";	
+    return ret;
 }
 
 /**
  * @brief Converts a buffer into an array
  * @param buffLinear the filled array
  */
-void Buffer::toArray(uint8_t* buffLinear) {
+void Buffer::toArray(uint8_t* buffLinear)
+{
+    if (buffLinear != NULL) {
+        buffLinear[HEADER_INDEX] = header;
+        buffLinear[ID_INDEX] = idDevice;
+        buffLinear[OPCODE_INDEX] = opCode;
+        uint8_t tab[2];
+        convert16to8(sizeLeft, tab);
+        buffLinear[SIZE_INDEX] = tab[0];
+        buffLinear[SIZE_INDEX + 1] = tab[1];
 
-    //    uint8_t *buffLinear = new uint8_t[SIZE_BUFFER];
-    buffLinear[HEADER_INDEX] = header;
-    buffLinear[OPCODE_INDEX] = opCode;
-    buffLinear[SIZE_INDEX] = (uint8_t)(sizeLeft >> 8);
-    buffLinear[SIZE_INDEX +1] = (uint8_t)(sizeLeft & 0xFF);
+        //Convert data
+        for (int i = 0; i < dataSize(sizeBuffer); i++)
+            buffLinear[DATA_INDEX + i] = data[i];
 
-    for (int i = 0; i < DATA_MAX_SIZE; i++)
-        buffLinear[DATA_INDEX+i] = data[i];
+        //split crc into two uint8_t
+        int indexCrc = crcIndex(sizeBuffer);
+        convert16to8(crc, tab);
+        buffLinear[indexCrc] = tab[0];
+        buffLinear[indexCrc + 1] = tab[1];
+    }
+}
 
-    buffLinear[CRC_INDEX] = (uint8_t)(crc >> 8);
-    buffLinear[CRC_INDEX+1] = (uint8_t)(crc & 0xFF);
+/**
+ * @brief Prints a buffer
+ * @return string
+ */
+std::string Buffer::toString()
+{
+    std::ostringstream convert;
+    uint8_t tab[2];
+    convert << (int) header;
+    convert << (int) opCode;
+    convert << (int) idDevice;
 
-    std::cout << "CRC : " << (buffLinear[CRC_INDEX] << 8) +
-	buffLinear[CRC_INDEX + 1] << "\n";
-    
+    //split sizeLeft into two uint8_t
+    convert16to8(sizeLeft, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+
+    //Convert data
+    for (int i = 0; i < dataSize(sizeBuffer); i++)
+        convert << (int)data[i];
+
+    //split crc into two uint8_t
+    convert16to8(crc, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+
+    return convert.str();
+}
+
+
+/**
+ * @brief Prints a buffer for debugging
+ * @param buffer index in message
+ * @return string
+ */
+std::string Buffer::toStringDebug(int indexInMess)
+{
+    std::ostringstream convert;
+    uint8_t tab[2];
+    convert << "Buffer n°" << indexInMess << " : | ";
+    convert << (int) header;
+    convert << " | " ;
+    convert << (int) idDevice;
+    convert << " | " ;
+    convert << (int) opCode;
+
+    convert << " | " ;
+
+    //split sizeLeft into two uint8_t
+    convert16to8(sizeLeft, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+
+    convert << " | " ;
+
+    //Convert data
+    for (int i = 0; i < dataSize(sizeBuffer); i++)
+        convert << (int)data[i];
+    convert << " | " ;
+
+    //split crc into two uint8_t
+    convert16to8(crc, tab);
+    convert << (int) tab[0];
+    convert << (int) tab[1];
+    convert << std::endl;
+
+    return convert.str();
 }
