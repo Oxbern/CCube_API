@@ -19,7 +19,6 @@ void *waitForACK(void *arg);
  * @brief  Manually set a message and send it over USB
  *         Get the ACK sent back
  */
-
 int main ()
 {
 	/* Open connection in non blocking mode */
