@@ -1,6 +1,9 @@
-#include "DeviceShape.h"
+#ifndef SHAPETODISPLAY_H
+#define SHAPETODISPLAY_H
+
 #include "Point.h"
-#include "Device.h"
+#include "Debug.h"
+
 
 /**
  * \class ShapeToDisplay
@@ -60,3 +63,5 @@ public:
 };
 
 std::ostream& operator<<(std::ostream &Out, ShapeToDisplay &std);
+
+#endif

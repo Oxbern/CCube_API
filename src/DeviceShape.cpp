@@ -227,3 +227,18 @@ bool*** DeviceShape::getLedStatus() const
 {
     return this->ledStatus;
 }
+
+/* bool DeviceShape::copyLedStatus(ShapeToDisplay &s)
+ {
+     if (sizeX != s.getSizeX() || sizeY != s.getSizeY() || sizeZ != s.getSizeZ()) {
+         std::cout << "DeviceShape::copyLedStatus(ShapeToDisplay &s) : "
+                 "size does not match between the DeviceShape and the ShapeToDisplay" << std::endl;
+         return false;
+     } else {
+         for (int x = 0; x < sizeX; x++)
+             for (int y = 0; y < sizeY; y++)
+                 for (int z = 0; z < sizeZ; z++)
+                     ledStatus[x][y][z] = s.getStatus()[x][y][z];
+     }
+     return true;
+ }*/
