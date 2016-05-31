@@ -61,7 +61,7 @@ Operation code | Value | Action | Message type
 `ACK_ERR` | 0x02 | cube -> computer | Ack
 `ACK_NOK` | 0x03 | cube -> computer | Ack
 `WHO_ARE_YOU` | 0X0A | computer -> cube | Request
-`ID_ASKING` | Ox10 | computer -> cube | Request
+`ID_ASKING` | 0x10 | computer -> cube | Request
 `AVAILABLE` | 0x11 | computer -> cube | Request
 `BUFF_ASKING` | 0x12 | computer -> cube | Request
 `LIGHT_ASKING` | 0x13 | computer -> cube | Request
