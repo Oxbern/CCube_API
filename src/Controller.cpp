@@ -1,20 +1,8 @@
-//#include <mutex>
+#include <mutex>
 #include <unistd.h>
 #include <fcntl.h>
 
-
 #include "Controller.h"
-
-
-//Shared buffer of data received
-typedef struct {
-    uint8_t dataBuffer[512];
-    int lastAddedIndex = 0;
-    //std::mutex mutex;
-} dataBuffer;
-
-dataBuffer buffer;
-
 
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
@@ -22,7 +10,7 @@ dataBuffer buffer;
  */
 Controller::Controller()
 {
-    listAndGetUSBConnectedDevices();
+	listAndGetUSBConnectedDevices();
 
     if (devices.size() == 0){
         // Connect to stdout to write messages
@@ -30,7 +18,10 @@ Controller::Controller()
         devices.push_back(dev);    
         connectDevice(dev);
     }
-        
+    
+    ack_index = 0;
+    ack_thread = std::thread(&Controller::waitForACK, this);
+    
     LOG(1, "Controller()");
 }
 
@@ -43,6 +34,32 @@ Controller::~Controller()
     
     while(!devices.empty()) delete devices.front(), devices.pop_front();
 }
+
+
+/**
+ * @brief Read a ACK message from USB
+ */
+void *Controller::waitForACK()
+{
+	while (1) {
+		
+		if (!this->connectedDevice)
+			break;
+		
+		while (!lock_ack.try_lock());
+		read(this->getConnectedDevice()->getFile(), &ack[ack_index++], SIZE_ACK);
+
+		fprintf(stdout, "ACK: ");
+		for (int i = 0; i < 10; ++i)
+			fprintf(stdout, "%u |", ack[ack_index - 1][i]);
+		fprintf(stdout, "\n");
+
+		lock_ack.unlock();
+	}
+
+	return NULL;
+}
+
 
 /**
  * @brief Add a Listener to the Controller's list of Listener
@@ -105,7 +122,7 @@ bool Controller::connectDevice(Device *d)
 bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
-    //t.join();
+    ack_thread.detach();
     return this->connectedDevice->disconnect();
 }
 
