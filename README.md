@@ -9,7 +9,7 @@ CCube_API is the API used to communicate with Cubicle, a led cube, via USB Seria
 In this README, you'll find specifications and our general class hierarchy.
 
 ## Definitions
-![alt tag](https://github.com/Oxbern/CCube_API/UMLDiag.png)
+![alt tag](https://github.com/Oxbern/CCube_API/blob/master/UMLDiag.png)
 
 ## Specification
 
