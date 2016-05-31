@@ -16,7 +16,7 @@ class Device
 {
  private :
     int id;
-    std::fstream file;
+    int fd;
     std::string port;
     std::string firmwareVersion;
     float luminosity;
@@ -31,8 +31,6 @@ class Device
     Device(std::string port, int id);
     ~Device();
 
-    int fileR;
-
     bool available();
     bool connect();
     bool disconnect();
@@ -42,7 +40,7 @@ class Device
     std::string getFirmwareVersion();
     bool askForDisplaySize();
     bool send(Message* mess);
-    bool write(uint8_t* data, int dataSize); //TODO set as private later
+    bool writeToFileDescriptor(uint8_t* data, int dataSize); //TODO set as private later
     bool on(int x, int y, int z);
     bool off();
     bool off(int x, int y, int z);
@@ -52,7 +50,7 @@ class Device
     int getID() const;
     std::string getPort() const;
     DeviceShape *getcurrentConfig() const;
-    std::fstream & getFile();
+    int getFile();
 
 };
 
