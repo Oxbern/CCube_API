@@ -14,40 +14,33 @@ There are 6 different types of messages which can be received nor sent by the cu
 - DataMessage : a succession of several buffers
 
 1 | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(57) | CRC(2)
---- | --- | --- | --- | --- | ---
 
 0 | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(57) | CRC(2)
---- | --- | --- | --- | --- | ---
 
 [...]
 
 0 | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(57) | CRC(2)
---- | --- | --- | --- | --- | ---
 
 - AckMessage : one single buffer
 
 1 | ID_DEVICE(1) | ACK_TYPE(1) | 0 | 3 | DATA(3) | CRC(2)
---- | --- | --- | --- | --- | --- | ---
 
 - RequestMessage : one single buffer
 
 1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 0 | CRC(2)
---- | --- | --- | --- | --- | ---
 
 - AnswerMessage : one single buffer
 
 1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1) | CRC(2)        
---- | --- | --- | --- | --- | --- | ---
 
 - SetMessage : one single buffer
 
 1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(1) | CRC(2)
---- | --- | --- | --- | --- | --- | ---
 
 - FirstMessage : one single buffer
 
 1 | ID_DEVICE(1) | OP_CODE(1) | 0 | 1 | DATA(3) | CRC(2)        
---- | --- | --- | --- | --- | --- | ---
+
 
 These are the different kinds of operation codes which determine the purpose of a message.
 
