@@ -1,5 +1,5 @@
 #include "Cube.h"
-
+#include <sstream>
 /**
  * @brief TODO
  */
@@ -11,7 +11,9 @@ Cube::Cube(int s, Device *d, Point p, bool b) :
 }
 
 /**
- * @brief TODO
+ * \fn void Cube::init()
+ * \brief Function thaht initialise the device in terms 
+ * of the parameters of the shape (the cube here)
  */
 void Cube::init()
 {
@@ -35,22 +37,29 @@ void Cube::init()
     }
 }
 
-/**
- * @brief TODO
- */
+
 Cube::~Cube()
 {
     LOG(1,"~Cube()");
 }
 
 /**
- * @brief TODO
+ * \fn bool Cube::incrSize()
+ * \brief Function that increases the size of the cube  
+ * of the parameters of the shape (the cube here)
  */
 bool Cube::incrSize() 
 {
-    std::cout << "X = " << origin.getX() + size 
-              << ", Y = " << origin.getY() + size 
-              <<", Z = " << origin.getZ() + size << std::endl;
+    int X = origin.getX() + size;
+    int Y = origin.getY() + size;
+    int Z = origin.getZ() + size;
+    
+    std::stringstream s;
+    
+    s << "X = " << X << ", Y = " << Y << ", Z = " << Z;
+
+    LOG(1, s.str());
+    
     if (origin.getX() + size == 9 
 	|| origin.getY() + size == 9 
 	|| origin.getZ() + size == 9) 

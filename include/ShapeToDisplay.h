@@ -3,15 +3,17 @@
 #include "Device.h"
 
 /**
- * @class ShapeToDisplay
+ * \class ShapeToDisplay
+ * \brief Parent class for all shapes which will be displayed on the device
  */
 class ShapeToDisplay
 {
  protected:
-    int size;
-    Point origin;
-    bool full;
-    Device *device;
+    int size; /**< Size of the shape (radius for a sphere, length for a cube) */
+    Point origin; /**< Origin of the shape (center for a sphere, lower left back
+                   *  corner for a cube) */
+    bool full; /**< Indicate if the shape is full or empty */
+    Device *device; /** device on which the shape will be displayed */
 
  public:
     /** 

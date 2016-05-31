@@ -1,7 +1,8 @@
 #include "ShapeToDisplay.h"
 
 /**
- * @class Cube
+ * \class Cube
+ * \brief Class describing a cube (a shape which can be displayed  on the device)
  */
 class Cube : public ShapeToDisplay
 {
