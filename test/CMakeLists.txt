@@ -11,7 +11,7 @@ find_package(Curses REQUIRED)
 
 # Compilers options
 set(CMAKE_C_FLAGS "-O0 -g -Wall -Werror -std=c99")
-set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lrt")
+set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11")
 
 LINK_DIRECTORIES(../src)
 
