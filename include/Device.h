@@ -8,6 +8,7 @@
 #include "DeviceShape.h"
 #include "DataMessage.h"
 #include "Debug.h"
+#include "AckMessage.h"
 
 /**
  * @class Device
@@ -52,6 +53,7 @@ class Device
     DeviceShape *getcurrentConfig() const;
     int getFile();
 
+    bool handleAck(Message mess, AckMessage ack);
 };
 
 #endif //CUBEAPI_DEVICE_H
