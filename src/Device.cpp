@@ -49,6 +49,7 @@ Device::Device(std::string port, int id)
 
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
+    this->fd = -1;
 }
 
 /**
@@ -83,13 +84,13 @@ bool Device::available()
 bool Device::connect()
 {
     LOG(1, "Trying to connect the device");
-    if (fd == 0) {
+    if (fd < 0) {
 	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
 	    	fcntl(fd, F_SETFL, 0);
     }
 
     LOG(1, "Device " + std::string((fd ? "connected" : "not connected")));
-    return (fd);
+    return (fd >= 0);
 }
 
 /**
@@ -98,12 +99,13 @@ bool Device::connect()
 bool Device::disconnect()
 {
     LOG(1, "Trying to disconnect the device");
-    if (fd) {
+    if (fd < 0) {
 	    close(fd);
+        fd = -1;
     }
 
     LOG(1, "Device disconnected");
-    return (!fd);
+    return (fd == -1);
 }
 
 /**
@@ -298,4 +300,26 @@ bool Device::toggle(int x, int y, int z)
 int Device::getFile()
 {
     return this->fd;
+}
+
+/**
+ * @brief TODO
+ */
+bool Device::handleAck(Message mess, AckMessage ack)
+{
+    //Check the AckMessage
+    if (ack.getOpCode() != ACK_OK) {
+        LOG(3, "Handle a ACK_NOK or ACK_ERR");
+        uint8_t ackDataOpcode = ack.getBuffer()[0].getData()[0];
+        uint16_t ackDataSize = convertTwo8to16(ack.getBuffer()[0].getData()[1], ack.getBuffer()[0].getData()[2]);
+        uint8_t buff[mess.getSizeBuffer()];
+
+        mess.getBuffer(ackDataOpcode, ackDataSize).toArray(buff);
+        writeToFileDescriptor(buff, mess.getSizeBuffer());
+
+        return false;
+    } else {
+        LOG(3, "ACK_OK received");
+        return true;
+    }
 }
