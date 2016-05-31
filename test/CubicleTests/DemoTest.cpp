@@ -91,7 +91,8 @@ int main(int argc, char* argv[])
     dc->on(3,3,4);
     dc->on(5,5,4);
 
-    //displayC(dc);
+    displayC(dc);
+    displayU(dc);
 
     
     dc->display();
