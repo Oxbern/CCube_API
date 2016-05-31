@@ -1,26 +1,37 @@
 #include "AckMessage.h"
 
-/**
- * @brief Creates an ack
- * @param idDevice
- * @param ackType : ACK_OK, ACK_ERR, ACK_NOK
+/*!
+ * \brief Constructor
+ *
+ * Creates an ack
+ *
+ * \param id device's ID
+ * \param ackType ACK_OK, ACK_ERR, ACK_NOK
  */
-AckMessage::AckMessage(uint8_t id, uint8_t ackType) : Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
+AckMessage::AckMessage(uint8_t id, uint8_t ackType) :
+    Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
 {
     LOG(1, "AckMessage(idDevice, ackType)");
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
+ *
  */
 AckMessage::~AckMessage()
 {
     LOG(1, "~AckMessage()");
 }
-/**
- * @brief Fills the buffers with the data : id of pack
- * @param sizeLeft
- * @param opCode
+
+/*!
+ * \todo is this method usefull ?
+ * \fn void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
+ * \brief Fills the buffers with the data
+ *
+ * Method which encodes an ack
+ *
+ * \param sizeLeftPack 
+ * \param opCodePack
  */
 void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
 {
@@ -30,20 +41,24 @@ void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
 
     delete [] tab;
 }
-/**
- * @brief Checks the ACK's crc
- * @param crc
- * @return boolean
+/*!
+ * \todo is this method usefull ?
+ * \fn bool checkAck(uint16_t crc)
+ * \brief Checks if crc and the ack's crc match
+ * \param crc
+ * \return the test result 
  */
 bool AckMessage::checkAck(uint16_t crc)
 {
     return (this->crc == crc ? true : false);
 }
 
-/**
- * @brief Acts depending on the type of ACK
- * @param fd file descriptor
- * @param msg Message
+/*!
+ * \todo is this method usefull ? 
+ * \fn void handleAck(int fd, Message &msg)
+ * \brief TODO
+ * \param fd
+ * \param msg
  */
 void AckMessage::handleAck(int fd, Message &msg)
 {
@@ -54,18 +69,25 @@ void AckMessage::handleAck(int fd, Message &msg)
     // }
 }
 
-/** 
- * @brief Sets the ack depending on the received message
- * @param fd file descriptor
+
+/*!
+ * \todo is this method usefull ?
+ * \fn void setAck(int fd)
+ * \brief TODO
+ * \param fd
  */
 void AckMessage::setAck(int fd)
 {
 
 }
 
-/**
- * @brief Gets the ackType
- * @return opCode 
+/*!
+ * \fn uint8_t getAckType() const
+ * \brief Getter
+ *
+ * Method which returns the type of ack
+ *
+ * \return the ack's operation code
  */
 uint8_t AckMessage::getAckType() const
 {

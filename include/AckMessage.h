@@ -9,36 +9,74 @@
 #include "Message.h"
 
 /*! 
- * \class ACK
+ * \class AckMessage
  * \brief Class representing a message of type ACK
  */
-
 class AckMessage : public Message
 {
  public :
     /*!
      * \brief Constructor
      *
-     * Constructor of AckMessage class
+     * Creates an ack
      *
-     * \param id : device's ID
-     * \param ackType : ack's operation code
+     * \param id device's ID
+     * \param ackType ACK_OK, ACK_ERR, ACK_NOK
      */
     AckMessage(uint8_t id, uint8_t ackType);
 
     /*!
      * \brief Destructor
      *
-     * Destructor of AckMessage class
      */
     ~AckMessage();
-    
+
+    /*!
+     * \todo is this methode usefull ?
+     * \fn void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
+     * \brief Fills the buffers with the data
+     *
+     * Method which encodes an ack
+     *
+     * \param sizeLeftPack 
+     * \param opCodePack
+     */
     void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack);
 
-    void handleAck(int fd, Message &msg);
+    /*!
+     * \todo is this method usefull ?
+     * \fn bool checkAck(uint16_t crc)
+     * \brief Checks if crc and the ack's crc match
+     * \param crc
+     * \return the test result 
+     */    
     bool checkAck(uint16_t crc);
+
+    /*!
+     * \todo is this method usefull ? 
+     * \fn void handleAck(int fd, Message &msg)
+     * \brief TODO
+     * \param fd
+     * \param msg
+     */
+    void handleAck(int fd, Message &msg);
+
+    /*!
+     * \todo is this method usefull ?
+     * \fn void setAck(int fd)
+     * \brief TODO
+     * \param fd
+     */
     void setAck(int fd);
 
+    /*!
+     * \fn uint8_t getAckType() const
+     * \brief Getter
+     *
+     * Method which returns the type of ack
+     *
+     * \return the ack's operation code
+     */
     uint8_t getAckType() const;
 };
 
