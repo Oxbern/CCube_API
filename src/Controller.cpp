@@ -20,6 +20,12 @@ Controller::Controller()
     }
     
     ack_index = 0;
+
+	for (int i = 0; i < 10; ++i)
+		for (int j = 0; j < 10; ++j)
+			ack[i][j] = 0;
+
+    
     ack_thread = std::thread(&Controller::waitForACK, this);
     
     LOG(1, "Controller()");
@@ -47,19 +53,87 @@ void *Controller::waitForACK()
 			break;
 		
 		while (!lock_ack.try_lock());
-		read(this->getConnectedDevice()->getFile(), &ack[ack_index++], SIZE_ACK);
-
-		fprintf(stdout, "ACK: ");
-		for (int i = 0; i < 10; ++i)
-			fprintf(stdout, "%u |", ack[ack_index - 1][i]);
-		fprintf(stdout, "\n");
-
+		this->getConnectedDevice()->readFromFileDescriptor(ack[ack_index++]);
 		lock_ack.unlock();
 	}
 
 	return NULL;
 }
 
+/**
+ * @brief TODO
+ */
+bool Controller::send(Message* mess)
+{
+    LOG(1, "Sending message");
+    if (!this->getConnectedDevice()->getFile()) {
+	    while (!this->getConnectedDevice()->connect()) {
+            //TODO Timeout
+            continue;
+        }
+    }
+    
+    int n = mess->NbBuffers();
+
+    for (int i = 0; i < n; i++) {
+
+	    int sizeBuffer = mess->getBuffer()[i].getSizeBuffer();
+        uint8_t * buffString = new uint8_t[sizeBuffer];
+
+        mess->getBuffer()[i].toArray(buffString);
+
+        LOG(3, mess->toStringDebug());
+
+        if ((this->getConnectedDevice()->getPort().compare("/dev/stdin") == 0)
+            || (this->getConnectedDevice()->getPort().compare("/dev/stdout") == 0)) {
+            //VirtualCube
+            LOG(2, "Buffer send (size = " + std::to_string(sizeBuffer)
+                + " Bytes) : " + uint8ArrayToString(buffString, sizeBuffer));
+
+            LOG(1, "Virtual sending");
+
+        } else {
+            
+	        while (!this->getConnectedDevice()->writeToFileDescriptor(buffString, sizeBuffer)) {
+	            continue;
+            }
+        }
+
+        while (!lock_ack.try_lock());
+        this->getConnectedDevice()->handleResponse(ack[--ack_index]);
+        lock_ack.unlock();
+
+        delete []buffString;
+    }
+    LOG(1, "Message sended");
+
+    return true;
+}
+
+
+/**
+ * @brief TODO
+ */
+bool Controller::displayDevice()
+{
+	Device *device = this->getConnectedDevice();
+	
+	DataMessage dm(device->getID(),
+	               device->getcurrentConfig()->getSizeInBytes(),
+	               OPCODE(BUFF_SENDING));
+
+	uint8_t *buffer = device->getcurrentConfig()->toArray();
+
+    dm.encode(buffer);
+    delete[](buffer);
+
+    if (!send(&dm)) {
+        std::cerr << "Error while sending ledBuffer" << std::endl;
+        return false;
+    }
+
+    return true;
+}
 
 /**
  * @brief Add a Listener to the Controller's list of Listener

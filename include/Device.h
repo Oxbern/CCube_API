@@ -31,16 +31,13 @@ class Device
     Device(std::string port, int id);
     ~Device();
 
-    bool available();
     bool connect();
     bool disconnect();
-    bool display();
     bool updateFirmware(); //TODO Set binary file as arg
-    float getLuminosity();
     std::string getFirmwareVersion();
     bool askForDisplaySize();
-    bool send(Message* mess);
     bool writeToFileDescriptor(uint8_t* data, int dataSize); //TODO set as private later
+    void readFromFileDescriptor(uint8_t ack_buffer[10]);
     bool on(int x, int y, int z);
     bool off();
     bool off(int x, int y, int z);
@@ -51,6 +48,7 @@ class Device
     std::string getPort() const;
     DeviceShape *getcurrentConfig() const;
     int getFile();
+    void handleResponse(uint8_t ack[10]);
 
 };
 

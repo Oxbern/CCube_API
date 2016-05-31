@@ -53,6 +53,9 @@ class Controller
     bool connectDevice(Device *d);
     bool disconnectDevice();
     Device* getConnectedDevice();
+    bool send(Message* mess);
+    bool displayDevice();
+    
     std::list<Device*> getListDevices();
 
 };
