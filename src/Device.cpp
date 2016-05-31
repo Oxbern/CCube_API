@@ -50,7 +50,8 @@ Device::Device(std::string port, int id)
 
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
-    this->fd = 0;
+    //File descriptor (reading/writing)
+    this->fd = -1;
 }
 
 /**
@@ -72,9 +73,13 @@ Device::~Device()
 bool Device::connect()
 {
     LOG(1, "Trying to connect the device");
-    if (fd == 0) {
+    if (fd < 0) {
 	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
-	    fcntl(fd, F_SETFL, 0);
+        if (fd == -1)
+            std::cerr << "Error while opening the file descriptor : "
+                << std::string(std::strerror(errno));
+        else
+	        fcntl(fd, F_SETFL, 0);
     }
 
     LOG(1, "Device " + std::string((fd >= 0 ? "" :  "not ")) + "connected");
@@ -87,8 +92,12 @@ bool Device::connect()
 bool Device::disconnect()
 {
     LOG(1, "Trying to disconnect the device");
-    if (fd) {
-	    close(fd);
+    if (fd >= 0) {
+	    if (close(fd) == -1)
+            std::cerr << "Error while closing the file descriptor : "
+                << std::string(std::strerror(errno));
+        else
+            fd = -1;
     }
 
     LOG(1, "Device " + std::string((fd == -1 ? "" :  "not ")) + "disconnected");
