@@ -1,6 +1,6 @@
 #include "Cube.h"
 
-bool arrayCompare(bool ***first, bool ***second, int sizeX, int sizeY, int sizeZ)
+bool arrayEqual(bool ***first, bool ***second, int sizeX, int sizeY, int sizeZ)
 {
     for (int x = 0; x < sizeX; x++)
         for (int y = 0; y < sizeY; y++)
@@ -43,33 +43,25 @@ int main(int argc, char* argv[])
                     cmp[x][y][z] = false;
 
 
-    if (arrayCompare(c.getStatus(), cmp, X, Y, Z))
-        std::cout << "Test 1 : PASSED" << std::endl;
-
-    else
+    if (!arrayEqual(c.getStatus(), cmp, X, Y, Z))
         perror("Test 1 : FAILED");
 
     /* TEST 2 : Try to go down */
 
-    if (!c.moveDown())
-        std::cout << "Test 2 : PASSED" << std::endl;
-    else
+    if (c.moveDown())
         perror("Test 2 : FAILED");
 
     /* TEST 3 : Try to go left */
 
-    if (!c.moveLeft())
-        std::cout << "Test 3 : PASSED" << std::endl;
-    else
+    if (c.moveLeft())
         perror("Test 3 : FAILED");
 
     /* TEST 4 : Increase size */
     if (!c.incrSize())
-        perror("Test 3 : FAILED");
+        perror("Test 4 : FAILED");
 
             
             
-    std::cout << "Test 3 : PASSED" << std::endl;
 
     /*
       for (int i = 0; i < 10; i++)
@@ -114,6 +106,8 @@ int main(int argc, char* argv[])
         delete[] cmp[x];
     }
     delete[] cmp;
+    
+    std::cout << "Test Cube : PASSED" << std::endl;
 
     return 0;
 }
