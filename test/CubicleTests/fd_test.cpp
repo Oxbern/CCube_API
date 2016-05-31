@@ -1,7 +1,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-#include <pthread.h>
+#include <thread>
+#include <mutex>
 
 #include "DeviceShape.h"
 #include "Utils.h"
@@ -16,12 +17,10 @@ int fd = 0;
 uint8_t ack[10][10];   
 uint8_t ack_index = 0;
 
-pthread_mutex_t lock_ack;
-
-pthread_t ack_thread;
+std::mutex lock_ack;
 
 /* User functions */
-void *waitForACK(void *arg);
+void *waitForACK();
 
 /**
  * @brief  Manually set a message and send it over USB
@@ -30,7 +29,7 @@ void *waitForACK(void *arg);
 int main ()
 {
 	/* Open connection in non blocking mode */
-	fd = open("/dev/stdin", O_RDWR | O_NOCTTY);
+	fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
 	fcntl(fd, F_SETFL, 0);
 
 	/* Check for error */
@@ -39,16 +38,10 @@ int main ()
 		close(fd);
 		return EXIT_FAILURE;
 	}
-		
-	/* Create a thread to listen to the response sent from the CUBE */
-	if(pthread_create(&ack_thread, NULL, waitForACK, &fd)) {
-		fprintf(stderr, "Error creating thread\n");
-		return EXIT_FAILURE;
-	}
 
-	/* Initialize mutex */
-	pthread_mutex_init(&lock_ack, NULL);
-
+	/* Define ACK thread */
+	std::thread ack_thread(waitForACK);
+	
 	/* Create a device shape */
 	DeviceShape ds(9, 9, 9);
 
@@ -84,13 +77,13 @@ int main ()
 	/* Send it over USB */
 	write(fd, &myDataMessage[0], 64);
 
-	pthread_mutex_lock(&lock_ack);
+	while (!lock_ack.try_lock());
 	memcpy(&localAck[0], ack[ack_index--], 10);
-	pthread_mutex_unlock(&lock_ack);
+	lock_ack.unlock();
 
 	fprintf(stdout, "ACK: ");
 	for (int i = 0; i < 10; ++i)
-		fprintf(stdout, "%u |", ack[ack_index][i]);
+		fprintf(stdout, "%u |", localAck[i]);
 	fprintf(stdout, "\n");
 
 	/* Prepare next buffer to send */
@@ -115,11 +108,19 @@ int main ()
 	/* Send the buffer */
 	write(fd, &myDataMessage[0], 64);
 
-	pthread_mutex_lock(&lock_ack);
+	while (!lock_ack.try_lock());
 	memcpy(&localAck[0], ack[ack_index--], 10);
-	pthread_mutex_unlock(&lock_ack);
+	lock_ack.unlock();
 
-	/* Close file descriptor */
+	fprintf(stdout, "ACK: ");
+	for (int i = 0; i < 10; ++i)
+		fprintf(stdout, "%u |", localAck[i]);
+	fprintf(stdout, "\n");
+
+	/* Let the thread go */
+	ack_thread.detach();
+
+    /* Close file descriptor */
 	close(fd);
 
 	/* Free allocated memory */
@@ -132,22 +133,15 @@ int main ()
 /**
  * @brief Read a ACK message from USB
  */
-void *waitForACK(void *arg)
+void *waitForACK()
 {
-	uint8_t emptyAck[10] = {0};
+	/* uint8_t emptyAck[10] = {0}; */
 
 	while (1) {
 		
-		pthread_mutex_lock(&lock_ack);
+		while (!lock_ack.try_lock());
 		read(fd, &ack[++ack_index], ACK_SIZE);
-		pthread_mutex_unlock(&lock_ack);
-	
-		if (memcmp(ack[ack_index], emptyAck, 10)) {
-		/* 	fprintf(stdout, "ACK: "); */
-		/* 	for (int i = 0; i < 10; ++i) */
-		/* 		fprintf(stdout, "%u |", ack[ack_index][i]); */
-		/* 	fprintf(stdout, "\n"); */
-		}
+		lock_ack.unlock();
 	}
 
 	return NULL;
