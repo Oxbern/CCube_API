@@ -30,14 +30,14 @@ int main ()
 {
 	/* Open connection in non blocking mode */
 	fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
-	fcntl(fd, F_SETFL, 0);
 
 	/* Check for error */
 	if (fd < 0) {
-		fprintf(stderr, "Error opening file\n");
-		close(fd);
-		return EXIT_FAILURE;
+		fd = open("/dev/stdout", O_RDWR | O_NOCTTY);
 	}
+
+	/* Set blocking mode */
+	fcntl(fd, F_SETFL, 0);
 
 	/* Define ACK thread */
 	std::thread ack_thread(waitForACK);
