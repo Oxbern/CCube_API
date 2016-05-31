@@ -4,6 +4,7 @@
 #include <list>
 #include <queue>
 #include <thread>
+#include <mutex>
 
 #include "Device.h"
 #include "Message.h"
@@ -22,6 +23,7 @@ struct Dictionnary{
     int Device;
 } typedef Dictionnary;
 
+#define MAX_NUMBER_ACK 10
 
 /**
  * @class Controller
@@ -33,7 +35,13 @@ class Controller
     std::list<Device*> devices;
     Device *connectedDevice;
     std::queue<Message> messages; //FIFO of last messages
-    std::thread t;
+    uint8_t ack_index;
+    uint8_t ack[MAX_NUMBER_ACK][SIZE_ACK];
+    std::thread ack_thread;
+    std::mutex lock_ack;
+
+    void *waitForACK();
+
  public:
     Controller();
     ~Controller();
@@ -45,10 +53,10 @@ class Controller
     bool connectDevice(Device *d);
     bool disconnectDevice();
     Device* getConnectedDevice();
+    bool send(Message* mess);
+    bool displayDevice();
+    
     std::list<Device*> getListDevices();
-
-    void readingTask();
-
 
 };
 

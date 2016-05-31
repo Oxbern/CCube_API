@@ -29,7 +29,6 @@ int main(int argc, char** argv)
                       << std::endl;
         }
     }
-    Device *dc = c.getConnectedDevice();
 
     int size = 5;
     Point p(0, 0, 0);
@@ -40,7 +39,7 @@ int main(int argc, char** argv)
     
     Cube cube(size, p, full, sizeX, sizeY, sizeZ);
 
-    dc->display();
+    c.displayDevice();
     
     std::cout << "DeviceShape displayed" << std::endl;
 
