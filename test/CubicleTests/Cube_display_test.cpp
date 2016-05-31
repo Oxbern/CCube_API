@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 
     Cube cube(5, dc, p, true);
 
-    dc->display();
+    c.displayDevice();
     
     std::cout << "DeviceShape displayed" << std::endl;
 
