@@ -259,3 +259,7 @@ bool Device::handleAck(Message mess, AckMessage ack)
         return true;
     }
 }
+
+bool Device::setLedStatus(ShapeToDisplay s) {
+    return currentConfig->copyLedStatus(s);
+}

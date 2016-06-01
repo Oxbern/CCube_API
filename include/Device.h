@@ -52,6 +52,8 @@ class Device
     void handleResponse(uint8_t ack[10]);
 
     bool handleAck(Message mess, AckMessage ack);
+    
+    bool setLedStatus(ShapeToDisplay s);
 };
 
 #endif //CUBEAPI_DEVICE_H

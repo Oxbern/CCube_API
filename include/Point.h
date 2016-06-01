@@ -27,9 +27,9 @@ class Point
 
     bool isOutOfBounds(uint8_t x, uint8_t y, uint8_t z);
   
-    void setX(uint8_t x);
-    void setY(uint8_t y);
-    void setZ(uint8_t z);
+    void setX(int x);
+    void setY(int y);
+    void setZ(int z);
   
     void incrX();
     void incrY();
@@ -42,7 +42,7 @@ class Point
     uint8_t getX() const;
     uint8_t getY() const;
     uint8_t getZ() const;
-
+    
     bool operator==(Point p);
 
     Point& operator=(const Point &p);
@@ -52,4 +52,6 @@ class Point
 
 std::ostream& operator << (std::ostream &out, const Point &p);
 
+Point operator + (const Point &p1, const Point &p2);
+    
 #endif
