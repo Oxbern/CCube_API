@@ -250,7 +250,8 @@ bool Device::handleAck(Message mess, AckMessage ack)
         uint8_t buff[mess.getSizeBuffer()];
 
         mess.getBuffer(ackDataOpcode, ackDataSize).toArray(buff);
-        writeToFileDescriptor(buff, mess.getSizeBuffer());
+
+        while (!writeToFileDescriptor(buff, mess.getSizeBuffer())); //TODO add timeout 
 
         return false;
     } else {
