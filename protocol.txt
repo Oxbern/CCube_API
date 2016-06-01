@@ -5,7 +5,7 @@ Computer : we %%%%% >>> no devices connected
 Computer : we %%%%% >>> there are ** devices connected, choose one
 >> idDevice registered
 
-Computer : we decide to choose the cube => Sending of a ****Message to ask the cube "who are you ?"
+Computer : we decide to choose the cube => Sending of a RequestMessage to ask the cube "who are you ?"
 
 Cube :
     if I do not receive any messages then [ref1]
@@ -57,3 +57,43 @@ Computer :
 
 Computer :
     if we send a message then >>> this device is no longer available
+
+-- the cube is plugged in --
+
+Computer :
+    if we send a message of type Request, for instance : opCode = AVAILABLE
+
+Cube :
+    if I did not receive the message [ref2]
+    else, I received a buffer :
+          HEADER(1) | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(**) | CRC(2)        
+    >>>>>>>>>>>>>>>>>>>>>>>
+    I send ACK_ERR in the case :
+
+    I send ACK_OK if i'm available and OP_CODE = AVAILABLE and crc checks out
+    DATA = 000 for this ACK_OK ?
+
+Computer :
+    if we do not receive any messages then
+       if [ref 2], timeout => we send our first request again (count ++)
+       else
+        we did not receive the cube's response, timeout => we send our first request again
+        (if count == 3 then "Do you want to ask the cube if it is still available ?"
+            if not, or if it does not work >> CUBE DOES NOT WORK ??)
+
+    else, we received a buffer :
+          HEADER(1) | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(**) | CRC(2)      
+      if (header == 0) then
+                 we do not process the buffer => timeout => first request sent again
+      else
+        if (ID_DEVICE != the device I was communicating with) then
+                      we do not process the buffer => timeout => first request sent again
+
+        if (check(CRC) == false) then
+                      we do not process the buffer => timeout => first request sent again
+        else              
+               if (OP_CODE != possibility of answer) then
+                      we do not process the buffer => timeout => first request sent again
+               else
+                >> we have our answer in DATA
+                    
