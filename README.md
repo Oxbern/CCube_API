@@ -55,11 +55,12 @@ c.connectDevice();
 ...
   ```
 
-Let's see what it does. In your terminal, if it is not already here, create a folder `build/` in the main folder of the API and go into it. Compile with :
+  Let's see what it does. In your terminal, if it is not already here, create a folder `build/` in the main folder of the API and go into it. Compile with :
   ```
 cmake .. && make
   ```
-In your terminal again, execute your test by simply entering : 
+  
+  In your terminal again, execute your test by simply entering : 
   ```
 ./exec/MyTest
   ```
@@ -75,7 +76,7 @@ You choose Device 1
 You are connected to /dev/ttyACM0
   ```
 
-4. Now that you are connected to your device, you still want to switch on the led (4,4,4). For that, simply add to your code the function `on($x,$y,$z)` of Controller's class !
+4. Now that you are connected to your device, you still want to switch on the led (4,4,4). To do so, simply add to your code the function `on($x,$y,$z)` of Controller's class !
   ```
 ...
 Controller c;
@@ -83,7 +84,7 @@ c.connectDevice();
 c.on(4,4,4);
 ...
   ```
-Compile and run the test, nothing appears ! Deceiving I know... Actually, by calling `on(4,4,4)`, the device registers its led status table, but doesn't update the display automatically (Imagine you want to display instantly a sphere led, and not led by led display a sphere).
+Compile and run the test, nothing appears ! Deceiving I know... Actually, by calling `on(4,4,4)`, the device registers its led status table, but does not update the display automatically (imagine you want to display instantly a sphere led, and not led by led display a sphere).
 
 5. So now the only last thing you want to do is update the display. Nothing difficult : just call the `displayDevice()`function of Controller:
   ```
