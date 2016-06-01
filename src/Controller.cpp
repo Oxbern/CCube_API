@@ -87,12 +87,42 @@ bool Controller::listAllDevices()
 }
 
 /**
- * @brief Connects the controller to the device 
+ * @brief Connects the controller to a device chosen from the list
+ * @param Device to connect
+ */ 
+bool Controller::connectDevice()
+{
+    LOG(1, "connectDevice() \n");
+    Device *chosen;
+
+    if (listAllDevices()){
+        
+        int choice = 0;
+        std::cout << "Enter the device's ID you want to connect : " << std::endl;
+        std::cin >> choice;
+                
+        std::list<Device*>::iterator iter ;
+        for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
+            if (choice == (*iter)->getID())
+                chosen = *iter;
+        }
+        
+        std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
+        if (connectDevice(chosen)){
+            std::cout << "You are connected to " << getConnectedDevice()->getPort()  << std::endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * @brief Connects the controller to the Device specified in argument  
  * @param Device to connect
  */ 
 bool Controller::connectDevice(Device *d)
 {
-    LOG(1, "connectDevice() \n");
+    LOG(1, "connectDevice(Device*) \n");
 
     if ((*d).connect()){
         this->connectedDevice = d;

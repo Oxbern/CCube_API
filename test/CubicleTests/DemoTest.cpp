@@ -5,6 +5,7 @@
 #include <string.h>
 #include "Controller.h"
 
+
 #define TIME ((const struct timespec[]){{0, 100000000L}})
 
 void displayC(Device *d )
@@ -243,7 +244,7 @@ int main(int argc, char* argv[])
     displayU(dc);
     displayB(dc);
     displayE(dc);
-
+    Controller c;
     
     dc->display();
     dc->disconnect();

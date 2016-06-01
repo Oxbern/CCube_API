@@ -23,4 +23,4 @@ file(GLOB_RECURSE SOURCES_C "*.c")
 
 
 # Create cube api library
-add_library(libcube ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
+add_library(cube ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
