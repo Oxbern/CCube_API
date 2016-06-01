@@ -90,7 +90,7 @@ int Message::NbBuffers() const
 void Message::encode(uint8_t *dataToEncode)
 {
     int j = 0; int k= 0; int n = NbBuffers();
-    uint8_t *entireBuffer = new uint8_t [this->sizeBuffer];
+    uint8_t *entireBuffer = new uint8_t [this->sizeBuffer-SIZE_CRC];
     uint8_t *tab = new uint8_t[2];
     
     for (int i = 0; i < n; i ++) {
@@ -139,13 +139,13 @@ Buffer* Message::getListBuffer() const
  * @return buffer desired
  */
 
-Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
+Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
 {
     for (int i = 0; i < NbBuffers(); i++) {
         if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
-            return listBuffer[i];
+            return &listBuffer[i];
     }
-    return Buffer();
+    return NULL;
 }
 
 /**
@@ -192,7 +192,7 @@ uint8_t Message::getID() const
  * @brief Prints the message
  * @return string
  */
-std::string Message::toStringDebug()
+std::string Message::toStringDebug() const
 {
     std::ostringstream convert;
     convert << "Message (debug) :" << std::endl;
