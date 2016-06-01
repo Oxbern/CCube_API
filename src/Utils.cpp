@@ -121,3 +121,23 @@ std::string uint8ArrayToString(uint8_t *array, int arraySize)
     }
     return sDebug;
 }
+
+/**
+ * @brief TODO
+ */
+bool isAValidAnswerOpcode(int val)
+{
+    bool retVal = false;
+    switch(val) {
+        case 0x01 :
+        case 0x02 :
+        case 0x03 :
+        case 0x20 :
+        case 0x23 :
+        case 0x24 :
+        case 0x25 :
+            retVal = true;
+            break;
+    }
+    return retVal;
+}
