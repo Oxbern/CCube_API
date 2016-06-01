@@ -28,7 +28,7 @@ class Message
 
     void encode(uint8_t *dataToEncode);
 
-    Buffer *getBuffer() const;
+    Buffer *getListBuffer() const;
     Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft) const;
     int getSizeBuffer() const;
     uint16_t getSizeData() const;

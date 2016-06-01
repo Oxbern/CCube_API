@@ -75,10 +75,10 @@ bool Controller::send(Message* mess)
 
     for (int i = 0; i < n; i++) {
 
-        int sizeBuffer = mess->getBuffer()[i].getSizeBuffer();
+        int sizeBuffer = mess->getListBuffer()[i].getSizeBuffer();
         uint8_t * buffString = new uint8_t[sizeBuffer];
 
-        mess->getBuffer()[i].toArray(buffString);
+        mess->getListBuffer()[i].toArray(buffString);
 
         LOG(3, mess->toStringDebug());
 
