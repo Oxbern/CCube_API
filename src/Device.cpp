@@ -247,10 +247,10 @@ bool Device::handleAck(Message *mess, AckMessage ack)
         LOG(3, "Handle an ACK_NOK or ACK_ERR :\n" + ack.toStringDebug());
 
         //Extract pack data from the ackMessage
-        uint8_t ackDataOpcode = ack.getBuffer()[0].getData()[0];
+        uint8_t ackDataOpcode = ack.getListBuffer()[0].getData()[0];
 
-        uint16_t ackDataSize = convertTwo8to16(ack.getBuffer()[0].getData()[1],
-                                               ack.getBuffer()[0].getData()[2]);
+        uint16_t ackDataSize = convertTwo8to16(ack.getListBuffer()[0].getData()[1],
+                                               ack.getListBuffer()[0].getData()[2]);
 
         //Search the buffer to retransmit from the message
         Buffer *bufferToRetransmit = mess->getBuffer(ackDataOpcode, ackDataSize);

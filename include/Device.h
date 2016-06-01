@@ -51,7 +51,7 @@ class Device
     int getFile();
     void handleResponse(uint8_t ack[10]);
 
-    bool handleAck(Message mess, AckMessage ack);
+    bool handleAck(Message *mess, AckMessage ack);
     
     bool setLedStatus(ShapeToDisplay s);
 };

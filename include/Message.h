@@ -29,14 +29,14 @@ class Message
     void encode(uint8_t *dataToEncode);
 
     Buffer *getListBuffer() const;
-    Buffer getBuffer(uint8_t opCode, uint16_t sizeLeft) const;
+    Buffer *getBuffer(uint8_t opCode, uint16_t sizeLeft) const;
     int getSizeBuffer() const;
     uint16_t getSizeData() const;
     uint8_t getOpCode() const;
     uint16_t getCrc() const;
     uint8_t getID() const;
     
-    std::string toStringDebug();
+    std::string toStringDebug() const;
 };
 
 
