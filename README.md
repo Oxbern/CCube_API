@@ -17,7 +17,8 @@ Connect the cube via USB, open a Terminal and let's write and compile the code t
 
 1. Set the basic C++ code you will compile in a file named `MyTest.cpp` somewhere in the folder `test/` for example in `test/CubicleTest/MyTest.cpp`. This code will compile and wait until you hit `Enter` to exit, but you'll learn how to compile a little bit later.
   ```
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
 
     // Keep this process running until Enter is pressed
     std::cout << "Press Enter to quit..." << std::endl;
@@ -27,7 +28,7 @@ int main(int argc, char* argv[]) {
 }
   ```
     
-2. Add `Controller.h` to your test and instanciate a object Controller. 
+2. Add `Controller.h` to your test and instanciate an object Controller. 
    Controller is the main interface between your test and the cube, the physical device.
 
   ```
@@ -46,7 +47,7 @@ int main(int argc, char* argv[]) {
   ```
 
 
-* Item 3 Now that your Controller is ready, you need to connect to your physical device. The function `connectDevice()` of the Controller is here to help you choosing the device. After having instanciated your controller object, call this function :
+3. Now that your Controller is ready, you need to connect to your physical device. The function `connectDevice()` of the Controller is here to help you choosing the device. After having instanciated your controller object, call this function :
   ```
 ...
 Controller c;
@@ -58,7 +59,7 @@ Let's see what it does. In your terminal, if it is not already here, create a fo
   ```
 cmake .. && make
   ```
-In your Terminal again, execute your test my simply enter : 
+In your terminal again, execute your test by simply entering : 
   ```
 ./exec/MyTest
   ```
