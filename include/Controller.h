@@ -51,6 +51,7 @@ class Controller
     bool listAllDevices();
     void listAndGetUSBConnectedDevices();
     bool connectDevice(Device *d);
+    bool connectDevice();
     bool disconnectDevice();
     Device* getConnectedDevice();
     bool send(Message* mess);

@@ -130,6 +130,7 @@ uint8_t * DeviceShape::toArray()
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)
             for (int z = 0; z < sizeZ; ++z) {
+                //Make groups of 8 bits to fill the array
                 val = ledStatus[x][y][z] ? 1 : 0;
                 tmp |= (val << j);
 
@@ -180,7 +181,7 @@ void DeviceShape::print(std::ostream &str) const
  */
 DeviceShape& DeviceShape::operator=(const DeviceShape &ds)
 {
-    std::cout << "DS =" << std::endl;
+    LOG(1, "DeviceShape =");
     
     if (&ds != this) {
         this->sizeX = ds.getSizeX();

@@ -15,7 +15,7 @@ Controller::Controller()
     if (devices.size() == 0){
         // Connect to stdout to write messages
         Device *dev = new Device("/dev/stdout", 1);
-        devices.push_back(dev);    
+        devices.push_back(dev);
         connectDevice(dev);
     }
     
@@ -25,9 +25,6 @@ Controller::Controller()
 		for (int j = 0; j < 10; ++j)
 			ack[i][j] = 0;
 
-    
-    ack_thread = std::thread(&Controller::waitForACK, this);
-    
     LOG(1, "Controller()");
 }
 
@@ -99,9 +96,11 @@ bool Controller::send(Message* mess)
             }
         }
 
-        while (!lock_ack.try_lock());
-        this->getConnectedDevice()->handleResponse(ack[--ack_index]);
-        lock_ack.unlock();
+        if (ack_index >= 0) {
+            while (!lock_ack.try_lock());
+            this->getConnectedDevice()->handleResponse(ack[--ack_index]);
+            lock_ack.unlock();
+        }
 
         delete []buffString;
     }
@@ -178,15 +177,46 @@ bool Controller::listAllDevices()
 }
 
 /**
- * @brief Connects the controller to the device 
+ * @brief Connects the controller to a device chosen from the list
+ * @param Device to connect
+ */ 
+bool Controller::connectDevice()
+{
+    LOG(1, "connectDevice() \n");
+    Device *chosen;
+
+    if (listAllDevices()){
+        
+        int choice = 0;
+        std::cout << "Enter the device's ID you want to connect : " << std::endl;
+        std::cin >> choice;
+                
+        std::list<Device*>::iterator iter ;
+        for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
+            if (choice == (*iter)->getID())
+                chosen = *iter;
+        }
+        
+        std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
+        if (connectDevice(chosen)){
+            std::cout << "You are connected to " << getConnectedDevice()->getPort()  << std::endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * @brief Connects the controller to the Device specified in argument  
  * @param Device to connect
  */ 
 bool Controller::connectDevice(Device *d)
 {
-    LOG(1, "connectDevice() \n");
+    LOG(1, "connectDevice(Device*) \n");
 
     if ((*d).connect()){
         this->connectedDevice = d;
+        ack_thread = std::thread(&Controller::waitForACK, this);
         //this->t = std::thread(&Controller::readingTask, this);
         return true;
     }
@@ -197,6 +227,7 @@ bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
     ack_thread.detach();
+    ack_index = 0;
     return this->connectedDevice->disconnect();
 }
 

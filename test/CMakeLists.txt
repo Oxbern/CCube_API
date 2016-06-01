@@ -33,7 +33,7 @@ foreach( testsourcefile ${TESTS_C})
     string( REPLACE ".c" "" testname ${testsourcefile})
     get_filename_component(FILE_NAME ${testsourcefile} NAME_WE)
     add_executable(${FILE_NAME} ${testsourcefile} ${HEADERS})
-    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES} )
+    target_link_libraries(${FILE_NAME} cube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES} )
 endforeach( testsourcefile ${TESTS_C} )
 
 foreach( testsourcefile ${TESTS_CXX})
@@ -41,7 +41,7 @@ foreach( testsourcefile ${TESTS_CXX})
     string( REPLACE ".cpp" "" testname ${testsourcefile})
     get_filename_component(FILE_NAME ${testsourcefile} NAME_WE)
     add_executable(${FILE_NAME} ${testsourcefile} ${HEADERS})
-    target_link_libraries(${FILE_NAME} libcube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES} )
+    target_link_libraries(${FILE_NAME} cube ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES} )
 endforeach( testsourcefile ${TESTS_CXX} )
 
 # Target to execute all test files
