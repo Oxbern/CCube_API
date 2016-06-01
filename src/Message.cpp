@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <sstream>
+#include <string.h>
 
 #include "Message.h"
 #include "Utils.h"
@@ -47,7 +48,7 @@ Message::Message(const Message& M)
     listBuffer = reinterpret_cast<Buffer *>(new char[n*sizeof(Buffer)]);
     
     for (int i = 0; i<n; i++)
-        listBuffer[i] = M.getBuffer()[i];
+        listBuffer[i] = M.getListBuffer()[i];
     LOG(1, "Message(const &message)");
 }
 
@@ -93,7 +94,7 @@ void Message::encode(uint8_t *dataToEncode)
     uint8_t *tab = new uint8_t[2];
     
     for (int i = 0; i < n; i ++) {
-        while (j < (sizeBuffer - DATA_INDEX - SIZE_CRC)) {
+        while (j < (dataSize(sizeBuffer))) {
             if (k < sizeData)
                 listBuffer[i].setData(j, dataToEncode[k]);
             else
@@ -101,15 +102,19 @@ void Message::encode(uint8_t *dataToEncode)
             j++; k++;
         }
         j = 0;
+
         entireBuffer[0] = listBuffer[i].getHeader();
         entireBuffer[1] = listBuffer[i].getID();
         entireBuffer[2] = listBuffer[i].getOpCode();
         convert16to8(listBuffer[i].getSizeBuffer(), tab);
         entireBuffer[3] = tab[0];
         entireBuffer[4] = tab[1];
-        for (int ii = DATA_INDEX; ii < (this->sizeBuffer - SIZE_CRC); ii++)
-            entireBuffer[ii] = listBuffer[i].getData()[ii-DATA_INDEX];
 
+        // for (int ii = DATA_INDEX; ii < (this->sizeBuffer - SIZE_CRC); ii++)
+        //     entireBuffer[ii] = listBuffer[i].getData()[ii-DATA_INDEX];
+
+        memcpy(&entireBuffer[DATA_INDEX], listBuffer[i].getData(),
+               dataSize(sizeBuffer));
         uint16_t crcComputed = computeCRC(entireBuffer,
                                           sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         listBuffer[i].setCrc(crcComputed);
@@ -119,11 +124,10 @@ void Message::encode(uint8_t *dataToEncode)
 }
 
 /**
- * @brief Finds a buffer based on its index
- * @param index
- * @return buffer desired
+ * @brief todo
+ * @return xx
  */
-Buffer* Message::getBuffer() const
+Buffer* Message::getListBuffer() const
 {
     return (this->listBuffer); //Can throw out_of_range exception
 }
@@ -194,7 +198,8 @@ std::string Message::toStringDebug()
     convert << "Message (debug) :" << std::endl;
     int n = NbBuffers();
     for (int i = 0; i < n; i++)
-        convert << getBuffer()[i].toStringDebug(i);
+        convert << getListBuffer()[i].toStringDebug(i);
 
     return convert.str();
 }
+
