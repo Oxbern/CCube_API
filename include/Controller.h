@@ -62,7 +62,6 @@ class Controller
 
 };
 
-char ** getTtyList(int *size);
 void getNextWord(char *path, int *j, char * wordreturn);
 Dictionnary *getDictSTM( int *nbSTM);
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic);
