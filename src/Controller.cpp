@@ -434,6 +434,13 @@ Dictionnary *getDictSTM(int *nbSTM)
 	    /* Until end of line char appear */
 	    while(path[j] != '\0'){
 
+		    /* Check if path if long enough to execute memcmp */
+		    for (int i = j; i < j + 4; ++i)
+			    if (path[++i] == '\0') { 
+				    j += i;
+				    continue;
+			    }
+		    
 		    if (!memcmp(&path[j], "Bus", 3)) {
 			    j += 4;
 			    /* Get bus name */
@@ -442,6 +449,13 @@ Dictionnary *getDictSTM(int *nbSTM)
 			    dic[k].bus = atoi(bus);
 		    }
 
+		    /* Check if path if long enough to execute memcmp */
+		    for (int i = j; i < j + 7; ++i)
+			    if (path[++i] == '\0') { 
+				    j += i;
+				    continue;
+			    }
+		    
 		    if (!memcmp(&path[j], "Device", 6)) {
 			    j += 7;
 			    char device[10];
