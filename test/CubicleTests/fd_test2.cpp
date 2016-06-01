@@ -58,7 +58,9 @@ int main()
     DataMessage myDataMessage(1, 92, BUFF_SENDING);
 
     /* Encodes data into the buffers created by the DataMessage */
-    myDataMessage.encode(ds.toArray());
+    uint8_t  *ledBuffer = new uint8_t [ds.getSizeInBytes()];
+    ds.toArray(ledBuffer);
+    myDataMessage.encode(ledBuffer);
 
     /* Prints the message */
 #if DEBUG

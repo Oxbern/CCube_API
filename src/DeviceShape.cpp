@@ -119,32 +119,31 @@ int DeviceShape::getSizeInBytes()
  * @brief Converts ledBuffer into an array
  * @param ledStatus : the filled array
  */
-uint8_t * DeviceShape::toArray()
+void DeviceShape::toArray(uint8_t *arrayToFill)
 {
-    uint8_t tmp = 0;
-    uint8_t val;
-    int i = 0;
-    int j = 7;
-    uint8_t *ledArray = new uint8_t[getSizeInBytes()];
+    if (arrayToFill != NULL) {
+        uint8_t tmp = 0;
+        uint8_t val;
+        int i = 0;
+        int j = 7;
 
-    for (int x = 0; x < sizeX; ++x)
-        for (int y = 0; y < sizeY; ++y)
-            for (int z = 0; z < sizeZ; ++z) {
-                //Make groups of 8 bits to fill the array
-                val = ledStatus[x][y][z] ? 1 : 0;
-                tmp |= (val << j);
+        for (int x = 0; x < sizeX; ++x)
+            for (int y = 0; y < sizeY; ++y)
+                for (int z = 0; z < sizeZ; ++z) {
+                    //Make groups of 8 bits to fill the array
+                    val = ledStatus[x][y][z] ? 1 : 0;
+                    tmp |= (val << j);
 
-                if (j == 0 || (x == 8 && y == 8 && z == 8)) {
-                    ledArray[i] = tmp;
-                    j = 7;
-                    tmp = 0;
-                    ++i;
-                } else {
-                    --j;
+                    if (j == 0 || (x == 8 && y == 8 && z == 8)) {
+                        arrayToFill[i] = tmp;
+                        j = 7;
+                        tmp = 0;
+                        ++i;
+                    } else {
+                        --j;
+                    }
                 }
-            }
-
-    return ledArray;
+    }
 }
 
 /**

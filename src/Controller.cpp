@@ -192,10 +192,12 @@ bool Controller::displayDevice()
 	               device->getcurrentConfig()->getSizeInBytes(),
 	               OPCODE(BUFF_SENDING));
 
-	uint8_t *buffer = device->getcurrentConfig()->toArray();
+	uint8_t *ledsBuffer = new uint8_t[device->getcurrentConfig()->getSizeInBytes()];
+    device->getcurrentConfig()->toArray(ledsBuffer);
 
-    dm.encode(buffer);
-    delete[](buffer);
+    dm.encode(ledsBuffer);
+    delete[] ledsBuffer;
+
     if (!send(&dm)) {
         std::cerr << "Error while sending ledBuffer" << std::endl;
         return false;

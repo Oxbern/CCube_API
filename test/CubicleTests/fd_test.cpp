@@ -70,7 +70,9 @@ int main ()
 	myDataMessage[4] = 92;
 
 	/* Copy data into the buffer */
-	memcpy(&myDataMessage[5], ds.toArray(), 57);
+    uint8_t *ledBuffer = new uint8_t[ds.getSizeInBytes()];
+    ds.toArray(ledBuffer);
+	memcpy(&myDataMessage[5], ledBuffer, 57);
 
 	/* Set CRC */
 	uint16_t crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
@@ -162,7 +164,7 @@ int main ()
 	myDataMessage[4] = 92;
 
 	/* Copy data into the buffer */
-	memcpy(&myDataMessage[5], ds.toArray(), 57);
+	memcpy(&myDataMessage[5], ledBuffer, 57);
 
 	/* Set CRC */
 	crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
@@ -203,7 +205,7 @@ int main ()
 	myDataMessage[4] = 35;
 
 	/* Copy the rest of the data in the buffer */
-	memcpy(&myDataMessage[5], ds.toArray() + 57, 35);
+	memcpy(&myDataMessage[5], ledBuffer + 57, 35);
 
 	/* Set the CRC */
 	crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
@@ -240,7 +242,7 @@ int main ()
 }
 	
 	printf("[TEST PASSED]\n");
-	
+
 	/* Let the thread go */
 	ack_thread.detach();
 
@@ -250,7 +252,8 @@ int main ()
 	/* Free allocated memory */
 	free(myDataMessage);
 	free(localAck);
-	
+	delete [] ledBuffer;
+
 	return 0;
 }
 
