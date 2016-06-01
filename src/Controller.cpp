@@ -34,7 +34,6 @@ Controller::Controller()
 Controller::~Controller()
 {
     LOG(1,"~Controller()");
-    
     while(!devices.empty()) delete devices.front(), devices.pop_front();
 }
 
@@ -45,7 +44,7 @@ Controller::~Controller()
 void *Controller::waitForACK()
 {
 	while (1) {
-		
+
 		if (!this->connectedDevice)
 			break;
 		
@@ -74,7 +73,7 @@ bool Controller::send(Message* mess)
 
     for (int i = 0; i < n; i++) {
 
-	    int sizeBuffer = mess->getBuffer()[i].getSizeBuffer();
+        int sizeBuffer = mess->getBuffer()[i].getSizeBuffer();
         uint8_t * buffString = new uint8_t[sizeBuffer];
 
         mess->getBuffer()[i].toArray(buffString);
@@ -97,7 +96,7 @@ bool Controller::send(Message* mess)
         }
 
         if (ack_index >= 0) {
-            while (!lock_ack.try_lock());
+            while (!lock_ack.try_lock()) {};
             this->getConnectedDevice()->handleResponse(ack[--ack_index]);
             lock_ack.unlock();
         }
@@ -125,7 +124,6 @@ bool Controller::displayDevice()
 
     dm.encode(buffer);
     delete[](buffer);
-
     if (!send(&dm)) {
         std::cerr << "Error while sending ledBuffer" << std::endl;
         return false;
@@ -207,6 +205,41 @@ bool Controller::connectDevice()
 }
 
 /**
+ * @brief Gets the port of the connected device from its ID
+ * @param ID of the device to get the port
+ */ 
+std::string Controller::getPortFromID(int id)
+{
+    std::list<Device*>::iterator iter ;
+    for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
+        if (id == (*iter)->getID())
+            return (*iter)->getPort();
+    }
+    return "No Device with this ID";
+}
+    
+/**
+ * @brief Connects the controller to a device with its ID
+ * @param ID of the device to connect
+ */ 
+bool Controller::connectDevice(int id)
+{
+    LOG(1, "connectDevice(int id) \n");
+    Device *chosen;
+
+    std::list<Device*>::iterator iter ;
+    for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
+        if (id == (*iter)->getID())
+            chosen = *iter;
+    }
+    
+    if (connectDevice(chosen)){
+        return true;
+    }
+    return false;
+}
+
+/**
  * @brief Connects the controller to the Device specified in argument  
  * @param Device to connect
  */ 
@@ -239,6 +272,15 @@ Device* Controller::getConnectedDevice()
 {
     LOG(1, "getConnectedDevice() \n");
     return this->connectedDevice;
+}
+
+/**
+ * @brief Switches on a led on the current connected device
+ * @param x,y,z, position of the led
+ */ 
+bool Controller::on(int x, int y, int z)
+{
+    return connectedDevice->on(x,y,z);
 }
 
 /**

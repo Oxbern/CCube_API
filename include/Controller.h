@@ -50,10 +50,13 @@ class Controller
     bool removeListener(Listener &l);
     bool listAllDevices();
     void listAndGetUSBConnectedDevices();
+    std::string getPortFromID(int id);
+    bool connectDevice(int id);
     bool connectDevice(Device *d);
     bool connectDevice();
     bool disconnectDevice();
     Device* getConnectedDevice();
+    bool on(int x, int y, int z);
     bool send(Message* mess);
     bool displayDevice();
     
