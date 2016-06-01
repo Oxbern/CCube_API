@@ -1,6 +1,7 @@
 #include <mutex>
 #include <unistd.h>
 #include <fcntl.h>
+#include <ErrorException.h>
 
 #include "Controller.h"
 
@@ -63,93 +64,119 @@ void *Controller::waitForACK()
 bool Controller::send(Message* mess)
 {
     LOG(1, "Sending message");
-    if (!this->getConnectedDevice()->getFile()) {
-	    while (!this->getConnectedDevice()->connect()) {
-            //TODO Timeout
-            continue;
-        }
+    //Check if the device is connected
+    if (this->getConnectedDevice() != NULL) {
+	    while (!this->getConnectedDevice()->connect()); //TODO Timeout
     }
-    
+
     int n = mess->NbBuffers();
 
+    //Boolean to kwnow if each buffer is well received by the Device
+    bool isAcknowledged = false;
+    //Boolean to kwnow if the lock on the queue of ack is taken
+    bool isLockTaken = false;
+
     for (int i = 0; i < n; i++) {
+        isAcknowledged = false;
 
+        //Convert the buffer i to an array
         int sizeBuffer = mess->getListBuffer()[i].getSizeBuffer();
-        uint8_t * buffString = new uint8_t[sizeBuffer];
-
-        mess->getListBuffer()[i].toArray(buffString);
+        uint8_t * bufferArray = new uint8_t[sizeBuffer];
+        mess->getListBuffer()[i].toArray(bufferArray);
 
         LOG(3, mess->toStringDebug());
 
+        //Check weither the Device is virtual or not
         if ((this->getConnectedDevice()->getPort().compare("/dev/stdin") == 0)
             || (this->getConnectedDevice()->getPort().compare("/dev/stdout") == 0)) {
             //VirtualCube
-            LOG(2, "Buffer send (size = " + std::to_string(sizeBuffer)
-                + " Bytes) : " + uint8ArrayToString(buffString, sizeBuffer));
 
+            LOG(2, "Buffer send (size = " + std::to_string(sizeBuffer)
+                + " Bytes) : " + uint8ArrayToString(bufferArray, sizeBuffer));
             LOG(1, "Virtual sending");
 
         } else {
-            
-	        while (!this->getConnectedDevice()->writeToFileDescriptor(buffString, sizeBuffer)) {
-	            continue;
-            }
+            //Physical Device
+            //Send the message to the Device
+	        while (!connectedDevice->writeToFileDescriptor(bufferArray,
+                                                           sizeBuffer));
         }
 
+        /* Counter for the number of tries
+          retransmission of a buffer */
+        int nbTry = 0;
 
-        //Check ack to handle
-        if (!buffReceived.empty()) {
-            LOG(2, "Handle an ack");
-            //Try to take the lock
-            while (!lock_ack.try_lock()); //TODO timeout
+        //Wait for the receipt acknowledgement
+        while (!isAcknowledged && nbTry < MAX_TRY) { //TODO Timeout time
 
-            //Check the header bit
-            uint8_t *ack = buffReceived.front();
+            //Check for new message
+            if (!buffReceived.empty()) {
+                LOG(2, "Handle an ack");
 
-            this->getConnectedDevice()->handleResponse(ack);
+                //Try to take the lock
+                while (!lock_ack.try_lock()); //TODO timeout
+                isLockTaken = true;
 
-            if(ack[HEADER_INDEX] == 1) {
-                //check id message
-                if (ack[ID_INDEX] == connectedDevice->getID()) {
-                    //Check opcode validity
-                    uint8_t  opcode = ack[OPCODE_INDEX];
+                //The oldest ack received
+                uint8_t *ack = buffReceived.front();
 
-                    if (isAValidAnswerOpcode(opcode)) {
-                        //if valid opcode
-                        if (isAnAckOpcode(opcode)) {
-                            //ack message
-                            uint16_t sizeLeftPack =
-                                    convertTwo8to16(ack[DATA_INDEX+1],
-                                                    ack[DATA_INDEX+2]);
-                            AckMessage ackMess(connectedDevice->getID(), opcode);
-                            ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
+                this->getConnectedDevice()->handleResponse(ack); //TODO to remove
 
-                            //Handle the ack
-                            int nbTry = 0;
-                            while (!connectedDevice->handleAck(mess, ackMess) && nbTry < MAX_TRY) {
-                                ++nbTry;
+                //Check the header bit
+                if(ack[HEADER_INDEX] == 1) {
+                    //check id message
+                    //ConnectedDevice may not be NULL
+                    if (ack[ID_INDEX] == connectedDevice->getID()) {
+                        //Check opcode validity
+                        uint8_t  opcode = ack[OPCODE_INDEX];
+
+                        if (isAValidAnswerOpcode(opcode)) {
+                            //if valid opcode
+
+                            if (isAnAckOpcode(opcode)) {
+                                //Create an AckMessage instance
+                                uint16_t sizeLeftPack =
+                                        convertTwo8to16(ack[DATA_INDEX+1],
+                                                        ack[DATA_INDEX+2]);
+                                AckMessage ackMess(connectedDevice->getID(), opcode);
+                                ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
+
+                                //Release the lock
+                                lock_ack.unlock();
+                                isLockTaken = false;
+
+                                //Handle the ack
+                                isAcknowledged = connectedDevice->handleAck(mess,
+                                                                            ackMess);
+                            } else {
+                                //Response message
+                                //TODO handle the response
+                                isAcknowledged = connectedDevice->handleResponse(ack);
                             }
-
-                        } else {
-                            //Response message
-                            //TODO handle the response
-                            this->connectedDevice->handleResponse(ack);
                         }
                     }
                 }
+                //Release the lock
+                if (isLockTaken)
+                    lock_ack.unlock();
+                //Remove the oldest ack in the queue
+                buffReceived.pop();
+                //Increment the number of tries if not aknowledged
+                isAcknowledged ? : nbTry++;
             }
-            //Release the lock
-            lock_ack.unlock();
-            //Remove the first element in the queue
-            buffReceived.pop();
         }
 
+        //Free allocated memory for the bufferArray
+        delete []bufferArray;
 
+        //If number of tries exceeded
+        if (nbTry == MAX_TRY)
+            throw ErrorException("Error while sending a message : "
+                                         "Number of tries to send "
+                                         "the message exceeded");
 
-        delete []buffString;
     }
     LOG(1, "Message sended");
-
     return true;
 }
 

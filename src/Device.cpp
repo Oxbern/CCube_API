@@ -166,12 +166,14 @@ void Device::readFromFileDescriptor(uint8_t ack_buffer[10])
  * @brief
  * 
  */
-void Device::handleResponse(uint8_t ack[10])
+bool Device::handleResponse(uint8_t ack[10])
 {
 	fprintf(stdout, "ACK: ");
 	for (int i = 0; i < 10; ++i)
 		fprintf(stdout, "%u |", ack[i]);
 	fprintf(stdout, "\n");
+
+    return true;
 }
 
 /**
