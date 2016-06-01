@@ -2,6 +2,7 @@
 #include "Controller.h"
 // #include <iostream>
 
+#define TIME ((const struct timespec[]){{0, 100000000L}})
 
 int main(int argc, char** argv) {
     Controller c;
@@ -39,6 +40,7 @@ int main(int argc, char** argv) {
         b.action();
         dc->setLedStatus(b);
         c.displayDevice();
+        nanosleep(TIME, NULL);
 
     }
         
