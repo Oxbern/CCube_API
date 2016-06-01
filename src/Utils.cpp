@@ -141,3 +141,19 @@ bool isAValidAnswerOpcode(int val)
     }
     return retVal;
 }
+
+/**
+ * @brief TODO
+ */
+bool isAnAckOpcode(int val)
+{
+    bool retVal = false;
+    switch(val) {
+        case 0x01 :
+        case 0x02 :
+        case 0x03 :
+            retVal = true;
+            break;
+    }
+    return retVal;
+}

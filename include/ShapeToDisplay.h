@@ -27,9 +27,7 @@ protected:
 public:
     /*! 
      * \brief Constructor
-     *
      * Constructor of the class ShapeToDisplay
-     *
      */
     ShapeToDisplay(int i = 0, Point p = Point(0, 0, 0), bool b = true, int x = 9,
             int y = 9, int z = 9);
@@ -40,57 +38,76 @@ public:
      */
     virtual ~ShapeToDisplay();
 
-    /*! 
-     * \fn void ShapeToDisplay::print(std::ostream &str)
-     * \brief Prints the array
-     */
+
     void print(std::ostream &str);
 
     /*! 
      * \fn virtual bool incrSize()
      * \brief Increases the size of the shape 
+     * \return true if the size is not bigger than the 3D array dimensions 
+     * false otherwise
      */
     virtual bool incrSize();
-    
+
     /*! 
      * \fn virtual bool decrSize()
      * \brief Decreases the size of the shape 
+     * \return true if the size does not become negative
+     * false otherwise
      */
     virtual bool decrSize();
 
     /*! 
      * \fn bool moveUp()
-     * \brief Move the shape up in the 3D array 
+     * \brief Moves the shape up in the 3D array 
+     * function only described in the inherited classes
+     * \return true if the whole shape stays in the 3D array
+     * false otherwise
      */
     bool moveUp();
 
     /*! 
      * \fn bool moveDown()
-     * \brief Move the shape down in the 3D array 
+     * \brief Moves the shape down in the 3D array
+     * function only described in the inherited classes
+     * \return true if the whole shape stays in the 3D array
+     * false otherwise
      */
     bool moveDown();
 
     /*! 
      * \fn bool moveLeft()
-     * \brief Move the shape on the left in the 3D array 
+     * \brief Moves the shape on the left in the 3D array 
+     * function only described in the inherited classes
+     * \return true if the whole shape stays in the 3D array
+     * false otherwise
      */
     bool moveLeft();
 
     /*! 
      * \fn bool moveRight()
-     * \brief Move the shape on the right in the 3D array 
+     * \brief Moves the shape on the right in the 3D array 
+     * function only described in the inherited classes
+     * \return true if the whole shape stays in the 3D array
+     * false otherwise
      */
     bool moveRight();
 
     /*! 
      * \fn bool moveForward()
-     * \brief Move the shape forward in the 3D array 
+     * \brief Moves the shape forward in the 3D array 
+     * function only described in the inherited classes
+     * \return true if the whole shape stays in the 3D array
+     * false otherwise
      */
     bool moveForward();
 
     /*! 
      * \fn bool moveBackward()
-     * \brief Move the shape backward in the 3D array 
+     * \brief Moves the shape backward in the 3D array
+     * function only described in the inherited classes
+     * \return true if the whole shape stays in the 3D array
+     * false otherwise
      */
     bool moveBackward();
 

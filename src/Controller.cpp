@@ -4,6 +4,8 @@
 
 #include "Controller.h"
 
+#define MAX_TRY 10
+
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
  *        add them to the Device list
@@ -96,10 +98,50 @@ bool Controller::send(Message* mess)
         }
 
         if (ack_index >= 0) {
-            while (!lock_ack.try_lock()) {};
-            this->getConnectedDevice()->handleResponse(ack[--ack_index]);
+
+            LOG(2, "Handle an ack");
+            while (!lock_ack.try_lock()); //TODO timeout
+            //Lock is acquired : check data received
+
+            //Check the header bit
+            if(ack[ack_index-1][HEADER_INDEX] == 1){
+                //check id message
+                if (ack[ack_index-1][ID_INDEX] == connectedDevice->getID()) {
+                    //Check opcode validity
+                    uint8_t  opcode = ack[ack_index-1][OPCODE_INDEX];
+
+                    if (isAValidAnswerOpcode(opcode)) {
+                        //if valid opcode
+                        if (isAnAckOpcode(opcode)) {
+                            //ack message
+                            uint16_t sizeLeftPack =
+                                    convertTwo8to16(ack[ack_index-1][DATA_INDEX+1],
+                                                    ack[ack_index-1][DATA_INDEX+2]);
+                            AckMessage ackMess(connectedDevice->getID(), opcode);
+                            ackMess.encodeAck(sizeLeftPack, ack[ack_index-1][DATA_INDEX]);
+
+                            //Release the lock
+                            lock_ack.unlock();
+
+                            int nbTry = 0;
+
+                            //Handle the ack
+                            while (!connectedDevice->handleAck(*mess, ackMess) && nbTry < MAX_TRY)
+                                ++nbTry;
+                        } else {
+                            //Response message
+                            //TODO handle the response
+                            this->getConnectedDevice()->handleResponse(ack[--ack_index]);
+                        }
+
+                    }
+                }
+            }
+            //Release the lock
             lock_ack.unlock();
         }
+
+
 
         delete []buffString;
     }

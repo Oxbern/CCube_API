@@ -65,7 +65,7 @@ void convert16to8(uint16_t val, uint8_t tab[2]);
 uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue);
 void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]);
 bool isAValidAnswerOpcode(int val);
-
+bool isAnAckOpcode(int val);
 #define CRC16 0x1021
 
 uint16_t computeCRC(uint8_t *data, uint16_t size);

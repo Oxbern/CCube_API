@@ -1,6 +1,9 @@
 #include "ShapeToDisplay.h"
 
-
+/*! 
+ * \fn void initialisation()
+ * \brief Initializes the 3D array at false 
+ */
 void ShapeToDisplay::initialisation() 
 {
     for (int x = 0; x < sizeX; ++x)
@@ -9,10 +12,11 @@ void ShapeToDisplay::initialisation()
                 status[x][y][z] = false;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \brief Constructor
+ * Constructor of the class ShapeToDisplay
  */
-ShapeToDisplay::ShapeToDisplay(int i, Point p, bool b, int x, int y, int z) : 
+ShapeToDisplay::ShapeToDisplay(int i, Point p, bool b, int x, int y, int z) :
 size(i), origin(p), full(b), sizeX(x), sizeY(y), sizeZ(z) 
 {
     LOG(1, "ShapeToDisplay(int i, Point p, bool b, int x, int y, int z)");
@@ -29,10 +33,12 @@ size(i), origin(p), full(b), sizeX(x), sizeY(y), sizeZ(z)
     initialisation();
 }
 
-/**
- * @brief TODO
+/*!
+ * \brief Destructor
+ * Destructor of the class ShapeToDisplay
  */
-ShapeToDisplay::~ShapeToDisplay() {
+ShapeToDisplay::~ShapeToDisplay() 
+{
     LOG(1, "~ShapeToDisplay()");
 
     //Deallocation
@@ -48,10 +54,12 @@ ShapeToDisplay::~ShapeToDisplay() {
     }
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn void ShapeToDisplay::print(std::ostream &str)
+ * \brief Prints the array
  */
-void ShapeToDisplay::print(std::ostream &str) {
+void ShapeToDisplay::print(std::ostream &str) 
+{
     if (full)
         str << "This is a full shape :" << std::endl;
     else
@@ -76,18 +84,27 @@ void ShapeToDisplay::print(std::ostream &str) {
     }
 }
 
-/**
- * @brief TODO
+/*!
+ * \fn std::ostream& operator<<(std::ostream &Out, ShapeToDisplay &std);
+ * \brief Overloads of the operator <<
+ * @param Out : stream on which we write
+ * @param std : ShapeToDisplay we want to display
+ * \return std::ostream Out
  */
-std::ostream& operator<<(std::ostream &out, ShapeToDisplay &std) {
+std::ostream& operator<<(std::ostream &out, ShapeToDisplay &std) 
+{
     std.print(out);
     return out;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn virtual bool incrSize()
+ * \brief Increases the size of the shape 
+ * \return true if the size is not bigger than the 3D array dimensions 
+ * false otherwise
  */
-bool ShapeToDisplay::incrSize() {
+bool ShapeToDisplay::incrSize() 
+{
     size++;
     if (size > sizeX || size > sizeY || size > sizeZ) {
         std::cout << "size bigger than device dimensions" << std::endl;
@@ -101,10 +118,14 @@ bool ShapeToDisplay::incrSize() {
     return true;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn virtual bool decrSize()
+ * \brief Decreases the size of the shape 
+ * \return true if the size does not become negative
+ * false otherwise
  */
-bool ShapeToDisplay::decrSize() {
+bool ShapeToDisplay::decrSize()
+{
     size--;
     if (size < 0) {
         std::cout << "negative size" << std::endl;
@@ -113,14 +134,25 @@ bool ShapeToDisplay::decrSize() {
     return true;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool ***getStatus()
+ * \brief Returns the 3D array
+ * \return bool ***status
  */
-bool *** ShapeToDisplay::getStatus() {
+bool *** ShapeToDisplay::getStatus() 
+{
     return this->status;
 }
 
-bool ShapeToDisplay::on(int x, int y, int z) {
+/*! 
+ * \fn bool on(int x, int y, int z)
+ * \brief Changes the status of the cell of the array at true
+ * \param int x, int y, int z : coordinates in the 3D array   
+ * \return true if the parameters are in the 3D array
+ * false otherwise
+ */
+bool ShapeToDisplay::on(int x, int y, int z) 
+{
     if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
         return false;
@@ -128,22 +160,41 @@ bool ShapeToDisplay::on(int x, int y, int z) {
     return (status[x][y][z] = true);
 }
 
-/**
- * @brief Turns off the cube
+/*! 
+ * \fn void off();
+ * \brief Sets all the cell to false
  */
-void ShapeToDisplay::off() {
+void ShapeToDisplay::off() 
+{
     initialisation();
 }
 
+/*! 
+ * \fn int getSizeX() const;
+ * \brief Returns sizeX
+ * \return int sizeX  
+ */
 int ShapeToDisplay::getSizeX() const 
 {
     return sizeX;
 }
 
-int ShapeToDisplay::getSizeY() const {
-return sizeY;
+/*! 
+ * \fn int getSizeY() const;
+ * \brief Returns sizeY
+ * \return int sizeY
+ */
+int ShapeToDisplay::getSizeY() const 
+{
+    return sizeY;
 }
 
-int ShapeToDisplay::getSizeZ() const {
-return sizeZ;
+/*! 
+ * \fn int getSizeZ() const;
+ * \brief Returns sizeZ
+ * \return int sizeZ
+ */
+int ShapeToDisplay::getSizeZ() const 
+{
+    return sizeZ;
 }

@@ -250,11 +250,16 @@ bool Device::handleAck(Message mess, AckMessage ack)
         uint8_t buff[mess.getSizeBuffer()];
 
         mess.getBuffer(ackDataOpcode, ackDataSize).toArray(buff);
-        writeToFileDescriptor(buff, mess.getSizeBuffer());
+
+        while (!writeToFileDescriptor(buff, mess.getSizeBuffer())); //TODO add timeout 
 
         return false;
     } else {
         LOG(3, "ACK_OK received");
         return true;
     }
+}
+
+bool Device::setLedStatus(ShapeToDisplay s) {
+    return currentConfig->copyLedStatus(s);
 }

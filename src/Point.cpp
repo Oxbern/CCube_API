@@ -54,42 +54,45 @@ bool Point::isOutOfBounds(uint8_t x,uint8_t y, uint8_t z){
  * @brief Set the first coordinate
  * @param x : value setted
  */
-void Point::setX(uint8_t x)
+void Point::setX(int x)
 {
-    if (x >= 0 && x < 9)
+    //if (x >= 0 && x < 9)
 	this->x = x;
-    else{
-	perror("Index (x) of led out of bounds");
-	exit(EXIT_FAILURE);
-    }
+    //else{
+//	perror("Index (x) of led out of bounds");
+  //      std::cout << "x = " << (int) x << std::endl;
+//	exit(EXIT_FAILURE);
+    //}
 }
 
 /**
  * @brief Set the second coordinate
  * @param y : value setted
  */
-void Point::setY(uint8_t y)
+void Point::setY(int y)
 {
-    if (y >= 0 && y < 9)
+  //  if (y >= 0 && y < 9)
 	this->y = y;
-    else{
-	perror("Index (y) of led out of bounds");
-	exit(EXIT_FAILURE);
-    }
+    //else{
+	//perror("Index (y) of led out of bounds");
+       // std::cout << "y = " << (int) y << std::endl;
+	//exit(EXIT_FAILURE);
+    //}
 }
 
 /**
  * @brief Set the third coordinate
  * @param z : value setted
  */
-void Point::setZ(uint8_t z)
+void Point::setZ(int z)
 {
-    if (z >= 0 && z < 9)
+//    if (z >= 0 && z < 9)
 	this->z = z;
-    else{
-	perror("Index (z) of led out of bounds");
-	exit(EXIT_FAILURE);
-    }
+//    else{
+//	perror("Index (z) of led out of bounds");
+//        std::cout << "z = " << (int) z << std::endl;
+//	exit(EXIT_FAILURE);
+//    }
 }
 
 /**
@@ -214,3 +217,9 @@ void Point::decrZ()
 {
     z--;
 }
+
+Point operator + (const Point &p1, const Point &p2)
+{
+    Point ret(p1.getX() + p2.getX(), p1.getY() + p2.getY(), p1.getZ() + p2.getZ());
+    return ret;
+} 

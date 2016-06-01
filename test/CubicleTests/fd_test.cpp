@@ -18,7 +18,7 @@ int fd = 0;
 uint8_t ack[10][10];   
 uint8_t ack_index = 0;
 
-std::mutex lock_ack;
+std::recursive_mutex lock_ack;
 
 /* User functions */
 void *waitForACK();

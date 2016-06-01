@@ -43,7 +43,7 @@ class DeviceShape
     
     
     // TODO : test this function
-    bool copyLedStatus(ShapeToDisplay &s);
+    bool copyLedStatus(ShapeToDisplay s);
 };
 
 #endif //DEVICESHAPE_H
