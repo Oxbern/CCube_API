@@ -5,7 +5,6 @@
 #include <thread>
 #include <mutex>
 
-
 #include "DeviceShape.h"
 #include "Utils.h"
 
@@ -22,7 +21,7 @@ int fd = 0;
 uint8_t ack[10][10];   
 uint8_t ack_index = 0;
 
-uint8_t ACK_OK_HEADER[5] = {1, 1, 32, 0, 3};
+uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
 std::recursive_mutex lock_ack;
 
