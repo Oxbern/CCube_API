@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Debug.h"
+#include "ShapeToDisplay.h"
 
 /**
  * @class DeviceShape
@@ -39,6 +40,10 @@ class DeviceShape
     int getSizeZ() const;
     
     bool*** getLedStatus() const;
+    
+    
+    // TODO : test this function
+    bool copyLedStatus(ShapeToDisplay &s);
 };
 
 #endif //DEVICESHAPE_H

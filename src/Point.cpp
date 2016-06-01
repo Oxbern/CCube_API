@@ -158,8 +158,8 @@ bool Point::operator== (Point p)
 /**
  * @brief Overload of the operator <<
  * @param str : stream on which we write
- * @param p : Point to compare with 
- * @return boolean
+ * @param p : Point we want to display 
+ * @return std::ostream out
  */
 std::ostream& operator << (std::ostream &out, const Point &p)
 {

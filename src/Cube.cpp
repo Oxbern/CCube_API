@@ -1,5 +1,6 @@
 #include "Cube.h"
 #include <sstream>
+
 /**
  * @brief TODO
  */

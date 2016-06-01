@@ -22,10 +22,13 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
-        if (!dev.display()) {
-            std::cout << "Unable to display" << std::endl;
-            return EXIT_FAILURE;
-        }
+
+        /* /!\ This cannot be done with the current implementation /!\ */
+        
+        /* if (!dev.display()) { */
+        /*     std::cout << "Unable to display" << std::endl; */
+        /*     return EXIT_FAILURE; */
+        /* } */
 
         if (dev.disconnect()) {
             std::cout << "Disconnection to " << port << " device successful" << std::endl;

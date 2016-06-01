@@ -2,8 +2,11 @@
 #include "Buffer.h"
 #include <sstream>
 
-/**
- * @brief Creates a buffer with no data place
+/*! 
+ * \brief Constructor
+ *
+ * Creates a buffer
+ *
  */
 Buffer::Buffer() :
     header(0), idDevice(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
@@ -12,9 +15,13 @@ Buffer::Buffer() :
     LOG(1, "Buffer()");
 }
 
-/**
- * @brief Creates a right sized buffer
- */
+/*! 
+ * \brief Constructor
+ *
+ * Creates a buffer by setting its size
+ *
+ * \param sizeBuff the buffer's size desired
+ */    
 Buffer::Buffer(int sizeBuff) :
     header(0), idDevice(0), sizeBuffer(sizeBuff), opCode(0), sizeLeft(0), crc(0)
 {
@@ -22,10 +29,10 @@ Buffer::Buffer(int sizeBuff) :
     LOG(1, "Buffer(sizeBuffer)");
 }
 
-
-/**
- * @brief Destructor
- */
+/*!
+ * \brief Destructor
+ *
+ */    
 Buffer::~Buffer()
 {
     LOG(1, "~Buffer()");
@@ -35,137 +42,186 @@ Buffer::~Buffer()
     }
     data = NULL;
 }
-/**
- * @brief Returns the size available for the data
- * @param the entire size of the buffer
- * @return the data size
- */
-int dataSize(int sizeBuffer)
-{
-    return (sizeBuffer - DATA_INDEX - SIZE_CRC);
-}
 
-/**
- * @brief Returns the index of the crc
- * @param entire size of the buffer
- */
-int crcIndex(int sizeBuffer)
-{
-    return (sizeBuffer - SIZE_CRC);
-}
-
-/**
- * @brief Sets the header
- * @param head
- */
+/*!
+ * \fn void setHeader(uint8_t head)
+ * \brief Sets the header of a buffer
+ *
+ * Setter
+ *
+ * \param head header (1 or 0)
+ */        
 void Buffer::setHeader(uint8_t head)
 {
     this->header = head;
 }
 
-/**
- * @brief Sets the id of the Device 
- * @param idDevice
+/*!
+ * \fn void setID(uint8_t id)
+ * \brief Sets the device ID of a buffer
+ *
+ * Setter
+ *
+ * \param id device's ID
  */
 void Buffer::setID(uint8_t id)
 {
     this->idDevice = id;
 }
 
-/**
- * @brief Sets the opCode
- * @param code
- */
+/*!
+ * \fn void setOpCode(uint8_t code)
+ * \brief Sets the operation code of a buffer
+ *
+ * Setter
+ *
+ * \param code operation code
+ */        
 void Buffer::setOpCode(uint8_t code)
 {
     this->opCode = code;
 }
 
-/**
- * @brief Sets the sizeLeft
- * @param size
+/*!
+ * \fn void setSizeLeft(uint16_t size)
+ * \brief Sets the SizeLeft of a buffer
+ *
+ * Setter
+ *
+ * \param size the size left in a message
  */
 void Buffer::setSizeLeft(uint16_t size)
 {
     this->sizeLeft = size;
 }
 
-/**
- * @brief Sets the crc
- * @param crcCheck
- */
+/*!
+ * \fn void setCrc(uint16_t crcCheck)
+ * \brief Sets the crc of a buffer
+ *
+ * Setter
+ *
+ * \param crcCheck the crc
+ */    
 void Buffer::setCrc(uint16_t crcCheck)
 {
     this->crc = crcCheck;
 }
 
-/**
- * @brief Sets the data
- * @param index
- * @param dataIndex
+/*!
+ * \todo is this method useful ?
+ * \fn void setData(int index, uint8_t dataIndex)
+ * \brief Sets data[index]
+ *
+ * Setter
+ *
+ * \param index the position in data
+ * \param dataIndex the value to set
  */
 void Buffer::setData(int index, uint8_t dataIndex)
 {
     this->data[index] = dataIndex;
 }
 
-/**
- * @brief Gets the header
- */
+/*!
+ * \fn uint8_t getHeader() const
+ * \brief Returns the header
+ *
+ * Getter
+ *
+ * \return the header of a buffer (1 or 0)
+ */    
 uint8_t Buffer::getHeader() const
 {
     return this->header;
 }
 
-/**
- * @brief Gets the operation code
- */
+/*!
+ * \fn uint8_t getOpCode() const
+ * \brief Returns the operation code
+ *
+ * Getter
+ *
+ * \return the operation code of a buffer
+ */      
 uint8_t Buffer::getOpCode() const
 {
     return this->opCode;
 }
 
-/**
- * @brief Gets the sizeLeft
+/*!
+ * \fn uint16_t getSizeLeft() const
+ * \brief Returns the left size of a message
+ *
+ * Getter
+ *
+ * \return the size left of a buffer
  */
 uint16_t Buffer::getSizeLeft() const
 {
     return this->sizeLeft;
 }
 
-/**
- * @brief Gets the data
- */
+/*!
+ * \fn uint8_t *getData() const
+ * \brief Returns the data contained in a buffer
+ *
+ * Getter
+ *
+ * \return the data contained in a buffer
+ */    
 uint8_t * Buffer::getData() const
 {
     return this->data;
 }
 
-/**
- * @brief Gets the crc
- */
+/*!
+ * \fn uint16_t getCrc() const
+ * \brief Returns the crc
+ *
+ * Getter
+ *
+ * \return the crc of a buffer
+ */    
 uint16_t Buffer::getCrc() const
 {
     return this->crc;
 }
 
-/**
- * @brief Gets the size of the buffer
- */
+/*!
+ * \fn int getSizeBuffer() const
+ * \brief Returns the size of the buffer
+ *
+ * Getter
+ *
+ * \return the size of the entire buffer
+ */        
 int Buffer::getSizeBuffer() const
 {
     return this->sizeBuffer;
 }
 
+/*!
+ * \fn uint8_t getID() const
+ * \brief Returns the ID of the device which this buffer is from or for
+ *
+ * Getter
+ *
+ * \return the device ID
+ */            
 uint8_t Buffer::getID() const
 {
     return this->idDevice;
 }
 
-/**
- * @brief Operator == 
- * @param buffer
- */
+/*!
+ * \fn bool operator==(Buffer b)
+ * \brief Comparaison operator == between two buffers
+ *
+ * 
+ *
+ * \return the result of the comparaison
+ */                
 bool Buffer::operator==(Buffer b)
 {
     bool ret = (this->header == b.header &&
@@ -181,10 +237,14 @@ bool Buffer::operator==(Buffer b)
     return ret;
 }
 
-/**
- * @brief Converts a buffer into an array
- * @param buffLinear the filled array
- */
+/*!
+ * \fn void toArray(uint8_t* buffLinear)
+ * \brief Converts a buffer into an array
+ *
+ * 
+ *
+ * \param buffLinear the filled array
+ */    
 void Buffer::toArray(uint8_t* buffLinear)
 {
     if (buffLinear != NULL) {
@@ -208,10 +268,13 @@ void Buffer::toArray(uint8_t* buffLinear)
     }
 }
 
-/**
- * @brief Prints a buffer
- * @return string
- */
+/*!
+ * \fn std::string toString()
+ * \brief Prints a buffer 
+ *
+ * Method to string
+ *
+ */        
 std::string Buffer::toString()
 {
     std::ostringstream convert;
@@ -238,11 +301,14 @@ std::string Buffer::toString()
 }
 
 
-/**
- * @brief Prints a buffer for debugging
- * @param buffer index in message
- * @return string
- */
+/*!
+ * \fn std::string toStringDebug(int indexInMess)
+ * \brief Prints a buffer for debug purposes
+ *
+ * Method to string
+ *
+ * \param indexInMess the buffer index in a message
+ */        
 std::string Buffer::toStringDebug(int indexInMess)
 {
     std::ostringstream convert;
@@ -275,4 +341,31 @@ std::string Buffer::toStringDebug(int indexInMess)
     convert << std::endl;
 
     return convert.str();
+}
+
+
+/*!
+ * \fn int dataSize(int sizeBuffer);
+ * \brief Returns the size available for the data
+ *
+ * 
+ * \param sizeBuffer entire size of a buffer
+ * \return the size a buffer can contain data
+ */                
+int dataSize(int sizeBuffer)
+{
+    return (sizeBuffer - DATA_INDEX - SIZE_CRC);
+}
+
+/*!
+ * \fn int crcIndex(int sizeBuffer)
+ * \brief Returns the index of the crc in a buffer
+ *
+ * 
+ * \param sizeBuffer entire size of a buffer
+ * \return the index where the crc starts
+ */
+int crcIndex(int sizeBuffer)
+{
+    return (sizeBuffer - SIZE_CRC);
 }

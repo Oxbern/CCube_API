@@ -131,9 +131,8 @@ bool ShapeToDisplay::on(int x, int y, int z) {
 /**
  * @brief Turns off the cube
  */
-bool ShapeToDisplay::off() {
+void ShapeToDisplay::off() {
     initialisation();
-    return true;
 }
 
 int ShapeToDisplay::getSizeX() const 
