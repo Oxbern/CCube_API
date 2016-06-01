@@ -15,7 +15,7 @@ Controller::Controller()
     if (devices.size() == 0){
         // Connect to stdout to write messages
         Device *dev = new Device("/dev/stdout", 1);
-        devices.push_back(dev);    
+        devices.push_back(dev);
         connectDevice(dev);
     }
     
@@ -25,9 +25,6 @@ Controller::Controller()
 		for (int j = 0; j < 10; ++j)
 			ack[i][j] = 0;
 
-    
-    ack_thread = std::thread(&Controller::waitForACK, this);
-    
     LOG(1, "Controller()");
 }
 
@@ -99,9 +96,11 @@ bool Controller::send(Message* mess)
             }
         }
 
-        while (!lock_ack.try_lock());
-        this->getConnectedDevice()->handleResponse(ack[--ack_index]);
-        lock_ack.unlock();
+        if (ack_index >= 0) {
+            while (!lock_ack.try_lock());
+            this->getConnectedDevice()->handleResponse(ack[--ack_index]);
+            lock_ack.unlock();
+        }
 
         delete []buffString;
     }
@@ -217,6 +216,7 @@ bool Controller::connectDevice(Device *d)
 
     if ((*d).connect()){
         this->connectedDevice = d;
+        ack_thread = std::thread(&Controller::waitForACK, this);
         //this->t = std::thread(&Controller::readingTask, this);
         return true;
     }
@@ -227,6 +227,7 @@ bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
     ack_thread.detach();
+    ack_index = 0;
     return this->connectedDevice->disconnect();
 }
 
