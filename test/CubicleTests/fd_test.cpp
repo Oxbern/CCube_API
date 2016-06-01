@@ -1,9 +1,10 @@
-
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+
 #include <thread>
 #include <mutex>
+
 
 #include "DeviceShape.h"
 #include "Utils.h"
@@ -11,12 +12,17 @@
 /* User variable definition */
 #define ACK_SIZE 10
 
+#define DEBUG 0
+
+
 /* File descriptor used  */
 int fd = 0;
 
 /* Up to 10 ACKs can be stored */
 uint8_t ack[10][10];   
 uint8_t ack_index = 0;
+
+uint8_t ACK_OK_HEADER[5] = {1, 1, 32, 0, 3};
 
 std::recursive_mutex lock_ack;
 
@@ -50,8 +56,12 @@ int main ()
 	ds.on(4, 4, 4);
 
 	/* Create a data message */
-	uint8_t *myDataMessage = (uint8_t *)calloc(92, sizeof(uint8_t));
+	uint8_t *myDataMessage = (uint8_t *)calloc(64, sizeof(uint8_t));
 	uint8_t *localAck = (uint8_t *)calloc(10, sizeof(uint8_t));
+
+/* 	/\* ################################################ *\/ */
+/* 	/\* #                SEND FIRST BUFFER             # *\/ */
+/* 	/\* ################################################	 *\/ */
 	
 	/* Manually set header */
 	myDataMessage[0] = 1;
@@ -69,12 +79,106 @@ int main ()
 	myDataMessage[62] = crc >> 8;
 	myDataMessage[63] = crc & 0xFF;
 
+#if DEBUG
 	/* Print the message */
 	printf("My Data Message:");
 	for (int i = 0; i < 64; ++i)
 		printf("%u |", myDataMessage[i]);
 	printf("\n");
+#endif
+	
+	/* Send it over USB */
+	write(fd, &myDataMessage[0], 64);
 
+	/* Retrieve the ACK */
+	while (!lock_ack.try_lock());
+	memcpy(&localAck[0], ack[ack_index--], 10);
+	lock_ack.unlock();
+
+	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
+	fprintf(stderr, "[TEST FAILED]: First buffer\n");
+	ack_thread.detach();
+	return EXIT_FAILURE;
+}
+	
+#if DEBUG
+	/* Print the ACK */
+	fprintf(stdout, "ACK: ");
+	for (int i = 0; i < 10; ++i)
+		fprintf(stdout, "%u |", localAck[i]);
+	fprintf(stdout, "\n");
+#endif
+
+
+	
+	/* ###################################################### */
+	/* #                RESET CONNECTION                    # */
+	/* ###################################################### */
+	
+	/* Reset the connection */
+	uint8_t *resetConnection = (uint8_t *)calloc(7, sizeof(uint8_t));
+
+	/* Manually set header */
+	resetConnection[0] = 1;
+	resetConnection[1] = 1;
+	resetConnection[2] = 0xFF;
+	resetConnection[3] = 0;
+	resetConnection[4] = 0;
+
+	/* Set CRC */
+	crc = computeCRC(&resetConnection[0], 5*sizeof(uint8_t));
+	
+	resetConnection[5] = crc >> 8;
+	resetConnection[6] = crc & 0xFF;
+	
+	/* Send it over USB */
+	write(fd, &resetConnection[0], 7);
+
+	while (!lock_ack.try_lock());
+	memcpy(&localAck[0], ack[ack_index--], 10);
+	lock_ack.unlock();
+
+	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
+	fprintf(stderr, "[TEST FAILED]: Reset connection\n");
+	ack_thread.detach();
+	return EXIT_FAILURE;
+}
+
+#if DEBUG
+	fprintf(stdout, "ACK: ");
+	for (int i = 0; i < 10; ++i)
+		fprintf(stdout, "%u |", localAck[i]);
+	fprintf(stdout, "\n");
+#endif
+	
+	/* ##################################################### */
+	/* #               SEND ENTIRE MESSAGE                 # */
+	/* ##################################################### */
+
+	/* Manually set header */
+	myDataMessage[0] = 1;
+	myDataMessage[1] = 1;
+	myDataMessage[2] = 0x42;
+	myDataMessage[3] = 0;
+	myDataMessage[4] = 92;
+
+	/* Copy data into the buffer */
+	memcpy(&myDataMessage[5], ds.toArray(), 57);
+
+	/* Set CRC */
+	crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
+	
+	myDataMessage[62] = crc >> 8;
+	myDataMessage[63] = crc & 0xFF;
+
+#if DEBUG
+	/* Print the message */
+	printf("My Data Message:");
+	for (int i = 0; i < 64; ++i)
+		printf("%u |", myDataMessage[i]);
+	printf("\n");
+#endif
+	
 	/* Send it over USB */
 	write(fd, &myDataMessage[0], 64);
 
@@ -82,10 +186,18 @@ int main ()
 	memcpy(&localAck[0], ack[ack_index--], 10);
 	lock_ack.unlock();
 
+#if DEBUG
 	fprintf(stdout, "ACK: ");
 	for (int i = 0; i < 10; ++i)
 		fprintf(stdout, "%u |", localAck[i]);
 	fprintf(stdout, "\n");
+#endif
+
+	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
+	fprintf(stderr, "[TEST FAILED]: First buffer (second time)\n");
+	ack_thread.detach();
+	return EXIT_FAILURE;
+}
 
 	/* Prepare next buffer to send */
 	myDataMessage[0] = 0;
@@ -100,12 +212,14 @@ int main ()
 	myDataMessage[62] = crc >> 8;
 	myDataMessage[63] = crc & 0xFF;
 
+#if DEBUG
 	/* Print the buffer sent */
 	printf("My Data Message:");
 	for (int i = 0; i < 64; ++i)
 		printf("%u |", myDataMessage[i]);
 	printf("\n");
-
+#endif
+	
 	/* Send the buffer */
 	write(fd, &myDataMessage[0], 64);
 
@@ -113,15 +227,25 @@ int main ()
 	memcpy(&localAck[0], ack[ack_index--], 10);
 	lock_ack.unlock();
 
+#if DEBUG
 	fprintf(stdout, "ACK: ");
 	for (int i = 0; i < 10; ++i)
 		fprintf(stdout, "%u |", localAck[i]);
 	fprintf(stdout, "\n");
+#endif
 
+	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
+	fprintf(stderr, "[TEST FAILED]: Second buffer\n");
+	ack_thread.detach();
+	return EXIT_FAILURE;
+}
+	
+	printf("[TEST PASSED]\n");
+	
 	/* Let the thread go */
 	ack_thread.detach();
 
-    /* Close file descriptor */
+	/* Close file descriptor */
 	close(fd);
 
 	/* Free allocated memory */
@@ -130,6 +254,7 @@ int main ()
 	
 	return 0;
 }
+
 
 /**
  * @brief Read a ACK message from USB
@@ -140,10 +265,10 @@ void *waitForACK()
 
 	while (1) {
 		
-		while (!lock_ack.try_lock());
-		read(fd, &ack[++ack_index], ACK_SIZE);
-		lock_ack.unlock();
-	}
+	while (!lock_ack.try_lock());
+	read(fd, &ack[++ack_index], ACK_SIZE);
+	lock_ack.unlock();
+}
 
 	return NULL;
 }
