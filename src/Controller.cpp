@@ -4,7 +4,7 @@
 
 #include "Controller.h"
 
-#define MAX_TRY 10
+#define MAX_TRY 3
 
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
@@ -20,12 +20,6 @@ Controller::Controller()
         devices.push_back(dev);
         connectDevice(dev);
     }
-    
-    ack_index = 0;
-
-	for (int i = 0; i < 10; ++i)
-		for (int j = 0; j < 10; ++j)
-			ack[i][j] = 0;
 
     LOG(1, "Controller()");
 }
@@ -45,13 +39,18 @@ Controller::~Controller()
  */
 void *Controller::waitForACK()
 {
-	while (1) {
-
-		if (!this->connectedDevice)
+	while (1) {		
+		if (this->connectedDevice == NULL)
 			break;
 		
 		while (!lock_ack.try_lock());
-		this->getConnectedDevice()->readFromFileDescriptor(ack[ack_index++]);
+
+        uint8_t *buff = new uint8_t[10];
+        if (this->connectedDevice != NULL) {
+            this->connectedDevice->readFromFileDescriptor(buff);
+            buffReceived.push(buff);
+        }
+
 		lock_ack.unlock();
 	}
 
@@ -97,48 +96,52 @@ bool Controller::send(Message* mess)
             }
         }
 
-        if (ack_index >= 0) {
 
+        //Check ack to handle
+        if (!buffReceived.empty()) {
             LOG(2, "Handle an ack");
+            //Try to take the lock
             while (!lock_ack.try_lock()); //TODO timeout
-            //Lock is acquired : check data received
 
             //Check the header bit
-            if(ack[ack_index-1][HEADER_INDEX] == 1){
+            uint8_t *ack = buffReceived.front();
+
+            this->getConnectedDevice()->handleResponse(ack);
+
+            if(ack[HEADER_INDEX] == 1) {
                 //check id message
-                if (ack[ack_index-1][ID_INDEX] == connectedDevice->getID()) {
+                if (ack[ID_INDEX] == connectedDevice->getID()) {
                     //Check opcode validity
-                    uint8_t  opcode = ack[ack_index-1][OPCODE_INDEX];
+                    uint8_t  opcode = ack[OPCODE_INDEX];
 
                     if (isAValidAnswerOpcode(opcode)) {
                         //if valid opcode
                         if (isAnAckOpcode(opcode)) {
                             //ack message
                             uint16_t sizeLeftPack =
-                                    convertTwo8to16(ack[ack_index-1][DATA_INDEX+1],
-                                                    ack[ack_index-1][DATA_INDEX+2]);
+                                    convertTwo8to16(ack[DATA_INDEX+1],
+                                                    ack[DATA_INDEX+2]);
                             AckMessage ackMess(connectedDevice->getID(), opcode);
-                            ackMess.encodeAck(sizeLeftPack, ack[ack_index-1][DATA_INDEX]);
-
-                            //Release the lock
-                            lock_ack.unlock();
-
-                            int nbTry = 0;
+                            ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
 
                             //Handle the ack
-                            while (!connectedDevice->handleAck(*mess, ackMess) && nbTry < MAX_TRY)
+                            int nbTry = 0;
+                            while (!connectedDevice->handleAck(mess, ackMess) && nbTry < MAX_TRY) {
                                 ++nbTry;
+                            }
+
                         } else {
                             //Response message
                             //TODO handle the response
-                            this->getConnectedDevice()->handleResponse(ack[--ack_index]);
+                            this->connectedDevice->handleResponse(ack);
                         }
-
                     }
                 }
             }
             //Release the lock
             lock_ack.unlock();
+            //Remove the first element in the queue
+            buffReceived.pop();
         }
 
 
@@ -302,8 +305,9 @@ bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
     ack_thread.detach();
-    ack_index = 0;
-    return this->connectedDevice->disconnect();
+    while (!connectedDevice->disconnect()); //TODO Timeout
+    this->connectedDevice = NULL;
+    return true;
 }
 
 /**
