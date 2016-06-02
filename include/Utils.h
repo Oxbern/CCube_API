@@ -5,6 +5,11 @@
 #include <cstdlib>
 #include <iostream>
 
+/*!
+ * \file Utils.h
+ * \brief Annexe functions
+ * \version 0.1
+ */
 #define SIZE_ACK 10
 #define SIZE_BUFFER 64
 #define SIZE_REQUEST 7
@@ -61,15 +66,72 @@ enum OPCODE {
     DEVICE_INFO = 0x0B
 };
 
+/*!
+ * \fn void convert16to8(uint16_t val, uint8_t tab[2])
+ * \brief Converts an uint16 into two uint8s
+ * \param val to convert
+ * \param tab array : the converted values destination
+ */ 
 void convert16to8(uint16_t val, uint8_t tab[2]);
+
+/*!
+ * \fn uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue)
+ * \brief Convert two uint8_t values into an uint16_t
+ * \param highValue : the first value
+ * \param lowValue : the second value
+ * \return the uint16_t gathering the two parameters
+ */
 uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue);
+
+/*!
+ * \fn void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3])
+ * \brief Creates an array with the pack ID
+ * \param sizeLeftPack
+ * \param opCodePack
+ * \param tab array 
+ */
 void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]);
+
+/*!
+ * \fn bool isAValidAnswerOpcode(int val)
+ * \brief Tests if the argument is a valid response
+ * \param val operation code to test
+ */
 bool isAValidAnswerOpcode(int val);
+
+/*!
+ * \fn bool isAnAckOpcode(int val)
+ * \brief Tests if the argument is a valid ack opcode
+ * \param val operation code to test
+ */
 bool isAnAckOpcode(int val);
+
 #define CRC16 0x1021
 
+/*!
+ * \fn uint16_t computeCRC(uint8_t *data, uint16_t size)
+ * \brief Computes the crc on an entire buffer
+ * \param data the information in a buffer
+ * \param size the entire buffer size minus the crc itself
+ * \return crc computed
+ */
 uint16_t computeCRC(uint8_t *data, uint16_t size);
+
+/*!
+ * \fn void printArray(uint8_t *array, int arraySize)
+ * \brief Function to print an array of uint8_t
+ * \param array the array to print
+ * \param arraySize the array's size
+ */
 void printArray(uint8_t *array, int arraySize);
+
+/*!
+ * \fn std::string uint8ArrayToString(uint8_t *array, int arraySize)
+ * \brief Convert an uint8_t array into a string object
+ * \param array the array to print
+ * \param arraySize the array's size
+ * \return string
+ */
 std::string uint8ArrayToString(uint8_t *array, int arraySize);
 
 #endif

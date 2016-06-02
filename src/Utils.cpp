@@ -1,9 +1,10 @@
 #include "Utils.h"
 
-/**
- * @brief Converts an uint16 into two uint8s
- * @param val to convert
- * @param tab array : the converted values destination
+/*!
+ * \fn void convert16to8(uint16_t val, uint8_t tab[2])
+ * \brief Converts an uint16 into two uint8s
+ * \param val to convert
+ * \param tab array : the converted values destination
  */ 
 void convert16to8(uint16_t val, uint8_t tab[2])
 {
@@ -13,11 +14,12 @@ void convert16to8(uint16_t val, uint8_t tab[2])
     }
 }
 
-/**
- * @brief Creates an array with the pack ID
- * @param sizeLeftPack
- * @param opCodePack
- * @param tab array 
+/*!
+ * \fn void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3])
+ * \brief Creates an array with the pack ID
+ * \param sizeLeftPack
+ * \param opCodePack
+ * \param tab array 
  */
 void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3])
 {
@@ -26,13 +28,14 @@ void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3])
         tab[1] = sizeLeftPack >> 8;
         tab[2] = 0xFF & sizeLeftPack;
     }
-
 }
 
-/**
- * @brief Convert two uint8_t values into an uint16_t
- * @param highValue : the first value
- * @param lowValue : the second value
+/*!
+ * \fn uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue)
+ * \brief Convert two uint8_t values into an uint16_t
+ * \param highValue : the first value
+ * \param lowValue : the second value
+ * \return the uint16_t gathering the two parameters
  */
 uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue)
 {
@@ -42,11 +45,12 @@ uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue)
     return res;
 }
 
-/**
- * @brief Computes the crc on an entire buffers
- * @param data 
- * @param size of the buffers
- * @return crc
+/*!
+ * \fn uint16_t computeCRC(uint8_t *data, uint16_t size)
+ * \brief Computes the crc on an entire buffer
+ * \param data the information in a buffer
+ * \param size the entire buffer size minus the crc itself
+ * \return crc computed
  */
 uint16_t computeCRC(uint8_t *data, uint16_t size)
 {
@@ -96,8 +100,11 @@ uint16_t computeCRC(uint8_t *data, uint16_t size)
     return crc;
 }
 
-/**
- * Function to print an array of uint8_t
+/*!
+ * \fn void printArray(uint8_t *array, int arraySize)
+ * \brief Function to print an array of uint8_t
+ * \param array the array to print
+ * \param arraySize the array's size
  */
 void printArray(uint8_t *array, int arraySize)
 {
@@ -109,8 +116,12 @@ void printArray(uint8_t *array, int arraySize)
     }
 }
 
-/**
- * Convert an uint8_t array into a string object
+/*!
+ * \fn std::string uint8ArrayToString(uint8_t *array, int arraySize)
+ * \brief Convert an uint8_t array into a string object
+ * \param array the array to print
+ * \param arraySize the array's size
+ * \return string
  */
 std::string uint8ArrayToString(uint8_t *array, int arraySize)
 {
@@ -122,36 +133,42 @@ std::string uint8ArrayToString(uint8_t *array, int arraySize)
     return sDebug;
 }
 
-/**
- * @brief TODO
+/*!
+ * \fn bool isAValidAnswerOpcode(int val)
+ * \brief Tests if the argument is a valid response
+ * \param val operation code to test
  */
 bool isAValidAnswerOpcode(int val)
 {
     bool retVal = false;
     switch(val) {
-        case 0x01 :
-        case 0x02 :
-        case 0x03 :
-        case 0x20 :
-        case 0x23 :
-        case 0x24 :
-        case 0x25 :
+        case ACK_OK :
+        case ACK_ERR :
+        case ACK_NOK :
+        case ID_RECEPTION :
+        case LIGHT_RECEPTION :
+        case SCREEN_SIZE_RECEPTION :
+        case FIRMWARE_VERSION_RECEPTION :
+        case DEVICE_INFO :
+        case BUFF_RECEPTION :
             retVal = true;
             break;
     }
     return retVal;
 }
 
-/**
- * @brief TODO
+/*!
+ * \fn bool isAnAckOpcode(int val)
+ * \brief Tests if the argument is a valid ack opcode
+ * \param val operation code to test
  */
 bool isAnAckOpcode(int val)
 {
     bool retVal = false;
     switch(val) {
-        case 0x01 :
-        case 0x02 :
-        case 0x03 :
+        case ACK_OK :
+        case ACK_ERR :
+        case ACK_NOK :
             retVal = true;
             break;
     }
