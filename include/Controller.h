@@ -36,7 +36,6 @@ class Controller
     std::queue <uint8_t*> buffReceived;
     std::thread ack_thread;
     std::recursive_mutex lock_ack;
-    std::recursive_mutex lock_connectedDevice;
 
     void *waitForACK();
 
