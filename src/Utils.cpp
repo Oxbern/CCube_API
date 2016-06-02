@@ -57,8 +57,6 @@ uint16_t computeCRC(uint8_t *data, uint16_t size)
     uint16_t out = 0;
     int bits_read = 0, bit_flag = 0;
 
-    printBuffer("BUFFER CRC", data, size);
-    
     if(data == NULL)
         return 0;
 

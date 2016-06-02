@@ -114,7 +114,8 @@ void Message::encode(uint8_t *dataToEncode)
 
         uint8_t tab[2];
         convert16to8(listBuffer[i].getSizeLeft(), &tab[0]);
-
+        memcpy(&entireBuffer[SIZE_INDEX], tab, 2);
+        
         memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
                dataSize(sizeBuffer) * sizeof(uint8_t));
 
@@ -122,7 +123,6 @@ void Message::encode(uint8_t *dataToEncode)
                                           sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         
         listBuffer[i].setCrc(crcComputed);
-        printBuffer("BUFFER", entireBuffer, 64);
     }
 }
 
