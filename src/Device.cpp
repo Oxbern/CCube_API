@@ -16,10 +16,14 @@
 #include "VirtualCube.h"
 #include "Message.h"
 
-/**
- * @brief TODO
+/*! 
+ * \brief Constructor
+ * Constructor of the class Device
+ * 
+ * \param string port : link to the file open by the file descriptor
+ * \param int id : ID of the device
  */
-Device::Device(std::string port, int id)
+Device::Device(std::string port, int id) 
 {
     LOG(1, "Device(port, id)");
     //Copy device's port
@@ -54,10 +58,11 @@ Device::Device(std::string port, int id)
     this->fd = -1;
 }
 
-/**
- * @brief TODO
+/*!
+ * \brief Destructor
+ * Destructor of the class Device
  */
-Device::~Device()
+Device::~Device() 
 {
     LOG(1, "~Device()");
     if (this->currentConfig != NULL) {
@@ -66,77 +71,106 @@ Device::~Device()
     this->currentConfig = NULL;
 }
 
-
-/**
- * @brief TODO
+/*! 
+ * \fn bool connect()
+ * 
+ * \brief Connects the computer to the device
+ * 
+ * \return true if the device connected well
+ * false otherwise
  */
-bool Device::connect()
+bool Device::connect() 
 {
     LOG(1, "Trying to connect the device");
     if (fd < 0) {
-	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
+        fd = open(port.c_str(), O_RDWR | O_NOCTTY);
         if (fd == -1)
             std::cerr << "Error while opening the file descriptor : "
                 << std::string(std::strerror(errno));
         else
-	        fcntl(fd, F_SETFL, 0);
+            fcntl(fd, F_SETFL, 0);
     }
 
-    LOG(1, "Device " + std::string((fd >= 0 ? "" :  "not ")) + "connected");
+    LOG(1, "Device " + std::string((fd >= 0 ? "" : "not ")) + "connected");
     return (fd >= 0);
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool disconnect()
+ * 
+ * \brief Disconnects the computer and the device
+ * 
+ * \return true if the device disconnected well
+ * false otherwise
  */
-bool Device::disconnect()
+bool Device::disconnect() 
 {
     LOG(1, "Trying to disconnect the device");
     if (fd >= 0) {
-	    if (close(fd) == -1)
+        if (close(fd) == -1)
             std::cerr << "Error while closing the file descriptor : "
                 << std::string(std::strerror(errno));
         else
             fd = -1;
     }
 
-    LOG(1, "Device " + std::string((fd == -1 ? "" :  "not ")) + "disconnected");
+    LOG(1, "Device " + std::string((fd == -1 ? "" : "not ")) + "disconnected");
     return (fd == -1);
 }
 
-
-/**
- * @brief TODO
+/*! 
+ * \fn bool updateFirmware()
+ * 
+ * \brief not implemented yet
+ * 
+ * \return true if
+ * false otherwise
  */
-bool Device::updateFirmware()
+bool Device::updateFirmware() 
 {
     return false;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool getFirmwareVersion()
+ * 
+ * \brief not implemented yet
+ * 
+ * \return 
  */
-std::string Device::getFirmwareVersion()
+std::string Device::getFirmwareVersion() 
 {
     return 0;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool askForDisplaySize()
+ * 
+ * \brief not implemented yet
+ * 
+ * \return 
  */
-bool Device::askForDisplaySize()
+bool Device::askForDisplaySize() 
 {
     return false;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool writeToFileDescriptor(uint8_t* data, int dataSize)
+ * 
+ * \brief write the data in the file descriptor 
+ * 
+ * \param uint8_t* data : data that needs to be written 
+ * \param int dataSize : size of data
+ *
+ * \return true if the writing went well
+ * false otherwise
  */
-bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
+bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) 
 {
     if (fd) {
         LOG(2, "Trying to write Buffer (size = " + std::to_string(dataSize)
-            + " Bytes) : " + uint8ArrayToString(data, dataSize));
+                + " Bytes) : " + uint8ArrayToString(data, dataSize));
 
 
         if (write(fd, (char *) data, dataSize)) {
@@ -152,100 +186,163 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
     return false;
 }
 
-/**
- * @brief 
+/*! 
+ * \fn void readFromFileDescriptor(uint8_t ack_buffer[10])
  * 
+ * \brief store the data received in a buffer 
+ * to process them in the controler
+ * 
+ * \param uint8_t ack_buffer[10] : array where the data are stored
  */
-void Device::readFromFileDescriptor(uint8_t ack_buffer[10])
+void Device::readFromFileDescriptor(uint8_t ack_buffer[10]) 
 {
-	/* Simple read from file descriptor */
+    /* Simple read from file descriptor */
     LOG(2, "Reading from file descriptor");
-	read(this->getFile(), ack_buffer, SIZE_ACK);
+    read(this->getFile(), ack_buffer, SIZE_ACK);
     LOG(2, "End of reading");
 }
 
-
-/**
- * @brief
+/*! 
+ * \fn bool handleResponse(uint8_t ack[10])
  * 
+ * \brief not implemented yet
+ * 
+ * \return 
  */
-bool Device::handleResponse(uint8_t ack[10])
+bool Device::handleResponse(uint8_t ack[10]) 
 {
-	fprintf(stdout, "ACK: ");
-	for (int i = 0; i < 10; ++i)
-		fprintf(stdout, "%u |", ack[i]);
-	fprintf(stdout, "\n");
+    fprintf(stdout, "ACK: ");
+    for (int i = 0; i < 10; ++i)
+        fprintf(stdout, "%u |", ack[i]);
+    fprintf(stdout, "\n");
 
     return true;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn int getID() const
+ * 
+ * \brief Returns the id of the device
+ *
+ * \return int id : id of the device
  */
-int Device::getID() const
+int Device::getID() const 
 {
     return this->id;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn std::string getPort() const
+ * 
+ * \brief Returns the port of the device
+ * 
+ * \return std::string : port of the device
  */
-std::string Device::getPort() const
+std::string Device::getPort() const 
 {
     return this->port;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn DeviceShape *getcurrentConfig() const
+ * 
+ * \brief Returns the currentConfig of the device
+ * 
+ * \return DeviceShape * : currentConfig of the device
  */
-DeviceShape *Device::getcurrentConfig() const
+DeviceShape *Device::getcurrentConfig() const 
 {
     return this->currentConfig;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool on(int x, int y, int z)
+ * 
+ * \brief set the configuration of the LED of coordinates (x, y, z) to true
+ *
+ * \param int x : first coordinate of the LED
+ * \param int y : second coordinate of the LED
+ * \param int z : third coordinate of the LED
+ * 
+ * \return true if the configuration of the LED is now true 
+ * false otherwise
  */
-bool Device::on(int x, int y, int z)
+bool Device::on(int x, int y, int z) 
 {
     return currentConfig->on(x, y, z);
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool off()
+ * 
+ * \brief Set the configuration of all LEDs to false
+ * 
+ * \return always return true
  */
-bool Device::off() {
+bool Device::off() 
+{
     return currentConfig->off();
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool off(int x, int y, int z)
+ * 
+ * \brief set the configuration of the LED of coordinates (x, y, z) to false
+ *
+ * \param int x : first coordinate of the LED
+ * \param int y : second coordinate of the LED
+ * \param int z : third coordinate of the LED
+ *  
+ * \return true if the configuration of the LED is now false 
+ * false otherwise
  */
-bool Device::off(int x, int y, int z)
+bool Device::off(int x, int y, int z) 
 {
     return currentConfig->off(x, y, z);
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool toggle(int x, int y, int z)
+ * 
+ * \brief set the configuration of the LED of coordinates (x, y, z) to its 
+ * opposite (true if it was false and false if it was true)
+ * 
+ * \param int x : first coordinate of the LED
+ * \param int y : second coordinate of the LED
+ * \param int z : third coordinate of the LED
+ * 
+ * \return true if the whole shape stays in the 3D array
+ * false otherwise
  */
-bool Device::toggle(int x, int y, int z)
+bool Device::toggle(int x, int y, int z) 
 {
     return currentConfig->toggle(x, y, z);
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn int getFile()
+ * 
+ * \brief Returns the file descriptor of the device
+ * 
+ * \return int : fd of the device
  */
-int Device::getFile()
+int Device::getFile() 
 {
     return this->fd;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn bool handleAck(Message *mess, AckMessage ack)
+ *
+ * \brief Handles the acknowledge of the message
+ * 
+ * \param Message *mess : needed to know which message has to be send back
+ * \param AckMessage ack : to verify if the message was received well 
+ * 
+ * \return true if the ack is an ACK_OK
+ * false otherwise
  */
-bool Device::handleAck(Message *mess, AckMessage ack)
+bool Device::handleAck(Message *mess, AckMessage ack) 
 {
     //Check the AckMessage
     if (ack.getOpCode() != ACK_OK) {
@@ -255,13 +352,13 @@ bool Device::handleAck(Message *mess, AckMessage ack)
         uint8_t ackDataOpcode = ack.getListBuffer()[0].getData()[0];
 
         uint16_t ackDataSize = convertTwo8to16(ack.getListBuffer()[0].getData()[1],
-                                               ack.getListBuffer()[0].getData()[2]);
+                ack.getListBuffer()[0].getData()[2]);
 
         //Search the buffer to retransmit from the message
         Buffer *bufferToRetransmit = mess->getBuffer(ackDataOpcode, ackDataSize);
         if (bufferToRetransmit == NULL) {
             throw ErrorException("Error in an ack message "
-                                         ": buffer to retransmit not found in the message");
+                    ": buffer to retransmit not found in the message");
         }
 
         //Convert array to retransmit to an array of uint8_t
@@ -278,6 +375,16 @@ bool Device::handleAck(Message *mess, AckMessage ack)
     }
 }
 
-bool Device::setLedStatus(ShapeToDisplay s) {
+/*! 
+ * \fn bool setLedStatus(ShapeToDisplay s)
+ * 
+ * \brief Sets the 3D array of the currentDevice to the 3D array
+ *  of the ShapeToDisplay
+ * 
+ * \return true if copy went well
+ * false otherwise (for example dimensions did not match)
+ */
+bool Device::setLedStatus(ShapeToDisplay s) 
+{
     return currentConfig->copyLedStatus(s);
 }

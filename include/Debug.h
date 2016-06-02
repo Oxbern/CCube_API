@@ -1,8 +1,14 @@
+/*!
+ * \file Debug.h
+ * \brief Please change LOG_LEVEL to print debug messages
+ * \version 0.1
+ */
+
 #ifndef DEBUG_H
 #define DEBUG_H
 
 
-#define LOG_LEVEL 0
+#define LOG_LEVEL 0 
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL 0
