@@ -70,7 +70,7 @@ int main ()
 	myDataMessage[4] = 92;
 
 	/* Copy data into the buffer */
-    uint8_t *ledBuffer = new uint8_t[ds.getSizeInBytes()];
+    uint8_t *ledBuffer = (uint8_t *)calloc(ds.getSizeInBytes(), sizeof(uint8_t));
     ds.toArray(ledBuffer);
 	memcpy(&myDataMessage[5], ledBuffer, 57);
 
@@ -252,7 +252,7 @@ int main ()
 	/* Free allocated memory */
 	free(myDataMessage);
 	free(localAck);
-	delete [] ledBuffer;
+	free(ledBuffer);
 
 	return 0;
 }

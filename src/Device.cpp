@@ -138,6 +138,7 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
         LOG(2, "Trying to write Buffer (size = " + std::to_string(dataSize)
             + " Bytes) : " + uint8ArrayToString(data, dataSize));
 
+
         if (write(fd, (char *) data, dataSize)) {
             LOG(2, "Data written to file");
             return true;
@@ -158,7 +159,9 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
 void Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
+    LOG(2, "Reading from file descriptor");
 	read(this->getFile(), ack_buffer, SIZE_ACK);
+    LOG(2, "End of reading");
 }
 
 
