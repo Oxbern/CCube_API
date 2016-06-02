@@ -145,8 +145,19 @@ Buffer* Message::getListBuffer() const
 
 Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
 {
+    LOG(1, "GetBuffer :  OPCODE = " + std::to_string(opCode)
+           + " | SIZELEFT = " + std::to_string(sizeLeft));
+
+    /* Research a buffer with the same opCode and the same sizeLeft
+       in the message */
     for (int i = 0; i < NbBuffers(); i++) {
-        if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
+        LOG(1, "listbuffer[" + std::to_string(i) + "]"
+                + ".opcode = " + std::to_string(listBuffer[i].getOpCode()));
+        LOG(1, "listbuffer[" + std::to_string(i) + "]"
+                + ".sizeleft = " + std::to_string(listBuffer[i].getSizeLeft()));
+
+        if (listBuffer[i].getOpCode() == opCode
+            && listBuffer[i].getSizeLeft() == sizeLeft)
             return &listBuffer[i];
     }
     return NULL;
