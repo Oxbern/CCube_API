@@ -92,7 +92,7 @@ void Message::encode(uint8_t *dataToEncode)
     //Header, DeviceID, Opcode already set in the constructor
     int j = 0; int k= 0; int n = NbBuffers();
 
-    //Fill the buffers with the data
+    //Fills the buffers with the data
     for (int i = 0; i < n; i ++) {
         while (j < (dataSize(sizeBuffer))) {
             if (k < sizeData) {
@@ -105,7 +105,7 @@ void Message::encode(uint8_t *dataToEncode)
         }
         j = 0;
 
-        //Set CRC computed on the entire buffer
+        //Sets CRC computed on the entire buffer
         uint8_t entireBuffer[sizeBuffer-SIZE_CRC];
 
         entireBuffer[0] = listBuffer[i].getHeader();
@@ -113,10 +113,10 @@ void Message::encode(uint8_t *dataToEncode)
         entireBuffer[2] = listBuffer[i].getOpCode();
 
         uint8_t tab[2];
-        convert16to8(listBuffer[i].getSizeBuffer(), &tab[0]);
+        convert16to8(listBuffer[i].getSizeLeft(), &tab[0]);
 
-        entireBuffer[3] = tab[0];
-        entireBuffer[4] = tab[1];
+        entireBuffer[3] = tab[0]; std::cout << (int)tab[0] << " sizeLeft  \n";
+        entireBuffer[4] = tab[1]; std::cout << (int)tab[1] << " sizeLeft 2 \n";
 
         memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
                dataSize(sizeBuffer) * sizeof(uint8_t));
