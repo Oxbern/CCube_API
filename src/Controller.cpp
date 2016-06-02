@@ -299,18 +299,15 @@ std::string Controller::getPortFromID(int id)
 bool Controller::connectDevice(int id)
 {
     LOG(1, "connectDevice(int id) \n");
-    Device *chosen;
+    Device chosen("/dev/stdout", 1);
 
     std::list<Device*>::iterator iter ;
-    for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
+    for(iter = devices.begin(); (iter != devices.end()); iter++){
         if (id == (*iter)->getID())
-            chosen = *iter;
+            chosen = **iter;
     }
     
-    if (connectDevice(chosen)){
-        return true;
-    }
-    return false;
+    return connectDevice(&chosen);
 }
 
 /**
