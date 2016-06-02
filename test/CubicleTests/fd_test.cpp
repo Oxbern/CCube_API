@@ -25,7 +25,7 @@ struct timeval timeout = {0, 1000000L};
 
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
-std::recursive_mutex lock_ack;
+std::mutex lock_ack;
 
 /* User functions */
 void *waitForACK();
