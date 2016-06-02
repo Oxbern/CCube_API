@@ -229,46 +229,24 @@ void displayE(Device *d, Controller *c )
 int main(int argc, char* argv[])
 {
     Controller c;
-    Device *chosen;
-    if (c.listAllDevices()) {
-
-        int choice = 0;
-
-        std::cout << "Enter the device's ID you want to connect : " << std::endl;
-        std::cin >> choice;
-
-
-        std::list<Device *>::iterator iter;
-        std::list<Device *> listDevice = c.getListDevices();
-        for (iter = listDevice.begin(); (iter != listDevice.end()); iter++) {
-            if (choice == (*iter)->getID())
-                chosen = *iter;
-        }
-
-        std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
-
-        if (c.connectDevice(chosen)) {
-
-            std::cout << "You are connected to " << c.getConnectedDevice()->getPort() << std::endl;
-        }
+    c.connectDevice(1);
+    
+    c.getConnectedDevice()->on(4, 4, 4);
+    c.getConnectedDevice()->on(3, 4, 4);
+    c.getConnectedDevice()->on(4, 3, 4);
+    c.getConnectedDevice()->on(5, 4, 4);
+    c.getConnectedDevice()->on(4, 5, 4);
+    c.getConnectedDevice()->on(3, 3, 4);
+    c.getConnectedDevice()->on(5, 5, 4);
 
 
-        c.getConnectedDevice()->on(4, 4, 4);
-        c.getConnectedDevice()->on(3, 4, 4);
-        c.getConnectedDevice()->on(4, 3, 4);
-        c.getConnectedDevice()->on(5, 4, 4);
-        c.getConnectedDevice()->on(4, 5, 4);
-        c.getConnectedDevice()->on(3, 3, 4);
-        c.getConnectedDevice()->on(5, 5, 4);
+    displayC(c.getConnectedDevice(), &c);
+    displayU(c.getConnectedDevice(), &c);
+    displayB(c.getConnectedDevice(), &c);
+    displayE(c.getConnectedDevice(), &c);
 
 
-        displayC(c.getConnectedDevice(), &c);
-        displayU(c.getConnectedDevice(), &c);
-        displayB(c.getConnectedDevice(), &c);
-        displayE(c.getConnectedDevice(), &c);
-
-        c.disconnectDevice();
-    }
+    c.disconnectDevice();
     return 0;
 }
 
