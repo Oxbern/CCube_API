@@ -6,6 +6,7 @@
 #include "Controller.h"
 
 #define MAX_TRY 10
+#define MAX_WAIT 100
 
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
@@ -15,15 +16,16 @@ Controller::Controller()
 {
 	listAndGetUSBConnectedDevices();
 
-	Device *dev = new Device("/dev/stdout", 1);
+	/*Device *dev = new Device("/dev/stdout", 1);
 
     if (devices.size() == 0){
         // Connect to stdout to write messages
         devices.push_back(dev);
         connectDevice(dev);
     }
+    */
 
-    this->connectedDevice = dev;
+    this->connectedDevice = NULL;
 
     LOG(1, "Controller()");
 }
@@ -47,16 +49,15 @@ void *Controller::waitForACK()
 	while (1) {		
 		if (this->connectedDevice == NULL)
 			break;
-		
-		while (!lock_ack.try_lock()); //LOG(2, "Try to lock (in Thread)");
 
         uint8_t *buff = new uint8_t[10];
         if (this->connectedDevice != NULL) {
-            this->connectedDevice->readFromFileDescriptor(buff);
-            buffReceived.push(buff);
+            if (this->connectedDevice->readFromFileDescriptor(buff)) {
+                lock_ack.lock();
+                buffReceived.push(buff);
+                lock_ack.unlock();
+            }
         }
-
-		lock_ack.unlock();
 	}
 
 	return NULL;
@@ -73,20 +74,17 @@ bool Controller::send(Message* mess)
 	    while (!this->getConnectedDevice()->connect()); //TODO Timeout
     }
 
-    int n = mess->NbBuffers();
 
     //Boolean to kwnow if each buffer is well received by the Device
     bool isAcknowledged = false;
-    /* //Boolean to kwnow if the lock on the queue of ack is taken */
-    /* bool isLockTaken = false; */
 
-    for (int i = 0; i < n; i++) {
+    for (int currentBuff = 0; currentBuff < mess->NbBuffers(); currentBuff++) {
         isAcknowledged = false;
 
         //Convert the buffer i to an array
-        int sizeBuffer = mess->getListBuffer()[i].getSizeBuffer();
+        int sizeBuffer = mess->getListBuffer()[currentBuff].getSizeBuffer();
         uint8_t * bufferArray = new uint8_t[sizeBuffer];
-        mess->getListBuffer()[i].toArray(bufferArray);
+        mess->getListBuffer()[currentBuff].toArray(bufferArray);
 
         LOG(3, mess->toStringDebug());
 
@@ -110,47 +108,55 @@ bool Controller::send(Message* mess)
           retransmission of a buffer */
         int nbTry = 0;
 
+        //Counter for number of wait
+        int nbWait = 0;
+
         //Wait for the receipt acknowledgement
         while (!isAcknowledged && nbTry < MAX_TRY) {
-            /* isLockTaken = false; */
+
+            if (nbWait == MAX_WAIT) {
+                //ReSend the message to the Device
+                //The header bit is set to 2
+                bufferArray[HEADER_INDEX] = 2;
+                while (!connectedDevice->writeToFileDescriptor(bufferArray,
+                                                               sizeBuffer));
+                nbWait = 0;
+            }
 
             //Check for new message
             if (!buffReceived.empty()) {
+                nbWait = 0;
                 LOG(2, "Handle an ack");
 
                 //Try to take the lock
-                while (!lock_ack.try_lock());// LOG(2, "Try to lock (in Send)"); //TODO timeout
-                /* isLockTaken = true; */
-                LOG(2, "Lock Taken");
+                while (!lock_ack.try_lock());  //TODO timeout
+                LOG(1, "Lock Taken");
 
                 //The oldest ack received
                 uint8_t *ack = buffReceived.front();
                 //Remove the oldest ack in the queue
+                LOG(1, "Size of queue :" + std::to_string(buffReceived.size()));
                 buffReceived.pop();
 
+                //Release the lock
                 lock_ack.unlock();
-                /* isLockTaken = false; */
 
                 /* Print ack */
                 this->getConnectedDevice()->handleResponse(ack); //TODO to remove
 
                 //Check the header bit
                 if(ack[HEADER_INDEX] == 1) {
-                    LOG(2, "[HANDLER] header bit ok");
                     //check id message
                     //ConnectedDevice may not be NULL
                     if (ack[ID_INDEX] == connectedDevice->getID()) {
-                        LOG(2, "[HANDLER] DeviceID bit ok");
                         //Check opcode validity
                         uint8_t  opcode = ack[OPCODE_INDEX];
 
                         if (isAValidAnswerOpcode(opcode)) {
                             //if valid opcode
-                            LOG(2, "[HANDLER] Opcode ok");
 
                             if (isAnAckOpcode(opcode)) {
                                 //Create an AckMessage instance
-                                LOG(2, "[HANDLER] Is an Ack Opcode ok");
                                 uint16_t sizeLeftPack =
                                         convertTwo8to16(ack[DATA_INDEX+1],
                                                         ack[DATA_INDEX+2]);
@@ -159,11 +165,11 @@ bool Controller::send(Message* mess)
 
                                 //Handle the ack
                                 isAcknowledged = connectedDevice->handleAck(mess,
-                                                                            ackMess, i);
+                                                                            ackMess,
+                                                                            currentBuff);
                             } else {
                                 //Response message
                                 //TODO handle the response
-                                isAcknowledged = connectedDevice->handleResponse(ack);
                             }
                         }
                     }
@@ -171,15 +177,16 @@ bool Controller::send(Message* mess)
                 //Increment the number of tries if not aknowledged
                 if (!isAcknowledged)
                     nbTry++;
+
+            } else {
+                //Increment the number wait if no data received
+                nbWait++;
             }
         }
 
-        /* //Empty the queue */
-        /* while (!buffReceived.empty()) */
-        /*     buffReceived.pop(); */
-
-        /* LOG(2, "Queue emptied"); */
-
+        //Empty the queue
+        while (!buffReceived.empty())
+             buffReceived.pop();
 
         //Free allocated memory for the bufferArray
         delete []bufferArray;
@@ -190,7 +197,7 @@ bool Controller::send(Message* mess)
             /*throw ErrorException("Error while sending a message : "
                                          "Number of tries to send "
                                          "the message exceeded");*/
-
+        LOG(2, "Ack handled");
     }
     LOG(1, "Message sended");
     return true;
