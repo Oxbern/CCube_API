@@ -43,6 +43,12 @@ class Buffer
     Buffer(int sizeBuff);
 
     /*!
+     * \brief Constructor by copy
+     *
+     */
+    Buffer(const Buffer& B);
+
+    /*!
      * \brief Destructor
      *
      */    

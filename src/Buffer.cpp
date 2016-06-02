@@ -29,6 +29,27 @@ Buffer::Buffer(int sizeBuff) :
     LOG(1, "Buffer(sizeBuffer)");
 }
 
+
+/**
+ * @brief Constructor by copy
+ */
+Buffer::Buffer(const Buffer& B)
+{
+    header = B.getHeader();
+    idDevice = B.getID();
+    sizeBuffer = B.getSizeBuffer();
+    opCode = B.getOpCode();
+    sizeLeft = B.getSizeLeft();
+    crc = B.getCrc();
+    data = new uint8_t[dataSize(sizeBuffer)];
+
+    for (int i = 0; i < dataSize(sizeBuffer); i++)
+        data[i] = B.getData()[i];
+
+    LOG(1, "Buffer(const &Buffer)");
+    LOG(2, "Buffer constructed by copy : " + this->toStringDebug(0));
+}
+
 /*!
  * \brief Destructor
  *
@@ -170,7 +191,7 @@ uint16_t Buffer::getSizeLeft() const
  *
  * \return the data contained in a buffer
  */    
-uint8_t * Buffer::getData() const
+uint8_t *Buffer::getData() const
 {
     return this->data;
 }
@@ -346,7 +367,7 @@ std::string Buffer::toStringDebug(int indexInMess)
 
 /*!
  * \fn int dataSize(int sizeBuffer);
- * \brief Returns the size available for the data
+ * \brief Returns the size in Bytes available for the data
  *
  * 
  * \param sizeBuffer entire size of a buffer

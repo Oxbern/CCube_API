@@ -40,7 +40,9 @@ int main(int argc, char* argv[])
         }
     }
 
-    uint8_t *leds = d.toArray();
+    uint8_t *leds = new uint8_t[d.getSizeInBytes()];
+    d.toArray(leds);
+
     printf("******* toArray() method *******\n");
     for (int i = 0; i < d.getSizeInBytes(); i++)
         std::cout << (int)leds[i];

@@ -23,8 +23,6 @@ struct Dictionnary{
     int Device;
 } typedef Dictionnary;
 
-#define MAX_NUMBER_ACK 10
-
 /**
  * @class Controller
  */
@@ -35,10 +33,10 @@ class Controller
     std::list<Device*> devices;
     Device *connectedDevice;
     std::queue<Message> messages; //FIFO of last messages
-    uint8_t ack_index;
-    uint8_t ack[MAX_NUMBER_ACK][SIZE_ACK];
+    std::queue <uint8_t*> buffReceived;
     std::thread ack_thread;
     std::mutex lock_ack;
+    std::mutex lock_connectedDevice;
 
     void *waitForACK();
 
@@ -64,7 +62,6 @@ class Controller
 
 };
 
-char ** getTtyList(int *size);
 void getNextWord(char *path, int *j, char * wordreturn);
 Dictionnary *getDictSTM( int *nbSTM);
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic);

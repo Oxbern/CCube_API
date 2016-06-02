@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <sstream>
+#include <string.h>
 
 #include "Message.h"
 #include "Utils.h"
@@ -47,7 +48,7 @@ Message::Message(const Message& M)
     listBuffer = reinterpret_cast<Buffer *>(new char[n*sizeof(Buffer)]);
     
     for (int i = 0; i<n; i++)
-        listBuffer[i] = M.getBuffer()[i];
+        listBuffer[i] = M.getListBuffer()[i];
     LOG(1, "Message(const &message)");
 }
 
@@ -88,42 +89,49 @@ int Message::NbBuffers() const
  */
 void Message::encode(uint8_t *dataToEncode)
 {
+    //Header, DeviceID, Opcode already set in the constructor
     int j = 0; int k= 0; int n = NbBuffers();
-    uint8_t *entireBuffer = new uint8_t [this->sizeBuffer];
-    uint8_t *tab = new uint8_t[2];
-    
+
+    //Fill the buffers with the data
     for (int i = 0; i < n; i ++) {
-        while (j < (sizeBuffer - DATA_INDEX - SIZE_CRC)) {
-            if (k < sizeData)
+        while (j < (dataSize(sizeBuffer))) {
+            if (k < sizeData) {
                 listBuffer[i].setData(j, dataToEncode[k]);
-            else
+            }
+            else {
                 listBuffer[i].setData(j,0);
+            }
             j++; k++;
         }
         j = 0;
+
+        //Set CRC computed on the entire buffer
+        uint8_t entireBuffer[sizeBuffer-SIZE_CRC];
+
         entireBuffer[0] = listBuffer[i].getHeader();
         entireBuffer[1] = listBuffer[i].getID();
         entireBuffer[2] = listBuffer[i].getOpCode();
-        convert16to8(listBuffer[i].getSizeBuffer(), tab);
+
+        uint8_t tab[2];
+        convert16to8(listBuffer[i].getSizeBuffer(), &tab[0]);
+
         entireBuffer[3] = tab[0];
         entireBuffer[4] = tab[1];
-        for (int ii = DATA_INDEX; ii < (this->sizeBuffer - SIZE_CRC); ii++)
-            entireBuffer[ii] = listBuffer[i].getData()[ii-DATA_INDEX];
 
-        uint16_t crcComputed = computeCRC(entireBuffer,
+        memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
+               dataSize(sizeBuffer) * sizeof(uint8_t));
+
+        uint16_t crcComputed = computeCRC(&entireBuffer[0],
                                           sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         listBuffer[i].setCrc(crcComputed);
     }
-    delete [] entireBuffer;
-    delete [] tab;
 }
 
 /**
- * @brief Finds a buffer based on its index
- * @param index
- * @return buffer desired
+ * @brief todo
+ * @return xx
  */
-Buffer* Message::getBuffer() const
+Buffer* Message::getListBuffer() const
 {
     return (this->listBuffer); //Can throw out_of_range exception
 }
@@ -135,13 +143,13 @@ Buffer* Message::getBuffer() const
  * @return buffer desired
  */
 
-Buffer Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
+Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
 {
     for (int i = 0; i < NbBuffers(); i++) {
         if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
-            return listBuffer[i];
+            return &listBuffer[i];
     }
-    return Buffer();
+    return NULL;
 }
 
 /**
@@ -188,13 +196,14 @@ uint8_t Message::getID() const
  * @brief Prints the message
  * @return string
  */
-std::string Message::toStringDebug()
+std::string Message::toStringDebug() const
 {
     std::ostringstream convert;
     convert << "Message (debug) :" << std::endl;
     int n = NbBuffers();
     for (int i = 0; i < n; i++)
-        convert << getBuffer()[i].toStringDebug(i);
+        convert << getListBuffer()[i].toStringDebug(i);
 
     return convert.str();
 }
+

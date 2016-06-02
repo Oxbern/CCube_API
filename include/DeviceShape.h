@@ -28,7 +28,7 @@ class DeviceShape
     bool off(int x, int y, int z);
     bool toggle(int x, int y, int z);
     int getSizeInBytes();
-    uint8_t *  toArray();
+    void toArray(uint8_t *arrayToFill);
     friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d);
 
     void print(std::ostream &str) const;

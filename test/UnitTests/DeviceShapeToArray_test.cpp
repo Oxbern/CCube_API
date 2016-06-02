@@ -23,7 +23,9 @@ int main(int argc, char* argv[])
     std::cout << "=> on(0, 0, 0) and on(4, 4, 4) and on(8, 8, 8)" << std::endl;
     std::cout << std::endl;
     std::cout << "DeviceShape.toArray () : " << std::endl;
-    uint8_t *ledArray = d.toArray();
+    uint8_t *ledArray = new uint8_t[d.getSizeInBytes()];
+    d.toArray(ledArray);
+
     printArray(ledArray, sizeArray);
 
     delete [] ledArray;

@@ -49,9 +49,9 @@ class Device
     std::string getPort() const;
     DeviceShape *getcurrentConfig() const;
     int getFile();
-    void handleResponse(uint8_t ack[10]);
+    bool handleResponse(uint8_t ack[10]);
 
-    bool handleAck(Message mess, AckMessage ack);
+    bool handleAck(Message *mess, AckMessage ack);
     
     bool setLedStatus(ShapeToDisplay s);
 };
