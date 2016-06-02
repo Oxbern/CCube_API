@@ -116,6 +116,8 @@ bool Controller::send(Message* mess)
 
             if (nbWait == MAX_WAIT) {
                 //ReSend the message to the Device
+                //The header bit is set to 2
+                bufferArray[HEADER_INDEX] = 2;
                 while (!connectedDevice->writeToFileDescriptor(bufferArray,
                                                                sizeBuffer));
                 nbWait = 0;
