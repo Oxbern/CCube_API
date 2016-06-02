@@ -208,7 +208,7 @@ DeviceShape *Device::getcurrentConfig() const
  */
 bool Device::on(int x, int y, int z)
 {
-    return currentConfig->on(x, y, z);
+	return currentConfig->on(x, y, z);
 }
 
 /**

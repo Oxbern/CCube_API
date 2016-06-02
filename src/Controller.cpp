@@ -15,13 +15,16 @@ Controller::Controller()
 {
 	listAndGetUSBConnectedDevices();
 
+	Device *dev = new Device("/dev/stdout", 1);
+
     if (devices.size() == 0){
         // Connect to stdout to write messages
-        Device *dev = new Device("/dev/stdout", 1);
         devices.push_back(dev);
         connectDevice(dev);
     }
 
+    this->connectedDevice = dev;
+    
     LOG(1, "Controller()");
 }
 
@@ -32,6 +35,7 @@ Controller::~Controller()
 {
     LOG(1,"~Controller()");
     while(!devices.empty()) delete devices.front(), devices.pop_front();
+    delete this->connectedDevice;
 }
 
 
@@ -299,15 +303,15 @@ std::string Controller::getPortFromID(int id)
 bool Controller::connectDevice(int id)
 {
     LOG(1, "connectDevice(int id) \n");
-    Device chosen("/dev/stdout", 1);
+    Device *chosen;
 
     std::list<Device*>::iterator iter ;
     for(iter = devices.begin(); (iter != devices.end()); iter++){
         if (id == (*iter)->getID())
-            chosen = **iter;
+            chosen = *iter;
     }
-    
-    return connectDevice(&chosen);
+
+    return connectDevice(chosen);
 }
 
 /**

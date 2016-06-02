@@ -230,6 +230,8 @@ int main(int argc, char* argv[])
 {
     Controller c;
     c.connectDevice(1);
+    /* std::cout << c.getConnectedDevice()->getPort()/\* ->getcurrentConfig()->getSizeX() *\/ << std::endl; */
+
     
     c.getConnectedDevice()->on(4, 4, 4);
     c.getConnectedDevice()->on(3, 4, 4);
@@ -239,11 +241,12 @@ int main(int argc, char* argv[])
     c.getConnectedDevice()->on(3, 3, 4);
     c.getConnectedDevice()->on(5, 5, 4);
 
-
-    displayC(c.getConnectedDevice(), &c);
-    displayU(c.getConnectedDevice(), &c);
-    displayB(c.getConnectedDevice(), &c);
-    displayE(c.getConnectedDevice(), &c);
+    c.displayDevice();
+    
+    /* displayC(c.getConnectedDevice(), &c); */
+    /* displayU(c.getConnectedDevice(), &c); */
+    /* displayB(c.getConnectedDevice(), &c); */
+    /* displayE(c.getConnectedDevice(), &c); */
 
 
     c.disconnectDevice();
