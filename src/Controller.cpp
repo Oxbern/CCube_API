@@ -420,24 +420,26 @@ Dictionnary *getDictSTM(int *nbSTM)
 
     /* Create a new dictionnary */
     Dictionnary *dic = new Dictionnary[lines];
-
+    
     //Re-Open the command for reading.
     fp = popen("lsusb | grep STM ", "r"); 
     if (fp == NULL) {
         std::cerr << "Failed to run command\n";
         exit(1);
     }
-    
+
+    bool new_entry = false;
     int j = 0, k = 0;
     /* Read each line */
     while (fgets(path, sizeof(path)-1, fp) != NULL) {
-	    /* Until end of line char appear */
-	    while(path[j] != '\0'){
-
+	    new_entry = false;
+	    /* Until end of line char appear or one device is found */
+	    while(path[j] != '\0' && !new_entry){
+		    
 		    /* Check if path if long enough to execute memcmp */
 		    for (int i = j; i < j + 4; ++i)
 			    if (path[++i] == '\0') { 
-				    j += i;
+				    j = i;
 				    continue;
 			    }
 		    
@@ -449,10 +451,11 @@ Dictionnary *getDictSTM(int *nbSTM)
 			    dic[k].bus = atoi(bus);
 		    }
 
+		    
 		    /* Check if path if long enough to execute memcmp */
 		    for (int i = j; i < j + 7; ++i)
 			    if (path[++i] == '\0') { 
-				    j += i;
+				    j = i;
 				    continue;
 			    }
 		    
@@ -461,6 +464,7 @@ Dictionnary *getDictSTM(int *nbSTM)
 			    char device[10];
 			    getNextWord(path,&j,(char *) &device);
 			    dic[k].Device = atoi(device);
+			    new_entry = true;
 		    }
 
 		    j++;
@@ -474,6 +478,12 @@ Dictionnary *getDictSTM(int *nbSTM)
     /* Close the file */
     pclose(fp);
 
+    /* Print dictionnary */
+    for (int i = 0; i < lines; ++i) 
+	    std::cout << "Dic[" << i << "]: BUS: " << dic[i].bus
+	              << " DEVICE: " << dic[i].Device << std::endl;
+    
+    
     /* Return created dic */
     return dic;
 }
@@ -486,7 +496,7 @@ Dictionnary *getDictSTM(int *nbSTM)
  */ 
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
 {
-	/* Copy tty port into local variable */
+    /* Copy tty port into local variable */
 	char busSDev[echo.length() + 1];
     strcpy(busSDev, echo.c_str());
 
@@ -506,7 +516,6 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
     strcpy(wordBreturn, wordB);
     bus = atoi(wordBreturn);
 
-
     /* Get the name of the Device */
     int Device = 0;
     char wordD[10] = {'0'};
@@ -514,9 +523,9 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
 
     int k = 0;
     while(busSDev[w] != '\0')
-        wordD[k++]=busSDev[w++];
-    wordD[w]='\0';
-
+        wordD[k++] = busSDev[w++];
+    wordD[k]='\0';
+    
     /* Copy the device into a new variable to use atoi function */
     char wordDreturn[k + 1];
     strcpy(wordDreturn, wordD);
@@ -567,7 +576,6 @@ void Controller::listAndGetUSBConnectedDevices()
     /* Close the file */
     pclose(fp);
 
-    
     int nbSTM = 0;
     Dictionnary *dic =  getDictSTM(&nbSTM);
     
@@ -603,8 +611,9 @@ void Controller::listAndGetUSBConnectedDevices()
 
                 if (i != std::string::npos)
                     t.erase(i, s.length());
-                
-                if (isInDico(t, dic, nbSTM))
+
+                std::cout << name << std::endl;
+                /* if (isInDico(t, dic, nbSTM)) */
                     // We have a device here with his port name (string)
                     devices.push_back(new Device(name, DeviceID++));
             }
