@@ -47,14 +47,14 @@ int main(int argc, char* argv[]) {
   ```
 
 
-3. Now that your Controller is ready, you need to connect to your physical device. The function `connectDevice()` of the Controller is here to help you choosing the device. After having instanciated your controller object, call this function :
+3. Now that your Controller is ready, you need to connect to your physical device. The function `connectDevice(int Id)` connects the Controller to the wanted Device with its Id. If you actually don't know what is the Id of your Device, just call connectDevice() without any arguments, this will call a debug function which will list all the devices USB connected. After having instanciated your controller object, call this function :
   ```
 ...
 Controller c;
-c.connectDevice();
+int IdOfMyDevice = 1;
+c.connectDevice(IdOfMyDevice);
 ...
   ```
-
   Let's see what it does. In your terminal, if it is not already here, create a folder `build/` in the main folder of the API and go into it. Compile with :
   ```
 cmake .. && make
@@ -64,7 +64,11 @@ cmake .. && make
   ```
 ./exec/MyTest
   ```
-A list of Devices should appear, asking you which device you want to connect to, for example : 
+  Now you are connected to your device. <br />
+  
+  **Note** <br />
+  This section is for those who called `c.connectDevice()` : <br />
+  A list of Devices should appear, asking you which device you want to connect to, for example : 
   ```
 --- List of USB Connected Devices : ---
 Device  1: Id = 1, Port :/dev/ttyACM0
