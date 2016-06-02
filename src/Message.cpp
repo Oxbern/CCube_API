@@ -115,15 +115,13 @@ void Message::encode(uint8_t *dataToEncode)
         uint8_t tab[2];
         convert16to8(listBuffer[i].getSizeLeft(), &tab[0]);
 
-        entireBuffer[3] = tab[0]; std::cout << (int)tab[0] << " sizeLeft  \n";
-        entireBuffer[4] = tab[1]; std::cout << (int)tab[1] << " sizeLeft 2 \n";
-
         memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
                dataSize(sizeBuffer) * sizeof(uint8_t));
 
         uint16_t crcComputed = computeCRC(&entireBuffer[0],
                                           sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         listBuffer[i].setCrc(crcComputed);
+        std::cout << "crc of buffer "<< i << " : "  << listBuffer[i].getCrc() << "\n";        
     }
 }
 

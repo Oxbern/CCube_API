@@ -55,12 +55,15 @@ int main()
     DeviceShape ds(9, 9, 9);
 
     /* Turns on one LED */
-    for (int i = 0; i < 9 ; i++) {
-        ds.on(i,i,8-i);
-        ds.on(i,i,i);
-        ds.on(i,8-i,i);
-        ds.on(8-i, i, i);
-    }
+    // for (int i = 0; i < 9 ; i++) {
+    //     ds.on(i,i,8-i);
+    //     ds.on(i,i,i);
+    //     ds.on(i,8-i,i);
+    //     ds.on(8-i, i, i);
+    // }
+
+    ds.on(4,4,4);
+    
     /* Creates a DataMessage */ 
     DataMessage myDataMessage(1, 92, BUFF_SENDING);
 
@@ -69,7 +72,7 @@ int main()
     ds.toArray(ledBuffer);
     myDataMessage.encode(ledBuffer);
 
-    delete [] ledBuffer;
+
     /* Prints the message */
 #if DEBUG
     std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
@@ -152,6 +155,7 @@ int main()
     close(fd);
 
     delete [] buffLinear;
+    delete [] ledBuffer;
     
     return 0;
 }
