@@ -174,3 +174,14 @@ bool isAnAckOpcode(int val)
     }
     return retVal;
 }
+
+
+void printBuffer(std::string name, uint8_t *buffer, uint16_t size) {
+
+	std::cout << name << ": ";
+
+	for (int i = 0; i < size; ++i)
+		std::cout << (int)buffer[i] << " |";
+
+	std::cout << std::endl;
+}
