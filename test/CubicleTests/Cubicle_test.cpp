@@ -7,7 +7,8 @@ int main(int argc, char* argv[])
     Controller c;
 
     // Connect the controller to a device which is physically connected via USB
-    c.connectDevice();
+    c.connectDevice(1);
+    std::cout << "Device connected" << std::endl;
     //c.disconnectDevice();
 
     // Or connect directly to a known device with its port and give it and id
@@ -20,9 +21,12 @@ int main(int argc, char* argv[])
     // Switch on a led on the current connected device
     int x = 0,y = 0,z = 0;
     c.on(x,y,z);
+    std::cout << "Led on" << std::endl;
 
     // Display led status on the current connected device.
     while(1){
+        c.displayDevice();
+        std::cout<<"DISPLAYED, move?"<<std::endl;
         int choice = 0;
         std::cin >> choice;
         switch(choice){
@@ -47,8 +51,6 @@ int main(int argc, char* argv[])
             
         }
         c.on(x,y,z);
-        c.displayDevice();
-        std::cout<<"DISPLAYED"<<std::endl;
     }
     //Don't forget to disconnect
     c.disconnectDevice();

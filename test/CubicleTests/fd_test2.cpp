@@ -9,14 +9,16 @@
 #include "AckMessage.h"
 #include "RequestMessage.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 /* File descriptor used */
 int fd = 0;
+fd_set set;
 
 /* Up to 10 ACKs can be stored */
 uint8_t ack[10][10];   
 uint8_t ack_index = 0;
+struct timeval timeout = {0, 10000};
 
 std::recursive_mutex lock_ack;
 
@@ -41,6 +43,11 @@ int main()
     /* Sets blocking mode */
     fcntl(fd, F_SETFL, 0);
 
+    /* clear the set */
+    FD_ZERO(&set); 
+    /* add our file descriptor to the set */
+    FD_SET(fd, &set); 
+
     /* Defines ACK thread */
     std::thread ack_thread(waitForACK);
 	
@@ -62,6 +69,7 @@ int main()
     ds.toArray(ledBuffer);
     myDataMessage.encode(ledBuffer);
 
+    delete [] ledBuffer;
     /* Prints the message */
 #if DEBUG
     std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
@@ -100,7 +108,7 @@ int main()
     std::cout << "ACK : " << localAck.toStringDebug() << "\n";
 #endif
 
-    /* Sends again */
+    /* Sends the DataMessage */
     for (int i = 0; i<myDataMessage.NbBuffers(); i++) {
 
         /* Prints */
@@ -129,7 +137,7 @@ int main()
               localAck.getAckType() == ACK_OK &&
               localAck.getListBuffer()[0].getSizeLeft() == 3))    
             {
-                std::cout << "[TEST FAILED] : First buffer\n";
+                std::cout << "[TEST FAILED] : Buffer number : "<< i <<"\n";
                 ack_thread.detach();
                 return EXIT_FAILURE;
             }
@@ -161,14 +169,17 @@ int main()
  */
 void *waitForACK()
 {
-    /* uint8_t emptyAck[10] = {0}; */
+	/* uint8_t emptyAck[10] = {0}; */
 
-    while (1) {
+	while (1) {
 		
-        while (!lock_ack.try_lock());
-        read(fd, &ack[++ack_index], SIZE_ACK);
-        lock_ack.unlock();
-    }
+	while (!lock_ack.try_lock());
+	
+	if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
+		read(fd, &ack[++ack_index], SIZE_ACK);
 
-    return NULL;
+	lock_ack.unlock();
+}
+
+	return NULL;
 }

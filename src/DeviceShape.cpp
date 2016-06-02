@@ -60,7 +60,7 @@ DeviceShape::~DeviceShape()
  */
 bool DeviceShape::on(int x, int y, int z)
 {
-    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
+    if (x > (this->sizeX - 1) || y > (this->sizeY - 1) || z > (this->sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }

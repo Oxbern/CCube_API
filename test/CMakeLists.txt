@@ -17,8 +17,8 @@ LINK_DIRECTORIES(../src)
 
 # Headers files and sources files 
 file(GLOB_RECURSE HEADERS "../include/*.h")
-file(GLOB_RECURSE TESTS_C "CubicleTests/*.c" "UnitTests/*.c")
-file(GLOB_RECURSE TESTS_CXX "CubicleTests/*.cpp" "UnitTests/*.cpp")
+file(GLOB_RECURSE TESTS_C "CubicleTests/*.c" "UnitTests/*.c" "../samples/*.c")
+file(GLOB_RECURSE TESTS_CXX "CubicleTests/*.cpp" "UnitTests/*.cpp" "../samples/*.cpp")
 
 # Bring the headers into the project
 include_directories(../include)

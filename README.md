@@ -11,11 +11,11 @@ In this README, you'll find specifications and our general class hierarchy.
 ## Reference
 
 ## Hello World
-Here is a simple tutorial to show you how to use our API to communicate with the cube. The final code is written in the file `Cubicle_tutorial.cpp`
+Here is a simple tutorial to show you how to use our API to communicate with the cube. The final code is written in the file `test/sample/Cubicle_tutorial.cpp`
 Let's pretend you want to switch on the led 4,4,4. 
 Connect the cube via USB, open a Terminal and let's write and compile the code to switch it on !
 
-1. Set the basic C++ code you will compile in a file named `MyTest.cpp` somewhere in the folder `test/` for example in `test/CubicleTest/MyTest.cpp`. This code will compile and wait until you hit `Enter` to exit, but you'll learn how to compile a little bit later.
+1. Set the basic C++ code you will compile in a file named `MyTest.cpp` somewhere in the folder `test/` for example in `test/sample/MyTest.cpp`. This code will compile and wait until you hit `Enter` to exit, but you'll learn how to compile a little bit later.
   ```
 int main(int argc, char* argv[]) 
 {
@@ -47,14 +47,14 @@ int main(int argc, char* argv[]) {
   ```
 
 
-3. Now that your Controller is ready, you need to connect to your physical device. The function `connectDevice()` of the Controller is here to help you choosing the device. After having instanciated your controller object, call this function :
+3. Now that your Controller is ready, you need to connect to your physical device. The function `connectDevice(int Id)` connects the Controller to the wanted Device with its Id. If you actually don't know what is the Id of your Device, just call connectDevice() without any arguments, this will call a debug function which will list all the devices USB connected. After having instanciated your controller object, call this function :
   ```
 ...
 Controller c;
-c.connectDevice();
+int IdOfMyDevice = 1;
+c.connectDevice(IdOfMyDevice);
 ...
   ```
-
   Let's see what it does. In your terminal, if it is not already here, create a folder `build/` in the main folder of the API and go into it. Compile with :
   ```
 cmake .. && make
@@ -64,7 +64,11 @@ cmake .. && make
   ```
 ./exec/MyTest
   ```
-A list of Devices should appear, asking you which device you want to connect to, for example : 
+  Now you are connected to your device. <br />
+  
+  **Note** <br />
+  This section is for those who called `c.connectDevice()` : <br />
+  A list of Devices should appear, asking you which device you want to connect to, for example : 
   ```
 --- List of USB Connected Devices : ---
 Device  1: Id = 1, Port :/dev/ttyACM0

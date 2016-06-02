@@ -20,6 +20,8 @@ class Device
  private :
     int id; /*!< identifier of the device */
     int fd; /*!< file descriptor of the device */
+    fd_set set; /*!<  needed for the timeout */
+    struct timeval timeout; /*!< time waited before exiting read function */
     std::string port; /*!< link to the file open by the file descriptor  */
     std::string firmwareVersion; /*!< not implemented yet */
     float luminosity; /*!< luminosity of the LEDs (not implemented yet) */

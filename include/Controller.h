@@ -35,8 +35,8 @@ class Controller
     std::queue<Message> messages; //FIFO of last messages
     std::queue <uint8_t*> buffReceived;
     std::thread ack_thread;
-    std::mutex lock_ack;
-    std::mutex lock_connectedDevice;
+    std::recursive_mutex lock_ack;
+    std::recursive_mutex lock_connectedDevice;
 
     void *waitForACK();
 
@@ -62,7 +62,6 @@ class Controller
 
 };
 
-char ** getTtyList(int *size);
 void getNextWord(char *path, int *j, char * wordreturn);
 Dictionnary *getDictSTM( int *nbSTM);
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic);
