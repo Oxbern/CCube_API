@@ -203,18 +203,20 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
  * 
  * \param uint8_t ack_buffer[10] : array where the data are stored
  */
-void Device::readFromFileDescriptor(uint8_t ack_buffer[10]) 
+bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
     int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
     if (ret > 0) {
         read(this->getFile(), ack_buffer, SIZE_ACK);
         LOG(1, "Reading from file descriptor : " + uint8ArrayToString(ack_buffer, 10));
+        return true;
     }
     else if (ret == 0)
         LOG(1, "Timeout");
     else
         LOG(1, "Error");
+    return false;
 }
 
 /*! 
@@ -365,7 +367,7 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 {
     //Check the AckMessage
     if (ack.getOpCode() != ACK_OK) {
-        LOG(3, "Handle an ACK_NOK or ACK_ERR :\n" + ack.toStringDebug());
+        LOG(3, "Handle an ACK_NOK or ACK_ERR  for Buffer N:\n" + std::to_string(i));
 
         //Extract pack data from the ackMessage
         uint8_t ackDataOpcode = ack.getListBuffer()[0].getData()[0];
@@ -389,7 +391,7 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 
         return false;
     } else {
-        LOG(3, "ACK_OK received ffor Buffer N° : " + std::to_string(i));
+        LOG(3, "ACK_OK received for Buffer N° : " + std::to_string(i));
         return true;
     }
 }

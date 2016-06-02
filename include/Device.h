@@ -117,7 +117,7 @@ class Device
      * 
      * \param uint8_t ack_buffer[10] : array where the data are stored
      */
-    void readFromFileDescriptor(uint8_t ack_buffer[10]);
+    bool readFromFileDescriptor(uint8_t ack_buffer[10]);
     
     /*! 
      * \fn bool on(int x, int y, int z)
