@@ -274,7 +274,8 @@ DeviceShape *Device::getcurrentConfig() const
  * \fn bool on(int x, int y, int z)
  * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to true
- *
+ * by calling the function of currentConfig (DeviceShape)
+ * 
  * \param int x : first coordinate of the LED
  * \param int y : second coordinate of the LED
  * \param int z : third coordinate of the LED
@@ -291,6 +292,7 @@ bool Device::on(int x, int y, int z)
  * \fn bool off()
  * 
  * \brief Set the configuration of all LEDs to false
+ * by calling the function of currentConfig (DeviceShape)
  * 
  * \return always return true
  */
@@ -303,7 +305,8 @@ bool Device::off()
  * \fn bool off(int x, int y, int z)
  * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to false
- *
+ * by calling the function of currentConfig (DeviceShape)
+ * 
  * \param int x : first coordinate of the LED
  * \param int y : second coordinate of the LED
  * \param int z : third coordinate of the LED
@@ -321,6 +324,7 @@ bool Device::off(int x, int y, int z)
  * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to its 
  * opposite (true if it was false and false if it was true)
+ * by calling the function of currentConfig (DeviceShape)
  * 
  * \param int x : first coordinate of the LED
  * \param int y : second coordinate of the LED

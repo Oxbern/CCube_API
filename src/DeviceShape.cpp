@@ -4,10 +4,12 @@
 #include "DeviceShape.h"
 #include "AckMessage.h"
 
-/**
- * @brief TODO
+/*! 
+ * \fn void clearLed();
+ * 
+ * \brief Initialises the 3D array to false (protected function)
  */
-void DeviceShape::clearLed()
+void DeviceShape::clearLed() 
 {
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)
@@ -15,10 +17,15 @@ void DeviceShape::clearLed()
                 ledStatus[x][y][z] = false;
 }
 
-/**
- * @brief TODO
+/*! 
+ * \brief Constructor
+ * Constructor of the class DeviceShape
+ * 
+ * \param int sizeX : First dimension of the 3D array of booleans
+ * \param int sizeY : Second dimension of the 3D array of booleans
+ * \param int sizeZ : Third dimension of the 3D array of booleans
  */
-DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ)
+DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) 
 {
     LOG(1, "DeviceShape(sizeX, sizeY, sizeZ)");
     //Allocation
@@ -33,10 +40,11 @@ DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(
     clearLed();
 }
 
-/**
- * @brief TODO
+/*!
+ * \brief Destructor
+ * Destructor of the class DeviceShape
  */
-DeviceShape::~DeviceShape()
+DeviceShape::~DeviceShape() 
 {
     LOG(1, "~DeviceShape()");
     //Deallocation
@@ -52,13 +60,19 @@ DeviceShape::~DeviceShape()
     ledStatus = NULL;
 }
 
-/**
- * @brief Switchs on a led
- * @param x
- * @param y
- * @param z
+/*! 
+ * \fn bool on(int x, int y, int z)
+ * 
+ * \brief set the configuration of the LED of coordinates (x, y, z) to true
+ *
+ * \param int x : first coordinate of the LED
+ * \param int y : second coordinate of the LED
+ * \param int z : third coordinate of the LED
+ * 
+ * \return true if the configuration of the LED is now true 
+ * false otherwise
  */
-bool DeviceShape::on(int x, int y, int z)
+bool DeviceShape::on(int x, int y, int z) 
 {
     if (x > (this->sizeX - 1) || y > (this->sizeY - 1) || z > (this->sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
@@ -67,22 +81,32 @@ bool DeviceShape::on(int x, int y, int z)
     return (ledStatus[x][y][z] = true);
 }
 
-/**
- * @brief Turns off the cube
+/*! 
+ * \fn bool off()
+ * 
+ * \brief Set the configuration of all LEDs to false
+ * 
+ * \return always return true
  */
-bool DeviceShape::off()
+bool DeviceShape::off() 
 {
     clearLed();
     return true;
 }
 
-/**
- * @brief Turns off a led
- * @param x
- * @param y
- * @param z
+/*! 
+ * \fn bool off(int x, int y, int z)
+ * 
+ * \brief set the configuration of the LED of coordinates (x, y, z) to false
+ *
+ * \param int x : first coordinate of the LED
+ * \param int y : second coordinate of the LED
+ * \param int z : third coordinate of the LED
+ *  
+ * \return true if the configuration of the LED is now false 
+ * false otherwise
  */
-bool DeviceShape::off(int x, int y, int z)
+bool DeviceShape::off(int x, int y, int z) 
 {
     if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
@@ -91,35 +115,49 @@ bool DeviceShape::off(int x, int y, int z)
     return (ledStatus[x][y][z] = false);
 }
 
-/**
- * @brief Toggles a led
- * @param x
- * @param y
- * @param z
+/*! 
+ * \fn bool toggle(int x, int y, int z)
+ * 
+ * \brief set the configuration of the LED of coordinates (x, y, z) to its 
+ * opposite (true if it was false and false if it was true)
+ * 
+ * \param int x : first coordinate of the LED
+ * \param int y : second coordinate of the LED
+ * \param int z : third coordinate of the LED
+ * 
+ * \return true if the whole shape stays in the 3D array
+ * false otherwise
  */
-bool DeviceShape::toggle(int x, int y, int z)
+bool DeviceShape::toggle(int x, int y, int z) 
 {
     if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
         std::cerr << "Index of led out of bounds" << std::endl;
         return false;
     }
     return (ledStatus[x][y][z] == true) ?
-        (ledStatus[x][y][z] = false) : (ledStatus[x][y][z] = true);
+            (ledStatus[x][y][z] = false) : (ledStatus[x][y][z] = true);
 }
 
-/**
- * @brief TODO
+/*! 
+ * \fn int getSizeInBytes()
+ * 
+ * \brief Returns the nb of uint8_t in the array
+ *
+ * \return int : nb of uint8_t in the array
  */
-int DeviceShape::getSizeInBytes()
+int DeviceShape::getSizeInBytes() 
 {
     return ceil(double(sizeX * sizeY * sizeZ) / 8.0); //Nb of uint8_t in the array
 }
 
-/**
- * @brief Converts ledBuffer into an array
- * @param ledStatus : the filled array
+/*! 
+ * \fn void toArray(uint8_t *arrayToFill)
+ * 
+ * \brief Write the 3D array in a 1D array
+ * 
+ * \param uint8_t *arrayToFill : array in which we write
  */
-void DeviceShape::toArray(uint8_t *arrayToFill)
+void DeviceShape::toArray(uint8_t *arrayToFill) 
 {
     if (arrayToFill != NULL) {
         uint8_t tmp = 0;
@@ -146,16 +184,28 @@ void DeviceShape::toArray(uint8_t *arrayToFill)
     }
 }
 
-/**
- * @brief : TODO
+/*!
+ * \fn friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
+ * 
+ * \brief Overload of the operator <<
+ * 
+ * \param std::ostream& os : stream on which we write
+ * \param const DeviceShape& d : DeviceShape we display
+ * 
+ * @return std::ostream& : os (stream we wrote on) 
  */
-std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
+std::ostream& operator<<(std::ostream& os, const DeviceShape& d) 
 {
     d.print(os);
     return os;
 }
 
-void DeviceShape::print(std::ostream &str) const
+/*! 
+ * \fn void print(std::ostream &str) const
+ * 
+ * \brief Displays the 3D array
+ */
+void DeviceShape::print(std::ostream &str) const 
 {
     for (int z = 0; z < sizeZ; ++z) {
         str << "Z = " << z << std::endl;
@@ -173,72 +223,97 @@ void DeviceShape::print(std::ostream &str) const
     }
 }
 
-/**
- * @brief Overload of the operator =
- * @param p : Point 
- * @return Point
+/*!
+ * \fn DeviceShape& operator=(const DeviceShape &ds)
+ * 
+ * \brief Overload of the operator =
+ * 
+ * \param const DeviceShape &ds : the DeviceShape we want to copy
+ * 
+ * \return DeviceShape& *this : deviceShape equal to ds 
  */
-DeviceShape& DeviceShape::operator=(const DeviceShape &ds)
+DeviceShape& DeviceShape::operator=(const DeviceShape &ds) 
 {
     LOG(1, "DeviceShape =");
-    
+
     if (&ds != this) {
         this->sizeX = ds.getSizeX();
         this->sizeY = ds.getSizeY();
         this->sizeZ = ds.getSizeZ();
 
-        memcpy(this->ledStatus, ds.ledStatus, sizeX*sizeY*sizeZ*sizeof(bool));
+        memcpy(this->ledStatus, ds.ledStatus, sizeX * sizeY * sizeZ * sizeof (bool));
     }
     return *this;
 }
 
-/**
- * @brief Overload of the operator = 
- * @return Point
+/*! 
+ * \fn int getSizeX() const
+ * 
+ * \brief Returns the first dimension of the 3D array
+ *
+ * \return int sizeX : first dimension of the 3D array
  */
-int DeviceShape::getSizeX() const
+int DeviceShape::getSizeX() const 
 {
     return this->sizeX;
 }
 
-/**
- * @brief Overload of the operator = 
- * @return Point
+/*! 
+ * \fn int getSizeY() const
+ * 
+ * \brief Returns the second dimension of the 3D array
+ *
+ * \return int sizeY : second dimension of the 3D array
  */
-int DeviceShape::getSizeY() const
+int DeviceShape::getSizeY() const 
 {
     return this->sizeY;
 }
 
-/**
- * @brief Overload of the operator = 
- * @return Point
+/*! 
+ * \fn int getSizeZ() const
+ * 
+ * \brief Returns the third dimension of the 3D array
+ *
+ * \return int sizeZ : third dimension of the 3D array
  */
-int DeviceShape::getSizeZ() const
+int DeviceShape::getSizeZ() const 
 {
     return this->sizeZ;
 }
 
-/**
- * @brief Overload of the operator = 
- * @return Point
+/*! 
+ * \fn bool*** getLedStatus() const
+ * 
+ * \brief Returns the 3D array
+ *
+ * \return bool ***ledStatus : the 3D array
  */
-bool*** DeviceShape::getLedStatus() const
+bool*** DeviceShape::getLedStatus() const 
 {
     return this->ledStatus;
 }
 
-bool DeviceShape::copyLedStatus(ShapeToDisplay s)
- {
-     if (sizeX != s.getSizeX() || sizeY != s.getSizeY() || sizeZ != s.getSizeZ()) {
-         std::cout << "DeviceShape::copyLedStatus(ShapeToDisplay &s) : "
-                 "size does not match between the DeviceShape and the ShapeToDisplay" << std::endl;
-         return false;
-     } else {
-         for (int x = 0; x < sizeX; x++)
-             for (int y = 0; y < sizeY; y++)
-                 for (int z = 0; z < sizeZ; z++)
-                     ledStatus[x][y][z] = s.getStatus()[x][y][z];
-     }
-     return true;
- }
+/*! 
+ * \fn bool copyLedStatus(ShapeToDisplay s)
+ * 
+ * \brief Sets the 3D array to the 3D array
+ *  of the ShapeToDisplay
+ * 
+ * \return true if copy went well
+ * false otherwise (for example dimensions did not match)
+ */
+bool DeviceShape::copyLedStatus(ShapeToDisplay s) 
+{
+    if (sizeX != s.getSizeX() || sizeY != s.getSizeY() || sizeZ != s.getSizeZ()) {
+        std::cout << "DeviceShape::copyLedStatus(ShapeToDisplay &s) : "
+                "size does not match between the DeviceShape and the ShapeToDisplay" << std::endl;
+        return false;
+    } else {
+        for (int x = 0; x < sizeX; x++)
+            for (int y = 0; y < sizeY; y++)
+                for (int z = 0; z < sizeZ; z++)
+                    ledStatus[x][y][z] = s.getStatus()[x][y][z];
+    }
+    return true;
+}

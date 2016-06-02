@@ -123,6 +123,7 @@ class Device
      * \fn bool on(int x, int y, int z)
      * 
      * \brief set the configuration of the LED of coordinates (x, y, z) to true
+     * by calling the function of currentConfig (DeviceShape)
      *
      * \param int x : first coordinate of the LED
      * \param int y : second coordinate of the LED
@@ -137,6 +138,7 @@ class Device
      * \fn bool off()
      * 
      * \brief Set the configuration of all LEDs to false
+     * by calling the function of currentConfig (DeviceShape)
      * 
      * \return always return true
      */
@@ -146,6 +148,7 @@ class Device
      * \fn bool off(int x, int y, int z)
      * 
      * \brief set the configuration of the LED of coordinates (x, y, z) to false
+     * by calling the function of currentConfig (DeviceShape)
      *
      * \param int x : first coordinate of the LED
      * \param int y : second coordinate of the LED
@@ -161,6 +164,7 @@ class Device
      * 
      * \brief set the configuration of the LED of coordinates (x, y, z) to its 
      * opposite (true if it was false and false if it was true)
+     * by calling the function of currentConfig (DeviceShape)
      * 
      * \param int x : first coordinate of the LED
      * \param int y : second coordinate of the LED
