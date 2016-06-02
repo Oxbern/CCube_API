@@ -12,16 +12,16 @@
 int main(int argc, char *argv[])
 {
     std::string port = "/dev/ttyACM0";
-    Device dev(port, 1);
+    Device *dev = new Device(port, 1);
     Controller c;
-    c.connectDevice(&dev);
 
 
-    if (dev.connect()){
+
+    if (c.connectDevice(dev)){
         std::cout << "Connection to " << port << " device successful" << std::endl;
 
         //Switch on some LEDs
-        if (!dev.on(0, 0, 0) || !dev.on(4, 4, 4) || !dev.on(8, 8, 8)) {
+        if (!dev->on(0, 0, 0) || !dev->on(4, 4, 4) || !dev->on(8, 8, 8)) {
             std::cout << "Unable to turn on the LEDs" << std::endl;
             return EXIT_FAILURE;
         }
@@ -42,5 +42,7 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "Unable to connect" << std::endl;
+
+    delete dev;
     return EXIT_FAILURE;
 }

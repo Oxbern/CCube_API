@@ -55,8 +55,8 @@ Device::Device(std::string port, int id)
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
     /* Set timeout */
-    this->timeout.tv_sec = 0;
-    this->timeout.tv_usec = 10000;
+    this->timeout.tv_sec = 1;
+    this->timeout.tv_usec = 0;
 
     /* Clear set */
     FD_ZERO(&set);
@@ -205,12 +205,16 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
  */
 void Device::readFromFileDescriptor(uint8_t ack_buffer[10]) 
 {
-    /* Simple read from file descriptor */
-    LOG(2, "Reading from file descriptor");
-
-    if (select(this->getFile() + 1, &set, NULL, NULL, &timeout) > 0)
-	    read(this->getFile(), ack_buffer, SIZE_ACK);
-    LOG(2, "End of reading");
+	/* Simple read from file descriptor */
+    int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
+    if (ret > 0) {
+        read(this->getFile(), ack_buffer, SIZE_ACK);
+        LOG(1, "Reading from file descriptor : " + uint8ArrayToString(ack_buffer, 10));
+    }
+    else if (ret == 0)
+        LOG(1, "Timeout");
+    else
+        LOG(1, "Error");
 }
 
 /*! 
@@ -353,7 +357,7 @@ int Device::getFile()
  * \return true if the ack is an ACK_OK
  * false otherwise
  */
-bool Device::handleAck(Message *mess, AckMessage ack) 
+bool Device::handleAck(Message *mess, AckMessage ack, int i)
 {
     //Check the AckMessage
     if (ack.getOpCode() != ACK_OK) {
@@ -381,7 +385,7 @@ bool Device::handleAck(Message *mess, AckMessage ack)
 
         return false;
     } else {
-        LOG(3, "ACK_OK received");
+        LOG(3, "ACK_OK received ffor Buffer N° : " + std::to_string(i));
         return true;
     }
 }

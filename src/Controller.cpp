@@ -5,7 +5,7 @@
 
 #include "Controller.h"
 
-#define MAX_TRY 3
+#define MAX_TRY 10
 
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
@@ -24,7 +24,7 @@ Controller::Controller()
     }
 
     this->connectedDevice = dev;
-    
+
     LOG(1, "Controller()");
 }
 
@@ -48,7 +48,7 @@ void *Controller::waitForACK()
 		if (this->connectedDevice == NULL)
 			break;
 		
-		while (!lock_ack.try_lock());
+		while (!lock_ack.try_lock()); //LOG(2, "Try to lock (in Thread)");
 
         uint8_t *buff = new uint8_t[10];
         if (this->connectedDevice != NULL) {
@@ -112,14 +112,16 @@ bool Controller::send(Message* mess)
 
         //Wait for the receipt acknowledgement
         while (!isAcknowledged && nbTry < MAX_TRY) { //TODO Timeout time
+            isLockTaken = false;
 
             //Check for new message
             if (!buffReceived.empty()) {
                 LOG(2, "Handle an ack");
 
                 //Try to take the lock
-                while (!lock_ack.try_lock()); //TODO timeout
+                while (!lock_ack.try_lock());// LOG(2, "Try to lock (in Send)"); //TODO timeout
                 isLockTaken = true;
+                LOG(2, "Lock Taken");
 
                 //The oldest ack received
                 uint8_t *ack = buffReceived.front();
@@ -128,17 +130,21 @@ bool Controller::send(Message* mess)
 
                 //Check the header bit
                 if(ack[HEADER_INDEX] == 1) {
+                    LOG(2, "[HANDLER] header bit ok");
                     //check id message
                     //ConnectedDevice may not be NULL
                     if (ack[ID_INDEX] == connectedDevice->getID()) {
+                        LOG(2, "[HANDLER] DeviceID bit ok");
                         //Check opcode validity
                         uint8_t  opcode = ack[OPCODE_INDEX];
 
                         if (isAValidAnswerOpcode(opcode)) {
                             //if valid opcode
+                            LOG(2, "[HANDLER] Opcode ok");
 
                             if (isAnAckOpcode(opcode)) {
                                 //Create an AckMessage instance
+                                LOG(2, "[HANDLER] Is an Ack Opcode ok");
                                 uint16_t sizeLeftPack =
                                         convertTwo8to16(ack[DATA_INDEX+1],
                                                         ack[DATA_INDEX+2]);
@@ -151,7 +157,7 @@ bool Controller::send(Message* mess)
 
                                 //Handle the ack
                                 isAcknowledged = connectedDevice->handleAck(mess,
-                                                                            ackMess);
+                                                                            ackMess, i);
                             } else {
                                 //Response message
                                 //TODO handle the response
@@ -166,18 +172,27 @@ bool Controller::send(Message* mess)
                 //Remove the oldest ack in the queue
                 buffReceived.pop();
                 //Increment the number of tries if not aknowledged
-                isAcknowledged ? : nbTry++;
+                if (!isAcknowledged)
+                    nbTry++;
             }
         }
+
+        //Empty the queue
+        while (!buffReceived.empty())
+            buffReceived.pop();
+
+        LOG(2, "Queue emptied");
+
 
         //Free allocated memory for the bufferArray
         delete []bufferArray;
 
         //If number of tries exceeded
         if (nbTry == MAX_TRY)
-            throw ErrorException("Error while sending a message : "
+            std::cerr << "Number of tries to send the message exceeded\n";
+            /*throw ErrorException("Error while sending a message : "
                                          "Number of tries to send "
-                                         "the message exceeded");
+                                         "the message exceeded");*/
 
     }
     LOG(1, "Message sended");
@@ -190,16 +205,17 @@ bool Controller::send(Message* mess)
  */
 bool Controller::displayDevice()
 {
-	Device *device = this->getConnectedDevice();
-	
-	DataMessage dm(device->getID(),
-	               device->getcurrentConfig()->getSizeInBytes(),
+    //Create a DataMessage
+	DataMessage dm(connectedDevice->getID(),
+                   connectedDevice->getcurrentConfig()->getSizeInBytes(),
 	               OPCODE(BUFF_SENDING));
 
-	uint8_t *ledsBuffer = new uint8_t[device->getcurrentConfig()->getSizeInBytes()];
-    device->getcurrentConfig()->toArray(ledsBuffer);
-
+    //Encode the message with the DeviceShape of the Device
+	uint8_t *ledsBuffer = new uint8_t[connectedDevice->getcurrentConfig()->getSizeInBytes()];
+    connectedDevice->getcurrentConfig()->toArray(ledsBuffer);
     dm.encode(ledsBuffer);
+
+    //Deallocate memory
     delete[] ledsBuffer;
 
     if (!send(&dm)) {

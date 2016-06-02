@@ -218,6 +218,7 @@ class Device
      */
     bool handleResponse(uint8_t ack[10]);
 
+
     /*! 
      * \fn bool handleAck(Message *mess, AckMessage ack)
      *
@@ -229,7 +230,7 @@ class Device
      * \return true if the ack is an ACK_OK
      * false otherwise
      */
-    bool handleAck(Message *mess, AckMessage ack);
+    bool handleAck(Message *mess, AckMessage ack, int i);
     
     /*! 
      * \fn bool setLedStatus(ShapeToDisplay s)
