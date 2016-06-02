@@ -191,7 +191,7 @@ uint16_t Buffer::getSizeLeft() const
  *
  * \return the data contained in a buffer
  */    
-uint8_t * Buffer::getData() const
+uint8_t *Buffer::getData() const
 {
     return this->data;
 }
@@ -367,7 +367,7 @@ std::string Buffer::toStringDebug(int indexInMess)
 
 /*!
  * \fn int dataSize(int sizeBuffer);
- * \brief Returns the size available for the data
+ * \brief Returns the size in Bytes available for the data
  *
  * 
  * \param sizeBuffer entire size of a buffer

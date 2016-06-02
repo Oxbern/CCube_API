@@ -89,38 +89,42 @@ int Message::NbBuffers() const
  */
 void Message::encode(uint8_t *dataToEncode)
 {
+    //Header, DeviceID, Opcode already set in the constructor
     int j = 0; int k= 0; int n = NbBuffers();
-    uint8_t *entireBuffer = new uint8_t [this->sizeBuffer-SIZE_CRC];
-    uint8_t *tab = new uint8_t[2];
-    
+
+    //Fill the buffers with the data
     for (int i = 0; i < n; i ++) {
         while (j < (dataSize(sizeBuffer))) {
-            if (k < sizeData)
+            if (k < sizeData) {
                 listBuffer[i].setData(j, dataToEncode[k]);
-            else
+            }
+            else {
                 listBuffer[i].setData(j,0);
+            }
             j++; k++;
         }
         j = 0;
 
+        //Set CRC computed on the entire buffer
+        uint8_t entireBuffer[sizeBuffer-SIZE_CRC];
+
         entireBuffer[0] = listBuffer[i].getHeader();
         entireBuffer[1] = listBuffer[i].getID();
         entireBuffer[2] = listBuffer[i].getOpCode();
-        convert16to8(listBuffer[i].getSizeBuffer(), tab);
+
+        uint8_t tab[2];
+        convert16to8(listBuffer[i].getSizeBuffer(), &tab[0]);
+
         entireBuffer[3] = tab[0];
         entireBuffer[4] = tab[1];
 
-        // for (int ii = DATA_INDEX; ii < (this->sizeBuffer - SIZE_CRC); ii++)
-        //     entireBuffer[ii] = listBuffer[i].getData()[ii-DATA_INDEX];
+        memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
+               dataSize(sizeBuffer) * sizeof(uint8_t));
 
-        memcpy(&entireBuffer[DATA_INDEX], listBuffer[i].getData(),
-               dataSize(sizeBuffer));
-        uint16_t crcComputed = computeCRC(entireBuffer,
+        uint16_t crcComputed = computeCRC(&entireBuffer[0],
                                           sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         listBuffer[i].setCrc(crcComputed);
     }
-    delete [] entireBuffer;
-    delete [] tab;
 }
 
 /**
