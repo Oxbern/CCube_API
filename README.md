@@ -11,11 +11,11 @@ In this README, you'll find specifications and our general class hierarchy.
 ## Reference
 
 ## Hello World
-Here is a simple tutorial to show you how to use our API to communicate with the cube. The final code is written in the file `Cubicle_tutorial.cpp`
+Here is a simple tutorial to show you how to use our API to communicate with the cube. The final code is written in the file `test/sample/Cubicle_tutorial.cpp`
 Let's pretend you want to switch on the led 4,4,4. 
 Connect the cube via USB, open a Terminal and let's write and compile the code to switch it on !
 
-1. Set the basic C++ code you will compile in a file named `MyTest.cpp` somewhere in the folder `test/` for example in `test/CubicleTest/MyTest.cpp`. This code will compile and wait until you hit `Enter` to exit, but you'll learn how to compile a little bit later.
+1. Set the basic C++ code you will compile in a file named `MyTest.cpp` somewhere in the folder `test/` for example in `test/sample/MyTest.cpp`. This code will compile and wait until you hit `Enter` to exit, but you'll learn how to compile a little bit later.
   ```
 int main(int argc, char* argv[]) 
 {
