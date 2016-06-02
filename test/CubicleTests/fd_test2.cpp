@@ -54,16 +54,14 @@ int main()
     /* Creates a device shape */
     DeviceShape ds(9, 9, 9);
 
-    /* Turns on one LED */
-    // for (int i = 0; i < 9 ; i++) {
-    //     ds.on(i,i,8-i);
-    //     ds.on(i,i,i);
-    //     ds.on(i,8-i,i);
-    //     ds.on(8-i, i, i);
-    // }
-
-    ds.on(4,4,4);
-    
+    ds.on(4, 4, 4);
+    /* /\* Turns on one LED *\/ */
+    /* for (int i = 0; i < 9 ; i++) { */
+    /*     ds.on(i,i,8-i); */
+    /*     ds.on(i,i,i); */
+    /*     ds.on(i,8-i,i); */
+    /*     ds.on(8-i, i, i); */
+    /* } */
     /* Creates a DataMessage */ 
     DataMessage myDataMessage(1, 92, BUFF_SENDING);
 
@@ -74,6 +72,7 @@ int main()
 
 
     /* Prints the message */
+
 #if DEBUG
     std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
 #endif

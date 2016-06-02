@@ -120,8 +120,9 @@ void Message::encode(uint8_t *dataToEncode)
 
         uint16_t crcComputed = computeCRC(&entireBuffer[0],
                                           sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
+        
         listBuffer[i].setCrc(crcComputed);
-        std::cout << "crc of buffer "<< i << " : "  << listBuffer[i].getCrc() << "\n";        
+        printBuffer("BUFFER", entireBuffer, 64);
     }
 }
 

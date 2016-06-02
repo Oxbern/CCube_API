@@ -11,7 +11,7 @@
 /* User variable definition */
 #define ACK_SIZE 10
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /* File descriptor used  */
@@ -76,52 +76,52 @@ int main ()
 /* 	/\* #                SEND FIRST BUFFER             # *\/ */
 /* 	/\* ################################################	 *\/ */
 	
-	/* /\* Manually set header *\/ */
-	/* myDataMessage[0] = 1; */
-	/* myDataMessage[1] = 1; */
-	/* myDataMessage[2] = 0x42; */
-	/* myDataMessage[3] = 0; */
-	/* myDataMessage[4] = 92; */
+	/* Manually set header */
+	myDataMessage[0] = 1;
+	myDataMessage[1] = 1;
+	myDataMessage[2] = 0x42;
+	myDataMessage[3] = 0;
+	myDataMessage[4] = 92;
 
-	/* /\* Copy data into the buffer *\/ */
-    /* ds.toArray(ledBuffer); */
-	/* memcpy(&myDataMessage[5], ledBuffer, 57); */
+	/* Copy data into the buffer */
+    ds.toArray(ledBuffer);
+	memcpy(&myDataMessage[5], ledBuffer, 57);
 
-	/* /\* Set CRC *\/ */
-	/* crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t)); */
+	/* Set CRC */
+	crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
 	
-/* 	myDataMessage[62] = crc >> 8; */
-/* 	myDataMessage[63] = crc & 0xFF; */
+	myDataMessage[62] = crc >> 8;
+	myDataMessage[63] = crc & 0xFF;
 
-/* #if DEBUG */
-/* 	/\* Print the message *\/ */
-/* 	printf("My Data Message:"); */
-/* 	for (int i = 0; i < 64; ++i) */
-/* 		printf("%u |", myDataMessage[i]); */
-/* 	printf("\n"); */
-/* #endif */
+#if DEBUG
+	/* Print the message */
+	printf("My Data Message:");
+	for (int i = 0; i < 64; ++i)
+		printf("%u |", myDataMessage[i]);
+	printf("\n");
+#endif
 	
-/* 	/\* Send it over USB *\/ */
-/* 	write(fd, &myDataMessage[0], 64); */
+	/* Send it over USB */
+	write(fd, &myDataMessage[0], 64);
 
-/* 	/\* Retrieve the ACK *\/ */
-/* 	while (!lock_ack.try_lock()); */
-/* 	memcpy(&localAck[0], ack[ack_index--], 10); */
-/* 	lock_ack.unlock(); */
+	/* Retrieve the ACK */
+	while (!lock_ack.try_lock());
+	memcpy(&localAck[0], ack[ack_index--], 10);
+	lock_ack.unlock();
 
-/* 	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) { */
-/* 	fprintf(stderr, "[TEST FAILED]: First buffer\n"); */
-/* 	ack_thread.detach(); */
-/* 	return EXIT_FAILURE; */
-/* } */
+	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
+	fprintf(stderr, "[TEST FAILED]: First buffer\n");
+	ack_thread.detach();
+	return EXIT_FAILURE;
+}
 	
-/* #if DEBUG */
-/* 	/\* Print the ACK *\/ */
-/* 	fprintf(stdout, "ACK: "); */
-/* 	for (int i = 0; i < 10; ++i) */
-/* 		fprintf(stdout, "%u |", localAck[i]); */
-/* 	fprintf(stdout, "\n"); */
-/* #endif */
+#if DEBUG
+	/* Print the ACK */
+	fprintf(stdout, "ACK: ");
+	for (int i = 0; i < 10; ++i)
+		fprintf(stdout, "%u |", localAck[i]);
+	fprintf(stdout, "\n");
+#endif
 
 
 	
