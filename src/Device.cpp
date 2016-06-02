@@ -55,8 +55,8 @@ Device::Device(std::string port, int id)
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
     /* Set timeout */
-    this->timeout.tv_sec = 1;
-    this->timeout.tv_usec = 0;
+    this->timeout.tv_sec = 0;
+    this->timeout.tv_usec = 1000000L;
 
     /* Clear set */
     FD_ZERO(&set);
