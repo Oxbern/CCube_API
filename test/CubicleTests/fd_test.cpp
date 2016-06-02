@@ -284,7 +284,7 @@ void *waitForACK()
 		
 	while (!lock_ack.try_lock());
 	
-	if (select(fd + 1, &set, NULL, NULL, &timeout))
+	if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
 		read(fd, &ack[++ack_index], ACK_SIZE);
 
 	lock_ack.unlock();
