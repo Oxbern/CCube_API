@@ -18,6 +18,8 @@ class Device
  private :
     int id;
     int fd;
+    fd_set set;
+    struct timeval timeout;
     std::string port;
     std::string firmwareVersion;
     float luminosity;

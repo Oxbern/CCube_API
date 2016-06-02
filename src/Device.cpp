@@ -50,6 +50,13 @@ Device::Device(std::string port, int id)
 
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
+    /* Set timeout */
+    this->timeout.tv_sec = 0;
+    this->timeout.tv_usec = 10000;
+
+    /* Clear set */
+    FD_ZERO(&set);
+    
     //File descriptor (reading/writing)
     this->fd = -1;
 }
@@ -75,11 +82,13 @@ bool Device::connect()
     LOG(1, "Trying to connect the device");
     if (fd < 0) {
 	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
-        if (fd == -1)
+	    if (fd == -1)
             std::cerr << "Error while opening the file descriptor : "
                 << std::string(std::strerror(errno));
-        else
+	    else {
 	        fcntl(fd, F_SETFL, 0);
+	        FD_SET(fd, &set);
+	    }	    
     }
 
     LOG(1, "Device " + std::string((fd >= 0 ? "" :  "not ")) + "connected");
@@ -160,7 +169,8 @@ void Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
     LOG(2, "Reading from file descriptor");
-	read(this->getFile(), ack_buffer, SIZE_ACK);
+    if (select(this->getFile() + 1, &set, NULL, NULL, &timeout) > 0)
+	    read(this->getFile(), ack_buffer, SIZE_ACK);
     LOG(2, "End of reading");
 }
 
