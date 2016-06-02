@@ -234,7 +234,7 @@ class Device
      * \return true if the ack is an ACK_OK
      * false otherwise
      */
-    bool handleAck(Message *mess, AckMessage ack, int i);
+    bool handleAck(Message *mess, AckMessage &ack, int i);
     
     /*! 
      * \fn bool setLedStatus(ShapeToDisplay s)

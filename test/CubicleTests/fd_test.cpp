@@ -19,9 +19,9 @@ int fd = 0;
 fd_set set;
 
 /* Up to 10 ACKs can be stored */
-uint8_t ack[10][10];   
+uint8_t ack[100][10];   
 uint8_t ack_index = 0;
-struct timeval timeout = {0, 10000};
+struct timeval timeout = {0, 1000000L};
 
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
@@ -65,8 +65,12 @@ int main ()
 	/* Create a data message */
 	uint8_t myDataMessage[64] = {0};
 	uint8_t localAck[10] = {0};
-    uint8_t *ledBuffer = new uint8_t[ds.getSizeInBytes()];
+
+	uint8_t *ledBuffer = new uint8_t[ds.getSizeInBytes()];
+    ds.toArray(ledBuffer);
+
     uint16_t crc;
+
     
 /* 	/\* ################################################ *\/ */
 /* 	/\* #                SEND FIRST BUFFER             # *\/ */
@@ -156,18 +160,18 @@ int main ()
 	memcpy(&localAck[0], ack[ack_index--], 10);
 	lock_ack.unlock();
 
-	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
-	fprintf(stderr, "[TEST FAILED]: Reset connection\n");
-	ack_thread.detach();
-	return EXIT_FAILURE;
-}
-
 #if DEBUG
 	fprintf(stdout, "ACK: ");
 	for (int i = 0; i < 10; ++i)
 		fprintf(stdout, "%u |", localAck[i]);
 	fprintf(stdout, "\n");
 #endif
+
+	if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
+	fprintf(stderr, "[TEST FAILED]: Reset connection\n");
+	ack_thread.detach();
+	return EXIT_FAILURE;
+}
 	
 	/* ##################################################### */
 	/* #               SEND ENTIRE MESSAGE                 # */
