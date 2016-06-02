@@ -357,7 +357,7 @@ int Device::getFile()
  * \return true if the ack is an ACK_OK
  * false otherwise
  */
-bool Device::handleAck(Message *mess, AckMessage ack, int i)
+bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 {
     //Check the AckMessage
     if (ack.getOpCode() != ACK_OK) {

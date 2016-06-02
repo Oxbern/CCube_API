@@ -77,8 +77,8 @@ bool Controller::send(Message* mess)
 
     //Boolean to kwnow if each buffer is well received by the Device
     bool isAcknowledged = false;
-    //Boolean to kwnow if the lock on the queue of ack is taken
-    bool isLockTaken = false;
+    /* //Boolean to kwnow if the lock on the queue of ack is taken */
+    /* bool isLockTaken = false; */
 
     for (int i = 0; i < n; i++) {
         isAcknowledged = false;
@@ -111,8 +111,8 @@ bool Controller::send(Message* mess)
         int nbTry = 0;
 
         //Wait for the receipt acknowledgement
-        while (!isAcknowledged && nbTry < MAX_TRY) { //TODO Timeout time
-            isLockTaken = false;
+        while (!isAcknowledged && nbTry < MAX_TRY) {
+            /* isLockTaken = false; */
 
             //Check for new message
             if (!buffReceived.empty()) {
@@ -120,12 +120,18 @@ bool Controller::send(Message* mess)
 
                 //Try to take the lock
                 while (!lock_ack.try_lock());// LOG(2, "Try to lock (in Send)"); //TODO timeout
-                isLockTaken = true;
+                /* isLockTaken = true; */
                 LOG(2, "Lock Taken");
 
                 //The oldest ack received
                 uint8_t *ack = buffReceived.front();
+                //Remove the oldest ack in the queue
+                buffReceived.pop();
 
+                lock_ack.unlock();
+                /* isLockTaken = false; */
+
+                /* Print ack */
                 this->getConnectedDevice()->handleResponse(ack); //TODO to remove
 
                 //Check the header bit
@@ -151,10 +157,6 @@ bool Controller::send(Message* mess)
                                 AckMessage ackMess(connectedDevice->getID(), opcode);
                                 ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
 
-                                //Release the lock
-                                lock_ack.unlock();
-                                isLockTaken = false;
-
                                 //Handle the ack
                                 isAcknowledged = connectedDevice->handleAck(mess,
                                                                             ackMess, i);
@@ -166,22 +168,17 @@ bool Controller::send(Message* mess)
                         }
                     }
                 }
-                //Release the lock
-                if (isLockTaken)
-                    lock_ack.unlock();
-                //Remove the oldest ack in the queue
-                buffReceived.pop();
                 //Increment the number of tries if not aknowledged
                 if (!isAcknowledged)
                     nbTry++;
             }
         }
 
-        //Empty the queue
-        while (!buffReceived.empty())
-            buffReceived.pop();
+        /* //Empty the queue */
+        /* while (!buffReceived.empty()) */
+        /*     buffReceived.pop(); */
 
-        LOG(2, "Queue emptied");
+        /* LOG(2, "Queue emptied"); */
 
 
         //Free allocated memory for the bufferArray
