@@ -16,10 +16,12 @@
 
 /* File descriptor used  */
 int fd = 0;
+fd_set set;
 
 /* Up to 10 ACKs can be stored */
 uint8_t ack[10][10];   
 uint8_t ack_index = 0;
+struct timeval timeout = {0, 10000};
 
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
@@ -45,6 +47,12 @@ int main ()
 	/* Set blocking mode */
 	fcntl(fd, F_SETFL, 0);
 
+	/* clear the set */
+	FD_ZERO(&set); 
+    /* add our file descriptor to the set */
+	FD_SET(fd, &set); 
+	
+	
 	/* Define ACK thread */
 	std::thread ack_thread(waitForACK);
 	
@@ -55,27 +63,28 @@ int main ()
 	ds.on(4, 4, 4);
 
 	/* Create a data message */
-	uint8_t *myDataMessage = (uint8_t *)calloc(64, sizeof(uint8_t));
-	uint8_t *localAck = (uint8_t *)calloc(10, sizeof(uint8_t));
-
+	uint8_t myDataMessage[64] = {0};
+	uint8_t localAck[10] = {0};
+    uint8_t *ledBuffer = new uint8_t[ds.getSizeInBytes()];
+    uint16_t crc;
+    
 /* 	/\* ################################################ *\/ */
 /* 	/\* #                SEND FIRST BUFFER             # *\/ */
 /* 	/\* ################################################	 *\/ */
 	
-	/* Manually set header */
-	myDataMessage[0] = 1;
-	myDataMessage[1] = 1;
-	myDataMessage[2] = 0x42;
-	myDataMessage[3] = 0;
-	myDataMessage[4] = 92;
+	/* /\* Manually set header *\/ */
+	/* myDataMessage[0] = 1; */
+	/* myDataMessage[1] = 1; */
+	/* myDataMessage[2] = 0x42; */
+	/* myDataMessage[3] = 0; */
+	/* myDataMessage[4] = 92; */
 
-	/* Copy data into the buffer */
-    uint8_t *ledBuffer = (uint8_t *)calloc(ds.getSizeInBytes(), sizeof(uint8_t));
-    ds.toArray(ledBuffer);
-	memcpy(&myDataMessage[5], ledBuffer, 57);
+	/* /\* Copy data into the buffer *\/ */
+    /* ds.toArray(ledBuffer); */
+	/* memcpy(&myDataMessage[5], ledBuffer, 57); */
 
-	/* Set CRC */
-	uint16_t crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
+	/* /\* Set CRC *\/ */
+	/* crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t)); */
 	
 /* 	myDataMessage[62] = crc >> 8; */
 /* 	myDataMessage[63] = crc & 0xFF; */
@@ -117,7 +126,7 @@ int main ()
 	/* ###################################################### */
 	
 	/* Reset the connection */
-	uint8_t *resetConnection = (uint8_t *)calloc(7, sizeof(uint8_t));
+    uint8_t resetConnection[7] = {0};
 
 	/* Manually set header */
 	resetConnection[0] = 1;
@@ -127,11 +136,19 @@ int main ()
 	resetConnection[4] = 0;
 
 	/* Set CRC */
-	uint16_t crc = computeCRC(&resetConnection[0], 5*sizeof(uint8_t));
+	crc = computeCRC(&resetConnection[0], 5*sizeof(uint8_t));
 	
 	resetConnection[5] = crc >> 8;
 	resetConnection[6] = crc & 0xFF;
 	
+#if DEBUG
+	/* Print the message */
+	printf("My Data Message:");
+	for (int i = 0; i < 7; ++i)
+		printf("%u |", resetConnection[i]);
+	printf("\n");
+#endif
+
 	/* Send it over USB */
 	write(fd, &resetConnection[0], 7);
 
@@ -250,9 +267,7 @@ int main ()
 	close(fd);
 
 	/* Free allocated memory */
-	free(myDataMessage);
-	free(localAck);
-	free(ledBuffer);
+	delete [] ledBuffer;
 
 	return 0;
 }
@@ -268,7 +283,10 @@ void *waitForACK()
 	while (1) {
 		
 	while (!lock_ack.try_lock());
-	read(fd, &ack[++ack_index], ACK_SIZE);
+	
+	if (select(fd + 1, &set, NULL, NULL, &timeout))
+		read(fd, &ack[++ack_index], ACK_SIZE);
+
 	lock_ack.unlock();
 }
 
