@@ -6,7 +6,7 @@
 #include "Controller.h"
 
 #define MAX_TRY 10
-#define MAX_WAIT 1000000000
+#define MAX_WAIT 1000000
 
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
@@ -32,7 +32,7 @@ Controller::Controller()
 
 /**
  * @brief Destructor of Controller object
- */ 
+ */
 Controller::~Controller()
 {
     LOG(1,"~Controller()");
@@ -46,15 +46,15 @@ Controller::~Controller()
  */
 void *Controller::waitForACK()
 {
-	while (1) {		
+	while (1) {
 		if (this->connectedDevice == NULL)
 			break;
 
         uint8_t *buff = new uint8_t[10];
         if (this->connectedDevice != NULL) {
             if (this->connectedDevice->readFromFileDescriptor(buff)) {
-                while (!lock_ack.try_lock());
-                LOG(1, "[THREAD] Lock taken");
+                lock_ack.lock();
+                /* LOG(1, "[THREAD] Lock taken"); */
                 buffReceived.push(buff);
                 lock_ack.unlock();
                 LOG(1, "[THREAD] Lock released");
@@ -118,20 +118,32 @@ bool Controller::send(Message* mess)
 
             if (nbWait == MAX_WAIT) {
                 LOG(2, "[HANDLER] NB WAIT EXCEDEED");
+
                 //ReSend the message to the Device
                 //The header bit is set to 2
                 bufferArray[HEADER_INDEX] = 2;
-                if (reSend < MAX_TRY) {
+
+                if (reSend++ < MAX_TRY)
                     connectedDevice->writeToFileDescriptor(bufferArray,
                                                            sizeBuffer);
-                    reSend++;
+                else {
+                    std::cerr << "Unable to send buffer after " << MAX_TRY
+                              << " attempts" << std::endl;
+                    if (disconnectDevice())
+                        std::cerr << "Disconnected" << std::endl;
+                    exit(1);
                 }
                 nbWait = 0;
             }
 
             //Check for new message
-            if (!buffReceived.empty()) {
-                handleNewMessage(mess, currentBuffNb, &nbTry, &nbWait, &isAcknowledged);
+            lock_ack.lock();
+            bool emptyQueue = buffReceived.empty();
+            lock_ack.unlock();
+
+            if (!emptyQueue) {
+                handleNewMessage(mess, currentBuffNb, &nbTry,
+                                 &nbWait, &isAcknowledged);
             } else {
                 //Increment the number wait if no data received
                 nbWait++;
@@ -170,19 +182,18 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
 
     *nbWait = 0;
     LOG(1, "[HANLDER] Handle an ack");
-
-    //Try to take the lock
-    while (!lock_ack.try_lock());  //TODO timeout
-    LOG(1, "[HANLDER] Lock Taken");
+    uint8_t *ack;
 
     //The oldest ack received
-    uint8_t *ack = buffReceived.front();
-    //Remove the oldest ack in the queue
-    LOG(1, "Size of queue :" + std::to_string(buffReceived.size()));
-    buffReceived.pop();
+    ack = buffReceived.front();
 
+    //Try to take the lock
+    lock_ack.lock();  //TODO timeout
+    //Remove the oldest ack in the queue
+    buffReceived.pop();
     //Release the lock
     lock_ack.unlock();
+
     LOG(1, "[THREAD] Lock released");
 
     //Check the header bit
@@ -197,8 +208,8 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
                 && ack[DATA_INDEX] == mess->getListBuffer()[currentBuff].getOpCode()
                 && sizeLeftPack == mess->getListBuffer()[currentBuff].getSizeLeft()) {
 
-            /* Print ack */
-            this->getConnectedDevice()->handleResponse(ack); //TODO to remove
+            /* /\* Print ack *\/ */
+            /* this->getConnectedDevice()->handleResponse(ack); //TODO to remove */
 
             //Check opcode validity
             uint8_t  opcode = ack[OPCODE_INDEX];
@@ -259,7 +270,7 @@ bool Controller::displayDevice()
 /**
  * @brief Add a Listener to the Controller's list of Listener
  * @param Listener to add
- */ 
+ */
 bool Controller::addListener(Listener &l)
 {
     LOG(1, "addListener(Listener &l) \n");
@@ -269,7 +280,7 @@ bool Controller::addListener(Listener &l)
 /**
  * @brief Remove a Listener to the Controller's list of Listener
  * @param Listener to remove
- */ 
+ */
 bool Controller::removeListener(Listener &l)
 {
     LOG(1, "removeListener(Listener &l) \n");
@@ -278,7 +289,7 @@ bool Controller::removeListener(Listener &l)
 
 /**
  * @brief List all devices which are connected via USB
- */ 
+ */
 bool Controller::listAllDevices()
 {
     LOG(1, "listAllDevices()\n");
@@ -301,24 +312,24 @@ bool Controller::listAllDevices()
 /**
  * @brief Connects the controller to a device chosen from the list
  * @param Device to connect
- */ 
+ */
 bool Controller::connectDevice()
 {
     LOG(1, "connectDevice() \n");
     Device *chosen;
 
     if (listAllDevices()){
-        
+
         int choice = 0;
         std::cout << "Enter the device's ID you want to connect : " << std::endl;
         std::cin >> choice;
-                
+
         std::list<Device*>::iterator iter ;
         for(iter = devices.begin() ; (iter != devices.end()) ;iter++){
             if (choice == (*iter)->getID())
                 chosen = *iter;
         }
-        
+
         std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
         if (connectDevice(chosen)){
             std::cout << "You are connected to " << getConnectedDevice()->getPort()  << std::endl;
@@ -331,7 +342,7 @@ bool Controller::connectDevice()
 /**
  * @brief Gets the port of the connected device from its ID
  * @param ID of the device to get the port
- */ 
+ */
 std::string Controller::getPortFromID(int id)
 {
     std::list<Device*>::iterator iter ;
@@ -341,11 +352,11 @@ std::string Controller::getPortFromID(int id)
     }
     return "No Device with this ID";
 }
-    
+
 /**
  * @brief Connects the controller to a device with its ID
  * @param ID of the device to connect
- */ 
+ */
 bool Controller::connectDevice(int id)
 {
     LOG(1, "connectDevice(int id) \n");
@@ -361,9 +372,9 @@ bool Controller::connectDevice(int id)
 }
 
 /**
- * @brief Connects the controller to the Device specified in argument  
+ * @brief Connects the controller to the Device specified in argument
  * @param Device to connect
- */ 
+ */
 bool Controller::connectDevice(Device *d)
 {
     LOG(1, "connectDevice(Device*) \n");
@@ -373,7 +384,7 @@ bool Controller::connectDevice(Device *d)
         ack_thread = std::thread(&Controller::waitForACK, this);
         return true;
     }
-    return false; 
+    return false;
 }
 
 bool Controller::disconnectDevice()
@@ -388,7 +399,7 @@ bool Controller::disconnectDevice()
 /**
  * @brief Accessor to the current connected device
  * @return The current connected device
- */ 
+ */
 Device* Controller::getConnectedDevice()
 {
     LOG(1, "getConnectedDevice() \n");
@@ -398,7 +409,7 @@ Device* Controller::getConnectedDevice()
 /**
  * @brief Switches on a led on the current connected device
  * @param x,y,z, position of the led
- */ 
+ */
 bool Controller::on(int x, int y, int z)
 {
     return connectedDevice->on(x,y,z);
@@ -407,7 +418,7 @@ bool Controller::on(int x, int y, int z)
 /**
  * @brief Accessor to the list of USB connected sevices
  * @return The list of USB Connected Devices
- */ 
+ */
 std::list<Device*> Controller::getListDevices()
 {
     LOG(1, "getListDevices() \n");
@@ -425,14 +436,14 @@ std::list<Device*> Controller::getListDevices()
  * @brief Gets the next word in a char * line from the j's char
  * @param path : the line to parse
  * @param j : begining of the future parsing
- */ 
+ */
 void getNextWord(char *path, int *j, char *wordreturn)
 {
 	char word[10] = {'0'};
 	int w = 0, k = *j;
 
 	/* Read char until space */
-    while (path[k] != ' ') 
+    while (path[k] != ' ')
 	    word[w++]=path[k++];
     word[k]='\0';
 
@@ -444,10 +455,10 @@ void getNextWord(char *path, int *j, char *wordreturn)
 /**
  * @brief Gets the result of a "lsusb | grep STM" system call in a Dictionnary(Bus:Device) structure
  * @param nbSTM : number of STM devices connected to return
- */ 
+ */
 Dictionnary *getDictSTM(int *nbSTM)
 {
-    FILE *fp = popen("lsusb | grep STM ", "r"); 
+    FILE *fp = popen("lsusb | grep STM ", "r");
     if (fp == NULL) {
         std::cerr << "Failed to run command\n";
         exit(1);
@@ -456,7 +467,7 @@ Dictionnary *getDictSTM(int *nbSTM)
     char path[100];
     int lines = 0;
     /* Get the number of line */
-    while (fgets(path, sizeof(path)-1, fp) != NULL) 
+    while (fgets(path, sizeof(path)-1, fp) != NULL)
         lines++;
     *nbSTM = lines;
 
@@ -466,9 +477,9 @@ Dictionnary *getDictSTM(int *nbSTM)
 
     /* Create a new dictionnary */
     Dictionnary *dic = new Dictionnary[lines];
-    
+
     //Re-Open the command for reading.
-    fp = popen("lsusb | grep STM ", "r"); 
+    fp = popen("lsusb | grep STM ", "r");
     if (fp == NULL) {
         std::cerr << "Failed to run command\n";
         exit(1);
@@ -481,14 +492,14 @@ Dictionnary *getDictSTM(int *nbSTM)
 	    new_entry = false;
 	    /* Until end of line char appear or one device is found */
 	    while(path[j] != '\0' && !new_entry){
-		    
+
 		    /* Check if path if long enough to execute memcmp */
 		    for (int i = j; i < j + 4; ++i)
-			    if (path[++i] == '\0') { 
+			    if (path[++i] == '\0') {
 				    j = i;
 				    continue;
 			    }
-		    
+
 		    if (!memcmp(&path[j], "Bus", 3)) {
 			    j += 4;
 			    /* Get bus name */
@@ -497,14 +508,14 @@ Dictionnary *getDictSTM(int *nbSTM)
 			    dic[k].bus = atoi(bus);
 		    }
 
-		    
+
 		    /* Check if path if long enough to execute memcmp */
 		    for (int i = j; i < j + 7; ++i)
-			    if (path[++i] == '\0') { 
+			    if (path[++i] == '\0') {
 				    j = i;
 				    continue;
 			    }
-		    
+
 		    if (!memcmp(&path[j], "Device", 6)) {
 			    j += 7;
 			    char device[10];
@@ -520,16 +531,10 @@ Dictionnary *getDictSTM(int *nbSTM)
 	    /* And add a new device */
 	    ++k;
     }
-    
+
     /* Close the file */
     pclose(fp);
 
-    /* Print dictionnary */
-    for (int i = 0; i < lines; ++i) 
-	    std::cout << "Dic[" << i << "]: BUS: " << dic[i].bus
-	              << " DEVICE: " << dic[i].Device << std::endl;
-    
-    
     /* Return created dic */
     return dic;
 }
@@ -539,7 +544,7 @@ Dictionnary *getDictSTM(int *nbSTM)
  * @param echo : the ttyPort
  * @param dic : the Dictionnary to look in
  * @param sizOfDic : size of the Dictionnary
- */ 
+ */
 bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
 {
     /* Copy tty port into local variable */
@@ -571,7 +576,7 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
     while(busSDev[w] != '\0')
         wordD[k++] = busSDev[w++];
     wordD[k]='\0';
-    
+
     /* Copy the device into a new variable to use atoi function */
     char wordDreturn[k + 1];
     strcpy(wordDreturn, wordD);
@@ -581,7 +586,7 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
     for (int i = 0; i < sizeOfDic; ++i)
         if (bus == dic[i].bus && Device == dic[i].Device )
 	        return true;
-    
+
 
     /* Default return value */
     return false;
@@ -589,14 +594,14 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
 
 
 /**
- * @brief Display the list of all USB connected devices and push them in the device list 
- */ 
+ * @brief Display the list of all USB connected devices and push them in the device list
+ */
 void Controller::listAndGetUSBConnectedDevices()
 {
     LOG(1, "listAndGetUSBConnectedDevices() \n");
 
     /* Open the command for reading. */
-    FILE *fp = popen("ls /dev/tty*  ", "r"); 
+    FILE *fp = popen("ls /dev/tty*  ", "r");
     if (!fp) {
 	    std::cerr << "Failed to run command\n";
 	    exit(1);
@@ -612,19 +617,19 @@ void Controller::listAndGetUSBConnectedDevices()
     /* Close the file and re-open it */
     pclose(fp);
     fp = popen("ls /dev/tty*  ", "r");
-    
+
     char ttyList[lines][20];
-    
+
     for (int j = 0; j < lines; j++)
 	    /* Copy TTY path in TTY list */
 	    strcpy(&ttyList[j][0], fgets(path, sizeof(path)-1, fp));
-    
+
     /* Close the file */
     pclose(fp);
 
     int nbSTM = 0;
     Dictionnary *dic =  getDictSTM(&nbSTM);
-    
+
     int DeviceID = 1;
 
     for (int i = 0; i < lines; i++){
@@ -638,12 +643,12 @@ void Controller::listAndGetUSBConnectedDevices()
 	        + "| awk '{$1 = sprintf(\"%03d\", $1); print}'` | tr \" \" \"\\/\"";
 
         //Open the command for reading.
-        fp = popen(cmd.c_str(), "r"); 
+        fp = popen(cmd.c_str(), "r");
         if (fp == NULL) {
             std::cerr << "Failed to run command\n";
             exit(1);
         }
-        
+
         char path[50];
 
         //Read the output a line at a time - output it.
@@ -652,7 +657,7 @@ void Controller::listAndGetUSBConnectedDevices()
 	        if (strcmp(path, "/dev/bus/usb/\n")){
                 std::string t = path;
                 std::string s = "/dev/bus/usb/";
-                
+
                 std::string::size_type i = t.find(s);
 
                 if (i != std::string::npos)
@@ -664,7 +669,7 @@ void Controller::listAndGetUSBConnectedDevices()
                     devices.push_back(new Device(name, DeviceID++));
             }
         }
-        
+
         pclose(fp);
     }
 
