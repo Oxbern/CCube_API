@@ -11,17 +11,15 @@
  */
 int main(int argc, char *argv[])
 {
-    std::string port = "/dev/ttyACM0";
-    Device *dev = new Device(port, 1);
     Controller c;
 
-
-
-    if (c.connectDevice(dev)){
-        std::cout << "Connection to " << port << " device successful" << std::endl;
+    if (c.connectDevice(1)){
+        std::cout << "Connection to device successful" << std::endl;
 
         //Switch on some LEDs
-        if (!dev->on(0, 0, 0) || !dev->on(4, 4, 4) || !dev->on(8, 8, 8)) {
+        if (!c.getConnectedDevice()->on(0, 0, 0)
+            || !c.getConnectedDevice()->on(4, 4, 4)
+            || !c.getConnectedDevice()->on(8, 8, 8)) {
             std::cout << "Unable to turn on the LEDs" << std::endl;
             return EXIT_FAILURE;
         }
@@ -33,16 +31,15 @@ int main(int argc, char *argv[])
         }
 
         if (c.disconnectDevice()) {
-            std::cout << "Disconnection to " << port << " device successful" << std::endl;
+            std::cout << "Disconnection to device successful" << std::endl;
             std::cout << "TEST PASSED " << std::endl;
             return EXIT_SUCCESS;
         } else {
-            std::cout << "Unable to disconnect " << port << std::endl;
+            std::cout << "Unable to disconnect " << std::endl;
         }
     }
 
     std::cout << "Unable to connect" << std::endl;
 
-    delete dev;
     return EXIT_FAILURE;
 }

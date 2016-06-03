@@ -6,7 +6,7 @@
 #include "Controller.h"
 
 #define MAX_TRY 10
-#define MAX_WAIT 100
+#define MAX_WAIT 1000000
 
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
@@ -73,10 +73,9 @@ bool Controller::send(Message* mess)
     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
 
     //Check if the device is connected
-    if (this->getConnectedDevice() != NULL) {
+    /*if (this->getConnectedDevice() != NULL) {
 	    while (!this->getConnectedDevice()->connect()); //TODO Timeout
-    }
-
+    }*/
 
     //Boolean to kwnow if each buffer is well received by the Device
     bool isAcknowledged = false;
@@ -99,8 +98,8 @@ bool Controller::send(Message* mess)
         } else {
             //Physical Device
             //Send the message to the Device
-	        while (!connectedDevice->writeToFileDescriptor(bufferArray,
-                                                           sizeBuffer));
+	        connectedDevice->writeToFileDescriptor(bufferArray,
+                                                           sizeBuffer);
         }
 
         /* Counter for the number of tries
@@ -120,14 +119,14 @@ bool Controller::send(Message* mess)
                 //ReSend the message to the Device
                 //The header bit is set to 2
                 bufferArray[HEADER_INDEX] = 2;
-                while (!connectedDevice->writeToFileDescriptor(bufferArray,
-                                                               sizeBuffer));
+                connectedDevice->writeToFileDescriptor(bufferArray,
+                                                               sizeBuffer);
                 nbWait = 0;
             }
 
             //Check for new message
             if (!buffReceived.empty()) {
-                isAcknowledged = handleNewMessage(mess, currentBuffNb, &nbTry, &nbWait);
+                handleNewMessage(mess, currentBuffNb, &nbTry, &nbWait, &isAcknowledged);
             } else {
                 //Increment the number wait if no data received
                 nbWait++;
@@ -135,8 +134,8 @@ bool Controller::send(Message* mess)
         }
 
         //Empty the queue
-        while (!buffReceived.empty())
-             buffReceived.pop();
+        /*while (!buffReceived.empty())
+             buffReceived.pop();*/
 
         //Free allocated memory for the bufferArray
         delete []bufferArray;
@@ -160,7 +159,7 @@ bool Controller::send(Message* mess)
 /**
  * @brief TODO
  */
-bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait)
+bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait, bool *isAcknowledged)
 {
     bool retValue = true;
 
@@ -181,14 +180,21 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
     lock_ack.unlock();
     LOG(1, "[THREAD] Lock released");
 
-    /* Print ack */
-    this->getConnectedDevice()->handleResponse(ack); //TODO to remove
-
     //Check the header bit
     if(ack[HEADER_INDEX] == 1) {
+        uint16_t sizeLeftPack =
+                convertTwo8to16(ack[DATA_INDEX+1],
+                                ack[DATA_INDEX+2]);
+
         //check id message
         //ConnectedDevice may not be NULL
-        if (ack[ID_INDEX] == connectedDevice->getID()) {
+        if (ack[ID_INDEX] == connectedDevice->getID()
+                && ack[DATA_INDEX] == mess->getListBuffer()[currentBuff].getOpCode()
+                && sizeLeftPack == mess->getListBuffer()[currentBuff].getSizeLeft()) {
+
+            /* Print ack */
+            this->getConnectedDevice()->handleResponse(ack); //TODO to remove
+
             //Check opcode validity
             uint8_t  opcode = ack[OPCODE_INDEX];
 
@@ -197,16 +203,16 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
 
                 if (isAnAckOpcode(opcode)) {
                     //Create an AckMessage instance
-                    uint16_t sizeLeftPack =
-                            convertTwo8to16(ack[DATA_INDEX+1],
-                                            ack[DATA_INDEX+2]);
                     AckMessage ackMess(connectedDevice->getID(), opcode);
                     ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
 
                     //Handle the ack
-                    retValue = connectedDevice->handleAck(mess,
+                    *isAcknowledged = connectedDevice->handleAck(mess,
                                                           ackMess,
                                                           currentBuff);
+                    //Increment the number of tries if not aknowledged
+                    if ((*isAcknowledged) == false)
+                        *nbTry = *nbTry + 1;
                 } else {
                     //Response message
                     //TODO handle the response
@@ -214,9 +220,6 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
             }
         }
     }
-    //Increment the number of tries if not aknowledged
-    if (!retValue)
-        nbTry++;
 
     return retValue;
 }
