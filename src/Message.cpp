@@ -5,6 +5,8 @@
 #include "Message.h"
 #include "Utils.h"
 
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+
 /**
  * @brief Creates a message with list of buffers with opcode and sizeLeft
  * @param size of the message
@@ -112,6 +114,8 @@ void Message::encode(uint8_t *dataToEncode)
 
         //Sets CRC computed on the entire buffer
         uint8_t entireBuffer[sizeBuffer-SIZE_CRC];
+        memset(&entireBuffer[0], 0, sizeBuffer-SIZE_CRC);
+
 
         entireBuffer[0] = listBuffer[i].getHeader();
         entireBuffer[1] = listBuffer[i].getID();
@@ -120,13 +124,12 @@ void Message::encode(uint8_t *dataToEncode)
         uint8_t tab[2];
         convert16to8(listBuffer[i].getSizeLeft(), &tab[0]);
         memcpy(&entireBuffer[SIZE_INDEX], tab, 2);
-        
-        memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
-               listBuffer[i].getDataSize() * sizeof(uint8_t));
+        memcpy(&entireBuffer[DATA_INDEX], &dataToEncode[i*listBuffer[i].getDataSize()],
+               MIN(listBuffer[i].getSizeLeft(),listBuffer[i].getDataSize()));
 
         uint16_t crcComputed = computeCRC(&entireBuffer[0],
-                                          sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
-        
+                                          (sizeBuffer - SIZE_CRC));
+
         listBuffer[i].setCrc(crcComputed);
 
         LOG(2, "[ENCODING] Buffer N° " + std::to_string(i)

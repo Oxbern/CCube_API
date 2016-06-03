@@ -6,7 +6,7 @@
 #include "Controller.h"
 
 #define MAX_TRY 10
-#define MAX_WAIT 1000000
+#define MAX_WAIT 1000000000
 
 /**
  * @brief Constructor of Controller object, list all USB connected devices and
@@ -109,6 +109,8 @@ bool Controller::send(Message* mess)
         //Counter for number of wait
         int nbWait = 0;
 
+        int reSend = 0;
+
         isAcknowledged = false;
 
         //Wait for the receipt acknowledgement
@@ -119,8 +121,11 @@ bool Controller::send(Message* mess)
                 //ReSend the message to the Device
                 //The header bit is set to 2
                 bufferArray[HEADER_INDEX] = 2;
-                connectedDevice->writeToFileDescriptor(bufferArray,
-                                                               sizeBuffer);
+                if (reSend < MAX_TRY) {
+                    connectedDevice->writeToFileDescriptor(bufferArray,
+                                                           sizeBuffer);
+                    reSend++;
+                }
                 nbWait = 0;
             }
 
