@@ -78,13 +78,12 @@ bool Controller::send(Message* mess)
     //Boolean to kwnow if each buffer is well received by the Device
     bool isAcknowledged = false;
 
-    for (int currentBuff = 0; currentBuff < mess->NbBuffers(); currentBuff++) {
-        isAcknowledged = false;
+    for (int currentBuffNb = 0; currentBuffNb < mess->NbBuffers(); currentBuffNb++) {
 
         //Convert the buffer i to an array
-        int sizeBuffer = mess->getListBuffer()[currentBuff].getSizeBuffer();
+        int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
         uint8_t * bufferArray = new uint8_t[sizeBuffer];
-        mess->getListBuffer()[currentBuff].toArray(bufferArray);
+        mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
 
         LOG(3, mess->toStringDebug());
 
@@ -111,6 +110,8 @@ bool Controller::send(Message* mess)
         //Counter for number of wait
         int nbWait = 0;
 
+        isAcknowledged = false;
+
         //Wait for the receipt acknowledgement
         while (!isAcknowledged && nbTry < MAX_TRY) {
 
@@ -125,59 +126,7 @@ bool Controller::send(Message* mess)
 
             //Check for new message
             if (!buffReceived.empty()) {
-                nbWait = 0;
-                LOG(2, "Handle an ack");
-
-                //Try to take the lock
-                while (!lock_ack.try_lock());  //TODO timeout
-                LOG(1, "Lock Taken");
-
-                //The oldest ack received
-                uint8_t *ack = buffReceived.front();
-                //Remove the oldest ack in the queue
-                LOG(1, "Size of queue :" + std::to_string(buffReceived.size()));
-                buffReceived.pop();
-
-                //Release the lock
-                lock_ack.unlock();
-
-                /* Print ack */
-                this->getConnectedDevice()->handleResponse(ack); //TODO to remove
-
-                //Check the header bit
-                if(ack[HEADER_INDEX] == 1) {
-                    //check id message
-                    //ConnectedDevice may not be NULL
-                    if (ack[ID_INDEX] == connectedDevice->getID()) {
-                        //Check opcode validity
-                        uint8_t  opcode = ack[OPCODE_INDEX];
-
-                        if (isAValidAnswerOpcode(opcode)) {
-                            //if valid opcode
-
-                            if (isAnAckOpcode(opcode)) {
-                                //Create an AckMessage instance
-                                uint16_t sizeLeftPack =
-                                        convertTwo8to16(ack[DATA_INDEX+1],
-                                                        ack[DATA_INDEX+2]);
-                                AckMessage ackMess(connectedDevice->getID(), opcode);
-                                ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
-
-                                //Handle the ack
-                                isAcknowledged = connectedDevice->handleAck(mess,
-                                                                            ackMess,
-                                                                            currentBuff);
-                            } else {
-                                //Response message
-                                //TODO handle the response
-                            }
-                        }
-                    }
-                }
-                //Increment the number of tries if not aknowledged
-                if (!isAcknowledged)
-                    nbTry++;
-
+                isAcknowledged = handleNewMessage(mess, currentBuffNb, &nbTry, &nbWait);
             } else {
                 //Increment the number wait if no data received
                 nbWait++;
@@ -201,6 +150,69 @@ bool Controller::send(Message* mess)
     }
     LOG(1, "Message sended");
     return true;
+}
+
+/**
+ * @brief TODO
+ */
+bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait)
+{
+    bool retValue = true;
+
+    *nbWait = 0;
+    LOG(2, "Handle an ack");
+
+    //Try to take the lock
+    while (!lock_ack.try_lock());  //TODO timeout
+    LOG(1, "Lock Taken");
+
+    //The oldest ack received
+    uint8_t *ack = buffReceived.front();
+    //Remove the oldest ack in the queue
+    LOG(1, "Size of queue :" + std::to_string(buffReceived.size()));
+    buffReceived.pop();
+
+    //Release the lock
+    lock_ack.unlock();
+
+    /* Print ack */
+    this->getConnectedDevice()->handleResponse(ack); //TODO to remove
+
+    //Check the header bit
+    if(ack[HEADER_INDEX] == 1) {
+        //check id message
+        //ConnectedDevice may not be NULL
+        if (ack[ID_INDEX] == connectedDevice->getID()) {
+            //Check opcode validity
+            uint8_t  opcode = ack[OPCODE_INDEX];
+
+            if (isAValidAnswerOpcode(opcode)) {
+                //if valid opcode
+
+                if (isAnAckOpcode(opcode)) {
+                    //Create an AckMessage instance
+                    uint16_t sizeLeftPack =
+                            convertTwo8to16(ack[DATA_INDEX+1],
+                                            ack[DATA_INDEX+2]);
+                    AckMessage ackMess(connectedDevice->getID(), opcode);
+                    ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
+
+                    //Handle the ack
+                    retValue = connectedDevice->handleAck(mess,
+                                                          ackMess,
+                                                          currentBuff);
+                } else {
+                    //Response message
+                    //TODO handle the response
+                }
+            }
+        }
+    }
+    //Increment the number of tries if not aknowledged
+    if (!retValue)
+        nbTry++;
+
+    return retValue;
 }
 
 
