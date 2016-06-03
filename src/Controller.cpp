@@ -53,9 +53,11 @@ void *Controller::waitForACK()
         uint8_t *buff = new uint8_t[10];
         if (this->connectedDevice != NULL) {
             if (this->connectedDevice->readFromFileDescriptor(buff)) {
-                lock_ack.lock();
+                while (!lock_ack.try_lock());
+                LOG(1, "[THREAD] Lock taken");
                 buffReceived.push(buff);
                 lock_ack.unlock();
+                LOG(1, "[THREAD] Lock released");
             }
         }
 	}
@@ -68,7 +70,8 @@ void *Controller::waitForACK()
  */
 bool Controller::send(Message* mess)
 {
-    LOG(1, "Sending message");
+    LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
+
     //Check if the device is connected
     if (this->getConnectedDevice() != NULL) {
 	    while (!this->getConnectedDevice()->connect()); //TODO Timeout
@@ -79,21 +82,18 @@ bool Controller::send(Message* mess)
     bool isAcknowledged = false;
 
     for (int currentBuffNb = 0; currentBuffNb < mess->NbBuffers(); currentBuffNb++) {
+        LOG(2, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
 
         //Convert the buffer i to an array
         int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
         uint8_t * bufferArray = new uint8_t[sizeBuffer];
         mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
 
-        LOG(3, mess->toStringDebug());
-
         //Check weither the Device is virtual or not
         if ((this->getConnectedDevice()->getPort().compare("/dev/stdin") == 0)
             || (this->getConnectedDevice()->getPort().compare("/dev/stdout") == 0)) {
             //VirtualCube
 
-            LOG(2, "Buffer send (size = " + std::to_string(sizeBuffer)
-                + " Bytes) : " + uint8ArrayToString(bufferArray, sizeBuffer));
             LOG(1, "Virtual sending");
 
         } else {
@@ -116,6 +116,7 @@ bool Controller::send(Message* mess)
         while (!isAcknowledged && nbTry < MAX_TRY) {
 
             if (nbWait == MAX_WAIT) {
+                LOG(2, "[HANDLER] NB WAIT EXCEDEED");
                 //ReSend the message to the Device
                 //The header bit is set to 2
                 bufferArray[HEADER_INDEX] = 2;
@@ -141,14 +142,18 @@ bool Controller::send(Message* mess)
         delete []bufferArray;
 
         //If number of tries exceeded
-        if (nbTry == MAX_TRY)
+        if (nbTry == MAX_TRY) {
+            LOG(2, "[HANDLER] NB TRY EXCEDEED");
+
             std::cerr << "Number of tries to send the message exceeded\n";
             /*throw ErrorException("Error while sending a message : "
                                          "Number of tries to send "
                                          "the message exceeded");*/
-        LOG(2, "Ack handled");
+        }
+
+        LOG(2, "[HANDLER] Ack handled");
     }
-    LOG(1, "Message sended");
+    LOG(1, "[SEND] Message sended");
     return true;
 }
 
@@ -160,11 +165,11 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
     bool retValue = true;
 
     *nbWait = 0;
-    LOG(2, "Handle an ack");
+    LOG(1, "[HANLDER] Handle an ack");
 
     //Try to take the lock
     while (!lock_ack.try_lock());  //TODO timeout
-    LOG(1, "Lock Taken");
+    LOG(1, "[HANLDER] Lock Taken");
 
     //The oldest ack received
     uint8_t *ack = buffReceived.front();
@@ -174,6 +179,7 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
 
     //Release the lock
     lock_ack.unlock();
+    LOG(1, "[THREAD] Lock released");
 
     /* Print ack */
     this->getConnectedDevice()->handleResponse(ack); //TODO to remove
@@ -357,7 +363,6 @@ bool Controller::connectDevice(Device *d)
     if ((*d).connect()){
         this->connectedDevice = d;
         ack_thread = std::thread(&Controller::waitForACK, this);
-        //this->t = std::thread(&Controller::readingTask, this);
         return true;
     }
     return false; 
