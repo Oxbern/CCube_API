@@ -154,21 +154,20 @@ Buffer* Message::getListBuffer() const
 
 Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
 {
-    LOG(1, "GetBuffer :  OPCODE = " + std::to_string(opCode)
+    LOG(2, "getBuffer Method : ");
+    LOG(2, "Buffer searched :  OPCODE = " + std::to_string(opCode)
            + " | SIZELEFT = " + std::to_string(sizeLeft));
 
     /* Research a buffer with the same opCode and the same sizeLeft
        in the message */
     for (int i = 0; i < NbBuffers(); i++) {
-        LOG(1, "listbuffer[" + std::to_string(i) + "]"
-                + ".opcode = " + std::to_string(listBuffer[i].getOpCode()));
-        LOG(1, "listbuffer[" + std::to_string(i) + "]"
-                + ".sizeleft = " + std::to_string(listBuffer[i].getSizeLeft()));
-
         if (listBuffer[i].getOpCode() == opCode
-            && listBuffer[i].getSizeLeft() == sizeLeft)
+            && listBuffer[i].getSizeLeft() == sizeLeft) {
+            LOG(1, "Buffer found \n");
             return &listBuffer[i];
+        }
     }
+    LOG(2, "Buffer not found \n");
     return NULL;
 }
 
@@ -219,11 +218,11 @@ uint8_t Message::getID() const
 std::string Message::toStringDebug() const
 {
     std::ostringstream convert;
-    convert << "Message (debug) :" << std::endl;
+    convert << "---------- Message (DEBUG) : ----------" << std::endl;
     int n = NbBuffers();
     for (int i = 0; i < n; i++)
         convert << getListBuffer()[i].toStringDebug(i);
-
+    convert << "---------- End Message (DEBUG) : ----------" << std::endl;
     return convert.str();
 }
 
