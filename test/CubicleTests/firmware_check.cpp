@@ -45,6 +45,24 @@ int main ()
     /* add our file descriptor to the set */
     FD_SET(fd, &set);
 
+
+                                /* Reset the connection */
+
+    uint8_t resetConnection[7] = {0};
+
+    /* Manually set header */
+    resetConnection[0] = 1;
+    resetConnection[1] = 1;
+    resetConnection[2] = 0xFF;
+    resetConnection[3] = 0;
+    resetConnection[4] = 0;
+
+    /* Send it over USB (Don't wait for ACK)*/
+    write(fd, &resetConnection[0], 7);
+
+
+                                /* Send message to turn on one led */
+
     /* Create a device shape */
     DeviceShape ds(9, 9, 9);
 
@@ -59,20 +77,6 @@ int main ()
     ds.toArray(ledBuffer);
 
     uint16_t crc;
-
-    /* Reset the connection */
-    uint8_t resetConnection[7] = {0};
-
-    /* Manually set header */
-    resetConnection[0] = 1;
-    resetConnection[1] = 1;
-    resetConnection[2] = 0xFF;
-    resetConnection[3] = 0;
-    resetConnection[4] = 0;
-
-    /* Send it over USB */
-    write(fd, &resetConnection[0], 7);
-
 
     /* Manually set header */
     myDataMessage[0] = 1;
