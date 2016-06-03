@@ -12,7 +12,7 @@
 Buffer::Buffer() :
     header(0), idDevice(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
 {
-    data = new uint8_t[0];
+    data = new uint8_t[0]();
     LOG(1, "Buffer()");
 }
 
@@ -382,6 +382,22 @@ std::string Buffer::toStringDebug(int indexInMess)
 int Buffer::getDataSize()
 {
     return (sizeBuffer - DATA_INDEX - SIZE_CRC);
+}
+
+
+/*!
+ * \fn void crcEncoding()
+ * \brief Encodes the crc in the buffer
+ */
+void Buffer::crcEncoding()
+{
+    uint8_t* entireBuffer = new uint8_t[sizeBuffer];
+    memset(entireBuffer, 0, sizeBuffer);
+    this->toArray(entireBuffer);
+    uint16_t crcComputed = computeCRC(entireBuffer,
+                                      (sizeBuffer - SIZE_CRC));
+
+    this->setCrc(crcComputed);
 }
 
 /*!

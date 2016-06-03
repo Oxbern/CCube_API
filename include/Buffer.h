@@ -234,6 +234,12 @@ class Buffer
      * \return the size a buffer can contain data
      */
     int getDataSize();
+
+    /*!
+     * \fn void crcEncoding()
+     * \brief Encodes the crc in the buffer
+     */
+    void crcEncoding();    
 };
 
 /*!

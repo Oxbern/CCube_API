@@ -113,29 +113,12 @@ void Message::encode(uint8_t *dataToEncode)
         j = 0;
 
         //Sets CRC computed on the entire buffer
-        uint8_t entireBuffer[sizeBuffer-SIZE_CRC];
-        memset(&entireBuffer[0], 0, sizeBuffer-SIZE_CRC);
-
-
-        entireBuffer[0] = listBuffer[i].getHeader();
-        entireBuffer[1] = listBuffer[i].getID();
-        entireBuffer[2] = listBuffer[i].getOpCode();
-
-        uint8_t tab[2];
-        convert16to8(listBuffer[i].getSizeLeft(), &tab[0]);
-        memcpy(&entireBuffer[SIZE_INDEX], tab, 2);
-        memcpy(&entireBuffer[DATA_INDEX], &dataToEncode[i*listBuffer[i].getDataSize()],
-               MIN(listBuffer[i].getSizeLeft(),listBuffer[i].getDataSize()));
-
-        uint16_t crcComputed = computeCRC(&entireBuffer[0],
-                                          (sizeBuffer - SIZE_CRC));
-
-        listBuffer[i].setCrc(crcComputed);
-
+        listBuffer[i].crcEncoding();
+        
         LOG(2, "[ENCODING] Buffer N° " + std::to_string(i)
-                + ": DATA = "
-                + uint8ArrayToString(listBuffer[i].getData(), listBuffer[i].getDataSize())
-                + " | CRC = " + std::to_string(listBuffer[i].getCrc()));
+            + ": DATA = "
+            + uint8ArrayToString(listBuffer[i].getData(), listBuffer[i].getDataSize())
+            + " | CRC = " + std::to_string(listBuffer[i].getCrc()));
     }
 }
 
