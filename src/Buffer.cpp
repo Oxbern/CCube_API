@@ -1,7 +1,10 @@
-#include "Utils.h"
-#include "Buffer.h"
 #include <sstream>
 #include <string.h>
+
+#include "Utils.h"
+#include "Buffer.h"
+
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 /*! 
  * \brief Constructor
@@ -391,13 +394,24 @@ int Buffer::getDataSize()
  */
 void Buffer::crcEncoding()
 {
-    uint8_t* entireBuffer = new uint8_t[sizeBuffer];
-    memset(entireBuffer, 0, sizeBuffer);
-    this->toArray(entireBuffer);
+    uint8_t* entireBuffer = new uint8_t[sizeBuffer- SIZE_CRC];
+    memset(entireBuffer, 0, sizeBuffer-SIZE_CRC);
+
+    entireBuffer[0] = getHeader();
+    entireBuffer[1] = getID();
+    entireBuffer[2] = getOpCode();
+
+    uint8_t tab[2];
+    convert16to8(this->getSizeLeft(), &tab[0]);
+    memcpy(&entireBuffer[SIZE_INDEX], tab, 2);
+    memcpy(&entireBuffer[DATA_INDEX], getData(),
+           MIN(this->getSizeLeft(), this->getDataSize()));
+    
     uint16_t crcComputed = computeCRC(entireBuffer,
                                       (sizeBuffer - SIZE_CRC));
 
     this->setCrc(crcComputed);
+    delete [] entireBuffer;
 }
 
 /*!

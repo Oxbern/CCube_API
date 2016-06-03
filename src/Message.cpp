@@ -5,7 +5,7 @@
 #include "Message.h"
 #include "Utils.h"
 
-#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+
 
 /**
  * @brief Creates a message with list of buffers with opcode and sizeLeft
