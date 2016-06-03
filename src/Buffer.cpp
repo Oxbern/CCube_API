@@ -1,6 +1,7 @@
 #include "Utils.h"
 #include "Buffer.h"
 #include <sstream>
+#include <string.h>
 
 /*! 
  * \brief Constructor
@@ -46,8 +47,9 @@ Buffer::Buffer(const Buffer& B)
     for (int i = 0; i < getDataSize(); i++)
         data[i] = B.getData()[i];
 
-    LOG(1, "Buffer(const &Buffer)");
-    LOG(2, "Buffer constructed by copy : " + this->toStringDebug(0));
+    LOG(1, "Buffer(const &Buffer) Constructor by copy");
+
+    LOG(2, "Detail of buffer constructed by copy : " + this->toStringDebug(-1));
 }
 
 /*!
@@ -56,12 +58,11 @@ Buffer::Buffer(const Buffer& B)
  */    
 Buffer::~Buffer()
 {
-    LOG(1, "~Buffer()");
     if (data != NULL) {
-        LOG(1, "Destructor for Buffer called");
         delete[] data;
     }
     data = NULL;
+    LOG(1, "~Buffer()");
 }
 
 /*!
@@ -284,8 +285,9 @@ void Buffer::toArray(uint8_t* buffLinear)
         //split crc into two uint8_t
         int indexCrc = crcIndex(sizeBuffer);
         convert16to8(crc, tab);
-        buffLinear[indexCrc] = tab[0];
-        buffLinear[indexCrc + 1] = tab[1];
+        memcpy(&buffLinear[indexCrc], tab, 2);
+        LOG(1, "Buffer.toArray() : "
+               + uint8ArrayToString(buffLinear, SIZE_BUFFER));
     }
 }
 
@@ -334,7 +336,10 @@ std::string Buffer::toStringDebug(int indexInMess)
 {
     std::ostringstream convert;
     uint8_t tab[2];
-    convert << "Buffer n°" << indexInMess << " : | ";
+    convert << "Buffer ";
+    if (indexInMess >= 0)
+        convert << "n° " << indexInMess;
+    convert << " : | ";
     convert << (int) header;
     convert << " | " ;
     convert << (int) idDevice;
