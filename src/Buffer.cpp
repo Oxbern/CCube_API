@@ -41,9 +41,9 @@ Buffer::Buffer(const Buffer& B)
     opCode = B.getOpCode();
     sizeLeft = B.getSizeLeft();
     crc = B.getCrc();
-    data = new uint8_t[dataSize(sizeBuffer)];
+    data = new uint8_t[getDataSize()];
 
-    for (int i = 0; i < dataSize(sizeBuffer); i++)
+    for (int i = 0; i < getDataSize(); i++)
         data[i] = B.getData()[i];
 
     LOG(1, "Buffer(const &Buffer)");
@@ -278,7 +278,7 @@ void Buffer::toArray(uint8_t* buffLinear)
         buffLinear[SIZE_INDEX + 1] = tab[1];
 
         //Convert data
-        for (int i = 0; i < dataSize(sizeBuffer); i++)
+        for (int i = 0; i < getDataSize(); i++)
             buffLinear[DATA_INDEX + i] = data[i];
 
         //split crc into two uint8_t
@@ -310,7 +310,7 @@ std::string Buffer::toString()
     convert << (int) tab[1];
 
     //Convert data
-    for (int i = 0; i < dataSize(sizeBuffer); i++)
+    for (int i = 0; i < getDataSize(); i++)
         convert << (int)data[i];
 
     //split crc into two uint8_t
@@ -351,7 +351,7 @@ std::string Buffer::toStringDebug(int indexInMess)
     convert << " | " ;
 
     //Convert data
-    for (int i = 0; i < dataSize(sizeBuffer); i++)
+    for (int i = 0; i < getDataSize(); i++)
         convert << (int)data[i];
     convert << " | " ;
 
@@ -373,7 +373,7 @@ std::string Buffer::toStringDebug(int indexInMess)
  * \param sizeBuffer entire size of a buffer
  * \return the size a buffer can contain data
  */                
-int dataSize(int sizeBuffer)
+int Buffer::getDataSize()
 {
     return (sizeBuffer - DATA_INDEX - SIZE_CRC);
 }

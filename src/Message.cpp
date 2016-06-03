@@ -29,8 +29,11 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
     }
-    LOG(1, "Message(" + std::to_string(id) + ", " + std::to_string(sizeBuff) +
-           ", " + std::to_string(size) + ", " + std::to_string(code) + ")");
+    LOG(1, "Message(id, sizeBuff, size, code)");
+    LOG(2, "Message(ID = " + std::to_string(id)
+           + ", OPCODE = " + std::to_string(code)
+           + ", SIZEBUFF = " + std::to_string(sizeBuff)
+           + ", SIZEDATA = " + std::to_string(size)  + ")");
 }
 
 /**
@@ -89,12 +92,14 @@ int Message::NbBuffers() const
  */
 void Message::encode(uint8_t *dataToEncode)
 {
+    LOG(2, "Message encoding :");
+
     //Header, DeviceID, Opcode already set in the constructor
     int j = 0; int k= 0; int n = NbBuffers();
 
     //Fills the buffers with the data
     for (int i = 0; i < n; i ++) {
-        while (j < (dataSize(sizeBuffer))) {
+        while (j < (listBuffer[i].getDataSize())) {
             if (k < sizeData) {
                 listBuffer[i].setData(j, dataToEncode[k]);
             }
@@ -117,12 +122,17 @@ void Message::encode(uint8_t *dataToEncode)
         memcpy(&entireBuffer[SIZE_INDEX], tab, 2);
         
         memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
-               dataSize(sizeBuffer) * sizeof(uint8_t));
+               listBuffer[i].getDataSize() * sizeof(uint8_t));
 
         uint16_t crcComputed = computeCRC(&entireBuffer[0],
                                           sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
         
         listBuffer[i].setCrc(crcComputed);
+
+        LOG(2, "[ENCODING] Buffer N° " + std::to_string(i)
+                + ": DATA = "
+                + uint8ArrayToString(listBuffer[i].getData(), listBuffer[i].getDataSize())
+                + " | CRC = " + std::to_string(listBuffer[i].getCrc()));
     }
 }
 
