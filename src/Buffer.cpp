@@ -355,11 +355,12 @@ std::string Buffer::toStringDebug(int indexInMess)
 
     convert << " | " ;
 
-    //Convert data
-    for (int i = 0; i < getDataSize(); i++)
-        convert << (int)data[i];
-    convert << " | " ;
-
+    if (getDataSize() != 0) {
+        //Convert data
+        for (int i = 0; i < getDataSize(); i++)
+            convert << (int)data[i];
+        convert << " | " ;
+    }
     //split crc into two uint8_t
     convert16to8(crc, tab);
     convert << (int) tab[0];
