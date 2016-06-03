@@ -71,11 +71,11 @@ Device::Device(std::string port, int id)
  */
 Device::~Device() 
 {
-    LOG(1, "~Device()");
     if (this->currentConfig != NULL) {
         delete this->currentConfig;
     }
     this->currentConfig = NULL;
+    LOG(1, "~Device()");
 }
 
 /*! 
@@ -100,7 +100,7 @@ bool Device::connect()
 	    }	    
     }
 
-    LOG(1, "Device " + std::string((fd >= 0 ? "" : "not ")) + "connected");
+    LOG(2, "Device " + std::to_string(id) + std::string((fd >= 0 ? " " : " not ")) + "connected");
     return (fd >= 0);
 }
 
@@ -123,7 +123,7 @@ bool Device::disconnect()
             fd = -1;
     }
 
-    LOG(1, "Device " + std::string((fd == -1 ? "" : "not ")) + "disconnected");
+    LOG(2, "Device " + std::to_string(id) + std::string((fd == -1 ? " " : " not ")) + "disconnected");
     return (fd == -1);
 }
 
@@ -177,20 +177,22 @@ bool Device::askForDisplaySize()
  */
 bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) 
 {
-    if (fd) {
-        LOG(2, "Trying to write Buffer (size = " + std::to_string(dataSize)
-                + " Bytes) : " + uint8ArrayToString(data, dataSize));
+    if (fd && dataSize > 0) {
+        LOG(2, "[WRITE] Trying to write Buffer (SIZE = "
+               + std::to_string(dataSize)
+               + " Bytes) : DATA TO WRITE = "
+               + uint8ArrayToString(data, dataSize));
 
 
-        if (write(fd, (char *) data, dataSize)) {
-            LOG(2, "Data written to file");
+        if (write(fd, &data[0], dataSize)) {
+            LOG(2, "[WRITE] Data written to file");
             return true;
         } else {
-            LOG(2, "Error while writing data to file : " + std::string(std::strerror(errno)));
+            LOG(2, "[WRITE] Error while writing data to file : " + std::string(std::strerror(errno)));
         }
 
     } else {
-        LOG(2, "Unable to write data to file : wrong file descriptor");
+        LOG(2, "[WRITE] Unable to write data to file : wrong file descriptor");
     }
     return false;
 }
@@ -208,14 +210,16 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 	/* Simple read from file descriptor */
     int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
     if (ret > 0) {
-        read(this->getFile(), ack_buffer, SIZE_ACK);
-        LOG(1, "Reading from file descriptor : " + uint8ArrayToString(ack_buffer, 10));
+        ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
+        LOG(2, "[READ] Reading from Device "
+               + std::to_string(id) + " | DATA READ = "
+               + uint8ArrayToString(ack_buffer, sizeRead));
         return true;
     }
     else if (ret == 0)
-        LOG(1, "Timeout");
+        LOG(1, "[READ] Timeout");
     else
-        LOG(1, "Error");
+        LOG(1, "[READ] Error");
     return false;
 }
 
@@ -228,10 +232,12 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
  */
 bool Device::handleResponse(uint8_t ack[10]) 
 {
-    fprintf(stdout, "ACK: ");
+    fprintf(stdout, "ACK : ");
     for (int i = 0; i < 10; ++i)
         fprintf(stdout, "%u |", ack[i]);
     fprintf(stdout, "\n");
+
+
 
     return true;
 }
@@ -367,7 +373,7 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 {
     //Check the AckMessage
     if (ack.getOpCode() != ACK_OK) {
-        LOG(3, "Handle an ACK_NOK or ACK_ERR  for Buffer N:\n" + std::to_string(i));
+        LOG(3, "[HANDLER] ACK_NOK or ACK_ERR for Buffer N:\n" + std::to_string(i));
 
         //Extract pack data from the ackMessage
         uint8_t ackDataOpcode = ack.getListBuffer()[0].getData()[0];
@@ -391,7 +397,7 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 
         return false;
     } else {
-        LOG(3, "ACK_OK received for Buffer N° : " + std::to_string(i));
+        LOG(3, "[HANDLER] ACK_OK received for Buffer N° : " + std::to_string(i));
         return true;
     }
 }
