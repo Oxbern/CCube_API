@@ -183,7 +183,6 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
                + " Bytes) : DATA TO WRITE = "
                + uint8ArrayToString(data, dataSize));
 
-
         if (write(fd, &data[0], dataSize)) {
             LOG(2, "[WRITE] Data written to file");
             return true;
@@ -373,7 +372,7 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 {
     //Check the AckMessage
     if (ack.getOpCode() != ACK_OK) {
-        LOG(3, "[HANDLER] ACK_NOK or ACK_ERR for Buffer N:\n" + std::to_string(i));
+        LOG(3, "[HANDLER] ACK_NOK or ACK_ERR for Buffer N° " + std::to_string(i));
 
         //Extract pack data from the ackMessage
         uint8_t ackDataOpcode = ack.getListBuffer()[0].getData()[0];
@@ -393,7 +392,7 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
         bufferToRetransmit->toArray(bufferArray);
 
         //Try to retransmit the wrong buffer
-        while (!writeToFileDescriptor(bufferArray, mess->getSizeBuffer())); //TODO add timeout
+        writeToFileDescriptor(bufferArray, mess->getSizeBuffer()); //TODO add timeout
 
         return false;
     } else {
