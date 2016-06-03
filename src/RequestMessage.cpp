@@ -17,3 +17,12 @@ RequestMessage::~RequestMessage()
 {
     LOG(1, "~RequestMessage()");
 }
+
+/*!
+ * \fn void encodeCrc()
+ * \brief Calculates the crc on a request message
+ */
+void RequestMessage::encodeCrc()
+{
+    this->listBuffer[0].crcEncoding();
+}
