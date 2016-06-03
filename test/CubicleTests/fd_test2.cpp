@@ -76,14 +76,21 @@ int main()
 #if DEBUG
     std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
 #endif
-
+    uint8_t* reqLinear = new uint8_t[SIZE_REQUEST];
+    reqLinear={0};
     uint8_t* buffLinear = new uint8_t[SIZE_BUFFER];
+    buffLinear={0};
     
     /* Resets the connection */
     RequestMessage resetConnection(1, RESET);
+    resetConnection.getListBuffer()[0].toArray(reqLinear);
+
+#if DEBUG
+    std::cout << "Reset Connection : " << resetConnection.toStringDebug() << "\n";
+#endif
 
     /* Sents it over USB */
-    write(fd, &resetConnection.getListBuffer()[0], SIZE_REQUEST);
+    //    write(fd, reqLinear, SIZE_REQUEST);
 
     /* Retrieves the ACK */
     while (!lock_ack.try_lock()) {
@@ -154,6 +161,7 @@ int main()
     close(fd);
 
     delete [] buffLinear;
+    delete [] reqLinear;
     delete [] ledBuffer;
     
     return 0;
