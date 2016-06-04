@@ -1,15 +1,21 @@
 #ifndef DEVICESHAPE_H
 #define DEVICESHAPE_H
 
+/*!
+ * \file DeviceShape.h
+ * \brief TODO
+ * \version 0.1
+ */
+
 #include <cstdint>
 #include <iostream>
 
 #include "Debug.h"
 #include "ShapeToDisplay.h"
 
-/**
+/*!
  * @class DeviceShape
- * \brief States of the LEDs of a device
+ * \brief TODO
  */
 class DeviceShape
 {

@@ -1,6 +1,12 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
+/*!
+ * \file Device.h
+ * \brief TODO
+ * \version 0.1
+ */
+
 #include <iostream>
 #include <fstream>
 #include <cstdio>

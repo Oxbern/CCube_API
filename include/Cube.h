@@ -1,14 +1,30 @@
+#ifndef CUBE_H
+#define CUBE_H
+/*!
+ * \file Cube.h
+ * \brief TODO
+ * \version 0.1
+ */
 #include "ShapeToDisplay.h"
 
-/**
+/*!
  * \class Cube
  * \brief Class describing a cube (a shape which can be displayed on the device)
  */
-class Cube : public ShapeToDisplay {
+class Cube : public ShapeToDisplay
+{
 public:
     /*! 
      * \brief Constructor
+     *
      * Constructor of the class Cube
+     *
+     * \param i
+     * \param p 
+     * \param b
+     * \param x
+     * \param y
+     * \param z
      */
     Cube(int i = 0, Point p = Point(0, 0, 0), bool b = true,
             int x = 9, int y = 9, int z = 9);
@@ -105,3 +121,5 @@ public:
  * \return std::ostream Out
  */
 std::ostream& operator<<(std::ostream &out, Cube &c);
+
+#endif
