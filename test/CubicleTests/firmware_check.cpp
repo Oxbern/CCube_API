@@ -104,10 +104,14 @@ int main ()
     fsync(fd);
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
+    /* Flush data from file descriptor */
+    fsync(fd);
 
     /* Wait for ACK response */
     if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
         read(fd, &localAck[0], ACK_SIZE);
+    /* Flush data from file descriptor */
+    fsync(fd);
 
 #if DEBUG
     printBuffer("ACK", &localAck[0], 10);
@@ -140,10 +144,14 @@ int main ()
     fsync(fd);
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
+    /* Flush data from file descriptor */
+    fsync(fd);
 
     /* Wait for ACK response */
     if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
         read(fd, &localAck[0], ACK_SIZE);
+    /* Flush data from file descriptor */
+    fsync(fd);
 
 #if DEBUG
     printBuffer("ACK", &localAck[0], 10);
