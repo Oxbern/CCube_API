@@ -5,6 +5,8 @@
 #include "Message.h"
 #include "Utils.h"
 
+
+
 /**
  * @brief Creates a message with list of buffers with opcode and sizeLeft
  * @param size of the message
@@ -29,8 +31,11 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
     }
-    LOG(1, "Message(" + std::to_string(id) + ", " + std::to_string(sizeBuff) +
-           ", " + std::to_string(size) + ", " + std::to_string(code) + ")");
+    LOG(1, "Message(id, sizeBuff, size, code)");
+    LOG(2, "Message(ID = " + std::to_string(id)
+           + ", OPCODE = " + std::to_string(code)
+           + ", SIZEBUFF = " + std::to_string(sizeBuff)
+           + ", SIZEDATA = " + std::to_string(size)  + ")");
 }
 
 /**
@@ -89,12 +94,14 @@ int Message::NbBuffers() const
  */
 void Message::encode(uint8_t *dataToEncode)
 {
+    LOG(2, "Message encoding :");
+
     //Header, DeviceID, Opcode already set in the constructor
     int j = 0; int k= 0; int n = NbBuffers();
 
-    //Fill the buffers with the data
+    //Fills the buffers with the data
     for (int i = 0; i < n; i ++) {
-        while (j < (dataSize(sizeBuffer))) {
+        while (j < (listBuffer[i].getDataSize())) {
             if (k < sizeData) {
                 listBuffer[i].setData(j, dataToEncode[k]);
             }
@@ -105,25 +112,13 @@ void Message::encode(uint8_t *dataToEncode)
         }
         j = 0;
 
-        //Set CRC computed on the entire buffer
-        uint8_t entireBuffer[sizeBuffer-SIZE_CRC];
-
-        entireBuffer[0] = listBuffer[i].getHeader();
-        entireBuffer[1] = listBuffer[i].getID();
-        entireBuffer[2] = listBuffer[i].getOpCode();
-
-        uint8_t tab[2];
-        convert16to8(listBuffer[i].getSizeBuffer(), &tab[0]);
-
-        entireBuffer[3] = tab[0];
-        entireBuffer[4] = tab[1];
-
-        memcpy(&entireBuffer[DATA_INDEX], dataToEncode,
-               dataSize(sizeBuffer) * sizeof(uint8_t));
-
-        uint16_t crcComputed = computeCRC(&entireBuffer[0],
-                                          sizeof(uint8_t)*(sizeBuffer - SIZE_CRC));
-        listBuffer[i].setCrc(crcComputed);
+        //Sets CRC computed on the entire buffer
+        listBuffer[i].crcEncoding();
+        
+        LOG(2, "[ENCODING] Buffer N° " + std::to_string(i)
+            + ": DATA = "
+            + uint8ArrayToString(listBuffer[i].getData(), listBuffer[i].getDataSize())
+            + " | CRC = " + std::to_string(listBuffer[i].getCrc()));
     }
 }
 
@@ -145,10 +140,20 @@ Buffer* Message::getListBuffer() const
 
 Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
 {
+    LOG(2, "getBuffer Method : ");
+    LOG(2, "Buffer searched :  OPCODE = " + std::to_string(opCode)
+           + " | SIZELEFT = " + std::to_string(sizeLeft));
+
+    /* Research a buffer with the same opCode and the same sizeLeft
+       in the message */
     for (int i = 0; i < NbBuffers(); i++) {
-        if (listBuffer[i].getOpCode() == opCode && listBuffer[i].getSizeLeft() == sizeLeft)
+        if (listBuffer[i].getOpCode() == opCode
+            && listBuffer[i].getSizeLeft() == sizeLeft) {
+            LOG(1, "Buffer found \n");
             return &listBuffer[i];
+        }
     }
+    LOG(2, "Buffer not found \n");
     return NULL;
 }
 
@@ -199,11 +204,11 @@ uint8_t Message::getID() const
 std::string Message::toStringDebug() const
 {
     std::ostringstream convert;
-    convert << "Message (debug) :" << std::endl;
+    convert << "---------- Message (DEBUG) : ----------" << std::endl;
     int n = NbBuffers();
     for (int i = 0; i < n; i++)
         convert << getListBuffer()[i].toStringDebug(i);
-
+    convert << "---------- End Message (DEBUG) : ----------" << std::endl;
     return convert.str();
 }
 

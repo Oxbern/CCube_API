@@ -54,13 +54,15 @@ int main()
     /* Creates a device shape */
     DeviceShape ds(9, 9, 9);
 
-    /* Turns on one LED */
-    for (int i = 0; i < 9 ; i++) {
-        ds.on(i,i,8-i);
-        ds.on(i,i,i);
-        ds.on(i,8-i,i);
-        ds.on(8-i, i, i);
-    }
+    ds.on(4, 4, 4);
+    // /\* Turns on one LED *\/
+    // for (int i = 0; i < 9 ; i++) {
+    //     ds.on(i,i,8-i);
+    //     ds.on(i,i,i);
+    //     ds.on(i,8-i,i);
+    //     ds.on(8-i, i, i);
+    // }
+    
     /* Creates a DataMessage */ 
     DataMessage myDataMessage(1, 92, BUFF_SENDING);
 
@@ -69,19 +71,28 @@ int main()
     ds.toArray(ledBuffer);
     myDataMessage.encode(ledBuffer);
 
-    delete [] ledBuffer;
+
     /* Prints the message */
+
 #if DEBUG
     std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
 #endif
-
+    uint8_t* reqLinear = new uint8_t[SIZE_REQUEST];
+    reqLinear={0};
     uint8_t* buffLinear = new uint8_t[SIZE_BUFFER];
+    buffLinear={0};
     
     /* Resets the connection */
     RequestMessage resetConnection(1, RESET);
+    resetConnection.encodeCrc();
+    resetConnection.getListBuffer()[0].toArray(reqLinear);
+
+#if DEBUG
+    std::cout << "Reset Connection : " << resetConnection.toStringDebug() << "\n";
+#endif
 
     /* Sents it over USB */
-    write(fd, &resetConnection.getListBuffer()[0], SIZE_REQUEST);
+    //    write(fd, reqLinear, SIZE_REQUEST);
 
     /* Retrieves the ACK */
     while (!lock_ack.try_lock()) {
@@ -152,6 +163,8 @@ int main()
     close(fd);
 
     delete [] buffLinear;
+    delete [] reqLinear;
+    delete [] ledBuffer;
     
     return 0;
 }

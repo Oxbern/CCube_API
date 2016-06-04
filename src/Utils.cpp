@@ -97,6 +97,7 @@ uint16_t computeCRC(uint8_t *data, uint16_t size)
         if (i & out)
 	    crc |= j;
     }
+
     return crc;
 }
 
@@ -173,4 +174,15 @@ bool isAnAckOpcode(int val)
             break;
     }
     return retVal;
+}
+
+
+void printBuffer(std::string name, uint8_t *buffer, uint16_t size) {
+
+	std::cout << name << ": ";
+
+	for (int i = 0; i < size; ++i)
+		std::cout << (int)buffer[i] << " | ";
+
+	std::cout << std::endl;
 }

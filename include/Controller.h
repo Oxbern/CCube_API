@@ -36,7 +36,6 @@ class Controller
     std::queue <uint8_t*> buffReceived;
     std::thread ack_thread;
     std::recursive_mutex lock_ack;
-    std::recursive_mutex lock_connectedDevice;
 
     void *waitForACK();
 
@@ -56,6 +55,7 @@ class Controller
     Device* getConnectedDevice();
     bool on(int x, int y, int z);
     bool send(Message* mess);
+    bool handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait, bool *isAcknowledged);
     bool displayDevice();
     
     std::list<Device*> getListDevices();

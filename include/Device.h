@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cstdio>
 
+#include <sys/poll.h>
+
 #include "DeviceShape.h"
 #include "DataMessage.h"
 #include "Debug.h"
@@ -30,6 +32,7 @@ class Device
     int sizeZ; /*!< Third dimension of the device */
     bool isAvailable; /*!< if the device is available (not implemented yet) */
     DeviceShape *currentConfig; /*!< state of the LEDs of the device */
+    struct pollfd pfds[2];
 
  public :
     // Port is found by Controller's constructor and id is defined there.
@@ -117,7 +120,7 @@ class Device
      * 
      * \param uint8_t ack_buffer[10] : array where the data are stored
      */
-    void readFromFileDescriptor(uint8_t ack_buffer[10]);
+    bool readFromFileDescriptor(uint8_t ack_buffer[10]);
     
     /*! 
      * \fn bool on(int x, int y, int z)

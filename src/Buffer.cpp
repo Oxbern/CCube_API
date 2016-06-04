@@ -1,6 +1,10 @@
+#include <sstream>
+#include <string.h>
+
 #include "Utils.h"
 #include "Buffer.h"
-#include <sstream>
+
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 /*! 
  * \brief Constructor
@@ -11,7 +15,7 @@
 Buffer::Buffer() :
     header(0), idDevice(0), sizeBuffer(0), opCode(0), sizeLeft(0), crc(0)
 {
-    data = new uint8_t[0];
+    data = new uint8_t[0]();
     LOG(1, "Buffer()");
 }
 
@@ -41,13 +45,14 @@ Buffer::Buffer(const Buffer& B)
     opCode = B.getOpCode();
     sizeLeft = B.getSizeLeft();
     crc = B.getCrc();
-    data = new uint8_t[dataSize(sizeBuffer)];
+    data = new uint8_t[getDataSize()];
 
-    for (int i = 0; i < dataSize(sizeBuffer); i++)
+    for (int i = 0; i < getDataSize(); i++)
         data[i] = B.getData()[i];
 
-    LOG(1, "Buffer(const &Buffer)");
-    LOG(2, "Buffer constructed by copy : " + this->toStringDebug(0));
+    LOG(1, "Buffer(const &Buffer) Constructor by copy");
+
+    LOG(2, "Detail of buffer constructed by copy : " + this->toStringDebug(-1));
 }
 
 /*!
@@ -56,12 +61,11 @@ Buffer::Buffer(const Buffer& B)
  */    
 Buffer::~Buffer()
 {
-    LOG(1, "~Buffer()");
     if (data != NULL) {
-        LOG(1, "Destructor for Buffer called");
         delete[] data;
     }
     data = NULL;
+    LOG(1, "~Buffer()");
 }
 
 /*!
@@ -278,14 +282,15 @@ void Buffer::toArray(uint8_t* buffLinear)
         buffLinear[SIZE_INDEX + 1] = tab[1];
 
         //Convert data
-        for (int i = 0; i < dataSize(sizeBuffer); i++)
+        for (int i = 0; i < getDataSize(); i++)
             buffLinear[DATA_INDEX + i] = data[i];
 
         //split crc into two uint8_t
         int indexCrc = crcIndex(sizeBuffer);
         convert16to8(crc, tab);
-        buffLinear[indexCrc] = tab[0];
-        buffLinear[indexCrc + 1] = tab[1];
+        memcpy(&buffLinear[indexCrc], tab, 2);
+        LOG(1, "Buffer.toArray() : "
+               + uint8ArrayToString(buffLinear, SIZE_BUFFER));
     }
 }
 
@@ -310,7 +315,7 @@ std::string Buffer::toString()
     convert << (int) tab[1];
 
     //Convert data
-    for (int i = 0; i < dataSize(sizeBuffer); i++)
+    for (int i = 0; i < getDataSize(); i++)
         convert << (int)data[i];
 
     //split crc into two uint8_t
@@ -334,7 +339,10 @@ std::string Buffer::toStringDebug(int indexInMess)
 {
     std::ostringstream convert;
     uint8_t tab[2];
-    convert << "Buffer n°" << indexInMess << " : | ";
+    convert << "Buffer ";
+    if (indexInMess >= 0)
+        convert << "n° " << indexInMess;
+    convert << " : | ";
     convert << (int) header;
     convert << " | " ;
     convert << (int) idDevice;
@@ -350,11 +358,12 @@ std::string Buffer::toStringDebug(int indexInMess)
 
     convert << " | " ;
 
-    //Convert data
-    for (int i = 0; i < dataSize(sizeBuffer); i++)
-        convert << (int)data[i];
-    convert << " | " ;
-
+    if (getDataSize() != 0) {
+        //Convert data
+        for (int i = 0; i < getDataSize(); i++)
+            convert << (int)data[i];
+        convert << " | " ;
+    }
     //split crc into two uint8_t
     convert16to8(crc, tab);
     convert << (int) tab[0];
@@ -373,9 +382,36 @@ std::string Buffer::toStringDebug(int indexInMess)
  * \param sizeBuffer entire size of a buffer
  * \return the size a buffer can contain data
  */                
-int dataSize(int sizeBuffer)
+int Buffer::getDataSize()
 {
     return (sizeBuffer - DATA_INDEX - SIZE_CRC);
+}
+
+
+/*!
+ * \fn void crcEncoding()
+ * \brief Encodes the crc in the buffer
+ */
+void Buffer::crcEncoding()
+{
+    uint8_t* entireBuffer = new uint8_t[sizeBuffer- SIZE_CRC];
+    memset(entireBuffer, 0, sizeBuffer-SIZE_CRC);
+
+    entireBuffer[0] = getHeader();
+    entireBuffer[1] = getID();
+    entireBuffer[2] = getOpCode();
+
+    uint8_t tab[2];
+    convert16to8(this->getSizeLeft(), &tab[0]);
+    memcpy(&entireBuffer[SIZE_INDEX], tab, 2);
+    memcpy(&entireBuffer[DATA_INDEX], getData(),
+           MIN(this->getSizeLeft(), this->getDataSize()));
+    
+    uint16_t crcComputed = computeCRC(entireBuffer,
+                                      (sizeBuffer - SIZE_CRC));
+
+    this->setCrc(crcComputed);
+    delete [] entireBuffer;
 }
 
 /*!
