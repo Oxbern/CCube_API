@@ -58,6 +58,7 @@ int main ()
     resetConnection[4] = 0;
 
     /* Send it over USB (Don't wait for ACK)*/
+    fsync(fd);
     write(fd, &resetConnection[0], 7);
 
 
@@ -100,6 +101,7 @@ int main ()
 #endif
 
     /* Send it over USB */
+    fsync(fd);
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
 
@@ -135,6 +137,7 @@ int main ()
 #endif
 
     /* Send it over USB */
+    fsync(fd);
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
 
