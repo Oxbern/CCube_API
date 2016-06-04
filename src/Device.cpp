@@ -59,8 +59,12 @@ Device::Device(std::string port, int id)
     this->timeout.tv_usec = 1000000L;
 
     /* Clear set */
-    FD_ZERO(&set);
-    
+    //FD_ZERO(&set);
+    pfds[0].events = POLLIN;
+
+    pfds[1].events = POLLOUT;
+
+
     //File descriptor (reading/writing)
     this->fd = -1;
 }
@@ -95,6 +99,8 @@ bool Device::connect()
             std::cerr << "Error while opening the file descriptor : "
                 << std::string(std::strerror(errno));
 	    else {
+            pfds[0].fd = fd;
+            pfds[1].fd = fd;
 	        fcntl(fd, F_SETFL, 0);
 	        FD_SET(fd, &set);
 	    }	    
@@ -175,28 +181,34 @@ bool Device::askForDisplaySize()
  * \return true if the writing went well
  * false otherwise
  */
-bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) 
-{
+bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
     if (fd && dataSize > 0) {
         LOG(2, "[WRITE] Trying to write Buffer (SIZE = "
                + std::to_string(dataSize)
                + " Bytes) : DATA TO WRITE = "
                + uint8ArrayToString(data, dataSize));
 
-        if (write(fd, &data[0], dataSize)) {
-            LOG(2, "[WRITE] Data written to file");
-            return true;
-        } else {
-            LOG(2, "[WRITE] Error while writing data to file : " + std::string(std::strerror(errno)));
-        }
+        int ret = poll(pfds, 2, 1000);
+        if (ret > 0) {
+            if (pfds[1].revents & POLLOUT) {
+                fsync(fd);
+                if (write(fd, &data[0], dataSize)) {
+                    LOG(2, "[WRITE] Data written to file");
+                    return true;
+                } else {
+                    LOG(2, "[WRITE] Error while writing data to file : " + std::string(std::strerror(errno)));
+                }
+            }
+        } else if (ret == 0)
+            LOG(1, "[WRITE] Timeout");
+        else
+            LOG(2, "[WRITE] Error ");
 
-    } else {
-        LOG(2, "[WRITE] Unable to write data to file : wrong file descriptor");
     }
     return false;
 }
 
-/*! 
+/*!
  * \fn void readFromFileDescriptor(uint8_t ack_buffer[10])
  * 
  * \brief store the data received in a buffer 
@@ -207,15 +219,18 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
 bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
-    int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
+    //int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
+    int ret = poll(pfds, 2, 3000);
     if (ret > 0) {
-        ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
-        LOG(2, "[READ] Reading from Device "
-               + std::to_string(id) + " | DATA READ = "
-               + uint8ArrayToString(ack_buffer, sizeRead));
-        return true;
-    }
-    else if (ret == 0)
+        if (pfds[0].revents & POLLIN) {
+            fsync(fd);
+            ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
+            LOG(2, "[READ] Reading from Device "
+                   + std::to_string(id) + " | DATA READ = "
+                   + uint8ArrayToString(ack_buffer, sizeRead));
+            return true;
+        }
+    } else if (ret == 0)
         LOG(1, "[READ] Timeout");
     else
         LOG(1, "[READ] Error");

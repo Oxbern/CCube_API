@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cstdio>
 
+#include <sys/poll.h>
+
 #include "DeviceShape.h"
 #include "DataMessage.h"
 #include "Debug.h"
@@ -30,6 +32,7 @@ class Device
     int sizeZ; /*!< Third dimension of the device */
     bool isAvailable; /*!< if the device is available (not implemented yet) */
     DeviceShape *currentConfig; /*!< state of the LEDs of the device */
+    struct pollfd pfds[2];
 
  public :
     // Port is found by Controller's constructor and id is defined there.
