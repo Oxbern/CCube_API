@@ -4,6 +4,10 @@
 #include "Utils.h"
 #include "Buffer.h"
 
+/*!
+  \def MIN(X, Y)
+  Computes the minimum of \a x and \a y.
+*/
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 /*! 
