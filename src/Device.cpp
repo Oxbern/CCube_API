@@ -191,7 +191,6 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
         int ret = poll(pfds, 2, 1000);
         if (ret > 0) {
             if (pfds[1].revents & POLLOUT) {
-                fsync(fd);
                 if (write(fd, &data[0], dataSize)) {
                     LOG(2, "[WRITE] Data written to file");
                     return true;
@@ -220,14 +219,14 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
     //int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
-    int ret = poll(pfds, 2, 3000);
+    int ret = poll(pfds, 2, 1000);
     if (ret > 0) {
         if (pfds[0].revents & POLLIN) {
-            fsync(fd);
             ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
             LOG(2, "[READ] Reading from Device "
                    + std::to_string(id) + " | DATA READ = "
                    + uint8ArrayToString(ack_buffer, sizeRead));
+            fsync(fd);
             return true;
         }
     } else if (ret == 0)
