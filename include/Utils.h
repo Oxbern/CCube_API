@@ -135,6 +135,13 @@ void printArray(uint8_t *array, int arraySize);
 std::string uint8ArrayToString(uint8_t *array, int arraySize);
 
 
+/*!
+ * \fn void printBuffer(std::string name, uint8_t *buffer, uint16_t size)
+ * \brief Prints a buffer
+ * \param name string
+ * \param buffer the buffer to print
+ * \param size the buffer's size
+ */
 void printBuffer(std::string name, uint8_t *buffer, uint16_t size);
 
 #endif
