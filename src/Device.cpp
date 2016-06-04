@@ -20,8 +20,8 @@
  * \brief Constructor
  * Constructor of the class Device
  * 
- * \param string port : link to the file open by the file descriptor
- * \param int id : ID of the device
+ * \param port  link to the file open by the file descriptor
+ * \param id  ID of the device
  */
 Device::Device(std::string port, int id) 
 {
@@ -175,8 +175,8 @@ bool Device::askForDisplaySize()
  * 
  * \brief write the data in the file descriptor 
  * 
- * \param uint8_t* data : data that needs to be written 
- * \param int dataSize : size of data
+ * \param data  data that needs to be written 
+ * \param dataSize  size of data
  *
  * \return true if the writing went well
  * false otherwise
@@ -214,7 +214,7 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
  * \brief store the data received in a buffer 
  * to process them in the controler
  * 
- * \param uint8_t ack_buffer[10] : array where the data are stored
+ * \param ack_buffer  array where the data are stored
  */
 bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
@@ -298,9 +298,9 @@ DeviceShape *Device::getcurrentConfig() const
  * \brief set the configuration of the LED of coordinates (x, y, z) to true
  * by calling the function of currentConfig (DeviceShape)
  * 
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  * 
  * \return true if the configuration of the LED is now true 
  * false otherwise
@@ -329,9 +329,9 @@ bool Device::off()
  * \brief set the configuration of the LED of coordinates (x, y, z) to false
  * by calling the function of currentConfig (DeviceShape)
  * 
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  *  
  * \return true if the configuration of the LED is now false 
  * false otherwise
@@ -348,9 +348,9 @@ bool Device::off(int x, int y, int z)
  * opposite (true if it was false and false if it was true)
  * by calling the function of currentConfig (DeviceShape)
  * 
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  * 
  * \return true if the whole shape stays in the 3D array
  * false otherwise
@@ -377,8 +377,8 @@ int Device::getFile()
  *
  * \brief Handles the acknowledge of the message
  * 
- * \param Message *mess : needed to know which message has to be send back
- * \param AckMessage ack : to verify if the message was received well 
+ * \param mess  needed to know which message has to be send back
+ * \param ack  to verify if the message was received well 
  * 
  * \return true if the ack is an ACK_OK
  * false otherwise

@@ -23,7 +23,7 @@ class SetMessage : public Message
      * Creates a setting request
      *
      * \param id device's ID
-     * \param opCode LIGHT_SENDING
+     * \param code LIGHT_SENDING
      */           
     SetMessage(uint8_t id, uint8_t code);
 

@@ -19,6 +19,9 @@ bool HANDLE_DATA_RECEIVED = false;
 /* Size of ACK buffers */
 uint8_t ACK[SIZE_ACK] = {0};
 
+/*!
+ * \typedef \struct _Control_Args
+ */
 typedef struct _Control_Args {
 	uint8_t cmd;
 	uint8_t *Buf;

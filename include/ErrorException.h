@@ -13,7 +13,7 @@
 
 /*!
  * \class Exception
- * \brief
+ * \brief TODO
  */
 class ErrorException : public std::exception
 {

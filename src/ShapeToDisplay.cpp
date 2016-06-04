@@ -87,8 +87,8 @@ void ShapeToDisplay::print(std::ostream &str)
 /*!
  * \fn std::ostream& operator<<(std::ostream &Out, ShapeToDisplay &std);
  * \brief Overloads of the operator <<
- * @param Out : stream on which we write
- * @param std : ShapeToDisplay we want to display
+ * @param out  stream on which we write
+ * @param std  ShapeToDisplay we want to display
  * \return std::ostream Out
  */
 std::ostream& operator<<(std::ostream &out, ShapeToDisplay &std) 
