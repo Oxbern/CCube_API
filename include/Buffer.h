@@ -230,7 +230,6 @@ class Buffer
      * \brief Returns the size available for the data
      *
      *
-     * \param sizeBuffer entire size of a buffer
      * \return the size a buffer can contain data
      */
     int getDataSize();

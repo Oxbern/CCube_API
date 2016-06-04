@@ -4,7 +4,6 @@
 #include "Controller.h"
 
 /*!
- * \fn virtual void onInit(Controller & c)
  * \brief TODO
  * \param c controller
  */
@@ -14,7 +13,6 @@ void Listener::onInit(Controller & c)
 }
 
 /*!
- * \fn virtual void onConnect(Controller &c)
  * \brief TODO
  * \param c controller
  */
@@ -25,7 +23,6 @@ void Listener::onConnect(Controller & c)
 
 
 /*!
- * \fn virtual void onDisconnect(Controller &c)
  * \brief TODO
  * \param c controller
  */
@@ -35,7 +32,6 @@ void Listener::onDisconnect(Controller &)
 }
 
 /*!
- * \fn virtual void onData(Controller &c)
  * \brief TODO
  * \param c controller
  */
@@ -45,7 +41,6 @@ void Listener::onData(Controller &)
 }
 
 /*!
- * \fn virtual void onDeviceChange(Controller &c)
  * \brief TODO
  * \param c controller
  */
@@ -55,7 +50,6 @@ void Listener::onDeviceChange(Controller &)
 }
 
 /*!
- * \fn virtual void onExit(Controller &c)
  * \brief TODO
  * \param c controller
  */

@@ -12,7 +12,7 @@
 #include <exception> 
 
 /*!
- * \class Exception
+ * \class ErrorException
  * \brief TODO
  */
 class ErrorException : public std::exception

@@ -25,7 +25,6 @@ RequestMessage::~RequestMessage()
 }
 
 /*!
- * \fn void encodeCrc()
  * \brief Calculates and sets the crc
  */
 void RequestMessage::encodeCrc()

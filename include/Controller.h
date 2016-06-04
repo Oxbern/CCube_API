@@ -34,8 +34,9 @@ struct Dictionnary{
     int Device; /*!< TODO */
 } typedef Dictionnary;
 
-/**
- * @class Controller
+/*!
+ * \class Controller
+ * \brief TODO
  */
 class Controller
 {
@@ -202,7 +203,7 @@ void getNextWord(char *path, int *j, char * wordreturn);
 
 /*!
  * \fn Dictionnary *getDictSTM(int *nbSTM)
- * \brief Gets the result of a "lsusb | grep STM" system call in a \struct Dictionnary(Bus:Device)
+ * \brief Gets the result of a "lsusb | grep STM" system call in a Dictionnary(Bus:Device) structure
  * \param nbSTM the number of STM devices connected to return
  * \return
  */

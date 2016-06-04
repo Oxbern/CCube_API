@@ -83,8 +83,6 @@ Device::~Device()
 }
 
 /*! 
- * \fn bool connect()
- * 
  * \brief Connects the computer to the device
  * 
  * \return true if the device connected well
@@ -111,8 +109,6 @@ bool Device::connect()
 }
 
 /*! 
- * \fn bool disconnect()
- * 
  * \brief Disconnects the computer and the device
  * 
  * \return true if the device disconnected well
@@ -134,8 +130,6 @@ bool Device::disconnect()
 }
 
 /*! 
- * \fn bool updateFirmware()
- * 
  * \brief not implemented yet
  * 
  * \return true if
@@ -147,8 +141,6 @@ bool Device::updateFirmware()
 }
 
 /*! 
- * \fn bool getFirmwareVersion()
- * 
  * \brief not implemented yet
  * 
  * \return 
@@ -159,8 +151,6 @@ std::string Device::getFirmwareVersion()
 }
 
 /*! 
- * \fn bool askForDisplaySize()
- * 
  * \brief not implemented yet
  * 
  * \return 
@@ -171,8 +161,6 @@ bool Device::askForDisplaySize()
 }
 
 /*! 
- * \fn bool writeToFileDescriptor(uint8_t* data, int dataSize)
- * 
  * \brief write the data in the file descriptor 
  * 
  * \param data  data that needs to be written 
@@ -208,8 +196,6 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
 }
 
 /*!
- * \fn void readFromFileDescriptor(uint8_t ack_buffer[10])
- * 
  * \brief store the data received in a buffer 
  * to process them in the controler
  * 
@@ -237,8 +223,6 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 }
 
 /*! 
- * \fn bool handleResponse(uint8_t ack[10])
- * 
  * \brief not implemented yet
  * 
  * \return 
@@ -256,8 +240,6 @@ bool Device::handleResponse(uint8_t ack[10])
 }
 
 /*! 
- * \fn int getID() const
- * 
  * \brief Returns the id of the device
  *
  * \return int id : id of the device
@@ -268,8 +250,6 @@ int Device::getID() const
 }
 
 /*! 
- * \fn std::string getPort() const
- * 
  * \brief Returns the port of the device
  * 
  * \return std::string : port of the device
@@ -280,8 +260,6 @@ std::string Device::getPort() const
 }
 
 /*! 
- * \fn DeviceShape *getcurrentConfig() const
- * 
  * \brief Returns the currentConfig of the device
  * 
  * \return DeviceShape * : currentConfig of the device
@@ -292,8 +270,6 @@ DeviceShape *Device::getcurrentConfig() const
 }
 
 /*! 
- * \fn bool on(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to true
  * by calling the function of currentConfig (DeviceShape)
  * 
@@ -310,8 +286,6 @@ bool Device::on(int x, int y, int z)
 }
 
 /*! 
- * \fn bool off()
- * 
  * \brief Set the configuration of all LEDs to false
  * by calling the function of currentConfig (DeviceShape)
  * 
@@ -323,8 +297,6 @@ bool Device::off()
 }
 
 /*! 
- * \fn bool off(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to false
  * by calling the function of currentConfig (DeviceShape)
  * 
@@ -341,8 +313,6 @@ bool Device::off(int x, int y, int z)
 }
 
 /*! 
- * \fn bool toggle(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to its 
  * opposite (true if it was false and false if it was true)
  * by calling the function of currentConfig (DeviceShape)
@@ -360,8 +330,6 @@ bool Device::toggle(int x, int y, int z)
 }
 
 /*! 
- * \fn int getFile()
- * 
  * \brief Returns the file descriptor of the device
  * 
  * \return int : fd of the device
@@ -372,8 +340,6 @@ int Device::getFile()
 }
 
 /*! 
- * \fn bool handleAck(Message *mess, AckMessage ack)
- *
  * \brief Handles the acknowledge of the message
  * 
  * \param mess  needed to know which message has to be send back
@@ -416,8 +382,6 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 }
 
 /*! 
- * \fn bool setLedStatus(ShapeToDisplay s)
- * 
  * \brief Sets the 3D array of the currentDevice to the 3D array
  *  of the ShapeToDisplay
  * 

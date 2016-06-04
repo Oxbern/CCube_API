@@ -20,8 +20,6 @@ Ball::~Ball()
 }
 
 /*! 
- * \fn void action()
- * 
  * \brief Moves the ball (origin becomes origin + direction)
  */
 void Ball::action() 
@@ -33,8 +31,6 @@ void Ball::action()
 }
 
 /*! 
- * \fn void initialisation()
- * 
  * \brief Initialises the 3D array of the device 
  */
 void Ball::initialisation() 
@@ -53,8 +49,6 @@ void Ball::initialisation()
 }
 
 /*! 
- * \fn void bounce()
- * 
  * \brief Changes the direction if the ball touches the limits of the device
  */
 void Ball::bounce() 
@@ -71,8 +65,6 @@ void Ball::bounce()
 }
 
 /*! 
- * \fn int getDirection() const
- * 
  * \brief Returns the direction of the ball
  *
  * \return Point direction : where the ball goes
@@ -83,8 +75,6 @@ Point Ball::getDirection() const
 }
 
 /*! 
- * \fn void setDirection(Point &p)
- * 
  * \brief Sets the direction of the ball to the vector p
  */
 void Ball::setDirection(Point & p) 
@@ -93,8 +83,6 @@ void Ball::setDirection(Point & p)
 }
 
 /*! 
- * \fn void setOrigin(Point &p)
- * 
  * \brief Sets the origin of the ball to the Point p
  */
 void Ball::setOrigin(Point &p) 

@@ -53,7 +53,6 @@ Controller::~Controller()
 }
 
 /*!
- * \fn void *waitForACK() 
  * \brief Reads an ACK message from USB
  */
 void *Controller::waitForACK()
@@ -78,7 +77,6 @@ void *Controller::waitForACK()
 }
 
 /*!
- * \fn bool send(Message* mess)
  * \brief
  * \param mess Message
  * \return 
@@ -189,8 +187,7 @@ bool Controller::send(Message* mess)
 }
 
 /*! 
- * \fn bool handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait, bool *isAcknowledged)
- * \brief
+ * \brief TODO
  * \param mess
  * \param currentBuff
  * \param nbTry
@@ -264,7 +261,6 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
 
 
 /*!
- * \fn bool displayDevice()
  * \brief
  * \return bool
  */
@@ -292,7 +288,6 @@ bool Controller::displayDevice()
 }
 
 /*!
- * \fn bool addListener(Listener &l)
  * \brief Adds a listener to the controller's list of listeners
  * \param l listener to add
  * \return TODO
@@ -304,7 +299,6 @@ bool Controller::addListener(Listener &l)
 }
 
 /*!
- * \fn bool removeListener(Listener &l)
  * \brief Removes a listener to the controller's list of listeners
  * \param l listener to remove
  * \return TODO
@@ -316,7 +310,6 @@ bool Controller::removeListener(Listener &l)
 }
 
 /*!
- * \fn bool listAllDevices()
  * \brief Lists all devices which are connected via USB
  * \return TODO
  */
@@ -340,7 +333,6 @@ bool Controller::listAllDevices()
 }
 
 /*!
- * \fn bool connectDevice()
  * \brief Connects the controller to a device chosen from the list
  * \return
  */
@@ -371,7 +363,6 @@ bool Controller::connectDevice()
 }
 
 /*!
- * \fn std::string getPortFromID(int id)
  * \brief Gets the port of the connected device from its ID
  * \param id of the device to get the port from
  * \return string
@@ -387,7 +378,6 @@ std::string Controller::getPortFromID(int id)
 }
 
 /*!
- * \fn bool connectDevice(int id)
  * \brief Connects the controller to a device with its ID
  * \param id ID of the device to connect
  * \return 
@@ -407,7 +397,6 @@ bool Controller::connectDevice(int id)
 }
 
 /*!
- * \fn bool connectDevice(Device *d)
  * \brief Connects the controller to the Device specified in argument
  * \param d device to connect
  * \return bool
@@ -425,7 +414,6 @@ bool Controller::connectDevice(Device *d)
 }
 
 /*!
- * \fn bool disconnectDevice()
  * \brief Disconnects the controller from the device
  * \return 
  */
@@ -439,7 +427,6 @@ bool Controller::disconnectDevice()
 }
 
 /*!
- * \fn Device* getConnectedDevice()
  * \brief Accessor to the current connected device
  * \return the current connected device
  */
@@ -450,7 +437,6 @@ Device* Controller::getConnectedDevice()
 }
 
 /*! 
- * \fn bool on(int x, int y, int z)
  * \brief Switches on a led on the current connected device
  * \param x
  * \param y
@@ -463,7 +449,6 @@ bool Controller::on(int x, int y, int z)
 }
 
 /*!
- * \fn std::list<Device*> getListDevices()
  * \brief Accessor to the list of USB connected devices
  * \return the list of USB connected devices
  */
@@ -504,7 +489,7 @@ void getNextWord(char *path, int *j, char *wordreturn)
 
 /*!
  * \fn Dictionnary *getDictSTM(int *nbSTM)
- * \brief Gets the result of a "lsusb | grep STM" system call in a \struct Dictionnary(Bus:Device)
+ * \brief Gets the result of a "lsusb | grep STM" system call in a Dictionnary(Bus:Device) structure
  * \param nbSTM the number of STM devices connected to return
  * \return
  */
@@ -647,7 +632,6 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
 }
 
 /*!
- * \fn void listAndGetUSBConnectedDevices()
  * \brief Displays the list of all USB connected devices 
  * and pushes them in the device list
  */

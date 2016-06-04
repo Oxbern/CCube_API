@@ -5,16 +5,16 @@
 #include "Message.h"
 #include "Utils.h"
 
-    /*!
-     * \brief Constructor
-     *
-     * Creates a message
-     *
-     * \param id device's ID
-     * \param sizeBuff the buffers' size
-     * \param size the size of the data to encode
-     * \param code the message's operation code
-     */    
+/*!
+ * \brief Constructor
+ *
+ * Creates a message
+ *
+ * \param id device's ID
+ * \param sizeBuff the buffers' size
+ * \param size the size of the data to encode
+ * \param code the message's operation code
+ */    
 Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
     idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code)
 {
@@ -36,18 +36,18 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
     }
     LOG(1, "Message(id, sizeBuff, size, code)");
     LOG(2, "Message(ID = " + std::to_string(id)
-           + ", OPCODE = " + std::to_string(code)
-           + ", SIZEBUFF = " + std::to_string(sizeBuff)
-           + ", SIZEDATA = " + std::to_string(size)  + ")");
+        + ", OPCODE = " + std::to_string(code)
+        + ", SIZEBUFF = " + std::to_string(sizeBuff)
+        + ", SIZEDATA = " + std::to_string(size)  + ")");
 }
 
-    /*!
-     * \brief Constructor by copie
-     *
-     * Creates a message by copying another one
-     *
-     * \param M the other message which will be unchanged
-     */        
+/*!
+ * \brief Constructor by copie
+ *
+ * Creates a message by copying another one
+ *
+ * \param M the other message which will be unchanged
+ */        
 Message::Message(const Message& M)
 {
     sizeBuffer= M.getSizeBuffer();
@@ -77,11 +77,10 @@ Message::~Message()
     LOG(1, "~Message()");
 }
 
-    /*!
-     * \fn int NbBuffers() const
-     * \brief Calculates the number of buffers necessary to encode a message
-     * \return the number of buffers needed
-     */
+/*!
+ * \brief Calculates the number of buffers necessary to encode a message
+ * \return the number of buffers needed
+ */
 int Message::NbBuffers() const
 {
     if (sizeData == 0)
@@ -92,16 +91,16 @@ int Message::NbBuffers() const
         return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC) + 1;
 }
 
-    /*!
-     * \fn void encode(uint8_t *dataToEncode)
-     * \brief Fills the buffers with the data and calculates and sets the crc
-     * 
-     *  Fills the buffers with the data
-     * if size(dataToEncode) > sizeData,
-     * only the first sizeData values of dataToEncode will be encoded
-     *
-     * \param dataToEncode 
-     */
+/*!
+ * \brief Fills the buffers with the data and calculates and sets the crc
+ * \see crcEncoding()
+ * 
+ *  Fills the buffers with the data
+ * if size(dataToEncode) > sizeData,
+ * only the first sizeData values of dataToEncode will be encoded
+ *
+ * \param dataToEncode 
+ */
 void Message::encode(uint8_t *dataToEncode)
 {
     LOG(2, "Message encoding :");
@@ -132,28 +131,26 @@ void Message::encode(uint8_t *dataToEncode)
     }
 }
 
-    /*!
-     * \fn Buffer *getListBuffer() const
-     * \brief Accessor to the list of buffers
-     * \return list of buffers
-     */
+/*!
+ * \brief Accessor to the list of buffers
+ * \return list of buffers
+ */
 Buffer* Message::getListBuffer() const
 {
     return (this->listBuffer); //Can throw out_of_range exception
 }
 
-    /*!
-     * \fn Buffer *getBuffer(uint8_t opCode, uint16_t sizeLeft) const
-     * \brief Accessor to one specific buffer
-     * \param opCode operation code
-     * \param sizeLeft the size left of the buffer
-     * \return a buffer
-     */
+/*!
+ * \brief Accessor to one specific buffer
+ * \param opCode operation code
+ * \param sizeLeft the size left of the buffer
+ * \return a buffer
+ */
 Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
 {
     LOG(2, "getBuffer Method : ");
     LOG(2, "Buffer searched :  OPCODE = " + std::to_string(opCode)
-           + " | SIZELEFT = " + std::to_string(sizeLeft));
+        + " | SIZELEFT = " + std::to_string(sizeLeft));
 
     /* Research a buffer with the same opCode and the same sizeLeft
        in the message */
@@ -168,51 +165,46 @@ Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
     return NULL;
 }
 
-    /*!
-     * \fn int getSizeBuffer() const
-     * \brief Gets the buffers' size
-     * \return the size
-     */
+/*!
+ * \brief Gets the buffers' size
+ * \return the size
+ */
 int Message::getSizeBuffer() const
 {
     return this->sizeBuffer;
 }
 
-    /*!
-     * \fn uint16_t getSizeData() const
-     * \brief Gets the data's size
-     * \return the size 
-     */
+/*!
+ * \brief Gets the data's size
+ * \return the size 
+ */
 uint16_t Message::getSizeData() const
 {
     return this->sizeData;
 }
 
-    /*!
-     * \fn uint8_t getOpCode() const
-     * \brief Gets the operation code
-     * \return the opCode
-     */
+/*!
+ * \brief Gets the operation code
+ * \return the opCode
+ */
 uint8_t Message::getOpCode() const
 {
     return this->opCode;
 }
 
-    /*!
-     * \fn uint8_t getID() const
-     * \brief Gets the device's ID
-     * \return ID
-     */
+/*!
+ * \brief Gets the device's ID
+ * \return ID
+ */
 uint8_t Message::getID() const
 {
     return this->idDevice;
 }
 
-    /*!
-     * \fn std::string toStringDebug() const
-     * \brief Prints for debug purposes
-     * \return string
-     */
+/*!
+ * \brief Prints for debug purposes
+ * \return string
+ */
 std::string Message::toStringDebug() const
 {
     std::ostringstream convert;
