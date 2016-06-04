@@ -41,17 +41,6 @@ void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
 
     delete [] tab;
 }
-/*!
- * \todo is this method usefull ?
- * \fn bool checkAck(uint16_t crc)
- * \brief Checks if crc and the ack's crc match
- * \param crc
- * \return the test result 
- */
-bool AckMessage::checkAck(uint16_t crc)
-{
-    return (this->crc == crc ? true : false);
-}
 
 /*!
  * \todo is this method usefull ? 
