@@ -1,22 +1,44 @@
 #include "Ball.h"
 
-Ball::Ball() : ShapeToDisplay(1, Point(4, 4, 4), true, 9, 9, 9), direction(Point(1, 1, 1)) {
+/*! 
+ * \brief Constructor
+ * Constructor of the class Ball
+ */
+Ball::Ball() : ShapeToDisplay(1, Point(4, 4, 4), true, 9, 9, 9), direction(Point(1, 1, 1)) 
+{
     LOG(1, "ball()");
     on(origin.getX(), origin.getY(), origin.getZ());
 }
 
-Ball::~Ball() {
+/*!
+ * \brief Destructor
+ * Destructor of the class Ball
+ */
+Ball::~Ball() 
+{
     LOG(1, "~ball()");
 }
 
-void Ball::action() {
+/*! 
+ * \fn void action()
+ * 
+ * \brief Moves the ball (origin becomes origin + direction)
+ */
+void Ball::action() 
+{
     origin = origin + direction;
     bounce();
     initialisation();
     std::cout << "Origin : " << origin << std::endl;
 }
 
-void Ball::initialisation() {
+/*! 
+ * \fn void initialisation()
+ * 
+ * \brief Initialises the 3D array of the device 
+ */
+void Ball::initialisation() 
+{
     LOG(1, "Ball::initialisation()");
     for (int x = 0; x < sizeX; x++) {
         for (int y = 0; y < sizeY; y++) {
@@ -30,7 +52,13 @@ void Ball::initialisation() {
     }
 }
 
-void Ball::bounce() {
+/*! 
+ * \fn void bounce()
+ * 
+ * \brief Changes the direction if the ball touches the limits of the device
+ */
+void Ball::bounce() 
+{
     LOG(1, "Ball::bounce()");
     if (origin.getX() == 0 || origin.getX() == 8)
         direction.setX(-direction.getX());
@@ -42,15 +70,34 @@ void Ball::bounce() {
     //ShapeToDisplay::print(std::cout);
 }
 
-Point Ball::getDirection() const {
+/*! 
+ * \fn int getDirection() const
+ * 
+ * \brief Returns the direction of the ball
+ *
+ * \return Point direction : where the ball goes
+ */
+Point Ball::getDirection() const 
+{
     return direction;
 }
 
-void Ball::setDirection(Point & p) {
+/*! 
+ * \fn void setDirection(Point &p)
+ * 
+ * \brief Sets the direction of the ball to the vector p
+ */
+void Ball::setDirection(Point & p) 
+{
     direction = p;
 }
 
-void Ball::setOrigin(Point &p)
+/*! 
+ * \fn void setOrigin(Point &p)
+ * 
+ * \brief Sets the origin of the ball to the Point p
+ */
+void Ball::setOrigin(Point &p) 
 {
     origin = p;
 }

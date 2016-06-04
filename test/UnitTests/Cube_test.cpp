@@ -1,4 +1,6 @@
 #include "Cube.h"
+#include <assert.h> 
+#include "DeviceShape.h"
 
 bool arrayEqual(bool ***first, bool ***second, int sizeX, int sizeY, int sizeZ)
 {
@@ -43,62 +45,20 @@ int main(int argc, char* argv[])
                     cmp[x][y][z] = false;
 
 
-    if (!arrayEqual(c.getStatus(), cmp, X, Y, Z))
-        perror("Test 1 : FAILED");
+
+    assert(arrayEqual(c.getStatus(), cmp, X, Y, Z));
 
     /* TEST 2 : Try to go down */
 
-    if (c.moveDown())
-        perror("Test 2 : FAILED");
+    assert(!c.moveDown());
 
     /* TEST 3 : Try to go left */
 
-    if (c.moveLeft())
-        perror("Test 3 : FAILED");
+    assert(!c.moveLeft());
 
     /* TEST 4 : Increase size */
-    if (!c.incrSize())
-        perror("Test 4 : FAILED");
-
+    assert(c.incrSize());          
             
-            
-
-    /*
-      for (int i = 0; i < 10; i++)
-      if (c.moveRight()) {
-      std::cout << "Right number " << (int) (i + 1) << std::endl;
-      c.print(std::cout);
-      }
-
-      for (int i = 0; i < 5; i++) {
-      std::cout << "Up number " << (int) (i + 1) << std::endl;
-      if (c.moveUp()) {
-      c.print(std::cout);
-      }
-      }
-
-
-      std::cout << "INCREASE" << std::endl;
-      c.decrSize();
-      c.print(std::cout);
-
-      std::cout << "***********************************************" << std::endl;
-      c.decrSize();
-      c.print(std::cout);
-      std::cout << "***********************************************" << std::endl;
-      c.decrSize();
-      c.print(std::cout);
-      std::cout << "***********************************************" << std::endl;
-      c.decrSize();
-      c.print(std::cout);
-
-      std::cout << "***********************************************" << std::endl;
-      c.decrSize();
-      c.print(std::cout);
-
-      c.decrSize();
-    */
-
     for (int x = 0; x < c.getSizeX(); ++x) {
         for (int y = 0; y < c.getSizeY(); ++y) {
             delete[] cmp[x][y];
@@ -107,7 +67,12 @@ int main(int argc, char* argv[])
     }
     delete[] cmp;
     
+    DeviceShape ds;
+    ds.copyLedStatus(c);
+    
+    assert(arrayEqual(c.getStatus(), ds.getLedStatus(), X, Y, Z));
+    
     std::cout << "Test Cube : PASSED" << std::endl;
-
+    
     return 0;
 }

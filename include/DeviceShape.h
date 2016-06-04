@@ -192,7 +192,7 @@ class DeviceShape
      * \return true if copy went well
      * false otherwise (for example dimensions did not match)
      */    
-    bool copyLedStatus(ShapeToDisplay s);
+    bool copyLedStatus(ShapeToDisplay &s);
 };
 
 #endif //DEVICESHAPE_H

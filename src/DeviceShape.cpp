@@ -303,7 +303,7 @@ bool*** DeviceShape::getLedStatus() const
  * \return true if copy went well
  * false otherwise (for example dimensions did not match)
  */
-bool DeviceShape::copyLedStatus(ShapeToDisplay s) 
+bool DeviceShape::copyLedStatus(ShapeToDisplay &s) 
 {
     if (sizeX != s.getSizeX() || sizeY != s.getSizeY() || sizeZ != s.getSizeZ()) {
         std::cout << "DeviceShape::copyLedStatus(ShapeToDisplay &s) : "
@@ -312,8 +312,9 @@ bool DeviceShape::copyLedStatus(ShapeToDisplay s)
     } else {
         for (int x = 0; x < sizeX; x++)
             for (int y = 0; y < sizeY; y++)
-                for (int z = 0; z < sizeZ; z++)
+                for (int z = 0; z < sizeZ; z++) {
                     ledStatus[x][y][z] = s.getStatus()[x][y][z];
+                }         
     }
     return true;
 }
