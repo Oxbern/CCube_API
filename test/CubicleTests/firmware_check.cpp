@@ -11,16 +11,14 @@
 /* User variable definition */
 #define ACK_SIZE 10
 
-#define DEBUG 0
-
+#define DEBUG 1
 
 /* File descriptor used  */
 int fd = 0;
 fd_set set;
-struct timeval timeout = {0, 1000000L};
+struct timeval timeout = {0, 1000000};
 
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
-
 
 /**
  * @brief  Manually set a message and send it over USB
@@ -45,10 +43,9 @@ int main ()
     /* add our file descriptor to the set */
     FD_SET(fd, &set);
 
+    /*                             /\* Reset the connection *\/ */
 
-                                /* Reset the connection */
-
-    uint8_t resetConnection[7] = {0};
+    /* uint8_t resetConnection[7] = {0}; */
 
     /* Manually set header */
     resetConnection[0] = 1;
@@ -61,8 +58,7 @@ int main ()
     fsync(fd);
     write(fd, &resetConnection[0], 7);
 
-
-                                /* Send message to turn on one led */
+    /* Send message to turn on one led */
 
     /* Create a device shape */
     DeviceShape ds(9, 9, 9);
@@ -100,18 +96,14 @@ int main ()
     printBuffer("BUFFER", &myDataMessage[0], 64);
 #endif
 
-    /* Send it over USB */
     fsync(fd);
+    /* Send it over USB */
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
-    /* Flush data from file descriptor */
-    fsync(fd);
 
     /* Wait for ACK response */
     if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
         read(fd, &localAck[0], ACK_SIZE);
-    /* Flush data from file descriptor */
-    fsync(fd);
 
 #if DEBUG
     printBuffer("ACK", &localAck[0], 10);
@@ -120,6 +112,7 @@ int main ()
     /* Not a ACK_OK */
     if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
         fprintf(stderr, "[TEST FAILED]: First buffer\n");
+        close(fd);
         return EXIT_FAILURE;
     }
 
@@ -140,18 +133,14 @@ int main ()
     printBuffer("BUFFER", &myDataMessage[0], 64);
 #endif
 
-    /* Send it over USB */
     fsync(fd);
+    /* Send it over USB */
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
-    /* Flush data from file descriptor */
-    fsync(fd);
 
     /* Wait for ACK response */
     if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
         read(fd, &localAck[0], ACK_SIZE);
-    /* Flush data from file descriptor */
-    fsync(fd);
 
 #if DEBUG
     printBuffer("ACK", &localAck[0], 10);
@@ -160,6 +149,7 @@ int main ()
     /* Not a ACK_OK */
     if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
         fprintf(stderr, "[TEST FAILED]: Second buffer\n");
+        close(fd);
         return EXIT_FAILURE;
     }
 
