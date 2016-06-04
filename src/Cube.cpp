@@ -3,10 +3,18 @@
 
 /*! 
  * \brief Constructor
+ *
  * Constructor of the class Cube
+ *
+ * \param i
+ * \param p 
+ * \param b
+ * \param x
+ * \param y
+ * \param z
  */
-Cube::Cube(int i, Point p, bool b, int x, int y, int z) 
-: ShapeToDisplay(i, p, b, x, y, z) 
+Cube::Cube(int i, Point p, bool b, int x, int y, int z) :
+    ShapeToDisplay(i, p, b, x, y, z) 
 {
     LOG(1, "Cube(int i, Point p, bool b, bool ***s, int x, int y, int z)");
     init();
