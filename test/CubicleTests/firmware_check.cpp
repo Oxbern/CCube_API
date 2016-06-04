@@ -131,6 +131,8 @@ uint8_t *send(uint8_t *myDataMessage)
     /* Wait for ACK response */
     read(fd, &ack[0], 10);
 
+    printBuffer("ACK", ack, 10);
+
     return ack;
 }
 
