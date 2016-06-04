@@ -233,12 +233,13 @@ class Device
 
 
     /*! 
-     * \fn bool handleAck(Message *mess, AckMessage ack)
+     * \fn bool handleAck(Message *mess, AckMessage ack, int i)
      *
      * \brief Handles the acknowledge of the message
      * 
      * \param mess  needed to know which message has to be send back
      * \param ack  to verify if the message was received well 
+     * \param i
      * 
      * \return true if the ack is an ACK_OK
      * false otherwise

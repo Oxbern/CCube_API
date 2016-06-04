@@ -23,9 +23,9 @@ class SetMessage : public Message
      * Creates a setting request
      *
      * \param id device's ID
-     * \param code LIGHT_SENDING
+     * \param opCode LIGHT_SENDING
      */           
-    SetMessage(uint8_t id, uint8_t code);
+    SetMessage(uint8_t id, uint8_t opCode);
 
     /*!
      * \brief Destructor

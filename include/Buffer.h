@@ -226,7 +226,7 @@ class Buffer
     bool operator==(Buffer b);
 
     /*!
-     * \fn int dataSize(int sizeBuffer);
+     * \fn int getDataSize()
      * \brief Returns the size available for the data
      *
      *

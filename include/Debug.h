@@ -7,6 +7,10 @@
  * \version 0.1
  */
 
+/*!
+ * \def LOG_LEVEL
+ * \brief defines the level of debug desired
+ */
 #define LOG_LEVEL 0
 
 #ifndef LOG_LEVEL

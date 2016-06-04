@@ -12,6 +12,12 @@
  */
 
 /*!
+ * \def CRC16
+ * \brief TODO
+ */
+#define CRC16 0x1021
+
+/*!
  * \def SIZE_ACK
  * \brief the entire size of an AckMessage buffer
  */
@@ -184,7 +190,7 @@ bool isAValidAnswerOpcode(int val);
  */
 bool isAnAckOpcode(int val);
 
-#define CRC16 0x1021
+
 
 /*!
  * \fn uint16_t computeCRC(uint8_t *data, uint16_t size)

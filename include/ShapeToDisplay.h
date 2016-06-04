@@ -127,7 +127,9 @@ public:
     /*! 
      * \fn bool on(int x, int y, int z)
      * \brief Changes the status of the cell of the array at true
-     * \param int x, int y, int z : coordinates in the 3D array   
+     * \param x
+     * \param y
+     * \param z
      * \return true if the parameters are in the 3D array
      * false otherwise
      */

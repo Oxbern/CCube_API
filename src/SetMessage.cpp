@@ -6,7 +6,7 @@
  * Creates a setting request
  *
  * \param id device's ID
- * \param code LIGHT_SENDING
+ * \param opCode LIGHT_SENDING
  */           
 SetMessage::SetMessage(uint8_t id, uint8_t opCode) :
     Message(id, SIZE_SET, SIZE_SET - DATA_INDEX - SIZE_CRC, opCode)
