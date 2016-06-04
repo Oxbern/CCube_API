@@ -1,7 +1,11 @@
 #include "ErrorException.h"
 
-/**
- * @brief TODO
+/*!
+ * \brief Constructor
+ *
+ * TODO
+ *
+ * \param Msg 
  */
 ErrorException::ErrorException( const char * Msg )
 {
@@ -10,15 +14,15 @@ ErrorException::ErrorException( const char * Msg )
     this->msg = oss.str();
 }
 
-/**
- * @brief TODO
+/*!
+ * \brief Destructor
  */
 ErrorException::~ErrorException() throw()
 {
 }
 
-/**
- * @brief TODO
+/*!
+ * \brief TODO
  */
 const char * ErrorException::what() const throw()
 {
