@@ -2,25 +2,28 @@
 #include <iostream>
 #include <cmath>
 
-using namespace std;
-
-/**
- * @brief Creates a point of dimension 3 and coordinates x = 0, y = 0, z = 0 
- */
+    /*!
+     * \brief Default constructor
+     *
+     * Creates a point of dimension 3 and coordinates x = 0, y = 0, z = 0 
+     */       
 Point::Point() : x(0), y(0), z(0)
 {
 }
 
-/**
- * @brief Creates a point for a cube of length 9 LEDs
- * @param x : first coordinate
- * @param y : seconde coordinate
- * @param z : third coordinate
- */
+    /*!
+     * \brief Constructor
+     *
+     * Creates a point for a cube of 9 by 9 by 9 LEDs
+     *
+     * \param x first coordinate
+     * \param y second coordinate
+     * \param z third coordinate
+     */           
 Point::Point(uint8_t x, uint8_t y, uint8_t z) : x(x), y(y), z(z)
 {
     if (x < 0 || x > 8){
-	perror("Index (x) of led out of bounds");
+ 	perror("Index (x) of led out of bounds");
 	exit(EXIT_FAILURE);
     }
     if (y < 0 || y > 8){
@@ -33,13 +36,14 @@ Point::Point(uint8_t x, uint8_t y, uint8_t z) : x(x), y(y), z(z)
     }
 }
 
-/**
- * @brief Checks if the point is in the cube of length 9 LEDs
- * @param x : first coordinate
- * @param y : seconde coordinate
- * @param z : third coordinate
- * @return boolean
- */
+    /*!
+     * \fn bool isOutOfBounds(uint8_t x, uint8_t y, uint8_t z)
+     * \brief Checks if the point is in the cube
+     * \param x first coordinate
+     * \param y second coordinate
+     * \param z third coordinate
+     * \return 
+     */
 bool Point::isOutOfBounds(uint8_t x,uint8_t y, uint8_t z){
     if (x < 0 || x > 8)
 	return true;
@@ -50,10 +54,11 @@ bool Point::isOutOfBounds(uint8_t x,uint8_t y, uint8_t z){
     return false;
 }
 
-/**
- * @brief Set the first coordinate
- * @param x : value setted
- */
+    /*!
+     * \fn void setX(int x)
+     * \brief Sets the first coordinate
+     * \param x value
+     */    
 void Point::setX(int x)
 {
     //if (x >= 0 && x < 9)
@@ -65,10 +70,11 @@ void Point::setX(int x)
     //}
 }
 
-/**
- * @brief Set the second coordinate
- * @param y : value setted
- */
+    /*!
+     * \fn void setY(int y)
+     * \brief Sets the second coordinate
+     * \param y value
+     */
 void Point::setY(int y)
 {
   //  if (y >= 0 && y < 9)
@@ -80,10 +86,11 @@ void Point::setY(int y)
     //}
 }
 
-/**
- * @brief Set the third coordinate
- * @param z : value setted
- */
+    /*!
+     * \fn void setZ(int z)
+     * \brief Sets the third coordinate
+     * \param z value
+     */
 void Point::setZ(int z)
 {
 //    if (z >= 0 && z < 9)
@@ -95,46 +102,36 @@ void Point::setZ(int z)
 //    }
 }
 
-/**
- * @brief return the first coordinate
- * @return uint8_t
- */
 uint8_t Point::getX() const
 {
     return this->x;
 }
 
-/**
- * @brief return the second coordinate
- * @return uint8_t
- */
 uint8_t Point::getY() const
 {
     return this->y;
 } 
 
-/**
- * @brief return the third coordinate
- * @return uint8_t
- */
 uint8_t Point::getZ() const
 {
     return this->z;
 }
 
-/**
- * @brief Print the attributes of the point
- * @param str : stream on which we write
+/*!
+ * \fn void print(std::ostream &str) const
+ * \brief Prints the attributes of the point
+ * \param str  stream on which we write
  */
 void Point::print(std::ostream &str) const
 {
     str << "(" << (int) x << ", " << (int) y << ", " << (int) z << ")";
 }
 
-/**
- * @brief Overload of the operator =
- * @param p : Point 
- * @return Point
+/*!
+ * \fn Point& operator=(const Point &p)
+ * \brief Overload of the operator =
+ * \param p  Point 
+ * \return Point
  */
 Point& Point::operator = (const Point &p) 
 {
@@ -146,10 +143,11 @@ Point& Point::operator = (const Point &p)
     return *this;
 }
 
-/**
- * @brief Overload of the operator ==
- * @param p : Point to compare with 
- * @return boolean
+/*!
+ * \fn bool operator==(Point p)
+ * \brief Overload of the operator ==
+ * \param p : Point to compare with 
+ * \return boolean
  */
 bool Point::operator== (Point p)
 {
@@ -158,11 +156,12 @@ bool Point::operator== (Point p)
     	    this->z == p.getZ());
 }
 
-/**
- * @brief Overload of the operator <<
- * @param str : stream on which we write
- * @param p : Point we want to display 
- * @return std::ostream out
+/*!
+ * \fn std::ostream& operator << (std::ostream &out, const Point &p)
+ * \brief Overload of the operator <<
+ * \param str  stream on which we write
+ * \param p  Point we want to display 
+ * \return std::ostream out
  */
 std::ostream& operator << (std::ostream &out, const Point &p)
 {
@@ -170,49 +169,31 @@ std::ostream& operator << (std::ostream &out, const Point &p)
     return out;
 }
 
-/**
- * @brief Increment the first coordinate
- */
 void Point::incrX() 
 {
     x++;
 }
 
-/**
- * @brief Decrement the first coordinate
- */
 void Point::decrX() 
 {
     x--;
 }
 
-/**
- * @brief Increment the second coordinate
- */
 void Point::incrY() 
 {
     y++;
 }
 
-/**
- * @brief Decrement the seconde coordinate
- */
 void Point::decrY() 
 {
     y--;
 }
 
-/**
- * @brief Increment the third coordinate
- */
 void Point::incrZ() 
 {
     z++;
 }
 
-/**
- * @brief Decrement the third coordinate
- */
 void Point::decrZ() 
 {
     z--;
