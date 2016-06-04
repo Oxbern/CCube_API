@@ -11,12 +11,12 @@
 /* User variable definition */
 #define ACK_SIZE 10
 
-#define DEBUG 1
+#define DEBUG 0
 
 /* File descriptor used  */
 int fd = 0;
 fd_set set;
-struct timeval timeout = {0, 1000000};
+struct timeval timeout = {0, 1000000L};
 
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
@@ -45,7 +45,7 @@ int main ()
 
     /*                             /\* Reset the connection *\/ */
 
-    /* uint8_t resetConnection[7] = {0}; */
+    uint8_t resetConnection[7] = {0};
 
     /* Manually set header */
     resetConnection[0] = 1;
@@ -101,6 +101,7 @@ int main ()
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
 
+    fsync(fd);
     /* Wait for ACK response */
     if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
         read(fd, &localAck[0], ACK_SIZE);
@@ -138,6 +139,7 @@ int main ()
     if (write(fd, &myDataMessage[0], 64) == -1)
         printf("Error while send buffer over USB\n");
 
+    fsync(fd);
     /* Wait for ACK response */
     if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
         read(fd, &localAck[0], ACK_SIZE);
