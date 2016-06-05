@@ -76,8 +76,6 @@ Point Ball::getDirection() const
 
 /*! 
  * \brief Sets the direction of the ball to the vector p
- * 
- * \param Point &p : Point to set the direction to
  */
 void Ball::setDirection(Point & p) 
 {
@@ -86,8 +84,6 @@ void Ball::setDirection(Point & p)
 
 /*! 
  * \brief Sets the origin of the ball to the Point p
- * 
- * \param Point &p : Point to set the origin to
  */
 void Ball::setOrigin(Point &p) 
 {
