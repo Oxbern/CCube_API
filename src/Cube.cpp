@@ -1,10 +1,17 @@
 #include "Cube.h"
 #include <sstream>
 
-/*! 
- * \brief Constructor
- * Constructor of the class Cube
- */
+    /*! 
+     * \brief Constructor
+     * Constructor of the class Cube
+     * 
+     * \param int i : size of the Cube
+     * \param Point p : origin of the Cube
+     * \param bool b : if the Cube is full or not
+     * \param int x : first dimension of the 3D array
+     * \param int y : second dimension of the 3D array
+     * \param int z : third dimension of the 3D array
+     */
 Cube::Cube(int i, Point p, bool b, int x, int y, int z) 
 : ShapeToDisplay(i, p, b, x, y, z) 
 {
@@ -14,6 +21,7 @@ Cube::Cube(int i, Point p, bool b, int x, int y, int z)
 
 /*!
  * \fn void init()
+ * 
  * \brief Function that initialises the device depending 
  * on the parameters of the shape (the cube here)
  */
@@ -48,7 +56,9 @@ Cube::~Cube()
 
 /*! 
  * \fn virtual bool incrSize()
+ * 
  * \brief Increases the size of the shape 
+ * 
  * \return true if the bigger cube stays in the 3D array 
  * false otherwise
  */
@@ -78,7 +88,9 @@ bool Cube::incrSize()
 
 /*! 
  * \fn virtual bool decrSize()
+ * 
  * \brief Decreases the size of the shape 
+ * 
  * \return true if the size does not become negative
  * false otherwise
  */
@@ -96,7 +108,9 @@ bool Cube::decrSize()
 
 /*! 
  * \fn bool moveUp()
+ * 
  * \brief Moves the cube up in the 3D array 
+ * 
  * \return true if the whole cube stays in the 3D array
  * false otherwise
  */
@@ -115,7 +129,9 @@ bool Cube::moveUp()
 
 /*! 
  * \fn bool moveDown()
+ * 
  * \brief Moves the cube down in the 3D array 
+ * 
  * \return true if the whole cube stays in the 3D array
  * false otherwise
  */
@@ -134,7 +150,9 @@ bool Cube::moveDown()
 
 /*! 
  * \fn bool moveLeft()
+ * 
  * \brief Moves the cube on the left in the 3D array 
+ * 
  * \return true if the whole cube stays in the 3D array
  * false otherwise
  */
@@ -153,7 +171,9 @@ bool Cube::moveLeft()
 
 /*! 
  * \fn bool moveRight()
+ * 
  * \brief Moves the cube on the right in the 3D array 
+ * 
  * \return true if the whole cube stays in the 3D array
  * false otherwise
  */
@@ -172,7 +192,9 @@ bool Cube::moveRight()
 
 /*! 
  * \fn bool moveForward()
+ * 
  * \brief Moves the cube forward in the 3D array 
+ * 
  * \return true if the whole cube stays in the 3D array
  * false otherwise
  */
@@ -191,7 +213,9 @@ bool Cube::moveForward()
 
 /*! 
  * \fn bool moveBackward()
+ * 
  * \brief Moves the cube backward in the 3D array 
+ * 
  * \return true if the whole cube all stays in the 3D array
  * false otherwise
  */
@@ -209,9 +233,12 @@ bool Cube::moveBackward()
 }
 
 /*! 
- * \fn void print(std::ostream &str)
- * \brief Calls the print function of the superclass (ShapeToDisplay)
- */
+* \fn void print(std::ostream &str)
+* 
+* \brief Calls the print function of the superclass (ShapeToDisplay)
+* 
+* \param std::ostream &str : Stream on which we write
+*/
 void Cube::print(std::ostream &str) 
 {
     ShapeToDisplay::print(str);
@@ -219,9 +246,12 @@ void Cube::print(std::ostream &str)
 
 /*!
  * \fn std::ostream& operator<<(std::ostream &out, Cube &c)
+ * 
  * \brief Overloads of the operator <<
- * @param out : stream on which we write
- * @param c : Cube shape we want to display
+ * 
+ * \param out : stream on which we write
+ * \param c : Cube shape we want to display
+ * 
  * \return std::ostream Out
  */
 std::ostream& operator<<(std::ostream &out, Cube &c) 

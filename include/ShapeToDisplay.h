@@ -28,6 +28,13 @@ public:
     /*! 
      * \brief Constructor
      * Constructor of the class ShapeToDisplay
+     * 
+     * \param int i : size of the shape
+     * \param Point p : origin of the shape
+     * \param bool b : if the shape is full or not
+     * \param int x : first dimension of the 3D array
+     * \param int y : second dimension of the 3D array
+     * \param int z : third dimension of the 3D array
      */
     ShapeToDisplay(int i = 0, Point p = Point(0, 0, 0), bool b = true, int x = 9,
             int y = 9, int z = 9);
@@ -38,12 +45,20 @@ public:
      */
     virtual ~ShapeToDisplay();
 
-
+    /*! 
+     * \fn void ShapeToDisplay::print(std::ostream &str)
+     * 
+     * \brief Prints the array
+     * 
+     * @param std::ostream &str : stream on which we write
+     */
     void print(std::ostream &str);
 
     /*! 
      * \fn virtual bool incrSize()
+     * 
      * \brief Increases the size of the shape 
+     * 
      * \return true if the size is not bigger than the 3D array dimensions 
      * false otherwise
      */
@@ -51,7 +66,9 @@ public:
 
     /*! 
      * \fn virtual bool decrSize()
+     * 
      * \brief Decreases the size of the shape 
+     * 
      * \return true if the size does not become negative
      * false otherwise
      */
@@ -59,8 +76,10 @@ public:
 
     /*! 
      * \fn bool moveUp()
+     * 
      * \brief Moves the shape up in the 3D array 
      * function only described in the inherited classes
+     * 
      * \return true if the whole shape stays in the 3D array
      * false otherwise
      */
@@ -68,8 +87,10 @@ public:
 
     /*! 
      * \fn bool moveDown()
+     * 
      * \brief Moves the shape down in the 3D array
      * function only described in the inherited classes
+     * 
      * \return true if the whole shape stays in the 3D array
      * false otherwise
      */
@@ -77,8 +98,10 @@ public:
 
     /*! 
      * \fn bool moveLeft()
+     * 
      * \brief Moves the shape on the left in the 3D array 
      * function only described in the inherited classes
+     * 
      * \return true if the whole shape stays in the 3D array
      * false otherwise
      */
@@ -86,8 +109,10 @@ public:
 
     /*! 
      * \fn bool moveRight()
+     * 
      * \brief Moves the shape on the right in the 3D array 
      * function only described in the inherited classes
+     * 
      * \return true if the whole shape stays in the 3D array
      * false otherwise
      */
@@ -95,8 +120,10 @@ public:
 
     /*! 
      * \fn bool moveForward()
+     * 
      * \brief Moves the shape forward in the 3D array 
      * function only described in the inherited classes
+     * 
      * \return true if the whole shape stays in the 3D array
      * false otherwise
      */
@@ -104,8 +131,10 @@ public:
 
     /*! 
      * \fn bool moveBackward()
+     * 
      * \brief Moves the shape backward in the 3D array
      * function only described in the inherited classes
+     * 
      * \return true if the whole shape stays in the 3D array
      * false otherwise
      */
@@ -113,21 +142,29 @@ public:
 
     /*! 
      * \fn bool ***getStatus()
+     * 
      * \brief Returns the 3D array
+     * 
      * \return bool ***status
      */
     bool ***getStatus();
 
     /*! 
      * \fn void initialisation()
+     * 
      * \brief Initializes the 3D array at false 
      */
     void initialisation();
 
     /*! 
      * \fn bool on(int x, int y, int z)
+     * 
      * \brief Changes the status of the cell of the array at true
-     * \param int x, int y, int z : coordinates in the 3D array   
+     * 
+     * \param int x : first coordinate in the 3D array   
+     * \param int y : second coordinate in the 3D array
+     * \param int z : third coordinate in the 3D array
+     *  
      * \return true if the parameters are in the 3D array
      * false otherwise
      */
@@ -135,27 +172,34 @@ public:
     
     /*! 
      * \fn void off();
+     * 
      * \brief Sets all the cell to false
      */
     void off();
     
     /*! 
      * \fn int getSizeX() const;
+     * 
      * \brief Returns sizeX
+     * 
      * \return int sizeX  
      */
     int getSizeX() const;
 
     /*! 
      * \fn int getSizeY() const;
+     * 
      * \brief Returns sizeY
+     * 
      * \return int sizeY
      */
     int getSizeY() const;
 
     /*! 
      * \fn int getSizeZ() const;
+     * 
      * \brief Returns sizeZ
+     * 
      * \return int sizeZ
      */
     int getSizeZ() const;
@@ -163,9 +207,12 @@ public:
 
 /*!
  * \fn std::ostream& operator<<(std::ostream &Out, ShapeToDisplay &std);
+ * 
  * \brief Overloads of the operator <<
- * @param Out : stream on which we write
- * @param std : ShapeToDisplay we want to display
+ * 
+ * \param Out : stream on which we write
+ * \param std : ShapeToDisplay we want to display
+ * 
  * \return std::ostream Out
  */
 std::ostream& operator<<(std::ostream &Out, ShapeToDisplay &std);
