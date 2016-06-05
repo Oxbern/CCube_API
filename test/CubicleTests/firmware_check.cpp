@@ -16,9 +16,6 @@ int fd = -1;
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
 
-/* User function */
-void handleAck(uint8_t *emptyAck, uint8_t *myDataMessage);
-
 
 /**
  * @brief  Manually set a message and send it over USB
@@ -82,7 +79,11 @@ int main ()
     printBuffer("BUFFER", &myDataMessage[0], 64);
 #endif
 
-    handleAck(&emptyAck[0], &myDataMessage[0]);
+    /* Send it over USB */
+    write(fd, &myDataMessage[0], 64);
+
+    /* Wait for ACK response */
+    read(fd, &emptyAck[0], 10);
 
 
                                 /* Second buffer */
@@ -105,7 +106,11 @@ int main ()
     printBuffer("BUFFER", &myDataMessage[0], 64);
 #endif
 
-    handleAck(&emptyAck[0], &myDataMessage[0]);
+    /* Send it over USB */
+    write(fd, &myDataMessage[0], 64);
+
+    /* Wait for ACK response */
+    read(fd, &emptyAck[0], 10);
 
     printf("[TEST PASSED]\n");
 
@@ -119,28 +124,4 @@ int main ()
     delete [] ledBuffer;
 
     return 0;
-}
-
-uint8_t *send(uint8_t *myDataMessage)
-{
-    uint8_t *ack = (uint8_t *)calloc(10, sizeof(uint8_t));
-
-    /* Send it over USB */
-    write(fd, &myDataMessage[0], 64);
-
-    /* Wait for ACK response */
-    read(fd, &ack[0], 10);
-
-    printBuffer("ACK", ack, 10);
-
-    return ack;
-}
-
-void handleAck(uint8_t *emptyAck, uint8_t *myDataMessage)
-{
-    if (memcmp(&emptyAck[0], &ACK_OK_HEADER[0], 5)) {
-        return handleAck(send(myDataMessage), myDataMessage);
-    }
-
-    return;
 }
