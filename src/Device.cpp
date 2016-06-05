@@ -8,13 +8,15 @@
 #include <unistd.h>
 #include <termios.h>
 #include <aio.h>
-
+#include <sys/file.h>
 
 #include "Device.h"
 #include "ErrorException.h"
 #include "Utils.h"
 #include "VirtualCube.h"
 #include "Message.h"
+
+int offset = 0;
 
 /*! 
  * \brief Constructor
@@ -58,10 +60,8 @@ Device::Device(std::string port, int id)
     this->timeout.tv_sec = 0;
     this->timeout.tv_usec = 1000000L;
 
-    /* Clear set */
-    //FD_ZERO(&set);
+    /* Poll configuration */
     pfds[0].events = POLLIN;
-
     pfds[1].events = POLLOUT;
 
 
@@ -176,21 +176,25 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
                + " Bytes) : DATA TO WRITE = "
                + uint8ArrayToString(data, dataSize));
 
-        int ret = poll(pfds, 2, 1000);
+        flock(fd, LOCK_EX);
+        int ret = poll(pfds, 2, 200);
         if (ret > 0) {
             if (pfds[1].revents & POLLOUT) {
                 if (write(fd, &data[0], dataSize)) {
+                    flock(fd, LOCK_UN);
                     LOG(2, "[WRITE] Data written to file");
                     return true;
                 } else {
+                    flock(fd, LOCK_UN);
+                    std::cerr << std::string(std::strerror(errno)) << std::endl;
                     LOG(2, "[WRITE] Error while writing data to file : " + std::string(std::strerror(errno)));
                 }
             }
         } else if (ret == 0)
-            LOG(1, "[WRITE] Timeout");
+            LOG(2, "[WRITE] Timeout");
         else
             LOG(2, "[WRITE] Error ");
-
+        flock(fd, LOCK_UN);
     }
     return false;
 }
@@ -205,20 +209,27 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
     //int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
-    int ret = poll(pfds, 2, 1000);
+    flock(fd, LOCK_EX);
+    int ret = poll(pfds, 2, 200);
     if (ret > 0) {
         if (pfds[0].revents & POLLIN) {
             ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
-            LOG(2, "[READ] Reading from Device "
-                   + std::to_string(id) + " | DATA READ = "
-                   + uint8ArrayToString(ack_buffer, sizeRead));
-            fsync(fd);
-            return true;
+            flock(fd, LOCK_UN);
+            if (sizeRead >= 0) {
+                LOG(2, "[READ] Reading from Device "
+                       + std::to_string(id) + " | DATA READ = "
+                       + uint8ArrayToString(ack_buffer, sizeRead));
+                fsync(fd);
+                return true;
+            } else {
+                std::cerr << std::string(std::strerror(errno)) << std::endl;
+            }
         }
     } else if (ret == 0)
-        LOG(1, "[READ] Timeout");
+        LOG(2, "[READ] Timeout");
     else
-        LOG(1, "[READ] Error");
+        LOG(2, "[READ] Error");
+    flock(fd, LOCK_UN);
     return false;
 }
 
