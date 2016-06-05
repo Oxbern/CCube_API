@@ -20,12 +20,13 @@ bool HANDLE_DATA_RECEIVED = false;
 uint8_t ACK[SIZE_ACK] = {0};
 
 /*!
- * \typedef \struct _Control_Args
+ * \struct _Control_Args
+ * \brief TODO
  */
 typedef struct _Control_Args {
-	uint8_t cmd;
-	uint8_t *Buf;
-	uint16_t size;
+    uint8_t cmd; /*!< operation code */
+    uint8_t *Buf; /*!< buffer */
+    uint16_t size; /*!< size */
 } Control_Args;
 
 static void *CDC_Control_FS(void *args) {

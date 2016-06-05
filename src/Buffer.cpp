@@ -362,7 +362,6 @@ std::string Buffer::toStringDebug(int indexInMess)
 
 
 /*!
- * \fn int getDataSize()
  * \brief Returns the size available for the data
  *
  *
