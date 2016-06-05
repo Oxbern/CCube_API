@@ -76,7 +76,7 @@ int main ()
                                 /* First buffer */
 
     /* Manually set header */
-    myDataMessage[0] = 2;
+    myDataMessage[0] = 1;
     myDataMessage[1] = 1;
     myDataMessage[2] = 0x42;
     myDataMessage[3] = 0;
