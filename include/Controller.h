@@ -15,7 +15,7 @@
  */
 class Controller : public ParentController
 {
- public: 
+ public:
     /*!
      * \brief Constructor
      *

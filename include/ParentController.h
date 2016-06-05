@@ -11,6 +11,7 @@
 #include <queue>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 #include "Device.h"
 #include "Message.h"
@@ -47,7 +48,8 @@ class ParentController
     std::queue<Message> messages; /*!< FIFO of the last message */
     std::queue <uint8_t*> buffReceived; /*!< TODO */
     std::thread ack_thread; /*!< TODO */
-    std::recursive_mutex lock_ack; /*!< TODO */
+    std::mutex lock_ack; /*!< TODO */
+    std::condition_variable cond_var;  /*!< TODO */
 
     /*!
      * \fn void *waitForACK() 

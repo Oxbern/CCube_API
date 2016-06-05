@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <ErrorException.h>
+#include <chrono>
+#include <atomic>
 
 #include "ParentController.h"
 /*!
@@ -15,6 +17,8 @@
  * \brief TODO, explain timeout
  */
 #define MAX_WAIT 1000000
+
+std::atomic<bool> notified = ATOMIC_VAR_INIT(false);
 
 /*!
  * \brief Constructor
@@ -68,6 +72,8 @@ void *ParentController::waitForACK()
                 /* LOG(1, "[THREAD] Lock taken"); */
                 buffReceived.push(buff);
                 lock_ack.unlock();
+                notified = true;
+                cond_var.notify_one();
                 LOG(1, "[THREAD] Lock released");
             }
         }
@@ -85,10 +91,7 @@ bool ParentController::send(Message* mess)
 {
     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
 
-    //Check if the device is connected
-    /*if (this->getConnectedDevice() != NULL) {
-      while (!this->getConnectedDevice()->connect()); //TODO Timeout
-      }*/
+    std::unique_lock<std::mutex> lock(lock_ack);
 
     //Boolean to kwnow if each buffer is well received by the Device
     bool isAcknowledged = false;
@@ -111,61 +114,125 @@ bool ParentController::send(Message* mess)
         } else {
             //Physical Device
             //Send the message to the Device
+            lock_ack.lock();
             connectedDevice->writeToFileDescriptor(bufferArray,
                                                    sizeBuffer);
+            lock_ack.unlock();
         }
 
         /* Counter for the number of tries
-           retransmission of a buffer */
+        retransmission of a buffer */
         int nbTry = 0;
-
-        //Counter for number of wait
-        int nbWait = 0;
-
-        int reSend = 0;
 
         isAcknowledged = false;
 
+        //Define an Ack_OK
+        uint8_t ackOKBuff[SIZE_ACK] = {1,
+                                       (uint8_t) connectedDevice->getID(),
+                                       ACK_OK, 0, 3,
+                                       BUFF_SENDING,
+                                       (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() >> 8),
+                                       (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() & 0xFF),
+                                       0, 0}; //TODO : Add CRC check
+        printBuffer("ACK OK", ackOKBuff, SIZE_ACK);
+
         //Wait for the receipt acknowledgement
-        while (!isAcknowledged && nbTry < MAX_TRY) {
+        //while (!isAcknowledged /*&& nbTry < MAX_TRY*/) {
+        /*if (nbWait == MAX_WAIT) {
+            LOG(2, "[HANDLER] NB WAIT EXCEDEED");
+            if (reSend++ < MAX_TRY)
+                connectedDevice->writeToFileDescriptor(bufferArray,
+                                                       sizeBuffer);
+            else {
+                std::cerr << "Unable to send buffer after " << MAX_TRY
+                << " attempts" << std::endl;
+                if (disconnectDevice())
+                    std::cerr << "Disconnected" << std::endl;
+                exit(1);
+            }
+            nbWait = 0;
+        }*/
 
-            if (nbWait == MAX_WAIT) {
-                LOG(2, "[HANDLER] NB WAIT EXCEDEED");
-
-                //ReSend the message to the Device
-                //The header bit is set to 2
+        do {
+            //wait for new message
+            while(!cond_var.wait_for(lock, std::chrono::milliseconds(1000), [](){return notified == true;})) {
                 bufferArray[HEADER_INDEX] = 2;
 
-                if (reSend++ < MAX_TRY)
-                    connectedDevice->writeToFileDescriptor(bufferArray,
-                                                           sizeBuffer);
-                else {
-                    std::cerr << "Unable to send buffer after " << MAX_TRY
-                              << " attempts" << std::endl;
-                    if (disconnectDevice())
-                        std::cerr << "Disconnected" << std::endl;
-                    exit(1);
-                }
-                nbWait = 0;
+                //Try to retransmit the wrong buffer
+                LOG(2, "[HANLDER] RESEND");
+                lock_ack.lock();
+                connectedDevice->writeToFileDescriptor(bufferArray,
+                                                       sizeBuffer);
+                lock_ack.unlock();
             }
 
-            //Check for new message
-            lock_ack.lock();
-            bool emptyQueue = buffReceived.empty();
+            notified = false;
+
+            LOG(1, "[HANLDER] Handle an ack");
+            //The oldest ack received
+            uint8_t *ack;
+
+            ack = buffReceived.front();
+
+            //Try to take the lock
+            lock_ack.lock();  //TODO timeout
+            //Remove the oldest ack in the queue
+            buffReceived.pop();
+            //Release the lock
             lock_ack.unlock();
 
-            if (!emptyQueue) {
-                handleNewMessage(mess, currentBuffNb, &nbTry,
-                                 &nbWait, &isAcknowledged);
-            } else {
-                //Increment the number wait if no data received
-                nbWait++;
-            }
-        }
+            if (memcmp(ack, ackOKBuff, SIZE_ACK)) {
+                //ACK_NOK or ACK_ERR
+                //Check the header bit
+                if (ack[HEADER_INDEX] == 1) {
+                    //check id message
+                    //ConnectedDevice may not be NULL
+                    if (ack[ID_INDEX] == connectedDevice->getID()) {
+                        //Check data of ack
+                        uint16_t sizeLeftPack = convertTwo8to16(ack[DATA_INDEX + 1],
+                                                                ack[DATA_INDEX + 2]);
+                        uint8_t opcodePack = ack[DATA_INDEX];
 
-        //Empty the queue
-        /*while (!buffReceived.empty())
-          buffReceived.pop();*/
+                        if (opcodePack == mess->getListBuffer()[currentBuffNb].getOpCode()
+                            && sizeLeftPack == mess->getListBuffer()[currentBuffNb].getSizeLeft()) {
+
+                            //Check opcode validity
+                            uint8_t opcode = ack[OPCODE_INDEX];
+
+                            //if valid opcode
+                            if (isAnAckOpcode(opcode)) {
+                                //ACK_ERR or ACK_NOK
+
+                                //Search the buffer to retransmit from the message
+                                Buffer *bufferToRetransmit = mess->getBuffer(opcodePack, sizeLeftPack);
+                                if (bufferToRetransmit == NULL) {
+                                    throw ErrorException("Error in an ack message "
+                                                                 ": buffer to retransmit not found in the message");
+                                }
+
+                                //Convert array to retransmit to an array of uint8_t
+                                uint8_t buffToRetransmit[mess->getSizeBuffer()];
+                                bufferToRetransmit->toArray(buffToRetransmit);
+
+                                //ReSend the message to the Device
+                                //The header bit is set to 2
+                                buffToRetransmit[HEADER_INDEX] = 2;
+
+                                //Try to retransmit the wrong buffer
+                                LOG(2, "[HANLDER] RESEND");
+                                lock_ack.lock();
+                                connectedDevice->writeToFileDescriptor(buffToRetransmit,
+                                                                       sizeBuffer);
+                                lock_ack.unlock();
+                                //Increment the number of tries if not aknowledged
+                                nbTry++;
+                            }
+                        }
+                    }
+                }
+            } else
+                isAcknowledged = true;
+        } while(!isAcknowledged);
 
         //Free allocated memory for the bufferArray
         delete []bufferArray;
@@ -178,9 +245,8 @@ bool ParentController::send(Message* mess)
             /*throw ErrorException("Error while sending a message : "
               "Number of tries to send "
               "the message exceeded");*/
-        }
-
-        LOG(2, "[HANDLER] Ack handled");
+        } else
+            LOG(2, "[HANDLER] Ack handled");
     }
     LOG(1, "[SEND] Message sended");
     return true;
