@@ -4,6 +4,7 @@
 
 #include <thread>
 #include <mutex>
+#include <queue>
 
 #include "DeviceShape.h"
 #include "Utils.h"
@@ -18,17 +19,20 @@
 int fd = 0;
 fd_set set;
 
-/* Up to 10 ACKs can be stored */
-uint8_t ack[100][10];
-uint8_t ack_index = 0;
 struct timeval timeout = {0, 1000000L};
 
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
-std::recursive_mutex lock_ack;
+std::queue<uint8_t*> message_queue;
+std::mutex message_lock;
+
+std::queue<uint8_t*> ack_queue;
+std::mutex ack_lock;
 
 /* User functions */
 void *waitForACK();
+void *handleAck();
+
 
 /**
  * @brief  Manually set a message and send it over USB
@@ -41,7 +45,8 @@ int main ()
 
     /* Check for error */
     if (fd < 0) {
-        fd = open("/dev/stdout", O_RDWR | O_NOCTTY);
+        fprintf(stderr, "[TEST FAILED]: Unable to open connection\n");
+        return EXIT_FAILURE;
     }
 
     /* Set blocking mode */
@@ -55,6 +60,7 @@ int main ()
 
     /* Define ACK thread */
     std::thread ack_thread(waitForACK);
+    std::thread ack_handling_thread(handleAck);
 
     /* Create a device shape */
     DeviceShape ds(9, 9, 9);
@@ -64,118 +70,14 @@ int main ()
 
     /* Create a data message */
     uint8_t myDataMessage[64] = {0};
-    uint8_t localAck[10] = {0};
 
-    uint8_t *ledBuffer = new uint8_t[ds.getSizeInBytes()];
+    uint8_t *ledBuffer = new uint8_t[92];
     ds.toArray(ledBuffer);
 
     uint16_t crc;
 
 
-/*  /\* ################################################ *\/ */
-/*  /\* #                SEND FIRST BUFFER             # *\/ */
-/*  /\* ################################################     *\/ */
-
-    /* Manually set header */
-    myDataMessage[0] = 2;
-    myDataMessage[1] = 1;
-    myDataMessage[2] = 0x42;
-    myDataMessage[3] = 0;
-    myDataMessage[4] = 92;
-
-    /* Copy data into the buffer */
-    ds.toArray(ledBuffer);
-    memcpy(&myDataMessage[5], ledBuffer, 57);
-
-    /* Set CRC */
-    crc = computeCRC(&myDataMessage[0], 62*sizeof(uint8_t));
-
-    myDataMessage[62] = crc >> 8;
-    myDataMessage[63] = crc & 0xFF;
-
-#if DEBUG
-    /* Print the message */
-    printf("My Data Message:");
-    for (int i = 0; i < 64; ++i)
-        printf("%u |", myDataMessage[i]);
-    printf("\n");
-#endif
-
-    /* Send it over USB */
-    if (write(fd, &myDataMessage[0], 64) == -1)
-        printf("Error while send buffer over USB\n");
-
-    /* Retrieve the ACK */
-    while (!lock_ack.try_lock());
-    memcpy(&localAck[0], ack[ack_index--], 10);
-    lock_ack.unlock();
-
-#if DEBUG
-    /* Print the ACK */
-    fprintf(stdout, "ACK: ");
-    for (int i = 0; i < 10; ++i)
-        fprintf(stdout, "%u |", localAck[i]);
-    fprintf(stdout, "\n");
-#endif
-
-    if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
-        fprintf(stderr, "[TEST FAILED]: First buffer\n");
-        ack_thread.detach();
-        return EXIT_FAILURE;
-    }
-
-
-    /* ###################################################### */
-    /* #                RESET CONNECTION                    # */
-    /* ###################################################### */
-
-    /* Reset the connection */
-    uint8_t resetConnection[7] = {0};
-
-    /* Manually set header */
-    resetConnection[0] = 1;
-    resetConnection[1] = 1;
-    resetConnection[2] = 0xFF;
-    resetConnection[3] = 0;
-    resetConnection[4] = 0;
-
-    /* Set CRC */
-    crc = computeCRC(&resetConnection[0], 5*sizeof(uint8_t));
-
-    resetConnection[5] = crc >> 8;
-    resetConnection[6] = crc & 0xFF;
-
-#if DEBUG
-    /* Print the message */
-    printf("My Data Message:");
-    for (int i = 0; i < 7; ++i)
-        printf("%u |", resetConnection[i]);
-    printf("\n");
-#endif
-
-    /* Send it over USB */
-    write(fd, &resetConnection[0], 7);
-
-    while (!lock_ack.try_lock());
-    memcpy(&localAck[0], ack[ack_index--], 10);
-    lock_ack.unlock();
-
-#if DEBUG
-    fprintf(stdout, "ACK: ");
-    for (int i = 0; i < 10; ++i)
-        fprintf(stdout, "%u |", localAck[i]);
-    fprintf(stdout, "\n");
-#endif
-
-    if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
-        fprintf(stderr, "[TEST FAILED]: Reset connection\n");
-        ack_thread.detach();
-        return EXIT_FAILURE;
-    }
-
-    /* ##################################################### */
-    /* #               SEND ENTIRE MESSAGE                 # */
-    /* ##################################################### */
+                                /* First buffer */
 
     /* Manually set header */
     myDataMessage[0] = 1;
@@ -194,32 +96,22 @@ int main ()
     myDataMessage[63] = crc & 0xFF;
 
 #if DEBUG
-    /* Print the message */
-    printf("My Data Message:");
-    for (int i = 0; i < 64; ++i)
-        printf("%u |", myDataMessage[i]);
-    printf("\n");
+    printBuffer("Message", myDataMessage, 64);
 #endif
+
+    message_lock.lock();
+    message_queue.push(myDataMessage);
+    message_lock.unlock();
 
     /* Send it over USB */
-    write(fd, &myDataMessage[0], 64);
+    if (write(fd, &myDataMessage[0], 64) == -1)
+        printf("Error while sending buffer over USB\n");
 
-    while (!lock_ack.try_lock());
-    memcpy(&localAck[0], ack[ack_index--], 10);
-    lock_ack.unlock();
 
-#if DEBUG
-    fprintf(stdout, "ACK: ");
-    for (int i = 0; i < 10; ++i)
-        fprintf(stdout, "%u |", localAck[i]);
-    fprintf(stdout, "\n");
-#endif
 
-    if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
-        fprintf(stderr, "[TEST FAILED]: First buffer (second time)\n");
-        ack_thread.detach();
-        return EXIT_FAILURE;
-    }
+
+                                /* Second buffer */
+
 
     /* Prepare next buffer to send */
     myDataMessage[0] = 0;
@@ -235,32 +127,19 @@ int main ()
     myDataMessage[63] = crc & 0xFF;
 
 #if DEBUG
-    /* Print the buffer sent */
-    printf("My Data Message:");
-    for (int i = 0; i < 64; ++i)
-        printf("%u |", myDataMessage[i]);
-    printf("\n");
+    printBuffer("Message", myDataMessage, 64);
 #endif
 
     /* Send the buffer */
     write(fd, &myDataMessage[0], 64);
 
-    while (!lock_ack.try_lock());
-    memcpy(&localAck[0], ack[ack_index--], 10);
-    lock_ack.unlock();
+    message_lock.lock();
+    message_queue.push(myDataMessage);
+    message_lock.unlock();
 
-#if DEBUG
-    fprintf(stdout, "ACK: ");
-    for (int i = 0; i < 10; ++i)
-        fprintf(stdout, "%u |", localAck[i]);
-    fprintf(stdout, "\n");
-#endif
 
-    if (memcmp(&localAck[0], &ACK_OK_HEADER[0], 5)) {
-        fprintf(stderr, "[TEST FAILED]: Second buffer\n");
-        ack_thread.detach();
-        return EXIT_FAILURE;
-    }
+
+                                /* End connection */
 
     printf("[TEST PASSED]\n");
 
@@ -282,17 +161,62 @@ int main ()
  */
 void *waitForACK()
 {
-    /* uint8_t emptyAck[10] = {0}; */
+    uint8_t ack[10] = {0};
 
     while (1) {
 
-        while (!lock_ack.try_lock());
+        if (fd == -1)
+            break;
 
-        if (select(fd + 1, &set, NULL, NULL, &timeout) > 0)
-            read(fd, &ack[++ack_index], ACK_SIZE);
-
-        lock_ack.unlock();
+        if (select(fd + 1, &set, NULL, NULL, &timeout) > 0) {
+            read(fd, &ack[0], ACK_SIZE);
+            ack_lock.lock();
+            ack_queue.push(ack);
+            ack_lock.unlock();
+        }
     }
+    return NULL;
+}
 
+
+void *handleAck()
+{
+    uint8_t localAck[10];
+
+    while (1) {
+
+        if (ack_queue.empty())
+            continue;
+
+        ack_lock.lock();
+        memcpy(localAck, ack_queue.front(), 10);
+        ack_queue.pop();
+        ack_lock.unlock();
+
+
+        if (memcmp(localAck, ACK_OK_HEADER, 5)) {
+            uint8_t buffer[64];
+
+            message_lock.lock();
+
+            memcpy(buffer, message_queue.front(), 64);
+            message_queue.pop();
+            write(fd, buffer, 64);
+            message_queue.push(buffer);
+
+            memcpy(buffer, message_queue.front(), 64);
+            message_queue.pop();
+            write(fd, buffer, 64);
+            message_queue.push(buffer);
+
+            message_lock.unlock();
+
+        } else {
+            message_lock.lock();
+            message_queue.pop();
+            message_queue.pop();
+            message_lock.unlock();
+        }
+    }
     return NULL;
 }

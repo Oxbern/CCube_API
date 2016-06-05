@@ -177,6 +177,13 @@ bool isAnAckOpcode(int val)
 }
 
 
+/*!
+ * \fn void printBuffer(std::string name, uint8_t *buffer, uint16_t size)
+ * \brief Prints a buffer
+ * \param name string
+ * \param buffer the buffer to print
+ * \param size the buffer's size
+ */
 void printBuffer(std::string name, uint8_t *buffer, uint16_t size) {
 
 	std::cout << name << ": ";

@@ -12,4 +12,6 @@
 
 build
 
-doc/
+doc/Doxyfile
+doc/html/
+doc/latex/

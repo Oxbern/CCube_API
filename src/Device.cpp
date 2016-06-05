@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <aio.h>
-
+#include <sys/file.h>
 
 #include "Device.h"
 #include "ErrorException.h"
@@ -16,12 +16,14 @@
 #include "VirtualCube.h"
 #include "Message.h"
 
+int offset = 0;
+
 /*! 
  * \brief Constructor
  * Constructor of the class Device
  * 
- * \param string port : link to the file open by the file descriptor
- * \param int id : ID of the device
+ * \param port  link to the file open by the file descriptor
+ * \param id  ID of the device
  */
 Device::Device(std::string port, int id) 
 {
@@ -58,10 +60,8 @@ Device::Device(std::string port, int id)
     this->timeout.tv_sec = 0;
     this->timeout.tv_usec = 1000000L;
 
-    /* Clear set */
-    //FD_ZERO(&set);
+    /* Poll configuration */
     pfds[0].events = POLLIN;
-
     pfds[1].events = POLLOUT;
 
 
@@ -83,8 +83,6 @@ Device::~Device()
 }
 
 /*! 
- * \fn bool connect()
- * 
  * \brief Connects the computer to the device
  * 
  * \return true if the device connected well
@@ -111,8 +109,6 @@ bool Device::connect()
 }
 
 /*! 
- * \fn bool disconnect()
- * 
  * \brief Disconnects the computer and the device
  * 
  * \return true if the device disconnected well
@@ -134,8 +130,6 @@ bool Device::disconnect()
 }
 
 /*! 
- * \fn bool updateFirmware()
- * 
  * \brief not implemented yet
  * 
  * \return true if
@@ -147,8 +141,6 @@ bool Device::updateFirmware()
 }
 
 /*! 
- * \fn bool getFirmwareVersion()
- * 
  * \brief not implemented yet
  * 
  * \return 
@@ -159,8 +151,6 @@ std::string Device::getFirmwareVersion()
 }
 
 /*! 
- * \fn bool askForDisplaySize()
- * 
  * \brief not implemented yet
  * 
  * \return 
@@ -171,12 +161,10 @@ bool Device::askForDisplaySize()
 }
 
 /*! 
- * \fn bool writeToFileDescriptor(uint8_t* data, int dataSize)
- * 
  * \brief write the data in the file descriptor 
  * 
- * \param uint8_t* data : data that needs to be written 
- * \param int dataSize : size of data
+ * \param data  data that needs to be written 
+ * \param dataSize  size of data
  *
  * \return true if the writing went well
  * false otherwise
@@ -188,58 +176,64 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
                + " Bytes) : DATA TO WRITE = "
                + uint8ArrayToString(data, dataSize));
 
-        int ret = poll(pfds, 2, 1000);
+        flock(fd, LOCK_EX);
+        int ret = poll(pfds, 2, 200);
         if (ret > 0) {
             if (pfds[1].revents & POLLOUT) {
-                fsync(fd);
                 if (write(fd, &data[0], dataSize)) {
+                    flock(fd, LOCK_UN);
                     LOG(2, "[WRITE] Data written to file");
                     return true;
                 } else {
+                    flock(fd, LOCK_UN);
+                    std::cerr << std::string(std::strerror(errno)) << std::endl;
                     LOG(2, "[WRITE] Error while writing data to file : " + std::string(std::strerror(errno)));
                 }
             }
         } else if (ret == 0)
-            LOG(1, "[WRITE] Timeout");
+            LOG(2, "[WRITE] Timeout");
         else
             LOG(2, "[WRITE] Error ");
-
+        flock(fd, LOCK_UN);
     }
     return false;
 }
 
 /*!
- * \fn void readFromFileDescriptor(uint8_t ack_buffer[10])
- * 
  * \brief store the data received in a buffer 
  * to process them in the controler
  * 
- * \param uint8_t ack_buffer[10] : array where the data are stored
+ * \param ack_buffer  array where the data are stored
  */
 bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
     //int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
-    int ret = poll(pfds, 2, 3000);
+    flock(fd, LOCK_EX);
+    int ret = poll(pfds, 2, 200);
     if (ret > 0) {
         if (pfds[0].revents & POLLIN) {
-            fsync(fd);
             ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
-            LOG(2, "[READ] Reading from Device "
-                   + std::to_string(id) + " | DATA READ = "
-                   + uint8ArrayToString(ack_buffer, sizeRead));
-            return true;
+            flock(fd, LOCK_UN);
+            if (sizeRead >= 0) {
+                LOG(2, "[READ] Reading from Device "
+                       + std::to_string(id) + " | DATA READ = "
+                       + uint8ArrayToString(ack_buffer, sizeRead));
+                fsync(fd);
+                return true;
+            } else {
+                std::cerr << std::string(std::strerror(errno)) << std::endl;
+            }
         }
     } else if (ret == 0)
-        LOG(1, "[READ] Timeout");
+        LOG(2, "[READ] Timeout");
     else
-        LOG(1, "[READ] Error");
+        LOG(2, "[READ] Error");
+    flock(fd, LOCK_UN);
     return false;
 }
 
 /*! 
- * \fn bool handleResponse(uint8_t ack[10])
- * 
  * \brief not implemented yet
  * 
  * \return 
@@ -257,8 +251,6 @@ bool Device::handleResponse(uint8_t ack[10])
 }
 
 /*! 
- * \fn int getID() const
- * 
  * \brief Returns the id of the device
  *
  * \return int id : id of the device
@@ -269,8 +261,6 @@ int Device::getID() const
 }
 
 /*! 
- * \fn std::string getPort() const
- * 
  * \brief Returns the port of the device
  * 
  * \return std::string : port of the device
@@ -281,8 +271,6 @@ std::string Device::getPort() const
 }
 
 /*! 
- * \fn DeviceShape *getcurrentConfig() const
- * 
  * \brief Returns the currentConfig of the device
  * 
  * \return DeviceShape * : currentConfig of the device
@@ -293,14 +281,12 @@ DeviceShape *Device::getcurrentConfig() const
 }
 
 /*! 
- * \fn bool on(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to true
  * by calling the function of currentConfig (DeviceShape)
  * 
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  * 
  * \return true if the configuration of the LED is now true 
  * false otherwise
@@ -311,8 +297,6 @@ bool Device::on(int x, int y, int z)
 }
 
 /*! 
- * \fn bool off()
- * 
  * \brief Set the configuration of all LEDs to false
  * by calling the function of currentConfig (DeviceShape)
  * 
@@ -324,14 +308,12 @@ bool Device::off()
 }
 
 /*! 
- * \fn bool off(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to false
  * by calling the function of currentConfig (DeviceShape)
  * 
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  *  
  * \return true if the configuration of the LED is now false 
  * false otherwise
@@ -342,15 +324,13 @@ bool Device::off(int x, int y, int z)
 }
 
 /*! 
- * \fn bool toggle(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to its 
  * opposite (true if it was false and false if it was true)
  * by calling the function of currentConfig (DeviceShape)
  * 
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  * 
  * \return true if the whole shape stays in the 3D array
  * false otherwise
@@ -361,8 +341,6 @@ bool Device::toggle(int x, int y, int z)
 }
 
 /*! 
- * \fn int getFile()
- * 
  * \brief Returns the file descriptor of the device
  * 
  * \return int : fd of the device
@@ -373,12 +351,10 @@ int Device::getFile()
 }
 
 /*! 
- * \fn bool handleAck(Message *mess, AckMessage ack)
- *
  * \brief Handles the acknowledge of the message
  * 
- * \param Message *mess : needed to know which message has to be send back
- * \param AckMessage ack : to verify if the message was received well 
+ * \param mess  needed to know which message has to be send back
+ * \param ack  to verify if the message was received well 
  * 
  * \return true if the ack is an ACK_OK
  * false otherwise
@@ -417,8 +393,6 @@ bool Device::handleAck(Message *mess, AckMessage &ack, int i)
 }
 
 /*! 
- * \fn bool setLedStatus(ShapeToDisplay s)
- * 
  * \brief Sets the 3D array of the currentDevice to the 3D array
  *  of the ShapeToDisplay
  * 

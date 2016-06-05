@@ -1,15 +1,21 @@
 #ifndef DEVICESHAPE_H
 #define DEVICESHAPE_H
 
+/*!
+ * \file DeviceShape.h
+ * \brief TODO
+ * \version 0.1
+ */
+
 #include <cstdint>
 #include <iostream>
 
 #include "Debug.h"
 #include "ShapeToDisplay.h"
 
-/**
+/*!
  * @class DeviceShape
- * \brief States of the LEDs of a device
+ * \brief TODO
  */
 class DeviceShape
 {
@@ -33,9 +39,9 @@ class DeviceShape
      * \brief Constructor
      * Constructor of the class DeviceShape
      * 
-     * \param int sizeX : First dimension of the 3D array of booleans
-     * \param int sizeY : Second dimension of the 3D array of booleans
-     * \param int sizeZ : Third dimension of the 3D array of booleans
+     * \param sizeX  First dimension of the 3D array of booleans
+     * \param sizeY  Second dimension of the 3D array of booleans
+     * \param sizeZ  Third dimension of the 3D array of booleans
      */
     DeviceShape(int sizeX = 9, int sizeY = 9, int sizeZ = 9);
     
@@ -50,9 +56,9 @@ class DeviceShape
      * 
      * \brief set the configuration of the LED of coordinates (x, y, z) to true
      *
-     * \param int x : first coordinate of the LED
-     * \param int y : second coordinate of the LED
-     * \param int z : third coordinate of the LED
+     * \param x  first coordinate of the LED
+     * \param y  second coordinate of the LED
+     * \param z  third coordinate of the LED
      * 
      * \return true if the configuration of the LED is now true 
      * false otherwise
@@ -73,9 +79,9 @@ class DeviceShape
      * 
      * \brief set the configuration of the LED of coordinates (x, y, z) to false
      *
-     * \param int x : first coordinate of the LED
-     * \param int y : second coordinate of the LED
-     * \param int z : third coordinate of the LED
+     * \param x  first coordinate of the LED
+     * \param y  second coordinate of the LED
+     * \param z  third coordinate of the LED
      *  
      * \return true if the configuration of the LED is now false 
      * false otherwise
@@ -88,9 +94,9 @@ class DeviceShape
      * \brief set the configuration of the LED of coordinates (x, y, z) to its 
      * opposite (true if it was false and false if it was true)
      * 
-     * \param int x : first coordinate of the LED
-     * \param int y : second coordinate of the LED
-     * \param int z : third coordinate of the LED
+     * \param x  first coordinate of the LED
+     * \param y  second coordinate of the LED
+     * \param z  third coordinate of the LED
      * 
      * \return true if the whole shape stays in the 3D array
      * false otherwise
@@ -111,7 +117,7 @@ class DeviceShape
      * 
      * \brief Write the 3D array in a 1D array
      * 
-     * \param uint8_t *arrayToFill : array in which we write
+     * \param arrayToFill  array in which we write
      */
     void toArray(uint8_t *arrayToFill);
     
@@ -120,8 +126,8 @@ class DeviceShape
      * 
      * \brief Overload of the operator <<
      * 
-     * \param std::ostream& os : stream on which we write
-     * \param const DeviceShape& d : DeviceShape we display
+     * \param os  stream on which we write
+     * \param d  DeviceShape we display
      * 
      * @return std::ostream& : os (stream we wrote on) 
      */    
@@ -139,9 +145,9 @@ class DeviceShape
      * 
      * \brief Overload of the operator =
      * 
-     * \param const DeviceShape &ds : the DeviceShape we want to copy
+     * \param ds  the DeviceShape we want to copy
      * 
-     * \return DeviceShape& *this : deviceShape equal to ds 
+     * \return the deviceShape equal to ds 
      */
     DeviceShape& operator=(const DeviceShape &ds);
 

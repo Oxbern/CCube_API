@@ -25,7 +25,6 @@ AckMessage::~AckMessage()
 
 /*!
  * \todo is this method usefull ?
- * \fn void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
  * \brief Fills the buffers with the data
  *
  * Method which encodes an ack
@@ -41,21 +40,9 @@ void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
 
     delete [] tab;
 }
-/*!
- * \todo is this method usefull ?
- * \fn bool checkAck(uint16_t crc)
- * \brief Checks if crc and the ack's crc match
- * \param crc
- * \return the test result 
- */
-bool AckMessage::checkAck(uint16_t crc)
-{
-    return (this->crc == crc ? true : false);
-}
 
 /*!
  * \todo is this method usefull ? 
- * \fn void handleAck(int fd, Message &msg)
  * \brief TODO
  * \param fd
  * \param msg
@@ -72,7 +59,6 @@ void AckMessage::handleAck(int fd, Message &msg)
 
 /*!
  * \todo is this method usefull ?
- * \fn void setAck(int fd)
  * \brief TODO
  * \param fd
  */
@@ -82,7 +68,6 @@ void AckMessage::setAck(int fd)
 }
 
 /*!
- * \fn uint8_t getAckType() const
  * \brief Getter
  *
  * Method which returns the type of ack

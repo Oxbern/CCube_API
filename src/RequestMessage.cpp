@@ -1,17 +1,23 @@
 #include "RequestMessage.h"
 
-/**
- * @brief Creates a request
- * @param idDevice
- * @param opCode
- */
-RequestMessage::RequestMessage(uint8_t id, uint8_t opCode) : Message(id, SIZE_REQUEST, SIZE_REQUEST - DATA_INDEX - SIZE_CRC, opCode)
+/*!
+ * \brief Constructor
+ *
+ * Creates a request
+ *
+ * \param id device's ID
+ * \param opCode BUFF_ASKING, LIGHT_ASKING, SCREEN_SIZE_ASKING, 
+ * FIRMWARE_VERSION_ASKING, ID_ASKING, AVAILABLE, WHO_ARE_YOU
+ */       
+RequestMessage::RequestMessage(uint8_t id, uint8_t opCode) :
+    Message(id, SIZE_REQUEST, SIZE_REQUEST - DATA_INDEX - SIZE_CRC, opCode)
 {
     LOG(1, "RequestMessage(idDevice, opCode)");    
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
+ *
  */
 RequestMessage::~RequestMessage()
 {
@@ -19,8 +25,7 @@ RequestMessage::~RequestMessage()
 }
 
 /*!
- * \fn void encodeCrc()
- * \brief Calculates the crc on a request message
+ * \brief Calculates and sets the crc
  */
 void RequestMessage::encodeCrc()
 {

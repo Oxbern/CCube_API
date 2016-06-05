@@ -44,15 +44,6 @@ class AckMessage : public Message
     void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack);
 
     /*!
-     * \todo is this method usefull ?
-     * \fn bool checkAck(uint16_t crc)
-     * \brief Checks if crc and the ack's crc match
-     * \param crc
-     * \return the test result 
-     */    
-    bool checkAck(uint16_t crc);
-
-    /*!
      * \todo is this method usefull ? 
      * \fn void handleAck(int fd, Message &msg)
      * \brief TODO

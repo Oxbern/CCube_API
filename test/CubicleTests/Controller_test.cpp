@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 
     std::cout << "DeviceShape on (4,4,4)" << std::endl;
     
-    c.displayDevice();
+    c.display();
     std::cout << "DeviceShape displayed" << std::endl;
 
     c.disconnectDevice();

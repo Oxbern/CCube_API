@@ -1,17 +1,17 @@
 #include "Cube.h"
 #include <sstream>
 
-    /*! 
-     * \brief Constructor
-     * Constructor of the class Cube
-     * 
-     * \param int i : size of the Cube
-     * \param Point p : origin of the Cube
-     * \param bool b : if the Cube is full or not
-     * \param int x : first dimension of the 3D array
-     * \param int y : second dimension of the 3D array
-     * \param int z : third dimension of the 3D array
-     */
+/*! 
+ * \brief Constructor
+ * Constructor of the class Cube
+ * 
+ * \param int i : size of the Cube
+ * \param Point p : origin of the Cube
+ * \param bool b : if the Cube is full or not
+ * \param int x : first dimension of the 3D array
+ * \param int y : second dimension of the 3D array
+ * \param int z : third dimension of the 3D array
+ */
 Cube::Cube(int i, Point p, bool b, int x, int y, int z) 
 : ShapeToDisplay(i, p, b, x, y, z) 
 {

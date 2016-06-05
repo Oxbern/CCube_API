@@ -5,8 +5,6 @@
 #include "AckMessage.h"
 
 /*! 
- * \fn void clearLed();
- * 
  * \brief Initialises the 3D array to false (protected function)
  */
 void DeviceShape::clearLed() 
@@ -21,9 +19,9 @@ void DeviceShape::clearLed()
  * \brief Constructor
  * Constructor of the class DeviceShape
  * 
- * \param int sizeX : First dimension of the 3D array of booleans
- * \param int sizeY : Second dimension of the 3D array of booleans
- * \param int sizeZ : Third dimension of the 3D array of booleans
+ * \param sizeX  First dimension of the 3D array of booleans
+ * \param sizeY  Second dimension of the 3D array of booleans
+ * \param sizeZ  Third dimension of the 3D array of booleans
  */
 DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) 
 {
@@ -61,13 +59,11 @@ DeviceShape::~DeviceShape()
 }
 
 /*! 
- * \fn bool on(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to true
  *
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  * 
  * \return true if the configuration of the LED is now true 
  * false otherwise
@@ -82,8 +78,6 @@ bool DeviceShape::on(int x, int y, int z)
 }
 
 /*! 
- * \fn bool off()
- * 
  * \brief Set the configuration of all LEDs to false
  * 
  * \return always return true
@@ -95,13 +89,11 @@ bool DeviceShape::off()
 }
 
 /*! 
- * \fn bool off(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to false
  *
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  *  
  * \return true if the configuration of the LED is now false 
  * false otherwise
@@ -116,14 +108,12 @@ bool DeviceShape::off(int x, int y, int z)
 }
 
 /*! 
- * \fn bool toggle(int x, int y, int z)
- * 
  * \brief set the configuration of the LED of coordinates (x, y, z) to its 
  * opposite (true if it was false and false if it was true)
  * 
- * \param int x : first coordinate of the LED
- * \param int y : second coordinate of the LED
- * \param int z : third coordinate of the LED
+ * \param x  first coordinate of the LED
+ * \param y  second coordinate of the LED
+ * \param z  third coordinate of the LED
  * 
  * \return true if the whole shape stays in the 3D array
  * false otherwise
@@ -139,8 +129,6 @@ bool DeviceShape::toggle(int x, int y, int z)
 }
 
 /*! 
- * \fn int getSizeInBytes()
- * 
  * \brief Returns the nb of uint8_t in the array
  *
  * \return int : nb of uint8_t in the array
@@ -151,11 +139,9 @@ int DeviceShape::getSizeInBytes()
 }
 
 /*! 
- * \fn void toArray(uint8_t *arrayToFill)
- * 
  * \brief Write the 3D array in a 1D array
  * 
- * \param uint8_t *arrayToFill : array in which we write
+ * \param arrayToFill : array in which we write
  */
 void DeviceShape::toArray(uint8_t *arrayToFill) 
 {
@@ -185,12 +171,10 @@ void DeviceShape::toArray(uint8_t *arrayToFill)
 }
 
 /*!
- * \fn friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
- * 
  * \brief Overload of the operator <<
  * 
- * \param std::ostream& os : stream on which we write
- * \param const DeviceShape& d : DeviceShape we display
+ * \param os : stream on which we write
+ * \param d : DeviceShape we display
  * 
  * @return std::ostream& : os (stream we wrote on) 
  */
@@ -201,8 +185,6 @@ std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
 }
 
 /*! 
- * \fn void print(std::ostream &str) const
- * 
  * \brief Displays the 3D array
  */
 void DeviceShape::print(std::ostream &str) const 
@@ -224,13 +206,11 @@ void DeviceShape::print(std::ostream &str) const
 }
 
 /*!
- * \fn DeviceShape& operator=(const DeviceShape &ds)
- * 
  * \brief Overload of the operator =
  * 
- * \param const DeviceShape &ds : the DeviceShape we want to copy
+ * \param ds  the DeviceShape we want to copy
  * 
- * \return DeviceShape& *this : deviceShape equal to ds 
+ * \return the deviceShape equal to ds 
  */
 DeviceShape& DeviceShape::operator=(const DeviceShape &ds) 
 {
@@ -247,8 +227,6 @@ DeviceShape& DeviceShape::operator=(const DeviceShape &ds)
 }
 
 /*! 
- * \fn int getSizeX() const
- * 
  * \brief Returns the first dimension of the 3D array
  *
  * \return int sizeX : first dimension of the 3D array
@@ -259,8 +237,6 @@ int DeviceShape::getSizeX() const
 }
 
 /*! 
- * \fn int getSizeY() const
- * 
  * \brief Returns the second dimension of the 3D array
  *
  * \return int sizeY : second dimension of the 3D array
@@ -271,8 +247,6 @@ int DeviceShape::getSizeY() const
 }
 
 /*! 
- * \fn int getSizeZ() const
- * 
  * \brief Returns the third dimension of the 3D array
  *
  * \return int sizeZ : third dimension of the 3D array
@@ -283,8 +257,6 @@ int DeviceShape::getSizeZ() const
 }
 
 /*! 
- * \fn bool*** getLedStatus() const
- * 
  * \brief Returns the 3D array
  *
  * \return bool ***ledStatus : the 3D array
@@ -295,8 +267,6 @@ bool*** DeviceShape::getLedStatus() const
 }
 
 /*! 
- * \fn bool copyLedStatus(ShapeToDisplay s)
- * 
  * \brief Sets the 3D array to the 3D array
  *  of the ShapeToDisplay
  * 

@@ -1,15 +1,36 @@
 #ifndef SETMESSAGE_H
 #define SETMESSAGE_H
 
+/*!
+ * \file SetMessage.h
+ * \brief Messages of type setting : LIGHT_SENDING
+ *
+ * \version 0.1
+ */
+
 #include "Message.h"
 
-/**
- * @class Message creation when wanting to set something
+/*!
+ * \class SetMessage
+ * \brief Class representing a message when wanting to set something
  */
 class SetMessage : public Message
 {
  public :
-    SetMessage(uint8_t id, uint8_t code);
+    /*!
+     * \brief Constructor
+     *
+     * Creates a setting request
+     *
+     * \param id device's ID
+     * \param opCode LIGHT_SENDING
+     */           
+    SetMessage(uint8_t id, uint8_t opCode);
+
+    /*!
+     * \brief Destructor
+     *
+     */    
     ~SetMessage();
 };
 

@@ -1,13 +1,22 @@
+#ifndef CUBE_H
+#define CUBE_H
+/*!
+ * \file Cube.h
+ * \brief TODO
+ * \version 0.1
+ */
 #include "ShapeToDisplay.h"
 
-/**
+/*!
  * \class Cube
  * \brief Class describing a cube (a shape which can be displayed on the device)
  */
-class Cube : public ShapeToDisplay {
+class Cube : public ShapeToDisplay
+{
 public:
     /*! 
      * \brief Constructor
+     *
      * Constructor of the class Cube
      * 
      * \param int i : size of the Cube
@@ -133,3 +142,5 @@ public:
  * \return std::ostream Out
  */
 std::ostream& operator<<(std::ostream &out, Cube &c);
+
+#endif

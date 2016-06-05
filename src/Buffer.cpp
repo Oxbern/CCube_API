@@ -4,6 +4,10 @@
 #include "Utils.h"
 #include "Buffer.h"
 
+/*!
+  \def MIN(X, Y)
+  Computes the minimum of \a x and \a y.
+*/
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 /*! 
@@ -69,7 +73,6 @@ Buffer::~Buffer()
 }
 
 /*!
- * \fn void setHeader(uint8_t head)
  * \brief Sets the header of a buffer
  *
  * Setter
@@ -82,7 +85,6 @@ void Buffer::setHeader(uint8_t head)
 }
 
 /*!
- * \fn void setID(uint8_t id)
  * \brief Sets the device ID of a buffer
  *
  * Setter
@@ -95,7 +97,6 @@ void Buffer::setID(uint8_t id)
 }
 
 /*!
- * \fn void setOpCode(uint8_t code)
  * \brief Sets the operation code of a buffer
  *
  * Setter
@@ -108,7 +109,6 @@ void Buffer::setOpCode(uint8_t code)
 }
 
 /*!
- * \fn void setSizeLeft(uint16_t size)
  * \brief Sets the SizeLeft of a buffer
  *
  * Setter
@@ -121,7 +121,6 @@ void Buffer::setSizeLeft(uint16_t size)
 }
 
 /*!
- * \fn void setCrc(uint16_t crcCheck)
  * \brief Sets the crc of a buffer
  *
  * Setter
@@ -135,7 +134,6 @@ void Buffer::setCrc(uint16_t crcCheck)
 
 /*!
  * \todo is this method useful ?
- * \fn void setData(int index, uint8_t dataIndex)
  * \brief Sets data[index]
  *
  * Setter
@@ -149,7 +147,6 @@ void Buffer::setData(int index, uint8_t dataIndex)
 }
 
 /*!
- * \fn uint8_t getHeader() const
  * \brief Returns the header
  *
  * Getter
@@ -162,7 +159,6 @@ uint8_t Buffer::getHeader() const
 }
 
 /*!
- * \fn uint8_t getOpCode() const
  * \brief Returns the operation code
  *
  * Getter
@@ -175,7 +171,6 @@ uint8_t Buffer::getOpCode() const
 }
 
 /*!
- * \fn uint16_t getSizeLeft() const
  * \brief Returns the left size of a message
  *
  * Getter
@@ -188,7 +183,6 @@ uint16_t Buffer::getSizeLeft() const
 }
 
 /*!
- * \fn uint8_t *getData() const
  * \brief Returns the data contained in a buffer
  *
  * Getter
@@ -201,7 +195,6 @@ uint8_t *Buffer::getData() const
 }
 
 /*!
- * \fn uint16_t getCrc() const
  * \brief Returns the crc
  *
  * Getter
@@ -214,7 +207,6 @@ uint16_t Buffer::getCrc() const
 }
 
 /*!
- * \fn int getSizeBuffer() const
  * \brief Returns the size of the buffer
  *
  * Getter
@@ -227,7 +219,6 @@ int Buffer::getSizeBuffer() const
 }
 
 /*!
- * \fn uint8_t getID() const
  * \brief Returns the ID of the device which this buffer is from or for
  *
  * Getter
@@ -240,7 +231,6 @@ uint8_t Buffer::getID() const
 }
 
 /*!
- * \fn bool operator==(Buffer b)
  * \brief Comparaison operator == between two buffers
  *
  * 
@@ -263,7 +253,6 @@ bool Buffer::operator==(Buffer b)
 }
 
 /*!
- * \fn void toArray(uint8_t* buffLinear)
  * \brief Converts a buffer into an array
  *
  * 
@@ -295,7 +284,6 @@ void Buffer::toArray(uint8_t* buffLinear)
 }
 
 /*!
- * \fn std::string toString()
  * \brief Prints a buffer 
  *
  * Method to string
@@ -328,7 +316,6 @@ std::string Buffer::toString()
 
 
 /*!
- * \fn std::string toStringDebug(int indexInMess)
  * \brief Prints a buffer for debug purposes
  *
  * Method to string
@@ -375,13 +362,11 @@ std::string Buffer::toStringDebug(int indexInMess)
 
 
 /*!
- * \fn int dataSize(int sizeBuffer);
- * \brief Returns the size in Bytes available for the data
+ * \brief Returns the size available for the data
  *
- * 
- * \param sizeBuffer entire size of a buffer
+ *
  * \return the size a buffer can contain data
- */                
+ */
 int Buffer::getDataSize()
 {
     return (sizeBuffer - DATA_INDEX - SIZE_CRC);
@@ -389,7 +374,6 @@ int Buffer::getDataSize()
 
 
 /*!
- * \fn void crcEncoding()
  * \brief Encodes the crc in the buffer
  */
 void Buffer::crcEncoding()

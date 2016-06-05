@@ -10,25 +10,109 @@
  * \brief Annexe functions
  * \version 0.1
  */
+
+/*!
+ * \def CRC16
+ * \brief TODO
+ */
+#define CRC16 0x1021
+
+/*!
+ * \def SIZE_ACK
+ * \brief the entire size of an AckMessage buffer
+ */
 #define SIZE_ACK 10
+
+/*!
+ * \def SIZE_BUFFER
+ * \brief the entire size of a DataMessage buffer
+ */
 #define SIZE_BUFFER 64
+
+/*!
+ * \def SIZE_REQUEST
+ * \brief the entire size of a RequestMessage buffer
+ */
 #define SIZE_REQUEST 7
+
+/*!
+ * \def SIZE_ANSWER
+ * \brief the entire size of an AnswerMessage buffer
+ */
 #define SIZE_ANSWER 8
+
+/*!
+ * \def SIZE_SET
+ * \brief the entire size of a SetMessage buffer
+ */
 #define SIZE_SET 8
+
+/*!
+ * \def SIZE_FIRST
+ * \brief the entire size of a FirstMessage buffer
+ */
 #define SIZE_FIRST 10
 
+
+/*!
+ * \def SIZE_OPCODE
+ * \brief the size of an operation code in bytes
+ */
 #define SIZE_OPCODE 1
+
+/*!
+ * \def SIZE_ID
+ * \brief the size of an ID in bytes
+ */
 #define SIZE_ID 1
+
+/*!
+ * \def SIZE_SIZE
+ * \brief the size of size value in bytes
+ */
 #define SIZE_SIZE 2
+
+/*!
+ * \def SIZE_CRC
+ * \brief the size of CRC value in bytes
+ */
 #define SIZE_CRC 2
 
+/*!
+ * \def HEADER_INDEX
+ * \brief the first byte's index
+ */
 #define HEADER_INDEX 0
+
+/*!
+ * \def ID_INDEX
+ * \brief the ID's index
+ */
 #define ID_INDEX 1
+
+/*!
+ * \def OPCODE_INDEX
+ * \brief the operation code's index
+ */
 #define OPCODE_INDEX 2
+
+/*!
+ * \def SIZE_INDEX
+ * \brief the sizeLeft's index
+ */
 #define SIZE_INDEX 3
+
+/*!
+ * \def DATA_INDEX
+ * \brief the begining of data's index
+ */
 #define DATA_INDEX 5
 
 
+/*!
+ * \enum OPCODE
+ * \brief The different operation codes detailled in the API specification
+ */
 enum OPCODE {
     // ACKMESSAGE TYPE
     ACK_OK = 0x01,
@@ -106,7 +190,7 @@ bool isAValidAnswerOpcode(int val);
  */
 bool isAnAckOpcode(int val);
 
-#define CRC16 0x1021
+
 
 /*!
  * \fn uint16_t computeCRC(uint8_t *data, uint16_t size)
@@ -135,6 +219,13 @@ void printArray(uint8_t *array, int arraySize);
 std::string uint8ArrayToString(uint8_t *array, int arraySize);
 
 
+/*!
+ * \fn void printBuffer(std::string name, uint8_t *buffer, uint16_t size)
+ * \brief Prints a buffer
+ * \param name string
+ * \param buffer the buffer to print
+ * \param size the buffer's size
+ */
 void printBuffer(std::string name, uint8_t *buffer, uint16_t size);
 
 #endif

@@ -1,12 +1,17 @@
-// Class for demo
-
 #ifndef BALL_H
 #define	BALL_H
+
+/*!
+ * \file Ball.h
+ * \brief A test class
+ * 
+ * \version 0.1
+ */
 
 #include "ShapeToDisplay.h"
 // TODO : inherite from cube.h
 
-/**
+/*!
  * \class Ball
  * \brief Class describing a ball with bounces on the device 
  */

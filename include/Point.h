@@ -1,6 +1,12 @@
 #ifndef POINT_H
 #define POINT_H
 
+/*!
+ * \file Point.h
+ * \brief TODO
+ * \version 0.1
+ */
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

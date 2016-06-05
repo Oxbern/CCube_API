@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 
     // Display led status on the current connected device.
     while(1){
-        c.displayDevice();
+        c.display();
         std::cout<<"DISPLAYED, move?"<<std::endl;
         int choice = 0;
         std::cin >> choice;

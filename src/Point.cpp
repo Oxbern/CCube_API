@@ -22,18 +22,6 @@ Point::Point() : x(0), y(0), z(0)
  */
 Point::Point(uint8_t x, uint8_t y, uint8_t z) : x(x), y(y), z(z) 
 {
-    if (x < 0 || x > 8) {
-        perror("Index (x) of led out of bounds");
-        exit(EXIT_FAILURE);
-    }
-    if (y < 0 || y > 8) {
-        perror("Index (y) of led out of bounds");
-        exit(EXIT_FAILURE);
-    }
-    if (z < 0 || z > 8) {
-        perror("Index (z) of led out of bounds");
-        exit(EXIT_FAILURE);
-    }
 }
 
 /*! 
@@ -102,7 +90,7 @@ void Point::setY(int y)
  * 
  * \param int z : int to set the coordinate to
  */
-void Point::setZ(int z) 
+void Point::setZ(int z)
 {
     //    if (z >= 0 && z < 9)
     this->z = z;

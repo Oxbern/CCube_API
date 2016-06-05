@@ -15,6 +15,8 @@ int fd = -1;
 
 uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 
+
+
 /**
  * @brief  Manually set a message and send it over USB
  *         Get the ACK sent back
@@ -23,8 +25,8 @@ int main ()
 {
                                 /* Open connection */
 
-    /* Open connection in non blocking mode */
-    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
+    /* Open connection in blocking mode */
+    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
 
     /* Check for error */
     if (fd < 0) {
@@ -32,8 +34,8 @@ int main ()
         return EXIT_FAILURE;
     }
 
-    /* Set non blocking mode */
-    fcntl(fd, F_SETFL, 0);
+    /* /\* Set blocking mode *\/ */
+    /* fcntl(fd, F_SETFL, 0); */
 
 
                                 /* Define variables used here */
@@ -46,7 +48,7 @@ int main ()
 
     /* Create a data message */
     uint8_t myDataMessage[64] = {0};
-    uint8_t localAck[10] = {0};
+    uint8_t emptyAck[10] = {0};
 
     uint8_t *ledBuffer = new uint8_t[92];
     ds.toArray(ledBuffer);
@@ -78,15 +80,10 @@ int main ()
 #endif
 
     /* Send it over USB */
-    if (write(fd, &myDataMessage[0], 64) == -1)
-        printf("Error while send buffer over USB\n");
+    write(fd, &myDataMessage[0], 64);
 
     /* Wait for ACK response */
-    read(fd, &localAck[0], 10);
-
-#if DEBUG
-    printBuffer("ACK", &localAck[0], 10);
-#endif
+    read(fd, &emptyAck[0], 10);
 
 
                                 /* Second buffer */
@@ -110,15 +107,10 @@ int main ()
 #endif
 
     /* Send it over USB */
-    if (write(fd, &myDataMessage[0], 64) == -1)
-        printf("Error while send buffer over USB\n");
+    write(fd, &myDataMessage[0], 64);
 
     /* Wait for ACK response */
-    read(fd, &localAck[0], 10);
-
-#if DEBUG
-    printBuffer("ACK", &localAck[0], 10);
-#endif
+    read(fd, &emptyAck[0], 10);
 
     printf("[TEST PASSED]\n");
 

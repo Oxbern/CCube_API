@@ -1,68 +1,78 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <list>
-#include <queue>
-#include <thread>
-#include <mutex>
-
-#include "Device.h"
-#include "Message.h"
-#include "Listener.h"
-//class Listener; //Needed to avoid recursive includes
-
-#include <stdbool.h>
-#include <unistd.h>
-#include <cstring>
-#include <string>
-#include <iostream>
-#include <algorithm>
-
-struct Dictionnary{
-    int bus;
-    int Device;
-} typedef Dictionnary;
-
-/**
- * @class Controller
+/*!
+ * \file Controller.h
+ * \brief TODO
+ * \version 0.1
  */
-class Controller
+
+#include "ParentController.h"
+
+/*!
+ * \class Controller
+ * \brief TODO
+ */
+class Controller : public ParentController
 {
- private:
-    std::list<Listener> listeners;
-    std::list<Device*> devices;
-    Device *connectedDevice;
-    std::queue<Message> messages; //FIFO of last messages
-    std::queue <uint8_t*> buffReceived;
-    std::thread ack_thread;
-    std::recursive_mutex lock_ack;
-
-    void *waitForACK();
-
  public:
+    /*!
+     * \brief Constructor
+     *
+     * Creates a controller, 
+     * lists all USB connected devices and adds them to the Device list
+     *
+     */
     Controller();
-    ~Controller();
-
-    bool addListener(Listener &l);
-    bool removeListener(Listener &l);
-    bool listAllDevices();
-    void listAndGetUSBConnectedDevices();
-    std::string getPortFromID(int id);
-    bool connectDevice(int id);
-    bool connectDevice(Device *d);
-    bool connectDevice();
-    bool disconnectDevice();
-    Device* getConnectedDevice();
-    bool on(int x, int y, int z);
-    bool send(Message* mess);
-    bool handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait, bool *isAcknowledged);
-    bool displayDevice();
     
-    std::list<Device*> getListDevices();
+    /*!
+     * \brief Destructor
+     *
+     */
+    ~Controller();
+    /*! 
+     * \fn bool on(int x, int y, int z)
+     * \brief Switches on a led on the current connected device
+     * \param x
+     * \param y
+     * \param z
+     * \return bool
+     */
+    bool on(int x, int y, int z);
 
+    /*! 
+     * \fn bool off(int x, int y, int z)
+     * \brief Switches off a led on the current connected device
+     * \param x
+     * \param y
+     * \param z
+     * \return bool
+     */
+    bool off(int x, int y, int z);
+
+    /*! 
+     * \fn bool off()
+     * \brief Switches off the entire device
+     * \return bool
+     */
+    bool off();
+
+    /*! 
+     * \fn bool toggle(int x, int y, int z)
+     * \brief Sets the state of a led to its opposite on the current connected device
+     * \param x
+     * \param y
+     * \param z
+     * \return bool
+     */
+    bool toggle(int x, int y, int z);
+
+    /*!
+     * \fn bool display()
+     * \brief TODO
+     * \return bool
+     */
+      bool display();    
 };
 
-void getNextWord(char *path, int *j, char * wordreturn);
-Dictionnary *getDictSTM( int *nbSTM);
-bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic);
 #endif //CONTROLLER_H

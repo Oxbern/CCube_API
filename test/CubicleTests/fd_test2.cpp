@@ -77,10 +77,9 @@ int main()
 #if DEBUG
     std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
 #endif
-    uint8_t* reqLinear = new uint8_t[SIZE_REQUEST];
-    reqLinear={0};
-    uint8_t* buffLinear = new uint8_t[SIZE_BUFFER];
-    buffLinear={0};
+    uint8_t* reqLinear = new uint8_t[SIZE_REQUEST]();
+
+    uint8_t* buffLinear = new uint8_t[SIZE_BUFFER]();
     
     /* Resets the connection */
     RequestMessage resetConnection(1, RESET);

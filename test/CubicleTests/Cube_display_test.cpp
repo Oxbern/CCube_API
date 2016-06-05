@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     
     Cube cube(size, p, full, sizeX, sizeY, sizeZ);
 
-    c.displayDevice();
+    c.display();
     
     std::cout << "DeviceShape displayed" << std::endl;
 
