@@ -6,12 +6,12 @@
  *
  * Constructor of the class Cube
  *
- * \param i
- * \param p 
- * \param b
- * \param x
- * \param y
- * \param z
+ * \param i TODO
+ * \param p TODO
+ * \param b TODO
+ * \param x TODO
+ * \param y TODO
+ * \param z TODO
  */
 Cube::Cube(int i, Point p, bool b, int x, int y, int z) :
     ShapeToDisplay(i, p, b, x, y, z) 

@@ -81,16 +81,62 @@ class Point
      * \param z value
      */
     void setZ(int z);
-  
+
+    /*!
+     * \fn void incrX()
+     * \brief Adds 1 to the first coordinate
+     */
     void incrX();
+
+    /*!
+     * \fn void incrY()
+     * \brief Adds 1 to the second coordinate
+     */    
     void incrY();
+
+    /*!
+     * \fn void incrZ()
+     * \brief Adds 1 to the third coordinate
+     */    
     void incrZ();
+
+    /*!
+     * \fn void decrX()
+     * \brief Subtracts 1 to the first coordinate
+     */    
     void decrX();
+
+    /*!
+     * \fn void decrY()
+     * \brief Subtracts 1 to the second coordinate
+     */    
     void decrY();
+
+    /*!
+     * \fn void decrZ()
+     * \brief Subtracts 1 to the third coordinate
+     */    
     void decrZ();
 
+    /*!
+     * \fn uint8_t getX() const
+     * \brief Accessor to the first coordinate
+     * \return the first coordinate's value
+     */
     uint8_t getX() const;
+
+    /*!
+     * \fn uint8_t getY() const
+     * \brief Accessor to the second coordinate
+     * \return the second coordinate's value
+     */
     uint8_t getY() const;
+
+    /*!
+     * \fn uint8_t getZ() const
+     * \brief Accessor to the third coordinate
+     * \return the third coordinate's value
+     */
     uint8_t getZ() const;
 
     /*!
@@ -120,12 +166,19 @@ class Point
 /*!
  * \fn std::ostream& operator << (std::ostream &out, const Point &p)
  * \brief Overload of the operator <<
- * \param str  stream on which we write
+ * \param out stream on which we write
  * \param p  Point we want to display 
  * \return std::ostream out
  */
 std::ostream& operator << (std::ostream &out, const Point &p);
 
+/*!
+ * \fn Point operator + (const Point &p1, const Point &p2)
+ * \brief Operator + overload
+ * \param p1 the first point
+ * \param p2 the second point
+ * \return the total : p1 + p2
+ */
 Point operator + (const Point &p1, const Point &p2);
     
 #endif
