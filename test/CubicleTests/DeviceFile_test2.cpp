@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         }
 
 
-        if (!c.displayDevice()) {
+        if (!c.display()) {
              std::cout << "Unable to display" << std::endl;
              return EXIT_FAILURE;
         }

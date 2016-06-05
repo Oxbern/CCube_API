@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     c.on(x,y,z);
 
     // Update the display, and physically switch on the light
-    c.displayDevice();
+    c.display();
     
     //Don't forget to disconnect
     c.disconnectDevice();
