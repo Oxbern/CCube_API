@@ -175,7 +175,6 @@ void *waitForACK()
             ack_lock.unlock();
         }
     }
-
     return NULL;
 }
 
@@ -219,4 +218,5 @@ void *handleAck()
             message_lock.unlock();
         }
     }
+    return NULL;
 }
