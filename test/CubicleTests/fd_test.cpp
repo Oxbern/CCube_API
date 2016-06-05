@@ -26,9 +26,12 @@ uint8_t ACK_OK_HEADER[5] = {1, 1, 1, 0, 3};
 std::queue<uint8_t*> message_queue;
 std::mutex message_lock;
 
+std::queue<uint8_t*> ack_queue;
+std::mutex ack_lock;
+
 /* User functions */
 void *waitForACK();
-void handleAck(uint8_t *ack);
+void *handleAck();
 
 
 /**
@@ -57,6 +60,7 @@ int main ()
 
     /* Define ACK thread */
     std::thread ack_thread(waitForACK);
+    std::thread ack_handling_thread(handleAck);
 
     /* Create a device shape */
     DeviceShape ds(9, 9, 9);
@@ -101,7 +105,7 @@ int main ()
 
     /* Send it over USB */
     if (write(fd, &myDataMessage[0], 64) == -1)
-        printf("Error while send buffer over USB\n");
+        printf("Error while sending buffer over USB\n");
 
 
 
@@ -161,9 +165,14 @@ void *waitForACK()
 
     while (1) {
 
+        if (fd == -1)
+            break;
+
         if (select(fd + 1, &set, NULL, NULL, &timeout) > 0) {
             read(fd, &ack[0], ACK_SIZE);
-            handleAck(ack);
+            ack_lock.lock();
+            ack_queue.push(ack);
+            ack_lock.unlock();
         }
     }
 
@@ -171,28 +180,43 @@ void *waitForACK()
 }
 
 
-void handleAck(uint8_t *ack)
+void *handleAck()
 {
-    if (memcmp(ack, ACK_OK_HEADER, 5)) {
-        uint8_t buffer[64];
-        message_lock.lock();
-        memcpy(buffer, message_queue.front(), 64);
-        message_queue.pop();
-        message_queue.push(buffer);
-        message_lock.unlock();
-        write(fd, buffer, 64);
+    uint8_t localAck[10];
 
-        message_lock.lock();
-        memcpy(buffer, message_queue.front(), 64);
-        message_queue.pop();
-        message_queue.push(buffer);
-        message_lock.unlock();
-        write(fd, buffer, 64);
+    while (1) {
 
-    } else {
-        message_lock.lock();
-        message_queue.pop();
-        message_queue.pop();
-        message_lock.unlock();
+        if (ack_queue.empty())
+            continue;
+
+        ack_lock.lock();
+        memcpy(localAck, ack_queue.front(), 10);
+        ack_queue.pop();
+        ack_lock.unlock();
+
+
+        if (memcmp(localAck, ACK_OK_HEADER, 5)) {
+            uint8_t buffer[64];
+
+            message_lock.lock();
+
+            memcpy(buffer, message_queue.front(), 64);
+            message_queue.pop();
+            write(fd, buffer, 64);
+            message_queue.push(buffer);
+
+            memcpy(buffer, message_queue.front(), 64);
+            message_queue.pop();
+            write(fd, buffer, 64);
+            message_queue.push(buffer);
+
+            message_lock.unlock();
+
+        } else {
+            message_lock.lock();
+            message_queue.pop();
+            message_queue.pop();
+            message_lock.unlock();
+        }
     }
 }
