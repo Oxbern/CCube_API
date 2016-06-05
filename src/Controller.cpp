@@ -77,7 +77,7 @@ void *Controller::waitForACK()
 }
 
 /*!
- * \brief
+ * \brief TODO
  * \param mess Message
  * \return 
  */
@@ -261,7 +261,7 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
 
 
 /*!
- * \brief
+ * \brief TODO
  * \return bool
  */
 bool Controller::displayDevice()
@@ -446,6 +446,39 @@ Device* Controller::getConnectedDevice()
 bool Controller::on(int x, int y, int z)
 {
     return connectedDevice->on(x,y,z);
+}
+
+/*! 
+ * \brief Switches off a led on the current connected device
+ * \param x
+ * \param y
+ * \param z
+ * \return bool
+ */
+bool Controller::off(int x, int y, int z)
+{
+    return connectedDevice->off(x,y,z);
+}
+
+/*! 
+ * \brief Switches off the entire device
+ * \return bool
+ */
+bool Controller::off()
+{
+    return connectedDevice->off();
+}
+
+/*! 
+ * \brief Sets the state of a led to its opposite on the current connected device
+ * \param x
+ * \param y
+ * \param z
+ * \return bool
+ */
+bool Controller::toggle(int x, int y, int z)
+{
+    return connectedDevice->toggle(x,y,z);
 }
 
 /*!
@@ -712,6 +745,6 @@ void Controller::listAndGetUSBConnectedDevices()
         pclose(fp);
     }
 
-    /* Free all alocated memory */
+    /* Free all allocated memory */
     delete [] dic;
 }

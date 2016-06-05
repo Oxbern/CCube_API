@@ -156,6 +156,33 @@ class Controller
      */
     bool on(int x, int y, int z);
 
+    /*! 
+     * \fn bool off(int x, int y, int z)
+     * \brief Switches off a led on the current connected device
+     * \param x
+     * \param y
+     * \param z
+     * \return bool
+     */
+    bool off(int x, int y, int z);
+
+    /*! 
+     * \fn bool off()
+     * \brief Switches off the entire device
+     * \return bool
+     */
+    bool off();
+
+    /*! 
+     * \fn bool toggle(int x, int y, int z)
+     * \brief Sets the state of a led to its opposite on the current connected device
+     * \param x
+     * \param y
+     * \param z
+     * \return bool
+     */
+    bool toggle(int x, int y, int z);    
+    
     /*!
      * \fn bool send(Message* mess)
      * \brief
