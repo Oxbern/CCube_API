@@ -25,8 +25,8 @@ int main ()
 {
                                 /* Open connection */
 
-    /* Open connection in non blocking mode */
-    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
+    /* Open connection in blocking mode */
+    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
 
     /* Check for error */
     if (fd < 0) {
@@ -34,8 +34,8 @@ int main ()
         return EXIT_FAILURE;
     }
 
-    /* Set non blocking mode */
-    fcntl(fd, F_SETFL, 0);
+    /* /\* Set blocking mode *\/ */
+    /* fcntl(fd, F_SETFL, 0); */
 
 
                                 /* Define variables used here */
