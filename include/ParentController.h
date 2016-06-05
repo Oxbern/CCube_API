@@ -77,7 +77,7 @@ class ParentController
      * \param l listener to add
      * \return TODO
      */
-      bool addListener(Listener &l);
+    virtual bool addListener(Listener &l);
 
     /*!
      * \fn bool removeListener(Listener &l)
@@ -85,21 +85,21 @@ class ParentController
      * \param l listener to remove
      * \return TODO
      */
-      bool removeListener(Listener &l);
+    virtual bool removeListener(Listener &l);
 
     /*!
      * \fn bool listAllDevices()
      * \brief Lists all devices which are connected via USB
      * \return TODO
      */
-      bool listAllDevices();
+    virtual bool listAllDevices();
 
     /*!
      * \fn void listAndGetUSBConnectedDevices()
      * \brief Displays the list of all USB connected devices 
      * and pushes them in the device list
      */
-      void listAndGetUSBConnectedDevices();
+    virtual void listAndGetUSBConnectedDevices();
 
     /*!
      * \fn std::string getPortFromID(int id)
@@ -107,7 +107,7 @@ class ParentController
      * \param id of the device to get the port from
      * \return string
      */
-      std::string getPortFromID(int id);
+    virtual std::string getPortFromID(int id);
 
     /*!
      * \fn bool connectDevice(int id)
@@ -115,7 +115,7 @@ class ParentController
      * \param id ID of the device to connect
      * \return 
      */
-      bool connectDevice(int id);
+    virtual bool connectDevice(int id);
 
     /*!
      * \fn bool connectDevice(Device *d)
@@ -123,28 +123,28 @@ class ParentController
      * \param d device to connect
      * \return bool
      */
-      bool connectDevice(Device *d);
+    virtual bool connectDevice(Device *d);
 
     /*!
      * \fn bool connectDevice()
      * \brief Connects the controller to a device chosen from the list
      * \return
      */
-      bool connectDevice();
+    virtual bool connectDevice();
 
     /*!
      * \fn bool disconnectDevice()
      * \brief Disconnects the controller from the device
      * \return 
      */
-      bool disconnectDevice();
+    virtual bool disconnectDevice();
 
     /*!
      * \fn Device* getConnectedDevice()
      * \brief Accessor to the current connected device
      * \return the current connected device
      */
-      Device* getConnectedDevice();
+    virtual Device* getConnectedDevice();
 
     /*!
      * \fn bool send(Message* mess)
@@ -152,7 +152,7 @@ class ParentController
      * \param mess Message
      * \return 
      */
-      bool send(Message* mess);
+    virtual bool send(Message* mess);
 
     /*! 
      * \fn bool handleNewMessage(Message *mess, int currentBuff, int *nbTry, 
@@ -165,22 +165,15 @@ class ParentController
      * \param isAcknowledged
      * \return bool
      */
-      bool handleNewMessage(Message *mess, int currentBuff, int *nbTry,
+    virtual bool handleNewMessage(Message *mess, int currentBuff, int *nbTry,
                                   int *nbWait, bool *isAcknowledged);
-
-    /*!
-     * \fn bool displayDevice()
-     * \brief
-     * \return bool
-     */
-      bool displayDevice();
 
     /*!
      * \fn std::list<Device*> getListDevices()
      * \brief Accessor to the list of USB connected devices
      * \return the list of USB connected devices
      */
-        std::list<Device*> getListDevices();
+    virtual std::list<Device*> getListDevices();
 
 };
 
