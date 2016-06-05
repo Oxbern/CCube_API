@@ -1,11 +1,8 @@
-# CCube_API specification
+# CCube_API conception
 
+## How to add a new functionnality to the API ?
 
-### Version 1.0
-
-
-## Definitions
-![alt tag](https://github.com/Oxbern/CCube_API/blob/master/UMLDiag.png)
+## Example
 
 ## Specification
 
