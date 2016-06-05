@@ -71,3 +71,30 @@ bool Controller::toggle(int x, int y, int z)
 {
     return connectedDevice->toggle(x,y,z);
 }
+
+/*!
+ * \brief TODO
+ * \return bool
+ */
+bool Controller::display()
+{
+    //Create a DataMessage
+    DataMessage dm(connectedDevice->getID(),
+                   connectedDevice->getcurrentConfig()->getSizeInBytes(),
+                   OPCODE(BUFF_SENDING));
+
+    //Encode the message with the DeviceShape of the Device
+    uint8_t *ledsBuffer = new uint8_t[connectedDevice->getcurrentConfig()->getSizeInBytes()];
+    connectedDevice->getcurrentConfig()->toArray(ledsBuffer);
+    dm.encode(ledsBuffer);
+
+    //Deallocate memory
+    delete[] ledsBuffer;
+
+    if (!send(&dm)) {
+        std::cerr << "Error while sending ledBuffer" << std::endl;
+        return false;
+    }
+
+    return true;
+}

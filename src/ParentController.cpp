@@ -261,33 +261,6 @@ bool ParentController::handleNewMessage(Message *mess, int currentBuff, int *nbT
 
 
 /*!
- * \brief TODO
- * \return bool
- */
-bool ParentController::displayDevice()
-{
-    //Create a DataMessage
-    DataMessage dm(connectedDevice->getID(),
-                   connectedDevice->getcurrentConfig()->getSizeInBytes(),
-                   OPCODE(BUFF_SENDING));
-
-    //Encode the message with the DeviceShape of the Device
-    uint8_t *ledsBuffer = new uint8_t[connectedDevice->getcurrentConfig()->getSizeInBytes()];
-    connectedDevice->getcurrentConfig()->toArray(ledsBuffer);
-    dm.encode(ledsBuffer);
-
-    //Deallocate memory
-    delete[] ledsBuffer;
-
-    if (!send(&dm)) {
-        std::cerr << "Error while sending ledBuffer" << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
-/*!
  * \brief Adds a listener to the controller's list of listeners
  * \param l listener to add
  * \return TODO

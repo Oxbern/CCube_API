@@ -67,6 +67,12 @@ class Controller : public ParentController
      */
     bool toggle(int x, int y, int z);
 
+    /*!
+     * \fn bool display()
+     * \brief TODO
+     * \return bool
+     */
+      bool display();    
 };
 
 #endif //CONTROLLER_H
