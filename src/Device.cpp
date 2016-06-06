@@ -228,23 +228,6 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 }
 
 /*! 
- * \brief not implemented yet
- * 
- * \return 
- */
-bool Device::handleResponse(uint8_t ack[10]) 
-{
-    fprintf(stdout, "ACK : ");
-    for (int i = 0; i < 10; ++i)
-        fprintf(stdout, "%u |", ack[i]);
-    fprintf(stdout, "\n");
-
-
-
-    return true;
-}
-
-/*! 
  * \brief Returns the id of the device
  *
  * \return int id : id of the device
@@ -349,6 +332,7 @@ int Device::getFile()
  * 
  * \param mess  needed to know which message has to be send back
  * \param ack  to verify if the message was received well 
+ * \param i TODO
  * 
  * \return true if the ack is an ACK_OK
  * false otherwise

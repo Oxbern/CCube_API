@@ -22,6 +22,7 @@ class DeviceShape
  protected :
      
     /*! 
+     * \todo use off() instead of clearLed()
      * \fn void clearLed();
      * 
      * \brief Initialises the 3D array to false 

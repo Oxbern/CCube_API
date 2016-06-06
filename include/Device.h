@@ -226,23 +226,13 @@ class Device
     int getFile();
     
     /*! 
-     * \fn bool handleResponse(uint8_t ack[10])
-     * 
-     * \brief not implemented yet
-     * 
-     * \return 
-     */
-    bool handleResponse(uint8_t ack[10]);
-
-
-    /*! 
      * \fn bool handleAck(Message *mess, AckMessage ack, int i)
      *
      * \brief Handles the acknowledge of the message
      * 
      * \param mess  needed to know which message has to be send back
      * \param ack  to verify if the message was received well 
-     * \param i
+     * \param i TODO
      * 
      * \return true if the ack is an ACK_OK
      * false otherwise
