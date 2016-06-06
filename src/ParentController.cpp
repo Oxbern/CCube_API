@@ -73,13 +73,9 @@ void *ParentController::waitForACK()
         uint8_t *buff = new uint8_t[10];
         if (this->connectedDevice != NULL) {
             if (this->connectedDevice->readFromFileDescriptor(buff)) {
-                lock_ack.lock();
-                /* LOG(1, "[THREAD] Lock taken"); */
                 buffReceived.push(buff);
-                lock_ack.unlock();
                 notified = true;
                 cond_var.notify_one();
-                LOG(1, "[THREAD] Lock released");
             }
         }
     }
@@ -96,10 +92,8 @@ bool ParentController::send(Message* mess)
 {
     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
 
-    std::unique_lock<std::mutex> lock(lock_ack);
-
     //Boolean to kwnow if each buffer is well received by the Device
-    bool isAcknowledged = false;
+    bool isAcknowledged;
 
     for (int currentBuffNb = 0; currentBuffNb < mess->NbBuffers(); currentBuffNb++) {
         LOG(2, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
@@ -119,10 +113,8 @@ bool ParentController::send(Message* mess)
         } else {
             //Physical Device
             //Send the message to the Device
-            lock_ack.lock();
             connectedDevice->writeToFileDescriptor(bufferArray,
                                                    sizeBuffer);
-            lock_ack.unlock();
         }
 
         /* Counter for the number of tries
@@ -160,27 +152,32 @@ bool ParentController::send(Message* mess)
         }*/
 
         do {
+            std::unique_lock<std::mutex> lock(lock_ack);
             //wait for new message
-            while(!cond_var.wait_for(lock, std::chrono::milliseconds(2000), [](){return notified == true;})) {
-                notified = false;
+            while(!cond_var.wait_for(lock, std::chrono::milliseconds(700), [](){return notified == true;})) {
                 //Try to retransmit the wrong buffer
-                LOG(2, "[HANLDER] RESEND");
+                LOG(2, "[HANLDER] RESEND Timeout");
                 bufferArray[HEADER_INDEX] = 2;
-                lock_ack.lock();
                 connectedDevice->writeToFileDescriptor(bufferArray,
                                                        sizeBuffer);
-                lock_ack.unlock();
-                nbTimeout++;
+                if (nbTimeout == MAX_TRY)
+                   break;
+                else
+                    nbTimeout++;
             }
+            lock_ack.unlock();
 
-            LOG(1, "[HANLDER] Handle an ack");
+
+            notified = false;
+
+            LOG(2, "[HANLDER] Handle an ack");
             //The oldest ack received
             uint8_t *ack;
 
-            ack = buffReceived.front();
 
             //Try to take the lock
             lock_ack.lock();  //TODO timeout
+            ack = buffReceived.front();
             //Remove the oldest ack in the queue
             buffReceived.pop();
             //Release the lock
@@ -225,10 +222,8 @@ bool ParentController::send(Message* mess)
 
                                 //Try to retransmit the wrong buffer
                                 LOG(2, "[HANLDER] RESEND");
-                                lock_ack.lock();
                                 connectedDevice->writeToFileDescriptor(buffToRetransmit,
                                                                        sizeBuffer);
-                                lock_ack.unlock();
                                 //Increment the number of tries if not aknowledged
                                 nbTry++;
                             }
@@ -237,7 +232,7 @@ bool ParentController::send(Message* mess)
                 }
             } else
                 isAcknowledged = true;
-        } while(!isAcknowledged);
+        } while(!isAcknowledged && nbTry < MAX_TRY);
 
         //Free allocated memory for the bufferArray
         delete []bufferArray;
@@ -442,9 +437,9 @@ bool ParentController::connectDevice(Device *d)
 bool ParentController::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
-    ack_thread.detach();
     while (!connectedDevice->disconnect()); //TODO Timeout
     this->connectedDevice = NULL;
+    ack_thread.detach();
     return true;
 }
 
