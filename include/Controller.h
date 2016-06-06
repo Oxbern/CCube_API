@@ -78,9 +78,10 @@ class Controller : public ParentController
     /*!
      * \fn bool setLuminosity() 
      * \brief Sets the device's luminosity
+     * \param value to set the luminosity to
      * \return bool
      */
-    bool setLuminosity();
+    bool setLuminosity(uint8_t value);
     
     /*!
      * \fn bool available()

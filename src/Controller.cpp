@@ -105,12 +105,14 @@ bool Controller::display()
 
 /*!
  * \brief Sets the device's luminosity
+ * \param value to set the luminosity to
  * \return bool
  */
-bool Controller::setLuminosity()
+bool Controller::setLuminosity(uint8_t value)
 {
     // Create a set message, with its crc
     SetMessage sl(connectedDevice->getID(), LIGHT_SENDING);
+    sl.encode(&value);
 
     // Calcuate its CRC
     if (!send(&sl)) {
