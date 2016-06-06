@@ -18,7 +18,7 @@
 
 int offset = 0;
 
-/*! 
+/*!
  * \brief Constructor
  * Constructor of the class Device
  * 
@@ -100,7 +100,7 @@ bool Device::connect()
             pfds[0].fd = fd;
             pfds[1].fd = fd;
 	        fcntl(fd, F_SETFL, 0);
-	        FD_SET(fd, &set);
+	        //FD_SET(fd, &set);
 	    }	    
     }
 
@@ -177,16 +177,13 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
                + " Bytes) : DATA TO WRITE = "
                + uint8ArrayToString(data, dataSize));
 
-        flock(fd, LOCK_EX);
-        int ret = poll(pfds, 2, 200);
+        int ret = poll(pfds, 2, 700);
         if (ret > 0) {
             if (pfds[1].revents & POLLOUT) {
                 if (write(fd, &data[0], dataSize)) {
-                    flock(fd, LOCK_UN);
                     LOG(2, "[WRITE] Data written to file");
                     return true;
                 } else {
-                    flock(fd, LOCK_UN);
                     std::cerr << std::string(std::strerror(errno)) << std::endl;
                     LOG(2, "[WRITE] Error while writing data to file : " + std::string(std::strerror(errno)));
                 }
@@ -195,7 +192,6 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
             LOG(2, "[WRITE] Timeout");
         else
             LOG(2, "[WRITE] Error ");
-        flock(fd, LOCK_UN);
     }
     return false;
 }
@@ -210,12 +206,10 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
     //int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
-    flock(fd, LOCK_EX);
-    int ret = poll(pfds, 2, 200);
+    int ret = poll(pfds, 2, 700);
     if (ret > 0) {
         if (pfds[0].revents & POLLIN) {
             ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
-            flock(fd, LOCK_UN);
             if (sizeRead >= 0) {
                 LOG(2, "[READ] Reading from Device "
                        + std::to_string(id) + " | DATA READ = "
@@ -230,7 +224,6 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
         LOG(2, "[READ] Timeout");
     else
         LOG(2, "[READ] Error");
-    flock(fd, LOCK_UN);
     return false;
 }
 
