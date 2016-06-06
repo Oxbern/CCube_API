@@ -34,12 +34,6 @@ class RequestMessage : public Message
      *
      */    
     ~RequestMessage();
-
-    /*!
-     * \fn void encodeCrc()
-     * \brief Calculates and sets the crc
-     */
-    void encodeCrc();
 };
 
 #endif

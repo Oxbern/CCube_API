@@ -12,7 +12,8 @@
 RequestMessage::RequestMessage(uint8_t id, uint8_t opCode) :
     Message(id, SIZE_REQUEST, SIZE_REQUEST - DATA_INDEX - SIZE_CRC, opCode)
 {
-    LOG(1, "RequestMessage(idDevice, opCode)");    
+    LOG(1, "RequestMessage(idDevice, opCode)");
+    this->listBuffer[0].crcEncoding();    
 }
 
 /*!
@@ -24,10 +25,3 @@ RequestMessage::~RequestMessage()
     LOG(1, "~RequestMessage()");
 }
 
-/*!
- * \brief Calculates and sets the crc
- */
-void RequestMessage::encodeCrc()
-{
-    this->listBuffer[0].crcEncoding();
-}

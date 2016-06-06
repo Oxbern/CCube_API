@@ -11,7 +11,8 @@
 SetMessage::SetMessage(uint8_t id, uint8_t opCode) :
     Message(id, SIZE_SET, SIZE_SET - DATA_INDEX - SIZE_CRC, opCode)
 {
-    LOG(1, "SetMessage(idDevice, opCode)");    
+    LOG(1, "SetMessage(idDevice, opCode)");
+    this->listBuffer[0].crcEncoding();        
 }
 
 /*!
