@@ -35,18 +35,7 @@ std::atomic<bool> notified = ATOMIC_VAR_INIT(false);
 ParentController::ParentController()
 {
     listAndGetUSBConnectedDevices();
-
-    /*Device *dev = new Device("/dev/stdout", 1);
-
-      if (devices.size() == 0){
-      // Connect to stdout to write messages
-      devices.push_back(dev);
-      connectDevice(dev);
-      }
-    */
-
     this->connectedDevice = NULL;
-
     LOG(1, "ParentController()");
 }
 
@@ -402,7 +391,7 @@ std::string ParentController::getPortFromID(int id)
 bool ParentController::connectDevice(int id)
 {
     LOG(1, "connectDevice(int id) \n");
-    Device *chosen;
+    Device *chosen = NULL;
 
     std::list<Device*>::iterator iter ;
     for(iter = devices.begin(); (iter != devices.end()); iter++){
@@ -418,14 +407,15 @@ bool ParentController::connectDevice(int id)
  * \param d device to connect
  * \return bool
  */
-bool ParentController::connectDevice(Device *d)
+bool ParentController::connectDevice(Device *dev)
 {
     LOG(1, "connectDevice(Device*) \n");
-
-    if ((*d).connect()){
-        this->connectedDevice = d;
-        ack_thread = std::thread(&ParentController::waitForACK, this);
-        return true;
+    if (dev != NULL) {
+        if ((*dev).connect()){
+            this->connectedDevice = dev;
+            ack_thread = std::thread(&ParentController::waitForACK, this);
+            return true;
+        }
     }
     return false;
 }
@@ -710,7 +700,8 @@ void ParentController::listAndGetUSBConnectedDevices()
                 std::cout << name << std::endl;
                 /* if (isInDico(t, dic, nbSTM)) */
                 // We have a device here with his port name (string)
-                devices.push_back(new Device(name, DeviceID++));
+                Device* dev = new Device(name, DeviceID++);
+                devices.push_back(dev);
             }
         }
 
