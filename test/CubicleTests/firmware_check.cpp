@@ -8,7 +8,7 @@
 /* User variable definition */
 #define ACK_SIZE 10
 
-#define DEBUG 1
+#define DEBUG 0
 
 /* File descriptor used  */
 int fd = -1;
@@ -26,7 +26,7 @@ int main ()
                                 /* Open connection */
 
     /* Open connection in blocking mode */
-    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
 
     /* Check for error */
     if (fd < 0) {
@@ -34,8 +34,8 @@ int main ()
         return EXIT_FAILURE;
     }
 
-    /* /\* Set blocking mode *\/ */
-    /* fcntl(fd, F_SETFL, 0); */
+    /* Set blocking mode */
+    fcntl(fd, F_SETFL, 0);
 
 
                                 /* Define variables used here */
@@ -44,13 +44,14 @@ int main ()
     DeviceShape ds(9, 9, 9);
 
     /* Turn on one LED */
-    ds.on(4, 4, 4);
+    ds.on(1, 1, 1);
 
-    /* Create a data message */
+    /* Create array needed below */
     uint8_t myDataMessage[64] = {0};
     uint8_t emptyAck[10] = {0};
 
     uint8_t *ledBuffer = new uint8_t[92];
+    /* Compute ledBuffer array */
     ds.toArray(ledBuffer);
 
     uint16_t crc;
@@ -84,7 +85,6 @@ int main ()
 
     /* Wait for ACK response */
     read(fd, &emptyAck[0], 10);
-
 
                                 /* Second buffer */
 
