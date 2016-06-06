@@ -18,7 +18,7 @@
 
 int offset = 0;
 
-/*! 
+/*!
  * \brief Constructor
  * Constructor of the class Device
  * 
@@ -100,7 +100,7 @@ bool Device::connect()
             pfds[0].fd = fd;
             pfds[1].fd = fd;
 	        fcntl(fd, F_SETFL, 0);
-	        FD_SET(fd, &set);
+	        //FD_SET(fd, &set);
 	    }	    
     }
 
