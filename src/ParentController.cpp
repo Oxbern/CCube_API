@@ -11,7 +11,7 @@
  * \def MAX_TRY
  * \brief TODO, explain timeout
  */
-#define MAX_TRY 10
+#define MAX_TRY 3
 
 /*!
  * \def MAX_WAIT
@@ -128,6 +128,7 @@ bool ParentController::send(Message* mess)
         /* Counter for the number of tries
         retransmission of a buffer */
         int nbTry = 0;
+        int nbTimeout = 0;
 
         isAcknowledged = false;
 
@@ -160,18 +161,17 @@ bool ParentController::send(Message* mess)
 
         do {
             //wait for new message
-            while(!cond_var.wait_for(lock, std::chrono::milliseconds(1000), [](){return notified == true;})) {
-                bufferArray[HEADER_INDEX] = 2;
-
+            while(!cond_var.wait_for(lock, std::chrono::milliseconds(2000), [](){return notified == true;})) {
+                notified = false;
                 //Try to retransmit the wrong buffer
                 LOG(2, "[HANLDER] RESEND");
+                bufferArray[HEADER_INDEX] = 2;
                 lock_ack.lock();
                 connectedDevice->writeToFileDescriptor(bufferArray,
                                                        sizeBuffer);
                 lock_ack.unlock();
+                nbTimeout++;
             }
-
-            notified = false;
 
             LOG(1, "[HANLDER] Handle an ack");
             //The oldest ack received
@@ -243,13 +243,14 @@ bool ParentController::send(Message* mess)
         delete []bufferArray;
 
         //If number of tries exceeded
-        if (nbTry == MAX_TRY) {
+        if (nbTry == MAX_TRY || nbTimeout == MAX_TRY) {
             LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
             std::cerr << "Number of tries to send the message exceeded\n";
             /*throw ErrorException("Error while sending a message : "
               "Number of tries to send "
               "the message exceeded");*/
+            return false;
         } else
             LOG(2, "[HANDLER] Ack handled");
     }
