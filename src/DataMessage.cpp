@@ -1,4 +1,6 @@
 #include "DataMessage.h"
+#include "Utils.h"
+#include "Debug.h"
 
 /*!
  * \brief Constructor

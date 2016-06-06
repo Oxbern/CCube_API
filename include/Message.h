@@ -7,10 +7,10 @@
  * \version 0.1
  */
 
-#include "Buffer.h"
-#include "Utils.h"
 #include <vector>
 #include <iostream>
+
+#include "Buffer.h"
 
 /*!
  * \class Message 

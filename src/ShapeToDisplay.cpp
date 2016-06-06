@@ -1,4 +1,5 @@
 #include "ShapeToDisplay.h"
+#include "Debug.h"
 
 /*! 
  * \brief Initializes the 3D array at false 

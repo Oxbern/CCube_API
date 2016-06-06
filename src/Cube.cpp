@@ -1,5 +1,7 @@
-#include "Cube.h"
 #include <sstream>
+
+#include "Cube.h"
+#include "Debug.h"
 
 /*! 
  * \brief Constructor

@@ -1,6 +1,4 @@
 #include "Point.h"
-#include <iostream>
-#include <cmath>
 
 /*!
  * \brief Default constructor

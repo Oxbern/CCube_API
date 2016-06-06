@@ -1,17 +1,14 @@
 #include <mutex>
-#include <unistd.h>
-#include <fcntl.h>
-#include <ErrorException.h>
-#include <iostream>
-#include <fstream>
-#include <chrono>
 #include <atomic>
 
-
-#include "LinuxUtils.h"
 #include "Controller.h"
+#include "LinuxUtils.h"
+#include "DataMessage.h"
 #include "RequestMessage.h"
 #include "SetMessage.h"
+#include "ErrorException.h"
+#include "Utils.h"
+#include "Debug.h"
 
 /*!
  * \def MAX_TRY

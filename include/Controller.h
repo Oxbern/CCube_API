@@ -6,28 +6,25 @@
  * \brief TODO
  * \version 0.1
  */
+#include <cstdint>
 #include <list>
 #include <queue>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <unistd.h>
+#include <iostream>
+#include <algorithm>
 
 #include "Device.h"
 #include "Message.h"
 
-#include <stdbool.h>
-#include <unistd.h>
-#include <cstring>
-#include <string>
-#include <iostream>
-#include <algorithm>
-
 /*!
  * \struct Dictionnary
  * \brief TODO
- * 
+ *
  */
-struct Dictionnary{
+struct Dictionnary {
     int bus; /*!< TODO */
     int Device; /*!< TODO */
 } typedef Dictionnary;

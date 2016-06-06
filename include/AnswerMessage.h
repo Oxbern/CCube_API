@@ -7,6 +7,8 @@
  * FIRMWARE_VERSION_RECEPTION, ID_RECEPTION
  * \version 0.1
  */
+#include <cstdint>
+
 #include "Message.h"
 
 /*! 

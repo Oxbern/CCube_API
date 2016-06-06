@@ -7,7 +7,6 @@
  * \version 0.1
  */
 #include "Point.h"
-#include "Debug.h"
 
 /*!
  * \class ShapeToDisplay

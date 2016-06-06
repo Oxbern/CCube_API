@@ -1,9 +1,8 @@
-#include <stdexcept>
 #include <sstream>
-#include <string.h>
 
 #include "Message.h"
 #include "Utils.h"
+#include "Debug.h"
 
 /*!
  * \brief Constructor

@@ -6,6 +6,8 @@
  * \brief Messages of type ACK : ACK_ERR, ACK_OK, ACK_NOK 
  * \version 0.1
  */
+#include <cstdint>
+
 #include "Message.h"
 
 /*! 

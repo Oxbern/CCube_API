@@ -8,8 +8,7 @@
 
 #include "DeviceShape.h"
 #include "DataMessage.h"
-#include "AckMessage.h"
-#include "RequestMessage.h"
+#include "Utils.h"
 
 #define DEBUG 1
 

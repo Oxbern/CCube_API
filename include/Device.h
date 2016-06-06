@@ -10,12 +10,9 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
-
 #include <sys/poll.h>
 
 #include "DeviceShape.h"
-#include "DataMessage.h"
-#include "Debug.h"
 #include "AckMessage.h"
 
 

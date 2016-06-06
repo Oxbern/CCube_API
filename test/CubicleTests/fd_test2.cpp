@@ -1,5 +1,4 @@
 #include <fcntl.h>
-#include <string.h>
 #include <unistd.h>
 #include <thread>
 #include <mutex>
@@ -8,6 +7,7 @@
 #include "DataMessage.h"
 #include "AckMessage.h"
 #include "RequestMessage.h"
+#include "Utils.h"
 
 #define DEBUG 1
 

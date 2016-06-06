@@ -10,7 +10,6 @@
 #include <cstdint>
 #include <iostream>
 
-#include "Debug.h"
 #include "ShapeToDisplay.h"
 
 /*!

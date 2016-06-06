@@ -1,13 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 
 
 #include "Device.h"
+#include "Utils.h"
 
 
 int main(int argc, char *argv[]) {

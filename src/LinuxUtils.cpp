@@ -1,4 +1,5 @@
 #include "LinuxUtils.h"
+#include "Debug.h"
 
 /*!
  * \brief Lists all devices which are connected via USB

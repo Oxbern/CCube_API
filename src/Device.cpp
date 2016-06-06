@@ -1,22 +1,13 @@
 #include <cstring>
 #include <fstream>
-#include <errno.h>
-
-#include <stdlib.h>
-#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <termios.h>
-#include <aio.h>
-#include <sys/file.h>
 
 #include "Device.h"
 #include "ErrorException.h"
 #include "Utils.h"
-#include "VirtualCube.h"
-#include "Message.h"
+#include "Debug.h"
 
-int offset = 0;
 
 /*!
  * \brief Constructor

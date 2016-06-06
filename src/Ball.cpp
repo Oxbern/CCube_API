@@ -1,4 +1,5 @@
 #include "Ball.h"
+#include "Debug.h"
 
 /*! 
  * \brief Constructor

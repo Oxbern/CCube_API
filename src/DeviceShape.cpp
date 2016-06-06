@@ -3,6 +3,7 @@
 
 #include "DeviceShape.h"
 #include "AckMessage.h"
+#include "Debug.h"
 
 /*! 
  * \brief Initialises the 3D array to false (protected function)

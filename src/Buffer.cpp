@@ -1,8 +1,9 @@
 #include <sstream>
 #include <string.h>
 
-#include "Utils.h"
 #include "Buffer.h"
+#include "Utils.h"
+#include "Debug.h"
 
 /*!
   \def MIN(X, Y)
