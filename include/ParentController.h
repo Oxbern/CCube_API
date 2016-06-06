@@ -15,8 +15,6 @@
 
 #include "Device.h"
 #include "Message.h"
-#include "Listener.h"
-//class Listener; //Needed to avoid recursive includes
 
 #include <stdbool.h>
 #include <unistd.h>
@@ -42,7 +40,6 @@ struct Dictionnary{
 class ParentController
 {
  protected:
-    std::list<Listener> listeners; /*!< TODO */
     std::list<Device*> devices; /*!< TODO */
     Device *connectedDevice; /*!< TODO */
     std::queue<Message> messages; /*!< FIFO of the last message */
@@ -72,22 +69,6 @@ class ParentController
      *
      */
     ~ParentController();
-
-    /*!
-     * \fn bool addListener(Listener &l)
-     * \brief Adds a listener to the controller's list of listeners
-     * \param l listener to add
-     * \return TODO
-     */
-    virtual bool addListener(Listener &l);
-
-    /*!
-     * \fn bool removeListener(Listener &l)
-     * \brief Removes a listener to the controller's list of listeners
-     * \param l listener to remove
-     * \return TODO
-     */
-    virtual bool removeListener(Listener &l);
 
     /*!
      * \fn bool listAllDevices()

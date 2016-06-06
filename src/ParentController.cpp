@@ -330,29 +330,6 @@ bool ParentController::handleNewMessage(Message *mess, int currentBuff, int *nbT
     return retValue;
 }
 
-
-/*!
- * \brief Adds a listener to the controller's list of listeners
- * \param l listener to add
- * \return TODO
- */
-bool ParentController::addListener(Listener &l)
-{
-    LOG(1, "addListener(Listener &l) \n");
-    return false;
-}
-
-/*!
- * \brief Removes a listener to the controller's list of listeners
- * \param l listener to remove
- * \return TODO
- */
-bool ParentController::removeListener(Listener &l)
-{
-    LOG(1, "removeListener(Listener &l) \n");
-    return false;
-}
-
 /*!
  * \brief Lists all devices which are connected via USB
  * \return TODO
