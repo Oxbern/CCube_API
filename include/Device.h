@@ -28,7 +28,7 @@ class Device
  private :
     int id; /*!< identifier of the device */
     int fd; /*!< file descriptor of the device */
-    fd_set set; /*!<  needed for the timeout */
+    fd_set set; /*!<  needed for the timeout */ 
     struct timeval timeout; /*!< time waited before exiting read function */
     std::string port; /*!< link to the file open by the file descriptor  */
     std::string firmwareVersion; /*!< not implemented yet */
@@ -78,6 +78,7 @@ class Device
     bool disconnect();
     
     /*! 
+     * \todo not yet implemented, but soon
      * \fn bool updateFirmware()
      * 
      * \brief not implemented yet
@@ -88,6 +89,7 @@ class Device
     bool updateFirmware(); //TODO Set binary file as arg
     
     /*! 
+     * \todo not yet implemented, is it usefull ?
      * \fn bool getFirmwareVersion()
      * 
      * \brief not implemented yet
@@ -97,6 +99,7 @@ class Device
     std::string getFirmwareVersion();
     
     /*! 
+     * \todo not yet implemented, is it usefull ?
      * \fn bool askForDisplaySize()
      * 
      * \brief not implemented yet

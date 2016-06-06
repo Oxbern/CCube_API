@@ -6,15 +6,53 @@
  * \brief TODO
  * \version 0.1
  */
+#include <list>
+#include <queue>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
-#include "ParentController.h"
+#include "Device.h"
+#include "Message.h"
+
+#include <stdbool.h>
+#include <unistd.h>
+#include <cstring>
+#include <string>
+#include <iostream>
+#include <algorithm>
+
+/*!
+ * \struct Dictionnary
+ * \brief TODO
+ * 
+ */
+struct Dictionnary{
+    int bus; /*!< TODO */
+    int Device; /*!< TODO */
+} typedef Dictionnary;
 
 /*!
  * \class Controller
  * \brief TODO
  */
-class Controller : public ParentController
+class Controller
 {
+ protected:
+    std::list<Device*> devices; /*!< TODO */
+    Device *connectedDevice; /*!< TODO */
+    std::queue<Message> messages; /*!< FIFO of the last message */
+    std::queue <uint8_t*> buffReceived; /*!< TODO */
+    std::thread ack_thread; /*!< TODO */
+    std::mutex lock_ack; /*!< TODO */
+    std::condition_variable cond_var;  /*!< TODO */
+
+    /*!
+     * \fn void *waitForACK() 
+     * \brief Reads an ACK message from USB
+     */
+    void *waitForACK();
+
  public:
     /*!
      * \brief Constructor
@@ -110,6 +148,61 @@ class Controller : public ParentController
      * \return bool
      */
     bool updateFirmware(const std::string& file);
+
+
+    /*!
+     * \fn bool connectDevice(int id)
+     * \brief Connects the controller to a device with its ID
+     * \param id ID of the device to connect
+     * \return 
+     */
+    bool connectDevice(int id);
+
+    /*!
+     * \fn bool disconnectDevice()
+     * \brief Disconnects the controller from the device
+     * \return 
+     */
+    bool disconnectDevice();
+
+    /*!
+     * \fn Device* getConnectedDevice()
+     * \brief Accessor to the current connected device
+     * \return the current connected device
+     */
+    Device* getConnectedDevice();
+
+    /*!
+     * \todo think about where to put it : Utils.h ?
+     * \fn bool send(Message* mess)
+     * \brief
+     * \param mess Message
+     * \return 
+     */
+    bool send(Message* mess);
+
+    /*! 
+     * \todo think about where to put it : Utils.h ?
+     * \fn bool handleNewMessage(Message *mess, int currentBuff, int *nbTry, 
+     * int *nbWait, bool *isAcknowledged)
+     * \brief TODO
+     * \param mess
+     * \param currentBuff
+     * \param nbTry
+     * \param nbWait
+     * \param isAcknowledged
+     * \return bool
+     */
+    bool handleNewMessage(Message *mess, int currentBuff, int *nbTry,
+                          int *nbWait, bool *isAcknowledged);
+
+    /*!
+     * \fn std::list<Device*> getListDevices()
+     * \brief Accessor to the list of USB connected devices
+     * \return the list of USB connected devices
+     */
+    std::list<Device*> getListDevices();
+    
 };
 
 #endif //CONTROLLER_H

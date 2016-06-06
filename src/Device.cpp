@@ -137,6 +137,7 @@ bool Device::disconnect()
  */
 bool Device::updateFirmware() 
 {
+    std::cerr << "Not yet implemented " << std::endl;
     return false;
 }
 

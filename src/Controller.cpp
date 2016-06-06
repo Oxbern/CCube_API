@@ -4,10 +4,32 @@
 #include <ErrorException.h>
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <atomic>
 
+
+#include "LinuxUtils.h"
 #include "Controller.h"
 #include "RequestMessage.h"
 #include "SetMessage.h"
+
+/*!
+ * \def MAX_TRY
+ * \brief TODO, explain timeout
+ */
+#define MAX_TRY 10
+
+/*!
+ * \def MAX_WAIT
+ * \brief TODO, explain timeout
+ */
+#define MAX_WAIT 1000000
+
+/*!
+ * \def std::atomic<bool> notified
+ * \brief TODO
+ */
+std::atomic<bool> notified = ATOMIC_VAR_INIT(false);
 
 /*!
  * \brief Constructor
@@ -16,9 +38,21 @@
  * lists all USB connected devices and adds them to the Device list
  *
  */
-Controller::Controller() :
-    ParentController()
+Controller::Controller()
 {
+    listAndGetUSBConnectedDevices(*this);
+
+    /*Device *dev = new Device("/dev/stdout", 1);
+
+      if (devices.size() == 0){
+      // Connect to stdout to write messages
+      devices.push_back(dev);
+      connectDevice(dev);
+      }
+    */
+
+    this->connectedDevice = NULL;
+
     LOG(1, "Controller()");
 }
 
@@ -29,6 +63,8 @@ Controller::Controller() :
 Controller::~Controller()
 {
     LOG(1,"~Controller()");
+    while(!devices.empty()) delete devices.front(), devices.pop_front();
+    delete this->connectedDevice;
 }
 
 /*! 
@@ -222,3 +258,333 @@ bool Controller::updateFirmware(const std::string& myFile)
         std::cout << "Unable to open file " << myFile << " \n";
     return true;
 }
+/*!
+ * \brief Reads an ACK message from USB
+ */
+void *Controller::waitForACK()
+{
+    while (1) {
+        if (this->connectedDevice == NULL)
+            break;
+
+        uint8_t *buff = new uint8_t[10];
+        if (this->connectedDevice != NULL) {
+            if (this->connectedDevice->readFromFileDescriptor(buff)) {
+                lock_ack.lock();
+                /* LOG(1, "[THREAD] Lock taken"); */
+                buffReceived.push(buff);
+                lock_ack.unlock();
+                notified = true;
+                cond_var.notify_one();
+                LOG(1, "[THREAD] Lock released");
+            }
+        }
+    }
+
+    return NULL;
+}
+
+/*!
+ * \brief TODO
+ * \param mess Message
+ * \return 
+ */
+bool Controller::send(Message* mess)
+{
+    LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
+
+    std::unique_lock<std::mutex> lock(lock_ack);
+
+    //Boolean to kwnow if each buffer is well received by the Device
+    bool isAcknowledged = false;
+
+    for (int currentBuffNb = 0; currentBuffNb < mess->NbBuffers(); currentBuffNb++) {
+        LOG(2, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
+
+        //Convert the buffer i to an array
+        int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
+        uint8_t * bufferArray = new uint8_t[sizeBuffer];
+        mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
+
+        //Check weither the Device is virtual or not
+        if ((this->getConnectedDevice()->getPort().compare("/dev/stdin") == 0)
+            || (this->getConnectedDevice()->getPort().compare("/dev/stdout") == 0)) {
+            //VirtualCube
+
+            LOG(1, "Virtual sending");
+
+        } else {
+            //Physical Device
+            //Send the message to the Device
+            lock_ack.lock();
+            connectedDevice->writeToFileDescriptor(bufferArray,
+                                                   sizeBuffer);
+            lock_ack.unlock();
+        }
+
+        /* Counter for the number of tries
+           retransmission of a buffer */
+        int nbTry = 0;
+
+        isAcknowledged = false;
+
+        //Define an Ack_OK
+        uint8_t ackOKBuff[SIZE_ACK] = {1,
+                                       (uint8_t) connectedDevice->getID(),
+                                       ACK_OK, 0, 3,
+                                       BUFF_SENDING,
+                                       (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() >> 8),
+                                       (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() & 0xFF),
+                                       0, 0}; //TODO : Add CRC check
+        printBuffer("ACK OK", ackOKBuff, SIZE_ACK);
+
+        //Wait for the receipt acknowledgement
+        //while (!isAcknowledged /*&& nbTry < MAX_TRY*/) {
+        /*if (nbWait == MAX_WAIT) {
+          LOG(2, "[HANDLER] NB WAIT EXCEDEED");
+          if (reSend++ < MAX_TRY)
+          connectedDevice->writeToFileDescriptor(bufferArray,
+          sizeBuffer);
+          else {
+          std::cerr << "Unable to send buffer after " << MAX_TRY
+          << " attempts" << std::endl;
+          if (disconnectDevice())
+          std::cerr << "Disconnected" << std::endl;
+          exit(1);
+          }
+          nbWait = 0;
+          }*/
+
+        do {
+            //wait for new message
+            while(!cond_var.wait_for(lock, std::chrono::milliseconds(1000), [](){return notified == true;})) {
+                bufferArray[HEADER_INDEX] = 2;
+
+                //Try to retransmit the wrong buffer
+                LOG(2, "[HANLDER] RESEND");
+                lock_ack.lock();
+                connectedDevice->writeToFileDescriptor(bufferArray,
+                                                       sizeBuffer);
+                lock_ack.unlock();
+            }
+
+            notified = false;
+
+            LOG(1, "[HANLDER] Handle an ack");
+            //The oldest ack received
+            uint8_t *ack;
+
+            ack = buffReceived.front();
+
+            //Try to take the lock
+            lock_ack.lock();  //TODO timeout
+            //Remove the oldest ack in the queue
+            buffReceived.pop();
+            //Release the lock
+            lock_ack.unlock();
+
+            if (memcmp(ack, ackOKBuff, SIZE_ACK)) {
+                //ACK_NOK or ACK_ERR
+                //Check the header bit
+                if (ack[HEADER_INDEX] == 1) {
+                    //check id message
+                    //ConnectedDevice may not be NULL
+                    if (ack[ID_INDEX] == connectedDevice->getID()) {
+                        //Check data of ack
+                        uint16_t sizeLeftPack = convertTwo8to16(ack[DATA_INDEX + 1],
+                                                                ack[DATA_INDEX + 2]);
+                        uint8_t opcodePack = ack[DATA_INDEX];
+
+                        if (opcodePack == mess->getListBuffer()[currentBuffNb].getOpCode()
+                            && sizeLeftPack == mess->getListBuffer()[currentBuffNb].getSizeLeft()) {
+
+                            //Check opcode validity
+                            uint8_t opcode = ack[OPCODE_INDEX];
+
+                            //if valid opcode
+                            if (isAnAckOpcode(opcode)) {
+                                //ACK_ERR or ACK_NOK
+
+                                //Search the buffer to retransmit from the message
+                                Buffer *bufferToRetransmit = mess->getBuffer(opcodePack, sizeLeftPack);
+                                if (bufferToRetransmit == NULL) {
+                                    throw ErrorException("Error in an ack message "
+                                                         ": buffer to retransmit not found in the message");
+                                }
+
+                                //Convert array to retransmit to an array of uint8_t
+                                uint8_t buffToRetransmit[mess->getSizeBuffer()];
+                                bufferToRetransmit->toArray(buffToRetransmit);
+
+                                //ReSend the message to the Device
+                                //The header bit is set to 2
+                                buffToRetransmit[HEADER_INDEX] = 2;
+
+                                //Try to retransmit the wrong buffer
+                                LOG(2, "[HANLDER] RESEND");
+                                lock_ack.lock();
+                                connectedDevice->writeToFileDescriptor(buffToRetransmit,
+                                                                       sizeBuffer);
+                                lock_ack.unlock();
+                                //Increment the number of tries if not aknowledged
+                                nbTry++;
+                            }
+                        }
+                    }
+                }
+            } else
+                isAcknowledged = true;
+        } while(!isAcknowledged);
+
+        //Free allocated memory for the bufferArray
+        delete []bufferArray;
+
+        //If number of tries exceeded
+        if (nbTry == MAX_TRY) {
+            LOG(2, "[HANDLER] NB TRY EXCEDEED");
+
+            std::cerr << "Number of tries to send the message exceeded\n";
+            /*throw ErrorException("Error while sending a message : "
+              "Number of tries to send "
+              "the message exceeded");*/
+        } else
+            LOG(2, "[HANDLER] Ack handled");
+    }
+    LOG(1, "[SEND] Message sended");
+    return true;
+}
+
+/*! 
+ * \brief TODO
+ * \param mess
+ * \param currentBuff
+ * \param nbTry
+ * \param nbWait
+ * \param isAcknowledged
+ * \return bool
+ */
+bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait, bool *isAcknowledged)
+{
+    bool retValue = true;
+
+    *nbWait = 0;
+    LOG(1, "[HANLDER] Handle an ack");
+    uint8_t *ack;
+
+    //The oldest ack received
+    ack = buffReceived.front();
+
+    //Try to take the lock
+    lock_ack.lock();  //TODO timeout
+    //Remove the oldest ack in the queue
+    buffReceived.pop();
+    //Release the lock
+    lock_ack.unlock();
+
+    LOG(1, "[THREAD] Lock released");
+
+    //Check the header bit
+    if(ack[HEADER_INDEX] == 1) {
+        uint16_t sizeLeftPack =
+            convertTwo8to16(ack[DATA_INDEX+1],
+                            ack[DATA_INDEX+2]);
+
+        //check id message
+        //ConnectedDevice may not be NULL
+        if (ack[ID_INDEX] == connectedDevice->getID()
+            && ack[DATA_INDEX] == mess->getListBuffer()[currentBuff].getOpCode()
+            && sizeLeftPack == mess->getListBuffer()[currentBuff].getSizeLeft()) {
+
+            /* /\* Print ack *\/ */
+            /* this->getConnectedDevice()->handleResponse(ack); //TODO to remove */
+
+            //Check opcode validity
+            uint8_t  opcode = ack[OPCODE_INDEX];
+
+            if (isAValidAnswerOpcode(opcode)) {
+                //if valid opcode
+
+                if (isAnAckOpcode(opcode)) {
+                    //Create an AckMessage instance
+                    AckMessage ackMess(connectedDevice->getID(), opcode);
+                    ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
+
+                    //Handle the ack
+                    *isAcknowledged = connectedDevice->handleAck(mess,
+                                                                 ackMess,
+                                                                 currentBuff);
+                    //Increment the number of tries if not aknowledged
+                    if ((*isAcknowledged) == false)
+                        *nbTry = *nbTry + 1;
+                } else {
+                    //Response message
+                    //TODO handle the response
+                }
+            }
+        }
+    }
+
+    return retValue;
+}
+
+
+/*!
+ * \brief Connects the controller to a device with its ID
+ * \param id ID of the device to connect
+ * \return 
+ */
+bool Controller::connectDevice(int id)
+{
+    LOG(1, "connectDevice(int id) \n");
+    Device *chosen = NULL;
+
+    std::list<Device*>::iterator iter ;
+    for(iter = devices.begin(); (iter != devices.end()); iter++){
+        if (id == (*iter)->getID())
+            chosen = *iter;
+    }
+
+    if (chosen != NULL) {
+        if (chosen->connect()){
+            this->connectedDevice = chosen;
+            ack_thread = std::thread(&Controller::waitForACK, this);
+            return true;
+        }
+    }
+    return false;
+}
+
+/*!
+ * \brief Disconnects the controller from the device
+ * \return 
+ */
+bool Controller::disconnectDevice()
+{
+    LOG(1, "disconnectDevice() \n");
+    ack_thread.detach();
+    while (!connectedDevice->disconnect()); //TODO Timeout
+    this->connectedDevice = NULL;
+    return true;
+}
+
+/*!
+ * \brief Accessor to the current connected device
+ * \return the current connected device
+ */
+Device* Controller::getConnectedDevice()
+{
+    LOG(1, "getConnectedDevice() \n");
+    return this->connectedDevice;
+}
+
+/*!
+ * \brief Accessor to the list of USB connected devices
+ * \return the list of USB connected devices
+ */
+std::list<Device*> Controller::getListDevices()
+{
+    LOG(1, "getListDevices() \n");
+
+    return this->devices;
+}
+

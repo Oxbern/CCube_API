@@ -4,35 +4,18 @@
 #include <fcntl.h>
 #include <string.h>
 
+#include "LinuxUtils.h"
 #include "Controller.h"
 
 int main(int argc, char* argv[])
 {    
     Controller c;
-    Device *chosen;
 
-    if (c.listAllDevices()){
-        
-        int choice = 0;
-        
-        std::cout << "Enter the device's ID you want to connect : " << std::endl;
-        std::cin >> choice;
-        
-        
-        std::list<Device*>::iterator iter ;
-        std::list<Device*> listDevice = c.getListDevices();
-        for(iter = listDevice.begin() ; (iter != listDevice.end()) ;iter++){
-            if (choice == (*iter)->getID())
-                chosen = *iter;
-        }
-        
-        std::cout << "You choose Device " << (int) chosen->getID() << std::endl;
-        
-        if (c.connectDevice(chosen)){
-            
-            std::cout << "You are connected to " << c.getConnectedDevice()->getPort()  << std::endl;
-        }
+    if (!c.connectDevice(1)) {
+        std::cerr << "Connection established" << std::endl;
+        return EXIT_FAILURE;
     }
+    
     Device *dc = c.getConnectedDevice();
     dc->on(4,4,4);
     dc->on(3,4,4);
