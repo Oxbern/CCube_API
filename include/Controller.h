@@ -97,6 +97,13 @@ class Controller : public ParentController
     uint8_t getLuminosity();
 
     /*!
+     * \fn uint8_t getVersionFirmware()
+     * \brief Returns the version of the firmware
+     * \return the version
+     */
+    uint8_t getVersionFirmware();
+
+    /*!
      * \fn bool updateFirmware()
      * \brief Sends the firmware update
      * \return bool

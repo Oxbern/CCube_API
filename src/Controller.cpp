@@ -158,6 +158,22 @@ uint8_t Controller::getLuminosity()
 }
 
 /*!
+ * \brief Returns the version of the firmware
+ * \return the version
+ */
+uint8_t Controller::getVersionFirmware()
+{
+    // Create a request message, with its crc
+    RequestMessage vf(connectedDevice->getID(), FIRMWARE_VERSION_ASKING);
+
+    if (!send(&vf)) {
+        std::cerr << "Error while sending request" << std::endl;
+        return false;
+    }
+    return 1;
+}
+
+/*!
  * \brief Send the firmware update
  * \return bool
  */
@@ -202,9 +218,5 @@ bool Controller::updateFirmware(const std::string& myFile)
         
     } else
         std::cout << "Unable to open file " << myFile << " \n";
-
-                       
-
-
     return true;
 }
