@@ -6,6 +6,7 @@
 #include <atomic>
 
 #include "ParentController.h"
+
 /*!
  * \def MAX_TRY
  * \brief TODO, explain timeout
@@ -18,6 +19,10 @@
  */
 #define MAX_WAIT 1000000
 
+/*!
+ * \def std::atomic<bool> notified
+ * \brief TODO
+ */
 std::atomic<bool> notified = ATOMIC_VAR_INIT(false);
 
 /*!
