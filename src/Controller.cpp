@@ -4,6 +4,8 @@
 #include <ErrorException.h>
 
 #include "Controller.h"
+#include "RequestMessage.h"
+#include "SetMessage.h"
 
 /*!
  * \brief Constructor
@@ -97,4 +99,58 @@ bool Controller::display()
     }
 
     return true;
+}
+
+/*!
+ * \brief Sets the device's luminosity
+ * \return bool
+ */
+bool Controller::setLuminosity()
+{
+    // Create a set message, with its crc
+    SetMessage sl(connectedDevice->getID(), LIGHT_SENDING);
+
+    // Calcuate its CRC
+    if (!send(&sl)) {
+        std::cerr << "Error while sending the set message" << std::endl;
+        return false;
+    }
+    
+    return true;        
+}
+
+/*!
+ * \todo look into the entire list of devices ? or only ask the connected one ?
+ * \todo use the available parameter of device
+ * \brief TODO
+ * \return bool
+ */
+bool Controller::available()
+{
+    // Create a request message, with its crc
+    RequestMessage av(connectedDevice->getID(), AVAILABLE);
+
+    if (!send(&av)) {
+        std::cerr << "Error while sending request" << std::endl;
+        return false;
+    }
+
+    return true;    
+}
+
+/*!
+ * \brief Returns the luminosity of the LEDs on the Device
+ * \return the value of the luminosity
+ */
+uint8_t Controller::getLuminosity()
+{
+    // Create a request message, with its crc
+    RequestMessage gl(connectedDevice->getID(), LIGHT_ASKING);
+
+    if (!send(&gl)) {
+        std::cerr << "Error while sending request" << std::endl;
+        return false;
+    }
+
+    return 1;
 }

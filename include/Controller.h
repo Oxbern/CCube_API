@@ -72,7 +72,29 @@ class Controller : public ParentController
      * \brief TODO
      * \return bool
      */
-      bool display();    
+    bool display();
+
+    /*!
+     * \fn bool setLuminosity() 
+     * \brief Sets the device's luminosity
+     * \return bool
+     */
+    bool setLuminosity();
+    
+    /*!
+     * \fn bool available()
+     * \brief TODO
+     * \return bool
+     */
+    bool available();
+
+    /*!
+     * \fn uint8_t getLuminosity()
+     * \brief Returns the luminosity of the LEDs on the Device
+     * \return the value of the luminosity
+     */
+    uint8_t getLuminosity();
+    
 };
 
 #endif //CONTROLLER_H
