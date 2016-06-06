@@ -83,7 +83,6 @@ int main()
     
     /* Resets the connection */
     RequestMessage resetConnection(1, RESET);
-    resetConnection.encodeCrc();
     resetConnection.getListBuffer()[0].toArray(reqLinear);
 
 #if DEBUG
