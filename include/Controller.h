@@ -30,6 +30,7 @@ class Controller : public ParentController
      *
      */
     ~Controller();
+
     /*! 
      * \fn bool on(int x, int y, int z)
      * \brief Switches on a led on the current connected device
@@ -94,7 +95,13 @@ class Controller : public ParentController
      * \return the value of the luminosity
      */
     uint8_t getLuminosity();
-    
+
+    /*!
+     * \fn bool updateFirmware()
+     * \brief Sends the firmware update
+     * \return bool
+     */
+    bool updateFirmware(const std::string& file);
 };
 
 #endif //CONTROLLER_H

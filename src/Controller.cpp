@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <ErrorException.h>
+#include <iostream>
+#include <fstream>
 
 #include "Controller.h"
 #include "RequestMessage.h"
@@ -153,4 +155,56 @@ uint8_t Controller::getLuminosity()
     }
 
     return 1;
+}
+
+/*!
+ * \brief Send the firmware update
+ * \return bool
+ */
+bool Controller::updateFirmware(const std::string& myFile)
+{
+    std::streampos size;
+    char * memblock;
+
+    uint8_t* data;
+    
+    std::ifstream file(myFile, std::ios::in | std::ios::binary | std::ios::ate);
+    if (file.is_open()) {
+        size = file.tellg();
+        memblock = new char [size]();
+
+        file.seekg(0, std::ios::beg);
+        file.read(memblock, size);
+        file.close();
+        data = new uint8_t[size]();
+        
+        memcpy(data, (const uint8_t*)memblock, size);            
+        
+        LOG(3, "the entire file content is in memblock \n");
+
+        delete [] memblock;
+        
+        LOG(3, "size is " + std::to_string(size) + " bytes.");
+    
+        // Create a data message
+        DataMessage uf(1, size, FIRMWARE_UPDATE_SENDING);
+        uf.encode(data);
+
+        LOG(3, "firmware update message : " + uf.toStringDebug());
+
+        delete [] data ;
+
+        // if (!send(&uf)) {
+        //     std::cerr << "Error while sending request" << std::endl;
+        //     return false;
+        // }
+        
+        
+    } else
+        std::cout << "Unable to open file " << myFile << " \n";
+
+                       
+
+
+    return true;
 }
