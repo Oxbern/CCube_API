@@ -42,7 +42,6 @@ struct Dictionnary {
 class Controller
 {
  protected:
-    std::list<Device*> devices; /*!< TODO */
     Device *connectedDevice; /*!< TODO */
     //    std::queue<OutgoingMessage> messages; /*!< FIFO of the last message */
     std::queue <uint8_t*> buffReceived; /*!< TODO */
@@ -56,6 +55,8 @@ class Controller
     void *waitForACK();
 
  public:
+    std::list<Device*> devices; /*!< TODO */
+
     /*!
      * \brief Constructor
      *

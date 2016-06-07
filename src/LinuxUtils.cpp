@@ -191,7 +191,7 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
 }
 
 /*!
- * \brief Displays the list of all USB connected devices 
+ * \brief Displays the list of all USB connected devices
  * and pushes them in the device list
  */
 void listAndGetUSBConnectedDevices(Controller &c)
@@ -264,7 +264,7 @@ void listAndGetUSBConnectedDevices(Controller &c)
                 std::cout << name << std::endl;
                 /* if (isInDico(t, dic, nbSTM)) */
                 // We have a device here with his port name (string)
-                 c.getListDevices().push_back(new Device(name, DeviceID++));
+                 c.devices.push_back(new Device(name, DeviceID++));
             }
         }
         pclose(fp);

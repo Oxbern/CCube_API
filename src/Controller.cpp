@@ -305,9 +305,12 @@ void *Controller::waitForACK()
                 buffReceived.push(buff);
                 lock_ack.unlock();
 
+                printBuffer("ACK PUSHED", buffReceived.front(), SIZE_ACK);
                 LOG(1, "[THREAD] Lock released");
             }
         }
+
+        delete []buff;
     }
 
     return NULL;
@@ -337,7 +340,8 @@ bool Controller::send(OutgoingMessage* mess)
         int sendingTries = 0;
         int nbTry = 0;
 
-        uint8_t ack[SIZE_ACK];
+        uint8_t *ack = new uint8_t[SIZE_ACK];
+        memset(ack, 0, SIZE_ACK);
         uint8_t refAck[SIZE_ACK] = {1, 1, 1, 0, 3, bufferArray[2],
                                     bufferArray[3], bufferArray[4], 0, 0};
 
@@ -345,37 +349,44 @@ bool Controller::send(OutgoingMessage* mess)
             //Send the message to the Device
             while (!connectedDevice->writeToFileDescriptor(bufferArray,
                                                            sizeBuffer)) {
-            if (++sendingTries > MAX_SENDING_TRIES)
-                throw ErrorException("Error while sending a message : "
-                                     "Number of tries to send "
-                                     "the message exceeded");
+                if (++sendingTries > MAX_SENDING_TRIES)
+                    throw ErrorException("Error while sending a message : "
+                                         "Number of tries to send "
+                                         "the message exceeded");
             } /* Buffer sent */
+            LOG(5, "Buffer sent");
 
 
             lock_ack.lock();
-            if (!buffReceived.empty())
-                memcpy(ack, buffReceived.front(), SIZE_ACK);
+            if (!buffReceived.empty()) {
+                ack = buffReceived.front();
+                buffReceived.pop();
+            }
             lock_ack.unlock();
+
+            printBuffer("ACK", ack, SIZE_ACK);
 
             if (memcmp(ack, refAck, SIZE_ACK - 2))
                 nbTry++;
             else
                 break;
 
+            std::cout << "Nb Try: " << nbTry << std::endl;
         } while(nbTry < MAX_TRY);
 
         //If number of tries exceeded
         if (nbTry == MAX_TRY) {
             LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
-            throw ErrorException("Error while sending a message : "
-                                 "Number of tries to send "
-                                 "the message exceeded");
+            throw ErrorException("Error while receiving a ack: "
+                                 "Number of tries to receive "
+                                 "the ack exceeded");
         } else
             LOG(2, "[HANDLER] Ack handled");
 
         //Free allocated memory for the bufferArray
         delete []bufferArray;
+        delete []ack;
     }
 
     LOG(1, "[SEND] Message sended");
