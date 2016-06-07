@@ -61,18 +61,6 @@ class OutgoingMessage
     int NbBuffers() const;
 
     /*!
-     * \fn void encode(uint8_t *dataToEncode)
-     * \brief Fills the buffers with the data and calculates and sets the crc
-     * 
-     *  Fills the buffers with the data
-     * if size(dataToEncode) > sizeData,
-     * only the first sizeData values of dataToEncode will be encoded
-     *
-     * \param dataToEncode 
-     */
-    void encode(uint8_t *dataToEncode);
-
-    /*!
      * \fn Buffer *getListBuffer() const
      * \brief Accessor to the list of buffers
      * \return list of buffers

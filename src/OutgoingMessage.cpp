@@ -90,45 +90,6 @@ int OutgoingMessage::NbBuffers() const
         return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC) + 1;
 }
 
-/*!
- * \brief Fills the buffers with the data and calculates and sets the crc
- * \see crcEncoding()
- * 
- *  Fills the buffers with the data
- * if size(dataToEncode) > sizeData,
- * only the first sizeData values of dataToEncode will be encoded
- *
- * \param dataToEncode 
- */
-void OutgoingMessage::encode(uint8_t *dataToEncode)
-{
-    LOG(2, "OutgoingMessage encoding :");
-
-    //Header, DeviceID, Opcode already set in the constructor
-    int j = 0; int k= 0; int n = NbBuffers();
-
-    //Fills the buffers with the data
-    for (int i = 0; i < n; i ++) {
-        while (j < (listBuffer[i].getDataSize())) {
-            if (k < sizeData) {
-                listBuffer[i].setData(j, dataToEncode[k]);
-            }
-            else {
-                listBuffer[i].setData(j,0);
-            }
-            j++; k++;
-        }
-        j = 0;
-
-        //Sets CRC computed on the entire buffer
-        listBuffer[i].crcEncoding();
-        
-        LOG(2, "[ENCODING] Buffer N° " + std::to_string(i)
-            + ": DATA = "
-            + uint8ArrayToString(listBuffer[i].getData(), listBuffer[i].getDataSize())
-            + " | CRC = " + std::to_string(listBuffer[i].getCrc()));
-    }
-}
 
 /*!
  * \brief Accessor to the list of buffers
