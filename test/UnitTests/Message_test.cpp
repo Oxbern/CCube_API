@@ -50,6 +50,9 @@ int main(int argc, char *argv[])
 
     Request set();
     Request set2(4, 1, SET_LUMINOSITY);
+    uint8_t *light = new uint8_t[1];
+    light[0] = 1;
+    set2.encode(light);
     std::cout << "\n Set2\n";
     std::cout << set2.toStringDebug();    
 
