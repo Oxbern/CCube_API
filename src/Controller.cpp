@@ -24,6 +24,12 @@
 #define MAX_WAIT 1000000
 
 /*!
+ * \def MAX_SENDING_TRIES
+ * \brief TODO
+ */
+#define MAX_SENDING_TRIES 5
+
+/*!
  * \def std::atomic<bool> notified
  * \brief TODO
  */
@@ -32,7 +38,7 @@ std::atomic<bool> notified = ATOMIC_VAR_INIT(false);
 /*!
  * \brief Constructor
  *
- * Creates a controller, 
+ * Creates a controller,
  * lists all USB connected devices and adds them to the Device list
  *
  */
@@ -65,7 +71,7 @@ Controller::~Controller()
     delete this->connectedDevice;
 }
 
-/*! 
+/*!
  * \brief Switches on a led on the current connected device
  * \param x
  * \param y
@@ -80,7 +86,7 @@ bool Controller::on(int x, int y, int z)
         throw ErrorException("No device connected");
 }
 
-/*! 
+/*!
  * \brief Switches off a led on the current connected device
  * \param x
  * \param y
@@ -95,7 +101,7 @@ bool Controller::off(int x, int y, int z)
         throw ErrorException("No device connected");
 }
 
-/*! 
+/*!
  * \brief Switches off the entire device
  * \return bool
  */
@@ -107,7 +113,7 @@ bool Controller::off()
         throw ErrorException("No device connected");
 }
 
-/*! 
+/*!
  * \brief Sets the state of a led to its opposite on the current connected device
  * \param x
  * \param y
@@ -135,7 +141,9 @@ bool Controller::display()
                        OPCODE(SET_LEDSTATS));
 
         //Encode the message with the DeviceShape of the Device
-        uint8_t *ledsBuffer = new uint8_t[connectedDevice->getcurrentConfig()->getSizeInBytes()];
+        uint8_t *ledsBuffer = new uint8_t[connectedDevice->
+                                          getcurrentConfig()->getSizeInBytes()];
+
         connectedDevice->getcurrentConfig()->toArray(ledsBuffer);
         dm.encode(ledsBuffer);
 
@@ -185,8 +193,9 @@ bool Controller::available()
     //     throw ErrorException("Error while checking the "
     //                          "availability of the connected device");
 
-    return true;    
+    return true;
 }
+
 
 /*!
  * \brief Returns the luminosity of the LEDs on the Device
@@ -207,6 +216,7 @@ uint8_t Controller::getLuminosity()
     } else
         throw ErrorException("No device connected");
 }
+
 
 /*!
  * \brief Returns the version of the firmware
@@ -268,11 +278,6 @@ bool Controller::updateFirmware(const std::string& myFile)
 
             delete[] data;
 
-            //Send the message
-            // if (!send(&uf)) {
-            //     std::cerr << "Error while sending request" << std::endl;
-            //     return false;
-            // }
 
         } else
             throw ErrorException("Unable to open file " + myFile);
@@ -291,15 +296,15 @@ void *Controller::waitForACK()
         if (this->connectedDevice == NULL)
             break;
 
-        uint8_t *buff = new uint8_t[10];
+        uint8_t *buff = new uint8_t[SIZE_ACK];
         if (this->connectedDevice != NULL) {
+
             if (this->connectedDevice->readFromFileDescriptor(buff)) {
+
                 lock_ack.lock();
-                /* LOG(1, "[THREAD] Lock taken"); */
                 buffReceived.push(buff);
                 lock_ack.unlock();
-                notified = true;
-                cond_var.notify_one();
+
                 LOG(1, "[THREAD] Lock released");
             }
         }
@@ -311,7 +316,7 @@ void *Controller::waitForACK()
 /*!
  * \brief TODO
  * \param mess Message
- * \return 
+ * \return
  */
 bool Controller::send(OutgoingMessage* mess)
 {
@@ -320,170 +325,64 @@ bool Controller::send(OutgoingMessage* mess)
 
     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
 
-    std::unique_lock<std::mutex> lock(lock_ack);
-
-    //Boolean to kwnow if each buffer is well received by the Device
-    bool isAcknowledged = false;
-
-    for (int currentBuffNb = 0; currentBuffNb < mess->NbBuffers(); currentBuffNb++) {
+    int nbBuffer = mess->NbBuffers();
+    for (int currentBuffNb = 0; currentBuffNb < nbBuffer; currentBuffNb++) {
         LOG(2, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
 
         //Convert the buffer i to an array
         int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
-        uint8_t * bufferArray = new uint8_t[sizeBuffer];
+        uint8_t *bufferArray = new uint8_t[sizeBuffer];
         mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
 
-        //Check weither the Device is virtual or not
-        if ((connectedDevice->getPort().compare("/dev/stdin") == 0)
-            || (connectedDevice->getPort().compare("/dev/stdout") == 0)) {
-            //VirtualCube
-
-            LOG(1, "Virtual sending");
-
-        } else {
-            //Physical Device
-            //Send the message to the Device
-            lock_ack.lock();
-            connectedDevice->writeToFileDescriptor(bufferArray,
-                                                   sizeBuffer);
-            lock_ack.unlock();
-        }
-
-        /* Counter for the number of tries
-           retransmission of a buffer */
+        int sendingTries = 0;
         int nbTry = 0;
 
-        isAcknowledged = false;
-
-        //Define an Ack_OK
-        uint8_t ackOKBuff[SIZE_ACK] = {1,
-                                       (uint8_t) connectedDevice->getID(),
-                                       ACK_OK, 0, 3,
-                                       SET_LEDSTATS,
-                                       (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() >> 8),
-                                       (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() & 0xFF),
-                                       0, 0}; //TODO : Add CRC check
-
-        //Wait for the receipt acknowledgement
-        //while (!isAcknowledged /*&& nbTry < MAX_TRY*/) {
-        /*if (nbWait == MAX_WAIT) {
-          LOG(2, "[HANDLER] NB WAIT EXCEDEED");
-          if (reSend++ < MAX_TRY)
-          connectedDevice->writeToFileDescriptor(bufferArray,
-          sizeBuffer);
-          else {
-          std::cerr << "Unable to send buffer after " << MAX_TRY
-          << " attempts" << std::endl;
-          if (disconnectDevice())
-          std::cerr << "Disconnected" << std::endl;
-          exit(1);
-          }
-          nbWait = 0;
-          }*/
+        uint8_t ack[SIZE_ACK];
+        uint8_t refAck[SIZE_ACK] = {1, 1, 1, 0, 3, bufferArray[2],
+                                    bufferArray[3], bufferArray[4], 0, 0};
 
         do {
-            //wait for new message
-            while(!cond_var.wait_for(lock, std::chrono::milliseconds(1000), [](){return notified == true;})) {
-                bufferArray[HEADER_INDEX] = 2;
+            //Send the message to the Device
+            while (!connectedDevice->writeToFileDescriptor(bufferArray,
+                                                           sizeBuffer)) {
+            if (++sendingTries > MAX_SENDING_TRIES)
+                throw ErrorException("Error while sending a message : "
+                                     "Number of tries to send "
+                                     "the message exceeded");
+            } /* Buffer sent */
 
-                //Try to retransmit the wrong buffer
-                LOG(2, "[HANLDER] RESEND");
-                lock_ack.lock();
-                connectedDevice->writeToFileDescriptor(bufferArray,
-                                                       sizeBuffer);
-                lock_ack.unlock();
-            }
 
-            notified = false;
-
-            LOG(1, "[HANLDER] Handle an ack");
-            //The oldest ack received
-            uint8_t *ack;
-
-            ack = buffReceived.front();
-
-            //Try to take the lock
-            lock_ack.lock();  //TODO timeout
-            //Remove the oldest ack in the queue
-            buffReceived.pop();
-            //Release the lock
+            lock_ack.lock();
+            if (!buffReceived.empty())
+                memcpy(ack, buffReceived.front(), SIZE_ACK);
             lock_ack.unlock();
 
-            if (memcmp(ack, ackOKBuff, SIZE_ACK)) {
-                //ACK_NOK or ACK_ERR
-                //Check the header bit
-                if (ack[HEADER_INDEX] == 1) {
-                    //check id message
-                    //ConnectedDevice may not be NULL
-                    if (ack[ID_INDEX] == connectedDevice->getID()) {
-                        //Check data of ack
-                        uint16_t sizeLeftPack = convertTwo8to16(ack[DATA_INDEX + 1],
-                                                                ack[DATA_INDEX + 2]);
-                        uint8_t opcodePack = ack[DATA_INDEX];
+            if (memcmp(ack, refAck, SIZE_ACK - 2))
+                nbTry++;
+            else
+                break;
 
-                        if (opcodePack == mess->getListBuffer()[currentBuffNb].getOpCode()
-                            && sizeLeftPack == mess->getListBuffer()[currentBuffNb].getSizeLeft()) {
-
-                            //Check opcode validity
-                            uint8_t opcode = ack[OPCODE_INDEX];
-
-                            //if valid opcode
-                            if (isAnAckOpcode(opcode)) {
-                                //ACK_ERR or ACK_NOK
-
-                                //Search the buffer to retransmit from the message
-                                Buffer *bufferToRetransmit = mess->getBuffer(opcodePack, sizeLeftPack);
-                                if (bufferToRetransmit == NULL) {
-                                    std::cerr << "Error in an ack message : "
-                                                 ": buffer to retransmit not "
-                                                 "found in the message"; //TODO to remove
-                                    return false;
-                                }
-
-                                //Convert array to retransmit to an array of uint8_t
-                                uint8_t buffToRetransmit[mess->getSizeBuffer()];
-                                bufferToRetransmit->toArray(buffToRetransmit);
-
-                                //ReSend the message to the Device
-                                //The header bit is set to 2
-                                buffToRetransmit[HEADER_INDEX] = 2;
-
-                                //Try to retransmit the wrong buffer
-                                LOG(2, "[HANLDER] RESEND");
-                                lock_ack.lock();
-                                connectedDevice->writeToFileDescriptor(buffToRetransmit,
-                                                                       sizeBuffer);
-                                lock_ack.unlock();
-                                //Increment the number of tries if not aknowledged
-                                nbTry++;
-                            }
-                        }
-                    }
-                }
-            } else
-                isAcknowledged = true;
-        } while(!isAcknowledged);
-
-        //Free allocated memory for the bufferArray
-        delete []bufferArray;
+        } while(nbTry < MAX_TRY);
 
         //If number of tries exceeded
         if (nbTry == MAX_TRY) {
             LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
-            std::cerr << "Number of tries to send the message exceeded\n"; //TODO to remove
-            /*throw ErrorException("Error while sending a message : "
-              "Number of tries to send "
-              "the message exceeded");*/
-            return false;
+            throw ErrorException("Error while sending a message : "
+                                 "Number of tries to send "
+                                 "the message exceeded");
         } else
             LOG(2, "[HANDLER] Ack handled");
+
+        //Free allocated memory for the bufferArray
+        delete []bufferArray;
     }
+
     LOG(1, "[SEND] Message sended");
     return true;
 }
 
-/*! 
+/*!
  * \brief TODO
  * \param mess
  * \param currentBuff
@@ -560,7 +459,7 @@ bool Controller::handleNewMessage(OutgoingMessage *mess, int currentBuff, int *n
 /*!
  * \brief Connects the controller to a device with its ID
  * \param id ID of the device to connect
- * \return 
+ * \return
  */
 bool Controller::connectDevice(int id)
 {
@@ -585,7 +484,7 @@ bool Controller::connectDevice(int id)
 
 /*!
  * \brief Disconnects the controller from the device
- * \return 
+ * \return
  */
 bool Controller::disconnectDevice()
 {
@@ -618,4 +517,3 @@ std::list<Device*> Controller::getListDevices()
 
     return this->devices;
 }
-

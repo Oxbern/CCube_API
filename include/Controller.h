@@ -48,10 +48,9 @@ class Controller
     std::queue <uint8_t*> buffReceived; /*!< TODO */
     std::thread ack_thread; /*!< TODO */
     std::mutex lock_ack; /*!< TODO */
-    std::condition_variable cond_var;  /*!< TODO */
 
     /*!
-     * \fn void *waitForACK() 
+     * \fn void *waitForACK()
      * \brief Reads an ACK message from USB
      */
     void *waitForACK();
@@ -60,19 +59,19 @@ class Controller
     /*!
      * \brief Constructor
      *
-     * Creates a controller, 
+     * Creates a controller,
      * lists all USB connected devices and adds them to the Device list
      *
      */
     Controller();
-    
+
     /*!
      * \brief Destructor
      *
      */
     ~Controller();
 
-    /*! 
+    /*!
      * \fn bool on(int x, int y, int z)
      * \brief Switches on a led on the current connected device
      * \param x
@@ -82,7 +81,7 @@ class Controller
      */
     bool on(int x, int y, int z);
 
-    /*! 
+    /*!
      * \fn bool off(int x, int y, int z)
      * \brief Switches off a led on the current connected device
      * \param x
@@ -92,14 +91,14 @@ class Controller
      */
     bool off(int x, int y, int z);
 
-    /*! 
+    /*!
      * \fn bool off()
      * \brief Switches off the entire device
      * \return bool
      */
     bool off();
 
-    /*! 
+    /*!
      * \fn bool toggle(int x, int y, int z)
      * \brief Sets the state of a led to its opposite on the current connected device
      * \param x
@@ -117,13 +116,13 @@ class Controller
     bool display();
 
     /*!
-     * \fn bool setLuminosity() 
+     * \fn bool setLuminosity()
      * \brief Sets the device's luminosity
      * \param value to set the luminosity to
      * \return bool
      */
     bool setLuminosity(uint8_t value);
-    
+
     /*!
      * \fn bool available()
      * \brief TODO
@@ -157,14 +156,14 @@ class Controller
      * \fn bool connectDevice(int id)
      * \brief Connects the controller to a device with its ID
      * \param id ID of the device to connect
-     * \return 
+     * \return
      */
     bool connectDevice(int id);
 
     /*!
      * \fn bool disconnectDevice()
      * \brief Disconnects the controller from the device
-     * \return 
+     * \return
      */
     bool disconnectDevice();
 
@@ -180,13 +179,13 @@ class Controller
      * \fn bool send(Message* mess)
      * \brief
      * \param mess Message
-     * \return 
+     * \return
      */
     bool send(OutgoingMessage* mess);
 
-    /*! 
+    /*!
      * \todo think about where to put it : Utils.h ?
-     * \fn bool handleNewMessage(Message *mess, int currentBuff, int *nbTry, 
+     * \fn bool handleNewMessage(Message *mess, int currentBuff, int *nbTry,
      * int *nbWait, bool *isAcknowledged)
      * \brief TODO
      * \param mess
@@ -205,7 +204,7 @@ class Controller
      * \return the list of USB connected devices
      */
     std::list<Device*> getListDevices();
-    
+
 };
 
 #endif //CONTROLLER_H
