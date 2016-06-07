@@ -9,6 +9,7 @@
 #include "DeviceShape.h"
 #include "DataMessage.h"
 #include "Utils.h"
+#include "Controller.h"
 
 #define DEBUG 1
 
@@ -45,7 +46,16 @@ int main()
     }
 
     /* Sets blocking mode */
+#ifdef _WIN32
+    //To make blocking:
+    unsigned long off = 0;
+    if (ioctlsocket(fd, FIONBIO, &off) != 0)
+        {
+            /* Handle failure. */
+        }
+#else
     fcntl(fd, F_SETFL, 0);
+#endif
 
     /* clear the set */
     FD_ZERO(&set); 

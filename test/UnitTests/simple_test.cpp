@@ -7,7 +7,13 @@
 #include "Device.h"
 #include "Utils.h"
 
-
+//Windows def
+#ifndef O_NOCTTY
+#define O_NOCTTY 0
+#endif
+#ifndef O_NDELAY
+#define O_NDELAY 0
+#endif
 int main(int argc, char *argv[]) {
 
     Message m(1, SIZE_BUFFER, 20, 0x1);

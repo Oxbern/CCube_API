@@ -1,3 +1,9 @@
+set(WINDOWS_COMPILE 0 CACHE BOOL "Some user-specified option")
+#Compile for Linux or Windows system
+if(WINDOWS_COMPILE)
+set(CMAKE_TOOLCHAIN_FILE ../Toolchain-cross-mingw32-linux.cmake)
+endif(WINDOWS_COMPILE)
+
 # CMake version
 cmake_minimum_required(VERSION 2.8.9)
 

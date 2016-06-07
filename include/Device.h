@@ -10,7 +10,56 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
-#include <sys/poll.h>
+#ifdef _WIN32
+#include <winsock2.h>
+
+typedef struct pollfd {
+  SOCKET fd;
+  short  events;
+  short  revents;
+} WSAPOLLFD, *PWSAPOLLFD, *LPWSAPOLLFD;
+
+
+
+#ifndef POLLIN
+#define POLLIN    0x001  /* There is data to read.  */
+#endif
+#ifndef POLLPRI
+#define POLLPRI   0x002  /* There is urgent data to read.  */
+#endif
+#ifndef POLLOUT
+#define POLLOUT   0x004  /* Writing now will not block.  */
+#endif
+#ifndef POLLERR
+#define POLLERR   0x008  /* Error condition.  */
+#endif
+#ifndef POLLHUP
+#define POLLHUP   0x010  /* Hung up.  */
+#endif
+#ifndef POLLNVAL
+#define POLLNVAL  0x020  /* Invalid polling request.  */
+#endif
+#ifndef POLLRDNORM
+#define POLLRDNORM  0x040 /* mapped to read fds_set */
+#endif
+#ifndef POLLRDBAND
+#define POLLRDBAND  0x080 /* mapped to exception fds_set */
+#endif
+#ifndef POLLWRNORM
+#define POLLWRNORM  0x100 /* mapped to write fds_set */
+#endif
+#ifndef POLLWRBAND
+#define POLLWRBAND  0x200 /* mapped to write fds_set */
+#endif
+
+#ifndef O_NOCTTY
+#define O_NOCTTY 0
+#endif
+
+#else //LINUX
+#include <sys/poll.h> 
+
+#endif
 
 #include "DeviceShape.h"
 #include "AckMessage.h"

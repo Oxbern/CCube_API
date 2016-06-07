@@ -5,6 +5,10 @@
 #include "DeviceShape.h"
 #include "Utils.h"
 
+#ifdef _WIN32
+#include "Controller.h"
+#endif
+
 /* User variable definition */
 #define ACK_SIZE 10
 
@@ -35,10 +39,18 @@ int main ()
     }
 
     /* Set blocking mode */
+#ifdef _WIN32
+    //To make blocking:
+    unsigned long off = 0;
+    if (ioctlsocket(fd, FIONBIO, &off) != 0)
+        {
+            /* Handle failure. */
+        }
+#else
     fcntl(fd, F_SETFL, 0);
+#endif
 
-
-                                /* Define variables used here */
+    /* Define variables used here */
 
     /* Create a device shape */
     DeviceShape ds(9, 9, 9);

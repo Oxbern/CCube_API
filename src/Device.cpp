@@ -90,8 +90,17 @@ bool Device::connect()
 	    else {
             pfds[0].fd = fd;
             pfds[1].fd = fd;
-	        fcntl(fd, F_SETFL, 0);
-	        //FD_SET(fd, &set);
+#ifdef _WIN32
+            //To make blocking:
+            unsigned long off = 0;
+            if (ioctlsocket(fd, FIONBIO, &off) != 0)
+                {
+                    /* Handle failure. */
+                }
+#else
+            fcntl(fd, F_SETFL, 0);
+#endif
+            //FD_SET(fd, &set);
 	    }	    
     }
 
@@ -167,8 +176,11 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
                + std::to_string(dataSize)
                + " Bytes) : DATA TO WRITE = "
                + uint8ArrayToString(data, dataSize));
-
+#ifdef _WIN32
+        int ret = select(fd, NULL,NULL,0, &timeout);
+#else
         int ret = poll(pfds, 2, 700);
+#endif
         if (ret > 0) {
             if (pfds[1].revents & POLLOUT) {
                 if (write(fd, &data[0], dataSize)) {
@@ -197,15 +209,22 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
     //int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
-    int ret = poll(pfds, 2, 700);
+#ifdef _WIN32
+        int ret = select(fd, NULL,NULL,0, &timeout);
+#else
+        int ret = poll(pfds, 2, 700);
+#endif
     if (ret > 0) {
         if (pfds[0].revents & POLLIN) {
             ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
             if (sizeRead >= 0) {
                 LOG(2, "[READ] Reading from Device "
                        + std::to_string(id) + " | DATA READ = "
-                       + uint8ArrayToString(ack_buffer, sizeRead));
+                    + uint8ArrayToString(ack_buffer, sizeRead));
+#ifdef _WIN32
+#else
                 fsync(fd);
+#endif
                 return true;
             } else {
                 std::cerr << std::string(std::strerror(errno)) << std::endl;

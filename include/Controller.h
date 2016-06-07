@@ -16,9 +16,15 @@
 #include <iostream>
 #include <algorithm>
 
+
 #include "Device.h"
 #include "Message.h"
 
+#ifdef _WIN32
+#include "mingw.thread.h"
+#include "mingw.mutex.h"
+#include "mingw.condition_variable.h"
+#endif
 /*!
  * \struct Dictionnary
  * \brief TODO
