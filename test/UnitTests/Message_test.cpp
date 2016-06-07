@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     OutgoingMessage mess(1, SIZE_BUFFER, 1, 0);
 
-    Request dataMess(2, 92, 0);
+    Request dataMess(2, 92, SET_LEDSTATS);
     uint8_t *data = new uint8_t[92];
     for (int i = 0 ; i < 92; i++)
         data[i] = i;
@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     std::cout << " \n One2 encoded :\n";
     std::cout << one2.toStringDebug();    
 
+    delete [] light;
     delete [] data;
     
     std::cout << "PASSED \n";

@@ -10,6 +10,13 @@
 #include <iostream>
 
 /*!
+  \def MIN(X, Y)
+  Computes the minimum of \a x and \a y.
+*/
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+
+
+/*!
  * \class Buffer
  * \brief Class representing a buffer
  */
