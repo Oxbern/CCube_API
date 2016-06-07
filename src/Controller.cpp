@@ -37,8 +37,12 @@ std::atomic<bool> notified = ATOMIC_VAR_INIT(false);
  */
 Controller::Controller()
 {
+#ifdef _WIN32
+    Device *d = new Device("COM7",1);
+    devices.push_back(d);
+#else
     listAndGetUSBConnectedDevices(*this);
-
+#endif
     /*Device *dev = new Device("/dev/stdout", 1);
 
       if (devices.size() == 0){

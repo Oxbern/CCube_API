@@ -37,8 +37,11 @@ void handleAck(uint8_t *ack);
 int main()
 {
     /* Opens the connection in non blocking mode */
+#ifdef _WIN32
+    fd = open("COM7", O_RDWR | O_NOCTTY);
+#else
     fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
-
+#endif
     /* Check for error */
     if (fd < 0) {
         fprintf(stderr, "[TEST FAILED]: Unable to open connection\n");

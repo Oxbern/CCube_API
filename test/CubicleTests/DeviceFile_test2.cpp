@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
     Controller c;
-
+    
     if (c.connectDevice(1)){
         std::cout << "Connection to device successful" << std::endl;
 
