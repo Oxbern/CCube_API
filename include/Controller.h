@@ -185,21 +185,6 @@ class Controller
     bool send(OutgoingMessage* mess);
 
     /*!
-     * \todo think about where to put it : Utils.h ?
-     * \fn bool handleNewMessage(Message *mess, int currentBuff, int *nbTry,
-     * int *nbWait, bool *isAcknowledged)
-     * \brief TODO
-     * \param mess
-     * \param currentBuff
-     * \param nbTry
-     * \param nbWait
-     * \param isAcknowledged
-     * \return bool
-     */
-    bool handleNewMessage(OutgoingMessage *mess, int currentBuff, int *nbTry,
-                          int *nbWait, bool *isAcknowledged);
-
-    /*!
      * \fn std::list<Device*> getListDevices()
      * \brief Accessor to the list of USB connected devices
      * \return the list of USB connected devices
