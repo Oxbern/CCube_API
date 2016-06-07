@@ -4,7 +4,7 @@
 /*!
  * \file Buffer.h
  * \brief Creates a buffer
- * \version 0.1
+ * \version 0.5
  */
 #include <cstdint>
 #include <iostream>

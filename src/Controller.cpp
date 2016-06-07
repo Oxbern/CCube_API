@@ -3,9 +3,10 @@
 
 #include "Controller.h"
 #include "LinuxUtils.h"
-#include "DataMessage.h"
-#include "RequestMessage.h"
-#include "SetMessage.h"
+
+#include "Question.h"
+#include "Request.h"
+
 #include "ErrorException.h"
 #include "Utils.h"
 #include "Debug.h"
@@ -128,10 +129,10 @@ bool Controller::toggle(int x, int y, int z)
 bool Controller::display()
 {
     if (connectedDevice != NULL) {
-        //Create a DataMessage
-        DataMessage dm(connectedDevice->getID(),
+        //Create a Request
+        Request dm(connectedDevice->getID(),
                        connectedDevice->getcurrentConfig()->getSizeInBytes(),
-                       OPCODE(BUFF_SENDING));
+                       OPCODE(SET_LEDSTATS));
 
         //Encode the message with the DeviceShape of the Device
         uint8_t *ledsBuffer = new uint8_t[connectedDevice->getcurrentConfig()->getSizeInBytes()];
@@ -158,7 +159,7 @@ bool Controller::setLuminosity(uint8_t value)
 {
     if (this->connectedDevice != NULL) {
         // Create a set message, with its crc
-        SetMessage sl(connectedDevice->getID(), LIGHT_SENDING);
+        Request sl(connectedDevice->getID(), 1, SET_LUMINOSITY);
         sl.encode(&value);
 
         //Send the message
@@ -177,12 +178,12 @@ bool Controller::setLuminosity(uint8_t value)
  */
 bool Controller::available()
 {
-    // Create a request message, with its crc
-    RequestMessage av(connectedDevice->getID(), AVAILABLE);
+    // // Create a request message, with its crc
+    // Question av(connectedDevice->getID(), AVAILABLE);
 
-    if (!send(&av))
-        throw ErrorException("Error while checking the "
-                             "availability of the connected device");
+    // if (!send(&av))
+    //     throw ErrorException("Error while checking the "
+    //                          "availability of the connected device");
 
     return true;    
 }
@@ -195,7 +196,7 @@ uint8_t Controller::getLuminosity()
 {
     if (this->connectedDevice != NULL) {
         // Create a request message, with its crc
-        RequestMessage gl(connectedDevice->getID(), LIGHT_ASKING);
+        Question gl(connectedDevice->getID(), GET_LUMINOSITY);
 
         //Send the message
         if (!send(&gl))
@@ -215,8 +216,8 @@ uint8_t Controller::getVersionFirmware()
 {
     if (this->connectedDevice != NULL) {
         // Create a request message, with its crc
-        RequestMessage vf(connectedDevice->getID(),
-                          FIRMWARE_VERSION_ASKING);
+        Question vf(connectedDevice->getID(),
+                          FIRMWARE_VERSION);
 
         if (!send(&vf))
             throw ErrorException("Error while asking the firmware version "
@@ -258,9 +259,9 @@ bool Controller::updateFirmware(const std::string& myFile)
             LOG(3, "size is " + std::to_string(size) + " bytes.");
 
             // Create a data message
-            DataMessage uf(connectedDevice->getID(),
+            Request uf(connectedDevice->getID(),
                            size,
-                           FIRMWARE_UPDATE_SENDING);
+                           UPDATE_FIRMWARE);
             uf.encode(data);
 
             LOG(3, "firmware update message : " + uf.toStringDebug());
@@ -312,7 +313,7 @@ void *Controller::waitForACK()
  * \param mess Message
  * \return 
  */
-bool Controller::send(Message* mess)
+bool Controller::send(OutgoingMessage* mess)
 {
     if (this->connectedDevice == NULL)
         return false;
@@ -358,7 +359,7 @@ bool Controller::send(Message* mess)
         uint8_t ackOKBuff[SIZE_ACK] = {1,
                                        (uint8_t) connectedDevice->getID(),
                                        ACK_OK, 0, 3,
-                                       BUFF_SENDING,
+                                       SET_LEDSTATS,
                                        (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() >> 8),
                                        (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() & 0xFF),
                                        0, 0}; //TODO : Add CRC check
@@ -491,7 +492,7 @@ bool Controller::send(Message* mess)
  * \param isAcknowledged
  * \return bool
  */
-bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, int *nbWait, bool *isAcknowledged)
+bool Controller::handleNewMessage(OutgoingMessage *mess, int currentBuff, int *nbTry, int *nbWait, bool *isAcknowledged)
 {
     bool retValue = true;
 
@@ -533,8 +534,8 @@ bool Controller::handleNewMessage(Message *mess, int currentBuff, int *nbTry, in
                 //if valid opcode
 
                 if (isAnAckOpcode(opcode)) {
-                    //Create an AckMessage instance
-                    AckMessage ackMess(connectedDevice->getID(), opcode);
+                    //Create an Ack instance
+                    Ack ackMess(connectedDevice->getID(), opcode);
                     ackMess.encodeAck(sizeLeftPack, ack[DATA_INDEX]);
 
                     //Handle the ack

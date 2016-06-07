@@ -18,7 +18,7 @@
 
 
 #include "Device.h"
-#include "Message.h"
+#include "OutgoingMessage.h"
 
 #ifdef _WIN32
 #include "mingw.thread.h"
@@ -44,7 +44,7 @@ class Controller
  protected:
     std::list<Device*> devices; /*!< TODO */
     Device *connectedDevice; /*!< TODO */
-    std::queue<Message> messages; /*!< FIFO of the last message */
+    //    std::queue<OutgoingMessage> messages; /*!< FIFO of the last message */
     std::queue <uint8_t*> buffReceived; /*!< TODO */
     std::thread ack_thread; /*!< TODO */
     std::mutex lock_ack; /*!< TODO */
@@ -182,7 +182,7 @@ class Controller
      * \param mess Message
      * \return 
      */
-    bool send(Message* mess);
+    bool send(OutgoingMessage* mess);
 
     /*! 
      * \todo think about where to put it : Utils.h ?
@@ -196,7 +196,7 @@ class Controller
      * \param isAcknowledged
      * \return bool
      */
-    bool handleNewMessage(Message *mess, int currentBuff, int *nbTry,
+    bool handleNewMessage(OutgoingMessage *mess, int currentBuff, int *nbTry,
                           int *nbWait, bool *isAcknowledged);
 
     /*!

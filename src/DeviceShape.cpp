@@ -3,7 +3,7 @@
 #include <ErrorException.h>
 
 #include "DeviceShape.h"
-#include "AckMessage.h"
+#include "Ack.h"
 #include "Debug.h"
 
 /*! 

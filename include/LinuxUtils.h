@@ -4,7 +4,7 @@
 /*!
  * \file LinuxUtils.h
  * \brief TODO
- * \version 0.1
+ * \version 0.5
  */
 
 #include <list>
