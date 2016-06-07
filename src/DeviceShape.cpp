@@ -1,5 +1,6 @@
 #include <cmath>
 #include <string.h>
+#include <ErrorException.h>
 
 #include "DeviceShape.h"
 #include "AckMessage.h"
@@ -71,10 +72,9 @@ DeviceShape::~DeviceShape()
  */
 bool DeviceShape::on(int x, int y, int z) 
 {
-    if (x > (this->sizeX - 1) || y > (this->sizeY - 1) || z > (this->sizeZ - 1)) {
-        std::cerr << "Index of led out of bounds" << std::endl;
-        return false;
-    }
+    if (x > (this->sizeX - 1) || y > (this->sizeY - 1) || z > (this->sizeZ - 1))
+        throw ErrorException("Index of led out of bounds");
+
     return (ledStatus[x][y][z] = true);
 }
 
@@ -101,10 +101,9 @@ bool DeviceShape::off()
  */
 bool DeviceShape::off(int x, int y, int z) 
 {
-    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
-        std::cerr << "Index of led out of bounds" << std::endl;
-        return false;
-    }
+    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1))
+        throw ErrorException("Index of led out of bounds");
+
     return (ledStatus[x][y][z] = false);
 }
 
@@ -121,10 +120,9 @@ bool DeviceShape::off(int x, int y, int z)
  */
 bool DeviceShape::toggle(int x, int y, int z) 
 {
-    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
-        std::cerr << "Index of led out of bounds" << std::endl;
-        return false;
-    }
+    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1))
+        throw ErrorException("Index of led out of bounds");
+
     return (ledStatus[x][y][z] == true) ?
             (ledStatus[x][y][z] = false) : (ledStatus[x][y][z] = true);
 }
