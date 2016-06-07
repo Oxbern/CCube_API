@@ -25,7 +25,7 @@ class ErrorException : public std::exception
      *
      * \param Msg 
      */
-    ErrorException( const char * Msg );
+    ErrorException( const std::string Msg );
 
     /*!
      * \brief Destructor

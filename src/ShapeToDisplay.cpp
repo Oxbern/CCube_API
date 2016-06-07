@@ -1,4 +1,5 @@
 #include "ShapeToDisplay.h"
+#include "ErrorException.h"
 #include "Debug.h"
 
 /*! 
@@ -149,10 +150,9 @@ bool *** ShapeToDisplay::getStatus()
  */
 bool ShapeToDisplay::on(int x, int y, int z) 
 {
-    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1)) {
-        std::cerr << "Index of led out of bounds" << std::endl;
-        return false;
-    }
+    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1))
+        throw ErrorException("Index of led out of bounds");
+
     return (status[x][y][z] = true);
 }
 

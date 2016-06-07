@@ -7,7 +7,7 @@
  *
  * \param Msg 
  */
-ErrorException::ErrorException( const char * Msg )
+ErrorException::ErrorException( const std::string Msg )
 {
     std::ostringstream oss;
     oss << "[ERROR] File  " << __FILE__ << " | Function : " << __FUNCTION__ << " : " << Msg << std::endl;

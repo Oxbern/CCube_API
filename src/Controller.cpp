@@ -141,10 +141,8 @@ bool Controller::display()
         //Deallocate memory
         delete[] ledsBuffer;
 
-        if (!send(&dm)) {
-            std::cerr << "Error while sending ledBuffer" << std::endl;
-            return false;
-        }
+        //Send the message
+        send(&dm);
 
         return true;
     } else
@@ -163,11 +161,8 @@ bool Controller::setLuminosity(uint8_t value)
         SetMessage sl(connectedDevice->getID(), LIGHT_SENDING);
         sl.encode(&value);
 
-        // Calcuate its CRC
-        if (!send(&sl)) {
-            std::cerr << "Error while sending the set message" << std::endl;
-            return false;
-        }
+        //Send the message
+        send(&sl);
 
         return true;
     } else
@@ -185,10 +180,9 @@ bool Controller::available()
     // Create a request message, with its crc
     RequestMessage av(connectedDevice->getID(), AVAILABLE);
 
-    if (!send(&av)) {
-        std::cerr << "Error while sending request" << std::endl;
-        return false;
-    }
+    if (!send(&av))
+        throw ErrorException("Error while checking the "
+                             "availability of the connected device");
 
     return true;    
 }
@@ -203,12 +197,12 @@ uint8_t Controller::getLuminosity()
         // Create a request message, with its crc
         RequestMessage gl(connectedDevice->getID(), LIGHT_ASKING);
 
-        if (!send(&gl)) {
-            std::cerr << "Error while sending request" << std::endl;
-            return false;
-        }
+        //Send the message
+        if (!send(&gl))
+            throw ErrorException("Error while asking the luminosity "
+                                         "of the connected device");
 
-        return 1;
+        return 1; //TODO To modify with the good value
     } else
         throw ErrorException("No device connected");
 }
@@ -224,10 +218,10 @@ uint8_t Controller::getVersionFirmware()
         RequestMessage vf(connectedDevice->getID(),
                           FIRMWARE_VERSION_ASKING);
 
-        if (!send(&vf)) {
-            std::cerr << "Error while sending request" << std::endl;
-            return false;
-        }
+        if (!send(&vf))
+            throw ErrorException("Error while asking the firmware version "
+                                         "of the connected device");
+
         return 1;
     } else
         throw ErrorException("No device connected");
@@ -239,7 +233,7 @@ uint8_t Controller::getVersionFirmware()
  */
 bool Controller::updateFirmware(const std::string& myFile)
 {
-    if (this->connectedDevice != NULL) {
+    if (connectedDevice != NULL) {
         std::streampos size;
         char *memblock;
 
@@ -273,14 +267,15 @@ bool Controller::updateFirmware(const std::string& myFile)
 
             delete[] data;
 
+            //Send the message
             // if (!send(&uf)) {
             //     std::cerr << "Error while sending request" << std::endl;
             //     return false;
             // }
 
-
         } else
-            std::cout << "Unable to open file " << myFile << " \n";
+            throw ErrorException("Unable to open file " + myFile);
+
         return true;
     } else
         throw ErrorException("No device connected");
@@ -320,7 +315,7 @@ void *Controller::waitForACK()
 bool Controller::send(Message* mess)
 {
     if (this->connectedDevice == NULL)
-        throw ErrorException("No device connected");
+        return false;
 
     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
 
@@ -367,7 +362,6 @@ bool Controller::send(Message* mess)
                                        (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() >> 8),
                                        (uint8_t ) (mess->getListBuffer()[currentBuffNb].getSizeLeft() & 0xFF),
                                        0, 0}; //TODO : Add CRC check
-        printBuffer("ACK OK", ackOKBuff, SIZE_ACK);
 
         //Wait for the receipt acknowledgement
         //while (!isAcknowledged /*&& nbTry < MAX_TRY*/) {
@@ -439,8 +433,10 @@ bool Controller::send(Message* mess)
                                 //Search the buffer to retransmit from the message
                                 Buffer *bufferToRetransmit = mess->getBuffer(opcodePack, sizeLeftPack);
                                 if (bufferToRetransmit == NULL) {
-                                    throw ErrorException("Error in an ack message "
-                                                         ": buffer to retransmit not found in the message");
+                                    std::cerr << "Error in an ack message : "
+                                                 ": buffer to retransmit not "
+                                                 "found in the message"; //TODO to remove
+                                    return false;
                                 }
 
                                 //Convert array to retransmit to an array of uint8_t
@@ -474,10 +470,11 @@ bool Controller::send(Message* mess)
         if (nbTry == MAX_TRY) {
             LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
-            std::cerr << "Number of tries to send the message exceeded\n";
+            std::cerr << "Number of tries to send the message exceeded\n"; //TODO to remove
             /*throw ErrorException("Error while sending a message : "
               "Number of tries to send "
               "the message exceeded");*/
+            return false;
         } else
             LOG(2, "[HANDLER] Ack handled");
     }

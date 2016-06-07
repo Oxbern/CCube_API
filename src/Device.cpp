@@ -85,8 +85,8 @@ bool Device::connect()
     if (fd < 0) {
 	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
 	    if (fd == -1)
-            std::cerr << "Error while opening the file descriptor : "
-                << std::string(std::strerror(errno));
+            throw ErrorException("Error while opening the file descriptor : "
+                + std::string(std::strerror(errno)));
 	    else {
             pfds[0].fd = fd;
             pfds[1].fd = fd;
@@ -110,8 +110,8 @@ bool Device::disconnect()
     LOG(1, "Trying to disconnect the device");
     if (fd >= 0) {
         if (close(fd) == -1)
-            std::cerr << "Error while closing the file descriptor : "
-                << std::string(std::strerror(errno));
+            throw ErrorException("Error while closing the file descriptor : "
+                                 + std::string(std::strerror(errno)));
         else
             fd = -1;
     }
@@ -128,8 +128,7 @@ bool Device::disconnect()
  */
 bool Device::updateFirmware() 
 {
-    std::cerr << "Not yet implemented " << std::endl;
-    return false;
+    throw ErrorException("Not yet implemented");
 }
 
 /*! 
@@ -139,7 +138,7 @@ bool Device::updateFirmware()
  */
 std::string Device::getFirmwareVersion() 
 {
-    return 0;
+    throw ErrorException("Not yet implemented");
 }
 
 /*! 
@@ -149,7 +148,7 @@ std::string Device::getFirmwareVersion()
  */
 bool Device::askForDisplaySize() 
 {
-    return false;
+    throw ErrorException("Not yet implemented");
 }
 
 /*! 
@@ -174,10 +173,9 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize) {
                 if (write(fd, &data[0], dataSize)) {
                     LOG(2, "[WRITE] Data written to file");
                     return true;
-                } else {
-                    std::cerr << std::string(std::strerror(errno)) << std::endl;
-                    LOG(2, "[WRITE] Error while writing data to file : " + std::string(std::strerror(errno)));
-                }
+                } else
+                    LOG(2, "[WRITE] Error while writing data to file : "
+                            + std::string(std::strerror(errno)));
             }
         } else if (ret == 0)
             LOG(2, "[WRITE] Timeout");
@@ -207,9 +205,9 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
                        + uint8ArrayToString(ack_buffer, sizeRead));
                 fsync(fd);
                 return true;
-            } else {
-                std::cerr << std::string(std::strerror(errno)) << std::endl;
-            }
+            } else
+                LOG(2, "[WRITE] Error while reading data to file : "
+                       + std::string(std::strerror(errno)));
         }
     } else if (ret == 0)
         LOG(2, "[READ] Timeout");
