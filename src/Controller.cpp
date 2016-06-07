@@ -73,7 +73,10 @@ Controller::~Controller()
  */
 bool Controller::on(int x, int y, int z)
 {
-    return connectedDevice->on(x,y,z);
+    if (connectedDevice != NULL)
+        return connectedDevice->on(x,y,z);
+    else
+        throw ErrorException("No device connected");
 }
 
 /*! 
@@ -85,7 +88,10 @@ bool Controller::on(int x, int y, int z)
  */
 bool Controller::off(int x, int y, int z)
 {
-    return connectedDevice->off(x,y,z);
+    if (connectedDevice != NULL)
+        return connectedDevice->off(x,y,z);
+    else
+        throw ErrorException("No device connected");
 }
 
 /*! 
@@ -94,7 +100,10 @@ bool Controller::off(int x, int y, int z)
  */
 bool Controller::off()
 {
-    return connectedDevice->off();
+    if (connectedDevice != NULL)
+        return connectedDevice->off();
+    else
+        throw ErrorException("No device connected");
 }
 
 /*! 
@@ -106,7 +115,10 @@ bool Controller::off()
  */
 bool Controller::toggle(int x, int y, int z)
 {
-    return connectedDevice->toggle(x,y,z);
+    if (connectedDevice != NULL)
+        return connectedDevice->toggle(x,y,z);
+    else
+        throw ErrorException("No device connected");
 }
 
 /*!
@@ -115,25 +127,28 @@ bool Controller::toggle(int x, int y, int z)
  */
 bool Controller::display()
 {
-    //Create a DataMessage
-    DataMessage dm(connectedDevice->getID(),
-                   connectedDevice->getcurrentConfig()->getSizeInBytes(),
-                   OPCODE(BUFF_SENDING));
+    if (connectedDevice != NULL) {
+        //Create a DataMessage
+        DataMessage dm(connectedDevice->getID(),
+                       connectedDevice->getcurrentConfig()->getSizeInBytes(),
+                       OPCODE(BUFF_SENDING));
 
-    //Encode the message with the DeviceShape of the Device
-    uint8_t *ledsBuffer = new uint8_t[connectedDevice->getcurrentConfig()->getSizeInBytes()];
-    connectedDevice->getcurrentConfig()->toArray(ledsBuffer);
-    dm.encode(ledsBuffer);
+        //Encode the message with the DeviceShape of the Device
+        uint8_t *ledsBuffer = new uint8_t[connectedDevice->getcurrentConfig()->getSizeInBytes()];
+        connectedDevice->getcurrentConfig()->toArray(ledsBuffer);
+        dm.encode(ledsBuffer);
 
-    //Deallocate memory
-    delete[] ledsBuffer;
+        //Deallocate memory
+        delete[] ledsBuffer;
 
-    if (!send(&dm)) {
-        std::cerr << "Error while sending ledBuffer" << std::endl;
-        return false;
-    }
+        if (!send(&dm)) {
+            std::cerr << "Error while sending ledBuffer" << std::endl;
+            return false;
+        }
 
-    return true;
+        return true;
+    } else
+        throw ErrorException("No device connected");
 }
 
 /*!
@@ -143,17 +158,20 @@ bool Controller::display()
  */
 bool Controller::setLuminosity(uint8_t value)
 {
-    // Create a set message, with its crc
-    SetMessage sl(connectedDevice->getID(), LIGHT_SENDING);
-    sl.encode(&value);
+    if (this->connectedDevice != NULL) {
+        // Create a set message, with its crc
+        SetMessage sl(connectedDevice->getID(), LIGHT_SENDING);
+        sl.encode(&value);
 
-    // Calcuate its CRC
-    if (!send(&sl)) {
-        std::cerr << "Error while sending the set message" << std::endl;
-        return false;
-    }
-    
-    return true;        
+        // Calcuate its CRC
+        if (!send(&sl)) {
+            std::cerr << "Error while sending the set message" << std::endl;
+            return false;
+        }
+
+        return true;
+    } else
+        throw ErrorException("No device connected");
 }
 
 /*!
@@ -181,15 +199,18 @@ bool Controller::available()
  */
 uint8_t Controller::getLuminosity()
 {
-    // Create a request message, with its crc
-    RequestMessage gl(connectedDevice->getID(), LIGHT_ASKING);
+    if (this->connectedDevice != NULL) {
+        // Create a request message, with its crc
+        RequestMessage gl(connectedDevice->getID(), LIGHT_ASKING);
 
-    if (!send(&gl)) {
-        std::cerr << "Error while sending request" << std::endl;
-        return false;
-    }
+        if (!send(&gl)) {
+            std::cerr << "Error while sending request" << std::endl;
+            return false;
+        }
 
-    return 1;
+        return 1;
+    } else
+        throw ErrorException("No device connected");
 }
 
 /*!
@@ -198,14 +219,18 @@ uint8_t Controller::getLuminosity()
  */
 uint8_t Controller::getVersionFirmware()
 {
-    // Create a request message, with its crc
-    RequestMessage vf(connectedDevice->getID(), FIRMWARE_VERSION_ASKING);
+    if (this->connectedDevice != NULL) {
+        // Create a request message, with its crc
+        RequestMessage vf(connectedDevice->getID(),
+                          FIRMWARE_VERSION_ASKING);
 
-    if (!send(&vf)) {
-        std::cerr << "Error while sending request" << std::endl;
-        return false;
-    }
-    return 1;
+        if (!send(&vf)) {
+            std::cerr << "Error while sending request" << std::endl;
+            return false;
+        }
+        return 1;
+    } else
+        throw ErrorException("No device connected");
 }
 
 /*!
@@ -214,47 +239,53 @@ uint8_t Controller::getVersionFirmware()
  */
 bool Controller::updateFirmware(const std::string& myFile)
 {
-    std::streampos size;
-    char * memblock;
+    if (this->connectedDevice != NULL) {
+        std::streampos size;
+        char *memblock;
 
-    uint8_t* data;
-    
-    std::ifstream file(myFile, std::ios::in | std::ios::binary | std::ios::ate);
-    if (file.is_open()) {
-        size = file.tellg();
-        memblock = new char [size]();
+        uint8_t *data;
 
-        file.seekg(0, std::ios::beg);
-        file.read(memblock, size);
-        file.close();
-        data = new uint8_t[size]();
-        
-        memcpy(data, (const uint8_t*)memblock, size);            
-        
-        LOG(3, "the entire file content is in memblock \n");
+        std::ifstream file(myFile, std::ios::in | std::ios::binary | std::ios::ate);
+        if (file.is_open()) {
+            size = file.tellg();
+            memblock = new char[size]();
 
-        delete [] memblock;
-        
-        LOG(3, "size is " + std::to_string(size) + " bytes.");
-    
-        // Create a data message
-        DataMessage uf(1, size, FIRMWARE_UPDATE_SENDING);
-        uf.encode(data);
+            file.seekg(0, std::ios::beg);
+            file.read(memblock, size);
+            file.close();
+            data = new uint8_t[size]();
 
-        LOG(3, "firmware update message : " + uf.toStringDebug());
+            memcpy(data, (const uint8_t *) memblock, size);
 
-        delete [] data ;
+            LOG(3, "the entire file content is in memblock \n");
 
-        // if (!send(&uf)) {
-        //     std::cerr << "Error while sending request" << std::endl;
-        //     return false;
-        // }
-        
-        
+            delete[] memblock;
+
+            LOG(3, "size is " + std::to_string(size) + " bytes.");
+
+            // Create a data message
+            DataMessage uf(connectedDevice->getID(),
+                           size,
+                           FIRMWARE_UPDATE_SENDING);
+            uf.encode(data);
+
+            LOG(3, "firmware update message : " + uf.toStringDebug());
+
+            delete[] data;
+
+            // if (!send(&uf)) {
+            //     std::cerr << "Error while sending request" << std::endl;
+            //     return false;
+            // }
+
+
+        } else
+            std::cout << "Unable to open file " << myFile << " \n";
+        return true;
     } else
-        std::cout << "Unable to open file " << myFile << " \n";
-    return true;
+        throw ErrorException("No device connected");
 }
+
 /*!
  * \brief Reads an ACK message from USB
  */
@@ -288,6 +319,9 @@ void *Controller::waitForACK()
  */
 bool Controller::send(Message* mess)
 {
+    if (this->connectedDevice == NULL)
+        throw ErrorException("No device connected");
+
     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
 
     std::unique_lock<std::mutex> lock(lock_ack);
@@ -304,8 +338,8 @@ bool Controller::send(Message* mess)
         mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
 
         //Check weither the Device is virtual or not
-        if ((this->getConnectedDevice()->getPort().compare("/dev/stdin") == 0)
-            || (this->getConnectedDevice()->getPort().compare("/dev/stdout") == 0)) {
+        if ((connectedDevice->getPort().compare("/dev/stdin") == 0)
+            || (connectedDevice->getPort().compare("/dev/stdout") == 0)) {
             //VirtualCube
 
             LOG(1, "Virtual sending");
@@ -559,7 +593,9 @@ bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
     ack_thread.detach();
-    while (!connectedDevice->disconnect()); //TODO Timeout
+    if (this->connectedDevice != NULL)
+        while (!connectedDevice->disconnect()); //TODO Timeout
+
     this->connectedDevice = NULL;
     return true;
 }
