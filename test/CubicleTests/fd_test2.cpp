@@ -4,10 +4,12 @@
 #include <mutex>
 
 #include "DeviceShape.h"
-#include "DataMessage.h"
-#include "AckMessage.h"
-#include "RequestMessage.h"
 #include "Utils.h"
+
+#include "Request.h"
+#include "Answer.h"
+#include "Ack.h"
+#include "Question.h"
 
 #define DEBUG 1
 
@@ -63,26 +65,26 @@ int main()
     //     ds.on(8-i, i, i);
     // }
     
-    /* Creates a DataMessage */ 
-    DataMessage myDataMessage(1, 92, BUFF_SENDING);
+    /* Creates a Request */ 
+    Request myRequest(1, 92, SET_LEDSTATS);
 
-    /* Encodes data into the buffers created by the DataMessage */
+    /* Encodes data into the buffers created by the Request */
     uint8_t  *ledBuffer = new uint8_t [ds.getSizeInBytes()];
     ds.toArray(ledBuffer);
-    myDataMessage.encode(ledBuffer);
+    myRequest.encode(ledBuffer);
 
 
     /* Prints the message */
 
 #if DEBUG
-    std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
+    std::cout << "My Request : " << myRequest.toStringDebug() << "\n";
 #endif
-    uint8_t* reqLinear = new uint8_t[SIZE_REQUEST]();
+    uint8_t* reqLinear = new uint8_t[SIZE_QUESTION]();
 
     uint8_t* buffLinear = new uint8_t[SIZE_BUFFER]();
     
     /* Resets the connection */
-    RequestMessage resetConnection(1, RESET);
+    Request resetConnection(1, 0, RESET);
     resetConnection.getListBuffer()[0].toArray(reqLinear);
 
 #if DEBUG
@@ -90,14 +92,14 @@ int main()
 #endif
 
     /* Sents it over USB */
-    //    write(fd, reqLinear, SIZE_REQUEST);
+    //    write(fd, reqLinear, SIZE_QUESTION);
 
     /* Retrieves the ACK */
     while (!lock_ack.try_lock()) {
     }
 
     /* Creates an ACK */
-    AckMessage localAck(1, ack[ack_index][2]);
+    Ack localAck(1, ack[ack_index][2]);
     
     ack_index--;
     
@@ -117,17 +119,17 @@ int main()
     std::cout << "ACK : " << localAck.toStringDebug() << "\n";
 #endif
 
-    /* Sends the DataMessage */
-    for (int i = 0; i<myDataMessage.NbBuffers(); i++) {
+    /* Sends the Request */
+    for (int i = 0; i<myRequest.NbBuffers(); i++) {
 
         /* Prints */
 #if DEBUG
-        std::cout << "My DataMessage buffer " << i << " : " 
-                  << myDataMessage.getListBuffer()[i].toStringDebug(i) << "\n";
+        std::cout << "My Request buffer " << i << " : " 
+                  << myRequest.getListBuffer()[i].toStringDebug(i) << "\n";
 #endif
 
         /* Sends it over USB */
-        myDataMessage.getListBuffer()[i].toArray(buffLinear);
+        myRequest.getListBuffer()[i].toArray(buffLinear);
         write(fd, buffLinear, SIZE_BUFFER);        
 
         /* Retrieves the ACK */
@@ -135,7 +137,7 @@ int main()
         }
 
         /* Creates an ACK */
-        AckMessage localAck(1, ack[ack_index][2]);
+        Ack localAck(1, ack[ack_index][2]);
     
         ack_index--;
     

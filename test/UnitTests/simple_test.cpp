@@ -16,7 +16,7 @@
 #endif
 int main(int argc, char *argv[]) {
 
-    Message m(1, SIZE_BUFFER, 20, 0x1);
+    OutgoingMessage m(1, SIZE_BUFFER, 20, 0x1);
 
     /* std::fstream file;
        file.open("/dev/ttyACM0", std::ios::in | std::ios::out);

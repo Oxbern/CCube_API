@@ -1,23 +1,20 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef OUTGOINGMESSAGE_H
+#define OUTGOINGMESSAGE_H
 
 /*!
- * \file Message.h
- * \brief Messages of all types
- * \version 0.1
+ * \file OutgoingMessage.h
+ * \brief Creates an outgoing message
+ * \version 1.0
  */
-
-#include <vector>
-#include <iostream>
 
 #include "Buffer.h"
 
 /*!
- * \class Message 
- * \brief Parent class of the different types of messages
+ * \class OutgoingMessage 
+ * \brief Parent class of all outgoing messages
  */
 
-class Message
+class OutgoingMessage
 {
  protected :
     uint8_t idDevice; /*!< device's ID */
@@ -37,7 +34,7 @@ class Message
      * \param size the size of the data to encode
      * \param code the message's operation code
      */    
-    Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code);
+    OutgoingMessage(uint8_t id, int sizeBuff, uint16_t size, uint8_t code);
 
     /*!
      * \brief Constructor by copie
@@ -46,12 +43,12 @@ class Message
      *
      * \param M the other message which will be unchanged
      */        
-    Message(const Message &M);
+    OutgoingMessage(const OutgoingMessage &M);
 
     /*!
      * \brief Destructor
      */
-    ~Message();
+    ~OutgoingMessage();
 
     /*!
      * \fn int NbBuffers() const
@@ -59,18 +56,6 @@ class Message
      * \return the number of buffers needed
      */
     int NbBuffers() const;
-
-    /*!
-     * \fn void encode(uint8_t *dataToEncode)
-     * \brief Fills the buffers with the data and calculates and sets the crc
-     * 
-     *  Fills the buffers with the data
-     * if size(dataToEncode) > sizeData,
-     * only the first sizeData values of dataToEncode will be encoded
-     *
-     * \param dataToEncode 
-     */
-    void encode(uint8_t *dataToEncode);
 
     /*!
      * \fn Buffer *getListBuffer() const

@@ -30,7 +30,7 @@ int main ()
                                 /* Open connection */
 
     /* Open connection in blocking mode */
-    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
+    fd = open("/dev/ttyACM0", O_WRONLY | O_NOCTTY);
 
     /* Check for error */
     if (fd < 0) {
@@ -38,17 +38,7 @@ int main ()
         return EXIT_FAILURE;
     }
 
-    /* Set blocking mode */
-#ifdef _WIN32
-    //To make blocking:
-    unsigned long off = 0;
-    if (ioctlsocket(fd, FIONBIO, &off) != 0)
-        {
-            /* Handle failure. */
-        }
-#else
-    fcntl(fd, F_SETFL, 0);
-#endif
+
 
     /* Define variables used here */
 
@@ -60,7 +50,7 @@ int main ()
 
     /* Create array needed below */
     uint8_t myDataMessage[64] = {0};
-    uint8_t emptyAck[10] = {0};
+    /* uint8_t emptyAck[10] = {0}; */
 
     uint8_t *ledBuffer = new uint8_t[92];
     /* Compute ledBuffer array */
@@ -74,7 +64,7 @@ int main ()
     /* Manually set header */
     myDataMessage[0] = 1;
     myDataMessage[1] = 1;
-    myDataMessage[2] = 0x42;
+    myDataMessage[2] = 0x21;
     myDataMessage[3] = 0;
     myDataMessage[4] = 92;
 
@@ -94,9 +84,6 @@ int main ()
 
     /* Send it over USB */
     write(fd, &myDataMessage[0], 64);
-
-    /* Wait for ACK response */
-    read(fd, &emptyAck[0], 10);
 
                                 /* Second buffer */
 
@@ -120,9 +107,6 @@ int main ()
 
     /* Send it over USB */
     write(fd, &myDataMessage[0], 64);
-
-    /* Wait for ACK response */
-    read(fd, &emptyAck[0], 10);
 
     printf("[TEST PASSED]\n");
 

@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
         }
     }
     else{
-        c.connectDevice(argv[1]);
+        c.connectDevice(argv[1],1);
     }
     
     if (c.getConnectedDevice() != NULL)

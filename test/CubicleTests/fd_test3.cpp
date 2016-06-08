@@ -7,7 +7,7 @@
 #include <queue>
 
 #include "DeviceShape.h"
-#include "DataMessage.h"
+#include "Request.h"
 #include "Utils.h"
 #include "Controller.h"
 
@@ -80,18 +80,18 @@ int main()
         ds.on(8-i, i, i);
     }
     
-    /* Creates a DataMessage */ 
-    DataMessage myDataMessage(1, 92, BUFF_SENDING);
+    /* Creates a Request */ 
+    Request myRequest(1, 92, SET_LEDSTATS);
 
-    /* Encodes data into the buffers created by the DataMessage */
+    /* Encodes data into the buffers created by the Request */
     uint8_t  *ledBuffer = new uint8_t [ds.getSizeInBytes()];
     ds.toArray(ledBuffer);
-    myDataMessage.encode(ledBuffer);
+    myRequest.encode(ledBuffer);
 
     /* Prints the message */
 
 #if DEBUG
-    std::cout << "My DataMessage : " << myDataMessage.toStringDebug() << "\n";
+    std::cout << "My Request : " << myRequest.toStringDebug() << "\n";
 #endif
 
     //     uint8_t* reqLinear = new uint8_t[SIZE_REQUEST];
@@ -114,17 +114,17 @@ int main()
 
     uint8_t* buffLinear = new uint8_t[SIZE_BUFFER]();
     
-    /* Sends the DataMessage */
-    for (int i = 0; i<myDataMessage.NbBuffers(); i++) {
+    /* Sends the Request */
+    for (int i = 0; i<myRequest.NbBuffers(); i++) {
 
         /* Prints */
 #if DEBUG
-        std::cout << "My DataMessage buffer " << i << " : " 
-                  << myDataMessage.getListBuffer()[i].toStringDebug(i) << "\n";
+        std::cout << "My Request buffer " << i << " : " 
+                  << myRequest.getListBuffer()[i].toStringDebug(i) << "\n";
 #endif
 
         /* Sends it over USB */
-        myDataMessage.getListBuffer()[i].toArray(buffLinear);
+        myRequest.getListBuffer()[i].toArray(buffLinear);
 
 #if DEBUG
         printBuffer("BUFFER ", buffLinear, SIZE_BUFFER);

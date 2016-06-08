@@ -146,12 +146,12 @@ bool isAValidAnswerOpcode(int val)
         case ACK_OK :
         case ACK_ERR :
         case ACK_NOK :
-        case ID_RECEPTION :
-        case LIGHT_RECEPTION :
-        case SCREEN_SIZE_RECEPTION :
-        case FIRMWARE_VERSION_RECEPTION :
+        case DEVICE_ID :
+        case GET_LUMINOSITY :
+        case SCREEN_SIZE :
+        case FIRMWARE_VERSION :
         case DEVICE_INFO :
-        case BUFF_RECEPTION :
+        case GET_LEDSTATS :
             retVal = true;
             break;
     }

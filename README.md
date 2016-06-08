@@ -11,11 +11,11 @@ In this README, you'll find specifications and our general class hierarchy.
 ## Reference
 
 ## Hello World
-Here is a simple tutorial to show you how to use our API to communicate with the cube. The final code is written in the file `test/sample/Cubicle_tutorial.cpp`
+Here is a simple tutorial to show you how to use our API to communicate with the cube. The final code is written in the file `sample/Cubicle_tutorial.cpp`
 Let's pretend you want to switch on the led 4,4,4. 
 Connect the cube via USB, open a Terminal and let's write and compile the code to switch it on !
 
-1. Set the basic C++ code you will compile in a file named `MyTest.cpp` somewhere in the folder `test/` for example in `test/sample/MyTest.cpp`. This code will compile and wait until you hit `Enter` to exit, but you'll learn how to compile a little bit later.
+1. Set the basic C++ code you will compile in a file named `MyTest.cpp` somewhere in the folder `test/` for example in `test/CubicleTests/MyTest.cpp`. This code will compile and wait until you hit `Enter` to exit, but you'll learn how to compile a little bit later.
   ```
 int main(int argc, char* argv[]) 
 {
@@ -79,6 +79,19 @@ Here if you type in `1` and hit `Enter`, you simply connect to the Device 1 in t
 You choose Device 1
 You are connected to /dev/ttyACM0
   ```
+  **Note** <br />
+  This section is for those who already know on which port they want to connect <br />
+  You can directly call the function `c.connectDevice("path/to/port")` where `path/to/port` is the path string to your USB port on which your device is connected. It might be something like `/dev/ttyACM0` under Linux, or `COM7` under Windows.
+  
+  If you don't have any idea of this port path : 
+  
+  *** Windows ***
+    
+    We provide a function you can call from cmdline called `listCOMPorts.exe`, you simply have to find the number of the COM port of your STM Device and your path will be somtehing like `COM7`.
+    
+  *** Linux ***
+    
+    We provide a function you can call from cmdline called `listTTYPorts`, you simply have to find the number of the tty port of your STM Device and your path will be somtehing like `/dev/ttyACM0`.
 
 4. Now that you are connected to your device, you still want to switch on the led (4,4,4). To do so, simply add to your code the function `on($x,$y,$z)` of Controller's class !
   ```

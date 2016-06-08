@@ -62,7 +62,7 @@ typedef struct pollfd {
 #endif
 
 #include "DeviceShape.h"
-#include "AckMessage.h"
+#include "Ack.h"
 
 
 /*!
@@ -272,7 +272,7 @@ class Device
     int getFile();
     
     /*! 
-     * \fn bool handleAck(Message *mess, AckMessage ack, int i)
+     * \fn bool handleAck(OutgoingMessage *mess, Ack ack, int i)
      *
      * \brief Handles the acknowledge of the message
      * 
@@ -283,7 +283,7 @@ class Device
      * \return true if the ack is an ACK_OK
      * false otherwise
      */
-    bool handleAck(Message *mess, AckMessage &ack, int i);
+    bool handleAck(OutgoingMessage *mess, Ack &ack, int i);
     
     /*! 
      * \fn bool setLedStatus(ShapeToDisplay s)

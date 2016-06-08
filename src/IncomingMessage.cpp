@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "Message.h"
+#include "IncomingMessage.h"
 #include "Utils.h"
 #include "Debug.h"
 
@@ -14,7 +14,7 @@
  * \param size the size of the data to encode
  * \param code the message's operation code
  */    
-Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
+IncomingMessage::IncomingMessage(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
     idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code)
 {
     int nbBuff = this->NbBuffers();
@@ -33,8 +33,8 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
         listBuffer[i].setOpCode(code);
         listBuffer[i].setSizeLeft(size - i * (SIZE_BUFFER - DATA_INDEX - SIZE_CRC));
     }
-    LOG(1, "Message(id, sizeBuff, size, code)");
-    LOG(2, "Message(ID = " + std::to_string(id)
+    LOG(1, "IncomingMessage(id, sizeBuff, size, code)");
+    LOG(2, "IncomingMessage(ID = " + std::to_string(id)
         + ", OPCODE = " + std::to_string(code)
         + ", SIZEBUFF = " + std::to_string(sizeBuff)
         + ", SIZEDATA = " + std::to_string(size)  + ")");
@@ -47,7 +47,7 @@ Message::Message(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
  *
  * \param M the other message which will be unchanged
  */        
-Message::Message(const Message& M)
+IncomingMessage::IncomingMessage(const IncomingMessage& M)
 {
     sizeBuffer= M.getSizeBuffer();
     sizeData = M.getSizeData();
@@ -59,13 +59,13 @@ Message::Message(const Message& M)
     
     for (int i = 0; i<n; i++)
         listBuffer[i] = M.getListBuffer()[i];
-    LOG(1, "Message(const &message)");
+    LOG(1, "IncomingMessage(const &message)");
 }
 
 /*!
  * \brief Destructor
  */
-Message::~Message()
+IncomingMessage::~IncomingMessage()
 {
     int n = this->NbBuffers();
 
@@ -73,14 +73,14 @@ Message::~Message()
         listBuffer[i].Buffer::~Buffer();
 
     delete[] reinterpret_cast<char *>(listBuffer);
-    LOG(1, "~Message()");
+    LOG(1, "~IncomingMessage()");
 }
 
 /*!
  * \brief Calculates the number of buffers necessary to encode a message
  * \return the number of buffers needed
  */
-int Message::NbBuffers() const
+int IncomingMessage::NbBuffers() const
 {
     if (sizeData == 0)
         return 1;    
@@ -100,9 +100,9 @@ int Message::NbBuffers() const
  *
  * \param dataToEncode 
  */
-void Message::encode(uint8_t *dataToEncode)
+void IncomingMessage::encode(uint8_t *dataToEncode)
 {
-    LOG(2, "Message encoding :");
+    LOG(2, "IncomingMessage encoding :");
 
     //Header, DeviceID, Opcode already set in the constructor
     int j = 0; int k= 0; int n = NbBuffers();
@@ -134,7 +134,7 @@ void Message::encode(uint8_t *dataToEncode)
  * \brief Accessor to the list of buffers
  * \return list of buffers
  */
-Buffer* Message::getListBuffer() const
+Buffer* IncomingMessage::getListBuffer() const
 {
     return (this->listBuffer); //Can throw out_of_range exception
 }
@@ -145,7 +145,7 @@ Buffer* Message::getListBuffer() const
  * \param sizeLeft the size left of the buffer
  * \return a buffer
  */
-Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
+Buffer* IncomingMessage::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
 {
     LOG(2, "getBuffer Method : ");
     LOG(2, "Buffer searched :  OPCODE = " + std::to_string(opCode)
@@ -168,7 +168,7 @@ Buffer* Message::getBuffer(uint8_t opCode, uint16_t sizeLeft) const
  * \brief Gets the buffers' size
  * \return the size
  */
-int Message::getSizeBuffer() const
+int IncomingMessage::getSizeBuffer() const
 {
     return this->sizeBuffer;
 }
@@ -177,7 +177,7 @@ int Message::getSizeBuffer() const
  * \brief Gets the data's size
  * \return the size 
  */
-uint16_t Message::getSizeData() const
+uint16_t IncomingMessage::getSizeData() const
 {
     return this->sizeData;
 }
@@ -186,7 +186,7 @@ uint16_t Message::getSizeData() const
  * \brief Gets the operation code
  * \return the opCode
  */
-uint8_t Message::getOpCode() const
+uint8_t IncomingMessage::getOpCode() const
 {
     return this->opCode;
 }
@@ -195,7 +195,7 @@ uint8_t Message::getOpCode() const
  * \brief Gets the device's ID
  * \return ID
  */
-uint8_t Message::getID() const
+uint8_t IncomingMessage::getID() const
 {
     return this->idDevice;
 }
@@ -204,14 +204,14 @@ uint8_t Message::getID() const
  * \brief Prints for debug purposes
  * \return string
  */
-std::string Message::toStringDebug() const
+std::string IncomingMessage::toStringDebug() const
 {
     std::ostringstream convert;
-    convert << "---------- Message (DEBUG) : ----------" << std::endl;
+    convert << "---------- IncomingMessage (DEBUG) : ----------" << std::endl;
     int n = NbBuffers();
     for (int i = 0; i < n; i++)
         convert << getListBuffer()[i].toStringDebug(i);
-    convert << "---------- End Message (DEBUG) : ----------" << std::endl;
+    convert << "---------- End IncomingMessage (DEBUG) : ----------" << std::endl;
     return convert.str();
 }
 

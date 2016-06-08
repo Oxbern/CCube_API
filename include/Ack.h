@@ -2,19 +2,20 @@
 #define ACK_H
 
 /*!
- * \file AckMessage.h
+ * \file Ack.h
  * \brief Messages of type ACK : ACK_ERR, ACK_OK, ACK_NOK 
- * \version 0.1
+ * \version 0.5
  */
 #include <cstdint>
 
-#include "Message.h"
+#include "IncomingMessage.h"
+#include "OutgoingMessage.h"
 
 /*! 
- * \class AckMessage
+ * \class Ack
  * \brief Class representing a message of type ACK
  */
-class AckMessage : public Message
+class Ack : public IncomingMessage
 {
  public :
     /*!
@@ -25,13 +26,13 @@ class AckMessage : public Message
      * \param id device's ID
      * \param ackType ACK_OK, ACK_ERR, ACK_NOK
      */
-    AckMessage(uint8_t id, uint8_t ackType);
+    Ack(uint8_t id, uint8_t ackType);
 
     /*!
      * \brief Destructor
      *
      */
-    ~AckMessage();
+    ~Ack();
 
     /*!
      * \todo is this methode usefull ?
@@ -52,7 +53,7 @@ class AckMessage : public Message
      * \param fd
      * \param msg
      */
-    void handleAck(int fd, Message &msg);
+    void handleAck(int fd, OutgoingMessage &msg);
 
     /*!
      * \todo is this method usefull ?

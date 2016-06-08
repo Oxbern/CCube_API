@@ -1,4 +1,4 @@
-#include "AckMessage.h"
+#include "Ack.h"
 #include "Utils.h"
 #include "Debug.h"
 
@@ -10,19 +10,19 @@
  * \param id device's ID
  * \param ackType ACK_OK, ACK_ERR, ACK_NOK
  */
-AckMessage::AckMessage(uint8_t id, uint8_t ackType) :
-    Message(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
+Ack::Ack(uint8_t id, uint8_t ackType) :
+    IncomingMessage(id, SIZE_ACK, SIZE_OPCODE + SIZE_SIZE, ackType)
 {
-    LOG(1, "AckMessage(idDevice, ackType)");
+    LOG(1, "Ack(idDevice, ackType)");
 }
 
 /*!
  * \brief Destructor
  *
  */
-AckMessage::~AckMessage()
+Ack::~Ack()
 {
-    LOG(1, "~AckMessage()");
+    LOG(1, "~Ack()");
 }
 
 /*!
@@ -34,7 +34,7 @@ AckMessage::~AckMessage()
  * \param sizeLeftPack 
  * \param opCodePack
  */
-void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
+void Ack::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
 {
     uint8_t *tab = new uint8_t[3];
     packID(sizeLeftPack, opCodePack, tab);
@@ -49,7 +49,7 @@ void AckMessage::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
  * \param fd
  * \param msg
  */
-void AckMessage::handleAck(int fd, Message &msg)
+void Ack::handleAck(int fd, OutgoingMessage &msg)
 {
     //    if (opCode != ACK_OK) {
     //     Buffer buff;
@@ -64,7 +64,7 @@ void AckMessage::handleAck(int fd, Message &msg)
  * \brief TODO
  * \param fd
  */
-void AckMessage::setAck(int fd)
+void Ack::setAck(int fd)
 {
 
 }
@@ -76,7 +76,7 @@ void AckMessage::setAck(int fd)
  *
  * \return the ack's operation code
  */
-uint8_t AckMessage::getAckType() const
+uint8_t Ack::getAckType() const
 {
-    return Message::getOpCode();
+    return IncomingMessage::getOpCode();
 }
