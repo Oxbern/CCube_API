@@ -181,13 +181,6 @@ bool Controller::send(OutgoingMessage *mess)
             if (!secure)
                 break;
 
-            lock_ack.lock();
-            if (!buffReceived.empty()) {
-                ack = buffReceived.front();
-                buffReceived.pop();
-            }
-            lock_ack.unlock();
-
             printBuffer("ACK", ack, SIZE_ACK);
 
             if (memcmp(ack, refAck, SIZE_ACK - 2))
@@ -225,8 +218,7 @@ bool Controller::send(OutgoingMessage *mess)
 bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
-    if (secure)
-        ack_thread.detach();
+
     if (this->connectedDevice != NULL)
         while (!connectedDevice->disconnect()); //TODO Timeout
 

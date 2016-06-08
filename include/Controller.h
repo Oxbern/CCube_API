@@ -37,16 +37,6 @@ class Controller
 
     bool secure;                /*!< TODO */
 
-    std::queue <uint8_t*> buffReceived; /*!< TODO */
-    std::thread ack_thread; /*!< TODO */
-    std::mutex lock_ack; /*!< TODO */
-
-    /*!
-     * \fn void *waitForACK()
-     * \brief Reads an ACK message from USB
-     */
-    void *waitForACK();
-
  public:
     std::list<Device*> devices; /*!< TODO */
 
