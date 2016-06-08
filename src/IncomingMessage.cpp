@@ -28,26 +28,3 @@ IncomingMessage::~IncomingMessage()
 {
     LOG(1, "~IncomingMessage()");
 }
-
-/*!
- * \brief Receives a message from a device
- * \param c controller
- * \return bool
- */
-bool IncomingMessage::receive(Controller &c)
-{
-    read(c.getConnectedDevice()->getFile(), this, size);
-
-    return true;
-}
-
-/*!
- * \brief Gets the device's ID
- * \return ID
- */
-uint8_t IncomingMessage::getID() const
-{
-    return this->idDevice;
-}
-
-
