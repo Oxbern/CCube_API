@@ -49,14 +49,14 @@ void Ack::encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack)
  * \param fd
  * \param msg
  */
-void Ack::handleAck(int fd, OutgoingMessage &msg)
-{
-    //    if (opCode != ACK_OK) {
-    //     Buffer buff;
-    //     buff = msg.getBuffer(listBuffer[0].getOpCode(), listBuffer[0].getSizeLeft());
-    //     buff.send(fd);        
-    // }
-}
+// void Ack::handleAck(int fd, OutgoingMessage &msg)
+// {
+//     //    if (opCode != ACK_OK) {
+//     //     Buffer buff;
+//     //     buff = msg.getBuffer(listBuffer[0].getOpCode(), listBuffer[0].getSizeLeft());
+//     //     buff.send(fd);        
+//     // }
+// }
 
 
 /*!

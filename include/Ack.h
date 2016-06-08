@@ -53,7 +53,7 @@ class Ack : public IncomingMessage
      * \param fd
      * \param msg
      */
-    void handleAck(int fd, OutgoingMessage &msg);
+    //    void handleAck(int fd, OutgoingMessage &msg);
 
     /*!
      * \todo is this method usefull ?

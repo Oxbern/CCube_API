@@ -23,10 +23,10 @@ class Answer : public IncomingMessage
      * Creates an answer
      *
      * \param id device's ID
+     * \param sizeData
      * \param opCode
-     * \param size
      */   
-    Answer(uint8_t id, int size, uint8_t code);
+    Answer(uint8_t id, uint8_t sizeData, uint8_t opCode);
     
     /*!
      * \brief Destructor

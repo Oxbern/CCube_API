@@ -11,8 +11,8 @@
  * \param opCode 
  * \param size
  */
-Answer::Answer(uint8_t id, int size, uint8_t opCode) :
-    IncomingMessage(id, size, size - DATA_INDEX - SIZE_CRC, opCode)
+Answer::Answer(uint8_t id, uint8_t sizeData, uint8_t opCode) :
+    IncomingMessage(id, sizeData + DATA_INDEX + SIZE_CRC, sizeData, opCode)
 {
     LOG(1, "Answer(idDevice, opCode)");    
 }
@@ -25,3 +25,4 @@ Answer::~Answer()
 {
     LOG(1, "~Answer()");
 }
+

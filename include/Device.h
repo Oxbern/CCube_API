@@ -28,7 +28,7 @@
 #endif
 
 #include "DeviceShape.h"
-#include "Ack.h"
+//#include "Ack.h"
 
 
 /*!
@@ -248,7 +248,7 @@ class Device
      * \return true if the ack is an ACK_OK
      * false otherwise
      */
-    bool handleAck(OutgoingMessage *mess, Ack &ack, int i);
+    //    bool handleAck(OutgoingMessage *mess, Ack &ack, int i);
 
     /*!
      * \fn bool setLedStatus(ShapeToDisplay s)
