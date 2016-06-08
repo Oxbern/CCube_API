@@ -19,22 +19,12 @@
 class DeviceShape
 {
  protected :
-     
-    /*! 
-     * \todo use off() instead of clearLed()
-     * \fn void clearLed();
-     * 
-     * \brief Initialises the 3D array to false 
-     */
-    void clearLed();
-    
     int sizeX; /*!< First dimension of the 3D array of booleans (LEDs) */
     int sizeY; /*!< Second dimension of the 3D array of booleans (LEDs) */
     int sizeZ; /*!< Third dimension of the 3D array of booleans (LEDs) */
     bool ***ledStatus; /*!< 3D array of booleans which represent the LEDs of the device */
 
- public :
-     
+ public :    
     /*! 
      * \brief Constructor
      * Constructor of the class DeviceShape
