@@ -83,7 +83,7 @@ bool Device::connect()
 {
     LOG(1, "Trying to connect the device");
     if (fd < 0) {
-	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
+	    fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
 	    if (fd == -1)
             throw ErrorException("Error while opening the file descriptor : "
                 + std::string(std::strerror(errno)));
@@ -173,29 +173,19 @@ bool Device::askForDisplaySize()
 bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
 {
     if (fd && dataSize > 0) {
-        LOG(2, "[WRITE] Trying to write Buffer (SIZE = "
-               + std::to_string(dataSize)
-               + " Bytes) : DATA TO WRITE = "
-               + uint8ArrayToString(data, dataSize));
-#ifdef _WIN32
-        int ret = select(fd, NULL, NULL, 0, &timeout);
-#else
-        int ret = poll(pfds, 2, 700);
-#endif
-        if (ret > 0) {
-            if (pfds[1].revents & POLLOUT) {
-                if (write(fd, &data[0], dataSize)) {
-                    LOG(2, "[WRITE] Data written to file");
-                    return true;
-                } else
-                    LOG(2, "[WRITE] Error while writing data to file : "
-                            + std::string(std::strerror(errno)));
-            }
-        } else if (ret == 0)
-            LOG(5, "[WRITE] Timeout");
-        else
-            LOG(5, "[WRITE] Error ");
+        LOG(5, "[WRITE] Trying to write Buffer (SIZE = "
+            + std::to_string(dataSize)
+            + " Bytes) : DATA TO WRITE = "
+            + uint8ArrayToString(data, dataSize));
+
+        if (write(fd, &data[0], dataSize)) {
+            LOG(5, "[WRITE] Data written to file");
+            return true;
+        } else
+            LOG(5, "[WRITE] Error while writing data to file : "
+                + std::string(std::strerror(errno)));
     }
+
     return false;
 }
 
@@ -337,48 +327,6 @@ int Device::getFile()
     return this->fd;
 }
 
-/*!
- * \brief Handles the acknowledge of the message
- *
- * \param mess  needed to know which message has to be send back
- * \param ack  to verify if the message was received well
- * \param i TODO
- *
- * \return true if the ack is an ACK_OK
- * false otherwise
- */
-bool Device::handleAck(OutgoingMessage *mess, Ack &ack, int i)
-{
-    //Check the AckMessage
-    if (ack.getOpCode() != ACK_OK) {
-        LOG(3, "[HANDLER] ACK_NOK or ACK_ERR for Buffer N° " + std::to_string(i));
-
-        //Extract pack data from the ackMessage
-        uint8_t ackDataOpcode = ack.getListBuffer()[0].getData()[0];
-
-        uint16_t ackDataSize = convertTwo8to16(ack.getListBuffer()[0].getData()[1],
-                ack.getListBuffer()[0].getData()[2]);
-
-        //Search the buffer to retransmit from the message
-        Buffer *bufferToRetransmit = mess->getBuffer(ackDataOpcode, ackDataSize);
-        if (bufferToRetransmit == NULL) {
-            throw ErrorException("Error in an ack message "
-                    ": buffer to retransmit not found in the message");
-        }
-
-        //Convert array to retransmit to an array of uint8_t
-        uint8_t bufferArray[mess->getSizeBuffer()];
-        bufferToRetransmit->toArray(bufferArray);
-
-        //Try to retransmit the wrong buffer
-        writeToFileDescriptor(bufferArray, mess->getSizeBuffer()); //TODO add timeout
-
-        return false;
-    } else {
-        LOG(3, "[HANDLER] ACK_OK received for Buffer N° : " + std::to_string(i));
-        return true;
-    }
-}
 
 /*!
  * \brief Sets the 3D array of the currentDevice to the 3D array
