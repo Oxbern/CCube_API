@@ -8,6 +8,9 @@
  */
 
 #include "Buffer.h"
+#include "Controller.h"
+
+class Controller ;
 
 /*!
  * \class OutgoingMessage 
@@ -49,6 +52,14 @@ class OutgoingMessage
      * \brief Destructor
      */
     ~OutgoingMessage();
+
+    /*!
+     * \fn bool send(Controller &c)
+     * \brief Sends a message to a device
+     * \param c controller
+     * \return bool
+     */
+    bool send(Controller &c);
 
     /*!
      * \fn int NbBuffers() const

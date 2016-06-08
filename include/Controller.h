@@ -35,9 +35,8 @@ class Controller
  protected:
     Device *connectedDevice; /*!< TODO */
 
-    bool secure;                /*!< TODO */
-
  public:
+    bool secure;                /*!< TODO */
     std::list<Device*> devices; /*!< TODO */
 
     /*!
@@ -169,7 +168,7 @@ class Controller
      * \param mess Message
      * \return
      */
-    bool send(OutgoingMessage* mess);
+    //    bool send(OutgoingMessage* mess);
 
     /*!
      * \fn std::list<Device*> getListDevices()

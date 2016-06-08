@@ -11,11 +11,6 @@
 #include "Utils.h"
 #include "Debug.h"
 
-/*!
- * \def MAX_TRY
- * \brief TODO, explain timeout
- */
-#define MAX_TRY 10
 
 /*!
  * \def MAX_WAIT
@@ -144,71 +139,71 @@ bool Controller::connectDevice(char *port, bool secure)
  * \param mess Message
  * \return
  */
-bool Controller::send(OutgoingMessage *mess)
-{
-    if (this->connectedDevice == NULL)
-        return false;
+// bool Controller::send(OutgoingMessage *mess)
+// {
+//     if (this->connectedDevice == NULL)
+//         return false;
 
-    LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
+//     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
 
-    int nbBuffer = mess->NbBuffers();
-    for (int currentBuffNb = 0; currentBuffNb < nbBuffer; currentBuffNb++) {
-        LOG(5, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
+//     int nbBuffer = mess->NbBuffers();
+//     for (int currentBuffNb = 0; currentBuffNb < nbBuffer; currentBuffNb++) {
+//         LOG(5, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
 
-        //Convert the buffer i to an array
-        int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
-        uint8_t *bufferArray = new uint8_t[sizeBuffer];
-        mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
+//         //Convert the buffer i to an array
+//         int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
+//         uint8_t *bufferArray = new uint8_t[sizeBuffer];
+//         mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
 
-        int nbTry = 0;
+//         int nbTry = 0;
 
-        uint8_t *ack = new uint8_t[SIZE_ACK];
-        memset(ack, 0, SIZE_ACK);
-        uint8_t refAck[SIZE_ACK] = {1, 1, 1, 0, 3, bufferArray[2],
-                                    bufferArray[3], bufferArray[4], 0, 0};
+//         uint8_t *ack = new uint8_t[SIZE_ACK];
+//         memset(ack, 0, SIZE_ACK);
+//         uint8_t refAck[SIZE_ACK] = {1, 1, 1, 0, 3, bufferArray[2],
+//                                     bufferArray[3], bufferArray[4], 0, 0};
 
-        do {
-            //Send the message to the Device
-            if (!connectedDevice->writeToFileDescriptor(bufferArray,
-                                                   sizeBuffer)) {
-                    throw ErrorException("Error while sending a message : "
-                                         "Number of tries to send "
-                                         "the message exceeded");
-                    this->disconnectDevice();
-            } /* Buffer sent */
-            LOG(5, "Buffer sent");
+//         do {
+//             //Send the message to the Device
+//             if (!connectedDevice->writeToFileDescriptor(bufferArray,
+//                                                    sizeBuffer)) {
+//                     throw ErrorException("Error while sending a message : "
+//                                          "Number of tries to send "
+//                                          "the message exceeded");
+//                     this->disconnectDevice();
+//             } /* Buffer sent */
+//             LOG(5, "Buffer sent");
 
-            if (!secure)
-                break;
+//             if (!secure)
+//                 break;
 
-            printBuffer("ACK", ack, SIZE_ACK);
+//             printBuffer("ACK", ack, SIZE_ACK);
 
-            if (memcmp(ack, refAck, SIZE_ACK - 2))
-                nbTry++;
-            else
-                break;
+//             if (memcmp(ack, refAck, SIZE_ACK - 2))
+//                 nbTry++;
+//             else
+//                 break;
 
-            std::cout << "Nb Try: " << nbTry << std::endl;
-        } while(nbTry < MAX_TRY);
+//             std::cout << "Nb Try: " << nbTry << std::endl;
+//         } while(nbTry < MAX_TRY);
 
-        //If number of tries exceeded
-        if (nbTry == MAX_TRY) {
-            LOG(2, "[HANDLER] NB TRY EXCEDEED");
+//         //If number of tries exceeded
+//         if (nbTry == MAX_TRY) {
+//             LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
-            throw ErrorException("Error while receiving a ack: "
-                                 "Number of tries to receive "
-                                 "the ack exceeded");
-        } else if (secure)
-            LOG(2, "[HANDLER] Ack handled");
+//             throw ErrorException("Error while receiving a ack: "
+//                                  "Number of tries to receive "
+//                                  "the ack exceeded");
+//         } else if (secure)
+//             LOG(2, "[HANDLER] Ack handled");
 
-        //Free allocated memory for the bufferArray
-        delete []bufferArray;
-        delete []ack;
-    }
+//         //Free allocated memory for the bufferArray
+//         delete []bufferArray;
+//         delete []ack;
+//     }
 
-    LOG(1, "[SEND] Message sended");
-    return true;
-}
+//     LOG(1, "[SEND] Message sended");
+//     return true;
+// }
 
 
 /*!
@@ -231,6 +226,7 @@ bool Controller::disconnectDevice()
 /* Functionnality methods */
 
 /*!
+ * \todo todo
  * \brief Sets the device's luminosity
  * \param value to set the luminosity to
  * \return bool
@@ -243,7 +239,7 @@ bool Controller::setLuminosity(uint8_t value)
         sl.encode(&value);
 
         //Send the message
-        send(&sl);
+        //        sl.send(*this);
 
         return true;
     } else
@@ -281,7 +277,7 @@ uint8_t Controller::getLuminosity()
         Question gl(connectedDevice->getID(), GET_LUMINOSITY);
 
         //Send the message
-        if (!send(&gl))
+        if (!gl.send(*this))
             throw ErrorException("Error while asking the luminosity "
                                          "of the connected device");
 
@@ -302,7 +298,7 @@ uint8_t Controller::getVersionFirmware()
         Question vf(connectedDevice->getID(),
                           FIRMWARE_VERSION);
 
-        if (!send(&vf))
+        if (!vf.send(*this))
             throw ErrorException("Error while asking the firmware version "
                                          "of the connected device");
 
@@ -464,7 +460,7 @@ bool Controller::display()
         delete[] ledsBuffer;
 
         //Send the message
-        send(&dm);
+        dm.send(*this);
 
         return true;
     } else
