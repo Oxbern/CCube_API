@@ -264,7 +264,9 @@ void listAndGetUSBConnectedDevices(Controller &c)
                 std::cout << name << std::endl;
                 /* if (isInDico(t, dic, nbSTM)) */
                 // We have a device here with his port name (string)
-                 c.getListDevices().push_back(new Device(name, DeviceID++));
+                Device *devFound = new Device(name, DeviceID);
+                c.devices.push_back(devFound);
+                DeviceID++;
             }
         }
         pclose(fp);
