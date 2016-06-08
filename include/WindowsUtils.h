@@ -22,14 +22,14 @@
  * \brief Lists all devices which are connected via USB
  * \return TODO
  */
-bool listAllDevices(Controller &c);
+//bool listAllDevices(Controller &c);
 
 /*!
  * \fn void listAndGetUSBConnectedDevices(Controller& c)
  * \brief Displays the list of all USB connected devices 
  * and pushes them in the device list
  */
-void listAndGetUSBConnectedDevices(Controller &c);
+//void listAndGetUSBConnectedDevices(Controller &c);
 
 /*!
  * \fn void getNextWord(char *path, int *j, char * wordreturn)
@@ -38,7 +38,7 @@ void listAndGetUSBConnectedDevices(Controller &c);
  * \param j the beginning of the future parsing
  * \param wordreturn
  */
-void getNextWord(char *path, int *j, char * wordreturn);
+//void getNextWord(char *path, int *j, char * wordreturn);
 
 
 #endif

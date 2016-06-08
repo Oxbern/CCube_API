@@ -14,7 +14,7 @@ find_package(Threads)
 
 # Compilers options
 set(CMAKE_C_FLAGS "-O0 -g -Wall -Werror -std=c99")
-set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lpthread")
+set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11  -lpthread")
 
 
 
@@ -29,4 +29,8 @@ file(GLOB_RECURSE SOURCES_C "*.c")
 
 
 # Create cube api library
-add_library(cube SHARED ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
+if(WINDOWS_COMPILE)
+  add_library(cube ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
+else(WINDOWS_COMPILE)
+  add_library(cube SHARED ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
+endif(WINDOWS_COMPILE)

@@ -56,6 +56,10 @@ typedef struct pollfd {
 #define O_NOCTTY 0
 #endif
 
+#ifndef O_NDELAY
+#define O_NDELAY 0
+#endif
+
 #else //LINUX
 #include <sys/poll.h> 
 
