@@ -5,6 +5,8 @@
 #include "ErrorException.h"
 #include "Ack.h"
 
+#include <string.h>
+
 #define MAX_TRY 10
 
 /*!
@@ -96,6 +98,17 @@ bool Request::send(Controller &c)
         uint8_t *bufferArray = new uint8_t[sizeBuffer];
         listBuffer[i].toArray(bufferArray);
 
+        /* Define ACK buffer and initialize at 0 */
+        uint8_t *ackBuffer = new uint8_t[SIZE_ACK];
+        memset(&ackBuffer[0], 0, SIZE_ACK);
+
+        /* Define ACK OK buffer for current buffer */
+        uint8_t ackRef[SIZE_ACK] = {1, 1, 1, 0, 3, bufferArray[2],
+                                    bufferArray[3], bufferArray[4], 0, 0};
+        uint16_t crc = computeCRC(ackRef, (SIZE_ACK - 2)*sizeof(uint8_t));
+        ackRef[SIZE_ACK - 2] = crc >> 8;
+        ackRef[SIZE_ACK - 1] = crc & 0xFF;
+
         int nbTry = 0;
 
         do {
@@ -112,8 +125,14 @@ bool Request::send(Controller &c)
             if (!c.secure)
                 break;
 
+            read(c.getConnectedDevice()->getFile(), &ackBuffer[0], SIZE_ACK);
 
-        } while (++nbTry < MAX_TRY);
+            if (memcmp(ackBuffer, ackRef, SIZE_ACK - 2))
+                ++nbTry;
+            else
+                break;
+
+        } while (nbTry < MAX_TRY);
 
         //If number of tries exceeded
         if (nbTry == MAX_TRY) {
@@ -122,6 +141,7 @@ bool Request::send(Controller &c)
             throw ErrorException("Error while receiving a ack: "
                                  "Number of tries to receive "
                                  "the ack exceeded");
+            c.disconnectDevice();
         }
 
         delete [] bufferArray;

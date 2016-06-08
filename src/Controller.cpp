@@ -407,8 +407,8 @@ bool Controller::display()
     if (connectedDevice != NULL) {
         //Create a Request
         Request dm(connectedDevice->getID(),
-                       connectedDevice->getcurrentConfig()->getSizeInBytes(),
-                       OPCODE(SET_LEDSTATS));
+                   connectedDevice->getcurrentConfig()->getSizeInBytes(),
+                   OPCODE(SET_LEDSTATS));
 
         //Encode the message with the DeviceShape of the Device
         uint8_t *ledsBuffer = new uint8_t[connectedDevice->
