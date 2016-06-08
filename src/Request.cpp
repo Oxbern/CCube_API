@@ -2,6 +2,10 @@
 #include "OutgoingMessage.h"
 #include "Utils.h"
 #include "Debug.h"
+#include "ErrorException.h"
+#include "Ack.h"
+
+#define MAX_TRY 10
 
 /*!
  * \brief Constructor
@@ -32,7 +36,7 @@ Request::~Request()
 /*!
  * \brief Fills the buffers with the data and calculates and sets the crc
  * \see crcEncoding()
- * 
+ *
  *  Fills the buffers with the data
  * if size(dataToEncode) > sizeData,
  * only the first sizeData values of dataToEncode will be encoded
@@ -61,7 +65,7 @@ void Request::encode(uint8_t *dataToEncode)
 
         //Sets CRC computed on the entire buffer
         listBuffer[i].crcEncoding();
-        
+
         LOG(2, "[ENCODING] Buffer N° " + std::to_string(i)
             + ": DATA = "
             + uint8ArrayToString(listBuffer[i].getData(), listBuffer[i].getDataSize())
@@ -70,3 +74,58 @@ void Request::encode(uint8_t *dataToEncode)
 }
 
 
+
+/*!
+ * \brief Sends a message to a device
+ * \param c controller
+ * \return bool
+ */
+bool Request::send(Controller &c)
+{
+    if (c.getConnectedDevice() == NULL)
+        return false;
+
+    LOG(2, "[SEND] Send a message :\n" + this->toStringDebug());
+
+    int n = this->NbBuffers();
+
+    for (int i = 0; i < n; i++) {
+        LOG(5, "[SEND] Buffer N° " + std::to_string(i));
+
+        // Convert the buffer i into an array
+        uint8_t *bufferArray = new uint8_t[sizeBuffer];
+        listBuffer[i].toArray(bufferArray);
+
+        int nbTry = 0;
+
+        do {
+            // Send the message to the device
+            if (!(c.getConnectedDevice()->writeToFileDescriptor(bufferArray,
+                                                                sizeBuffer))) {
+                throw ErrorException("Error while sending a message : "
+                                     "Number of tries to send "
+                                     "the message exceeded");
+                c.disconnectDevice();
+            } /* Buffer sent */
+            LOG(5, "Buffer sent");
+
+            if (!c.secure)
+                break;
+
+
+        } while (++nbTry < MAX_TRY);
+
+        //If number of tries exceeded
+        if (nbTry == MAX_TRY) {
+            LOG(2, "[HANDLER] NB TRY EXCEDEED");
+
+            throw ErrorException("Error while receiving a ack: "
+                                 "Number of tries to receive "
+                                 "the ack exceeded");
+        }
+
+        delete [] bufferArray;
+    }
+    LOG(1, "[SEND] Message sent");
+    return true;
+}

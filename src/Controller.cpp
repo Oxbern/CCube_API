@@ -74,6 +74,9 @@ bool Controller::connectDevice(int id)
             return true;
         }
     }
+
+
+
     return false;
 }
 
@@ -132,78 +135,6 @@ bool Controller::connectDevice(char *port, bool secure)
     }
     return false;
 }
-
-
-/*!
- * \brief TODO
- * \param mess Message
- * \return
- */
-// bool Controller::send(OutgoingMessage *mess)
-// {
-//     if (this->connectedDevice == NULL)
-//         return false;
-
-//     LOG(2, "[SEND] Send a message :\n" + mess->toStringDebug());
-
-//     int nbBuffer = mess->NbBuffers();
-//     for (int currentBuffNb = 0; currentBuffNb < nbBuffer; currentBuffNb++) {
-//         LOG(5, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
-
-//         //Convert the buffer i to an array
-//         int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
-//         uint8_t *bufferArray = new uint8_t[sizeBuffer];
-//         mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
-
-//         int nbTry = 0;
-
-//         uint8_t *ack = new uint8_t[SIZE_ACK];
-//         memset(ack, 0, SIZE_ACK);
-//         uint8_t refAck[SIZE_ACK] = {1, 1, 1, 0, 3, bufferArray[2],
-//                                     bufferArray[3], bufferArray[4], 0, 0};
-
-//         do {
-//             //Send the message to the Device
-//             if (!connectedDevice->writeToFileDescriptor(bufferArray,
-//                                                    sizeBuffer)) {
-//                     throw ErrorException("Error while sending a message : "
-//                                          "Number of tries to send "
-//                                          "the message exceeded");
-//                     this->disconnectDevice();
-//             } /* Buffer sent */
-//             LOG(5, "Buffer sent");
-
-//             if (!secure)
-//                 break;
-
-//             printBuffer("ACK", ack, SIZE_ACK);
-
-//             if (memcmp(ack, refAck, SIZE_ACK - 2))
-//                 nbTry++;
-//             else
-//                 break;
-
-//             std::cout << "Nb Try: " << nbTry << std::endl;
-//         } while(nbTry < MAX_TRY);
-
-//         //If number of tries exceeded
-//         if (nbTry == MAX_TRY) {
-//             LOG(2, "[HANDLER] NB TRY EXCEDEED");
-
-//             throw ErrorException("Error while receiving a ack: "
-//                                  "Number of tries to receive "
-//                                  "the ack exceeded");
-//         } else if (secure)
-//             LOG(2, "[HANDLER] Ack handled");
-
-//         //Free allocated memory for the bufferArray
-//         delete []bufferArray;
-//         delete []ack;
-//     }
-
-//     LOG(1, "[SEND] Message sended");
-//     return true;
-// }
 
 
 /*!
@@ -277,13 +208,38 @@ uint8_t Controller::getLuminosity()
         Question gl(connectedDevice->getID(), GET_LUMINOSITY);
 
         //Send the message
-        if (!gl.send(*this))
-            throw ErrorException("Error while asking the luminosity "
-                                         "of the connected device");
+        /* if (!gl.send(*this)) */
+        /*     throw ErrorException("Error while asking the luminosity " */
+        /*                                  "of the connected device"); */
 
         return 1; //TODO To modify with the good value
     } else
         throw ErrorException("No device connected");
+}
+
+/*!
+ * \brief Returns the info (Size) of the cube
+ * \return Array of integer: | SizeX | SizeY | SizeZ |
+ */
+uint8_t *Controller::getDeviceInfo()
+{
+    uint8_t *retVal = new uint8_t[3];
+
+    if (this->connectedDevice != NULL) {
+        // Create a request message, with its crc
+        Question question(connectedDevice->getID(), DEVICE_INFO);
+
+        //Send the message
+        /* if (!question.send(*this)) */
+        /*     throw ErrorException("Error while asking device info " */
+        /*                                  "of the connected device"); */
+
+        return retVal;
+
+    } else
+        throw ErrorException("No device connected");
+
+    return NULL;
 }
 
 
@@ -298,9 +254,9 @@ uint8_t Controller::getVersionFirmware()
         Question vf(connectedDevice->getID(),
                           FIRMWARE_VERSION);
 
-        if (!vf.send(*this))
-            throw ErrorException("Error while asking the firmware version "
-                                         "of the connected device");
+        /* if (!vf.send(*this)) */
+        /*     throw ErrorException("Error while asking the firmware version " */
+        /*                                  "of the connected device"); */
 
         return 1;
     } else
@@ -464,8 +420,8 @@ bool Controller::display()
         //Deallocate memory
         delete[] ledsBuffer;
 
-        //Send the message
-        dm.send(*this);
+        /* //Send the message */
+        /* dm.send(*this); */
 
         return true;
     } else

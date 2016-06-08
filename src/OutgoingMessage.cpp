@@ -14,7 +14,7 @@
  * \param sizeBuff the buffers' size
  * \param size the size of the data to encode
  * \param code the message's operation code
- */    
+ */
 OutgoingMessage::OutgoingMessage(uint8_t id, int sizeBuff, uint16_t size, uint8_t code) :
     idDevice(id), sizeBuffer(sizeBuff), sizeData(size), opCode(code)
 {
@@ -47,7 +47,7 @@ OutgoingMessage::OutgoingMessage(uint8_t id, int sizeBuff, uint16_t size, uint8_
  * Creates a message by copying another one
  *
  * \param M the other message which will be unchanged
- */        
+ */
 OutgoingMessage::OutgoingMessage(const OutgoingMessage& M)
 {
     sizeBuffer= M.getSizeBuffer();
@@ -55,9 +55,9 @@ OutgoingMessage::OutgoingMessage(const OutgoingMessage& M)
     opCode = M.getOpCode();
     idDevice = M.getID();
     int n = M.NbBuffers();
-    
+
     listBuffer = reinterpret_cast<Buffer *>(new char[n*sizeof(Buffer)]);
-    
+
     for (int i = 0; i<n; i++)
         listBuffer[i] = M.getListBuffer()[i];
     LOG(1, "OutgoingMessage(const &message)");
@@ -140,7 +140,7 @@ bool OutgoingMessage::send(Controller &c)
 int OutgoingMessage::NbBuffers() const
 {
     if (sizeData == 0)
-        return 1;    
+        return 1;
     else if ((sizeData % (sizeBuffer - DATA_INDEX - SIZE_CRC)) == 0)
         return sizeData/(sizeBuffer - DATA_INDEX - SIZE_CRC);
     else
@@ -193,7 +193,7 @@ int OutgoingMessage::getSizeBuffer() const
 
 /*!
  * \brief Gets the data's size
- * \return the size 
+ * \return the size
  */
 uint16_t OutgoingMessage::getSizeData() const
 {
@@ -232,4 +232,3 @@ std::string OutgoingMessage::toStringDebug() const
     convert << "---------- End OutgoingMessage (DEBUG) : ----------" << std::endl;
     return convert.str();
 }
-

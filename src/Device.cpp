@@ -185,22 +185,29 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
 
 /*!
  * \brief store the data received in a buffer
- * to process them in the controler
+ * to process them later
  *
- * \param ack_buffer  array where the data are stored
+ * \param buffer  array where the data are stored
+ * \param sizeBuffer  size of the data to collect
  */
-bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
+bool Device::readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer)
 {
-	/* Simple read from file descriptor */
+    uint8_t localBuffer[sizeBuffer];
+
     int ret = select(fd, NULL, NULL, 0, &timeout);
 
     if (ret > 0) {
-        ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
+        ssize_t sizeRead = read(this->getFile(), &localBuffer[0], sizeBuffer);
         if (sizeRead >= 0) {
+
             LOG(5, "[READ] Reading from Device "
                 + std::to_string(id) + " | DATA READ = "
-                + uint8ArrayToString(ack_buffer, sizeRead));
+                + uint8ArrayToString(localBuffer, sizeRead));
+
+            /* Copy data received into buffer to fill */
+            memcpy(&buffer[0], &localBuffer[0], sizeRead);
             return true;
+
         } else
             LOG(2, "[WRITE] Error while reading data to file : "
                 + std::string(std::strerror(errno)));
