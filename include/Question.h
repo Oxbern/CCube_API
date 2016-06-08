@@ -3,16 +3,17 @@
 
 /*!
  * \file Question.h
- * \brief TODO
+ * \brief Creates a question
  *
- * \version 0.1
+ * \version 1.0
  */
 
 #include "OutgoingMessage.h"
 
 /*!
  * \class Question 
- * \brief Class representing a message of type request
+ * \brief Class representing the creation of a question asked to the device
+ * which is an outgoing message which does need an answer from the device
  */
 class Question : public OutgoingMessage
 {
@@ -20,7 +21,7 @@ class Question : public OutgoingMessage
     /*!
      * \brief Constructor
      *
-     * Creates TODO
+     * Creates a question which is represented by one single SIZE_QUESTION sized buffer
      *
      * \param id device's ID
      * \param opCode
