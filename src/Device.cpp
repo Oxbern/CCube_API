@@ -125,7 +125,8 @@ bool Device::disconnect()
             fd = -1;
     }
 
-    LOG(2, "Device " + std::to_string(id) + std::string((fd == -1 ? " " : " not ")) + "disconnected");
+    LOG(2, "Device " + std::to_string(id) +
+        std::string((fd == -1 ? " " : " not ")) + "disconnected");
     return (fd == -1);
 }
 
@@ -177,7 +178,7 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
                + " Bytes) : DATA TO WRITE = "
                + uint8ArrayToString(data, dataSize));
 #ifdef _WIN32
-        int ret = select(fd, NULL,NULL,0, &timeout);
+        int ret = select(fd, NULL, NULL, 0, &timeout);
 #else
         int ret = poll(pfds, 2, 700);
 #endif
@@ -218,7 +219,7 @@ bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
             ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
             if (sizeRead >= 0) {
                 LOG(5, "[READ] Reading from Device "
-                       + std::to_string(id) + " | DATA READ = "
+                    + std::to_string(id) + " | DATA READ = "
                     + uint8ArrayToString(ack_buffer, sizeRead));
 #ifdef _WIN32
 #else

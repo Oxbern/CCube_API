@@ -29,11 +29,6 @@
  */
 #define MAX_SENDING_TRIES 5
 
-/*!
- * \def std::atomic<bool> notified
- * \brief TODO
- */
-std::atomic<bool> notified = ATOMIC_VAR_INIT(false);
 
 
 /*!
@@ -48,6 +43,7 @@ Controller::Controller()
     listAndGetUSBConnectedDevices(*this);
 
     this->connectedDevice = NULL;
+    this->secure = false;
 
     LOG(1, "Controller()");
 }
@@ -74,7 +70,37 @@ bool Controller::connectDevice(int id)
     if (chosen != NULL) {
         if (chosen->connect()){
             this->connectedDevice = chosen;
-            ack_thread = std::thread(&Controller::waitForACK, this);
+            /* ack_thread = std::thread(&Controller::waitForACK, this); */
+            return true;
+        }
+    }
+    return false;
+}
+
+/*!
+ * \brief Connects the controller to a device with its ID
+ * \param id ID of the device to connect
+ * \paran secure Flag to set ACK security
+ * \return
+ */
+bool Controller::connectDevice(int id, bool secure)
+{
+    LOG(1, "connectDevice(int id) \n");
+    Device *chosen = NULL;
+
+    this->secure = secure;
+
+    std::list<Device*>::iterator iter ;
+    for(iter = devices.begin(); (iter != devices.end()); iter++){
+        if (id == (*iter)->getID())
+            chosen = *iter;
+    }
+
+    if (chosen != NULL) {
+        if (chosen->connect()){
+            this->connectedDevice = chosen;
+            if (secure)
+                ack_thread = std::thread(&Controller::waitForACK, this);
             return true;
         }
     }
@@ -122,6 +148,8 @@ bool Controller::send(OutgoingMessage* mess)
             } /* Buffer sent */
             LOG(5, "Buffer sent");
 
+            if (!secure)
+                break;
 
             lock_ack.lock();
             if (!buffReceived.empty()) {
@@ -147,7 +175,7 @@ bool Controller::send(OutgoingMessage* mess)
             throw ErrorException("Error while receiving a ack: "
                                  "Number of tries to receive "
                                  "the ack exceeded");
-        } else
+        } else if (secure)
             LOG(2, "[HANDLER] Ack handled");
 
         //Free allocated memory for the bufferArray

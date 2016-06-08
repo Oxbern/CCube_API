@@ -43,7 +43,9 @@ class Controller
 {
  protected:
     Device *connectedDevice; /*!< TODO */
-    //    std::queue<OutgoingMessage> messages; /*!< FIFO of the last message */
+
+    bool secure;                /*!< TODO */
+
     std::queue <uint8_t*> buffReceived; /*!< TODO */
     std::thread ack_thread; /*!< TODO */
     std::mutex lock_ack; /*!< TODO */
@@ -160,6 +162,8 @@ class Controller
      * \return
      */
     bool connectDevice(int id);
+
+    bool connectDevice(int id, bool secure);
 
     /*!
      * \fn bool disconnectDevice()
