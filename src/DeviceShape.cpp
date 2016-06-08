@@ -7,17 +7,6 @@
 #include "Debug.h"
 
 /*! 
- * \brief Initialises the 3D array to false (protected function)
- */
-void DeviceShape::clearLed() 
-{
-    for (int x = 0; x < sizeX; ++x)
-        for (int y = 0; y < sizeY; ++y)
-            for (int z = 0; z < sizeZ; ++z)
-                ledStatus[x][y][z] = false;
-}
-
-/*! 
  * \brief Constructor
  * Constructor of the class DeviceShape
  * 
@@ -37,7 +26,7 @@ DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(
     }
 
     //Initialization
-    clearLed();
+    this->off();
 }
 
 /*!
@@ -75,7 +64,9 @@ bool DeviceShape::on(int x, int y, int z)
     if (x > (this->sizeX - 1) || y > (this->sizeY - 1) || z > (this->sizeZ - 1))
         throw ErrorException("Index of led out of bounds");
 
-    return (ledStatus[x][y][z] = true);
+    ledStatus[x][y][z] = true;
+    
+    return (ledStatus[x][y][z] == true);
 }
 
 /*! 
@@ -85,7 +76,10 @@ bool DeviceShape::on(int x, int y, int z)
  */
 bool DeviceShape::off() 
 {
-    clearLed();
+    for (int x = 0; x < sizeX; ++x)
+        for (int y = 0; y < sizeY; ++y)
+            for (int z = 0; z < sizeZ; ++z)
+                ledStatus[x][y][z] = false;    
     return true;
 }
 
@@ -101,10 +95,12 @@ bool DeviceShape::off()
  */
 bool DeviceShape::off(int x, int y, int z) 
 {
-    if (x > (sizeX - 1) || y > (sizeY - 1) || z > (sizeZ - 1))
+    if (x > (this->sizeX - 1) || y > (this->sizeY - 1) || z > (this->sizeZ - 1))
         throw ErrorException("Index of led out of bounds");
 
-    return (ledStatus[x][y][z] = false);
+    ledStatus[x][y][z] = false;
+
+    return (ledStatus[x][y][z] == false);
 }
 
 /*! 
