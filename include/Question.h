@@ -40,7 +40,7 @@ class Question : public OutgoingMessage
      * \param c controller
      * \return bool
      */
-    bool send(Controller &c);
+    bool send(Controller &c, uint8_t *result);
     
 };
 
