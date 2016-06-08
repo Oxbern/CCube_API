@@ -122,14 +122,13 @@ bool Controller::send(OutgoingMessage* mess)
 
     int nbBuffer = mess->NbBuffers();
     for (int currentBuffNb = 0; currentBuffNb < nbBuffer; currentBuffNb++) {
-        LOG(2, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
+        LOG(5, "[SEND] Buffer N° " + std::to_string(currentBuffNb));
 
         //Convert the buffer i to an array
         int sizeBuffer = mess->getListBuffer()[currentBuffNb].getSizeBuffer();
         uint8_t *bufferArray = new uint8_t[sizeBuffer];
         mess->getListBuffer()[currentBuffNb].toArray(bufferArray);
 
-        int sendingTries = 0;
         int nbTry = 0;
 
         uint8_t *ack = new uint8_t[SIZE_ACK];
@@ -139,12 +138,12 @@ bool Controller::send(OutgoingMessage* mess)
 
         do {
             //Send the message to the Device
-            while (!connectedDevice->writeToFileDescriptor(bufferArray,
-                                                           sizeBuffer)) {
-                if (++sendingTries > MAX_SENDING_TRIES)
+            if (!connectedDevice->writeToFileDescriptor(bufferArray,
+                                                   sizeBuffer)) {
                     throw ErrorException("Error while sending a message : "
                                          "Number of tries to send "
                                          "the message exceeded");
+                    this->disconnectDevice();
             } /* Buffer sent */
             LOG(5, "Buffer sent");
 
@@ -195,7 +194,8 @@ bool Controller::send(OutgoingMessage* mess)
 bool Controller::disconnectDevice()
 {
     LOG(1, "disconnectDevice() \n");
-    ack_thread.detach();
+    if (secure)
+        ack_thread.detach();
     if (this->connectedDevice != NULL)
         while (!connectedDevice->disconnect()); //TODO Timeout
 
