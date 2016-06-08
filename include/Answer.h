@@ -26,7 +26,7 @@ class Answer : public IncomingMessage
      * \param sizeData
      * \param opCode
      */   
-    Answer(uint8_t id, uint8_t sizeData, uint8_t opCode);
+    Answer(uint8_t id, uint8_t opCode);
     
     /*!
      * \brief Destructor

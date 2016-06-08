@@ -8,7 +8,7 @@
  */
 #include "OutgoingMessage.h"
 
-/*! 
+/*!
  * \class Request
  * \brief Class representing the creation of a request
  * which is an outgoing message which does not need an answer from the device
@@ -27,7 +27,7 @@ class Request : public OutgoingMessage
      * \param code operation code
      */
     Request(uint8_t idDevice, uint8_t sizeData, uint8_t code);
-    
+
     /*!
      * \brief Destructor
      *
@@ -37,7 +37,7 @@ class Request : public OutgoingMessage
     /*!
      * \fn void encode(uint8_t *dataToEncode)
      * \brief Fills the buffers with the data and calculates and sets the crc
-     * 
+     *
      *  Fills the buffers with the data
      * if size(dataToEncode) > sizeData,
      * only the first sizeData values of dataToEncode will be encoded
@@ -46,7 +46,13 @@ class Request : public OutgoingMessage
      */
     void encode(uint8_t *dataToEncode);
 
-    
+    /*!
+     * \brief Sends a message to a device
+     * \param c controller
+     * \return bool
+     */
+    bool send(Controller &c);
+
 };
 
 #endif

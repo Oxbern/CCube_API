@@ -18,6 +18,13 @@
 #define CRC16 0x1021
 
 /*!
+ * \def MAX_TRY
+ * \brief TODO, explain timeout
+ */
+#define MAX_TRY 10
+
+
+/*!
  * \def SIZE_ACK
  * \brief the entire size of an AckMessage buffer
  */
@@ -34,6 +41,8 @@
  * \brief the entire size of a RequestMessage buffer
  */
 #define SIZE_QUESTION 7
+
+#define SIZE_ANSWER 10
 
 /*!
  * \def SIZE_OPCODE

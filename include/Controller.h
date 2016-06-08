@@ -122,6 +122,12 @@ class Controller
     uint8_t getLuminosity();
 
     /*!
+     * \brief Returns the info (Size) of the cube
+     * \return Array of integer: | SizeX | SizeY | SizeZ |
+     */
+    uint8_t *getDeviceInfo();
+
+    /*!
      * \fn uint8_t getVersionFirmware()
      * \brief Returns the version of the firmware
      * \return the version
@@ -161,15 +167,6 @@ class Controller
      * \return the current connected device
      */
     Device* getConnectedDevice();
-
-    /*!
-     * \todo think about where to put it : Utils.h ?
-     * \fn bool send(Message* mess)
-     * \brief
-     * \param mess Message
-     * \return
-     */
-    //    bool send(OutgoingMessage* mess);
 
     /*!
      * \fn std::list<Device*> getListDevices()
