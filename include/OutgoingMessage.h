@@ -13,7 +13,7 @@
 class Controller ;
 
 /*!
- * \class OutgoingMessage 
+ * \class OutgoingMessage
  * \brief Parent class of all outgoing messages
  */
 
@@ -25,7 +25,7 @@ class OutgoingMessage
     uint16_t sizeData; /*!< the size available for the data to encode */
     uint8_t opCode; /*!< the message's operation code */
     Buffer *listBuffer; /*!< the list of buffers representing the message */
-    
+
  public :
     /*!
      * \brief Constructor
@@ -36,7 +36,7 @@ class OutgoingMessage
      * \param sizeBuff the buffers' size
      * \param size the size of the data to encode
      * \param code the message's operation code
-     */    
+     */
     OutgoingMessage(uint8_t id, int sizeBuff, uint16_t size, uint8_t code);
 
     /*!
@@ -45,21 +45,13 @@ class OutgoingMessage
      * Creates a message by copying another one
      *
      * \param M the other message which will be unchanged
-     */        
+     */
     OutgoingMessage(const OutgoingMessage &M);
 
     /*!
      * \brief Destructor
      */
     ~OutgoingMessage();
-
-    /*!
-     * \fn bool send(Controller &c)
-     * \brief Sends a message to a device
-     * \param c controller
-     * \return bool
-     */
-    bool send(Controller &c);
 
     /*!
      * \fn int NbBuffers() const
@@ -94,7 +86,7 @@ class OutgoingMessage
     /*!
      * \fn uint16_t getSizeData() const
      * \brief Gets the data's size
-     * \return the size 
+     * \return the size
      */
     uint16_t getSizeData() const;
 
