@@ -407,8 +407,8 @@ bool Controller::display()
     if (connectedDevice != NULL) {
         //Create a Request
         Request dm(connectedDevice->getID(),
-                       connectedDevice->getcurrentConfig()->getSizeInBytes(),
-                       OPCODE(SET_LEDSTATS));
+                   connectedDevice->getcurrentConfig()->getSizeInBytes(),
+                   OPCODE(SET_LEDSTATS));
 
         //Encode the message with the DeviceShape of the Device
         uint8_t *ledsBuffer = new uint8_t[connectedDevice->
@@ -420,8 +420,8 @@ bool Controller::display()
         //Deallocate memory
         delete[] ledsBuffer;
 
-        /* //Send the message */
-        /* dm.send(*this); */
+        //Send the message
+        dm.send(*this);
 
         return true;
     } else
