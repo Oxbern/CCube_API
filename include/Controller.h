@@ -30,6 +30,7 @@
  * \class Controller
  * \brief TODO
  */
+namespace api{
 class Controller
 {
  protected:
@@ -38,7 +39,7 @@ class Controller
  public:
     bool secure;                /*!< TODO */
     std::list<Device*> devices; /*!< TODO */
-
+    void sayhello();
     /*!
      * \brief Constructor
      *
@@ -178,5 +179,5 @@ class Controller
     std::list<Device*> getListDevices();
 
 };
-
+}
 #endif //CONTROLLER_H

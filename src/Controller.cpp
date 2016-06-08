@@ -24,7 +24,11 @@
  */
 #define MAX_SENDING_TRIES 5
 
+using namespace api;
 
+void Controller::sayhello(){
+    std::cout<< "HELLO LAAAAAAAAAAAAAAaa" << std::endl;
+}
 
 /*!
  * \brief Constructor
