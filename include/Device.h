@@ -23,13 +23,12 @@
 #endif
 
 #else //LINUX
-#include <sys/poll.h> 
+#include <sys/poll.h>
 
 #endif
 
 #include "DeviceShape.h"
-//#include "Ack.h"
-
+#include "Utils.h"
 
 /*!
  * \class Device
@@ -133,14 +132,13 @@ class Device
     bool writeToFileDescriptor(uint8_t* data, int dataSize); //TODO set as private later
 
     /*!
-     * \fn void readFromFileDescriptor(uint8_t ack_buffer[10])
-     *
      * \brief store the data received in a buffer
-     * to process them in the controler
+     * to process them later
      *
-     * \param ack_buffer  array where the data are stored
+     * \param buffer  array where the data are stored
+     * \param sizeBuffer  size of the data to collect
      */
-    bool readFromFileDescriptor(uint8_t ack_buffer[10]);
+    bool readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer);
 
     /*!
      * \fn bool on(int x, int y, int z)
