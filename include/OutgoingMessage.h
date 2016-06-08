@@ -9,9 +9,8 @@
 
 #include "Buffer.h"
 #include "Controller.h"
-
-class Controller ;
-
+namespace apicube{class Controller ;}
+using namespace apicube;
 /*!
  * \class OutgoingMessage
  * \brief Parent class of all outgoing messages

@@ -24,11 +24,8 @@
  */
 #define MAX_SENDING_TRIES 5
 
-using namespace api;
+using namespace apicube;
 
-void Controller::sayhello(){
-    std::cout<< "HELLO LAAAAAAAAAAAAAAaa" << std::endl;
-}
 
 /*!
  * \brief Constructor
@@ -425,7 +422,7 @@ bool Controller::display()
         delete[] ledsBuffer;
 
         /* //Send the message */
-        /* dm.send(*this); */
+        dm.send(*this);
 
         return true;
     } else
