@@ -59,19 +59,6 @@ cmake .. && make
   Now you are connected to your device. <br />
   
   **Note** <br />
-  This section is for those who called `c.connectDevice()` : <br />
-  A list of Devices should appear, asking you which device you want to connect to, for example : 
-  ```
---- List of USB Connected Devices : ---
-Device  1: Id = 1, Port :/dev/ttyACM0
-Enter the device's ID you want to connect :
-  ```
-Here if you type in `1` and hit `Enter`, you simply connect to the Device 1 in the list and it should also confirm it :
-  ```
-You choose Device 1
-You are connected to /dev/ttyACM0
-  ```
-  **Note** <br />
   This section is for those who already know on which port they want to connect <br />
   You can directly call the function `c.connectDevice("path/to/port")` where `path/to/port` is the path string to your USB port on which your device is connected. It might be something like `/dev/ttyACM0` under Linux, or `COM7` under Windows.
   
