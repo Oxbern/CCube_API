@@ -21,6 +21,15 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+/*!
+ * \struct Dictionnary
+ * \brief TODO
+ *
+ */
+struct Dictionnary {
+    int bus; /*!< TODO */
+    int Device; /*!< TODO */
+} typedef Dictionnary;
 
 /*!
  * \fn bool listAllDevices(Controller& c)

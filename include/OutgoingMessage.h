@@ -3,18 +3,15 @@
 
 /*!
  * \file OutgoingMessage.h
- * \brief OutgoingMessages of all types
+ * \brief Creates an outgoing message
  * \version 1.0
  */
-
-#include <vector>
-#include <iostream>
 
 #include "Buffer.h"
 
 /*!
  * \class OutgoingMessage 
- * \brief Parent class
+ * \brief Parent class of all outgoing messages
  */
 
 class OutgoingMessage

@@ -5,8 +5,8 @@
 /*!
  * \brief Constructor
  *
- * TODO
- *
+ * Creates a question which is represented by one single SIZE_QUESTION sized buffer *
+ * 
  * \param id device's ID
  * \param opCode
  */       

@@ -26,6 +26,7 @@ set(CMAKE_C_FLAGS "-O0 -g -Wall -Werror -std=c99")
 set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lpthread ")
 
 
+
 # Bring the headers into the project
 include_directories(../include)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -39,4 +40,9 @@ file(GLOB_RECURSE SOURCES_C "*.c")
 
 
 # Create cube api library
-add_library(cube SHARED ${SOURCES_CXX} ${SOURCES_C} ${HEADERS} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+
+if(WINDOWS_COMPILE)
+  add_library(cube ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
+else(WINDOWS_COMPILE)
+  add_library(cube SHARED ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
+endif(WINDOWS_COMPILE)

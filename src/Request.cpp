@@ -6,7 +6,8 @@
 /*!
  * \brief Constructor
  *
- * TODO
+ * Creates a request which can be represented by one single buffer
+ * or by a list of SIZE_BUFFER sized buffers
  *
  * \param idDevice device's ID
  * \param sizeData message's size
@@ -36,7 +37,7 @@ Request::~Request()
  * if size(dataToEncode) > sizeData,
  * only the first sizeData values of dataToEncode will be encoded
  *
- * \param dataToEncode 
+ * \param dataToEncode the data which fills a message
  */
 void Request::encode(uint8_t *dataToEncode)
 {

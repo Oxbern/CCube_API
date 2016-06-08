@@ -3,14 +3,15 @@
 
 /*!
  * \file Request.h
- * \brief TODO
- * \version 0.1
+ * \brief Creates a request
+ * \version 1.0
  */
 #include "OutgoingMessage.h"
 
 /*! 
  * \class Request
- * \brief TODO
+ * \brief Class representing the creation of a request
+ * which is an outgoing message which does not need an answer from the device
  */
 class Request : public OutgoingMessage
 {
@@ -18,7 +19,8 @@ class Request : public OutgoingMessage
     /*!
      * \brief Constructor
      *
-     * TODO
+     * Creates a request which can be represented by one single buffer
+     * or by a list of SIZE_BUFFER sized buffers
      *
      * \param idDevice device's ID
      * \param sizeData message's size
@@ -40,7 +42,7 @@ class Request : public OutgoingMessage
      * if size(dataToEncode) > sizeData,
      * only the first sizeData values of dataToEncode will be encoded
      *
-     * \param dataToEncode 
+     * \param dataToEncode the data which fills a message
      */
     void encode(uint8_t *dataToEncode);
 
