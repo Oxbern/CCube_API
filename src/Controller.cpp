@@ -47,7 +47,6 @@ Controller::Controller()
     listAndGetUSBConnectedDevices(*this);
 #endif
 
-
     this->connectedDevice = NULL;
     this->secure = false;
 
@@ -64,6 +63,7 @@ Controller::Controller()
  */
 bool Controller::connectDevice(int id)
 {
+
     LOG(1, "connectDevice(int id) \n");
     Device *chosen = NULL;
 
@@ -76,7 +76,6 @@ bool Controller::connectDevice(int id)
     if (chosen != NULL) {
         if (chosen->connect()){
             this->connectedDevice = chosen;
-            /* ack_thread = std::thread(&Controller::waitForACK, this); */
             return true;
         }
     }
@@ -105,8 +104,6 @@ bool Controller::connectDevice(int id, bool secure)
     if (chosen != NULL) {
         if (chosen->connect()){
             this->connectedDevice = chosen;
-            if (secure)
-                ack_thread = std::thread(&Controller::waitForACK, this);
             return true;
         }
     }
@@ -119,7 +116,7 @@ bool Controller::connectDevice(int id, bool secure)
  * \paran secure Flag to set ACK security
  * \return
  */
-bool Controller::connectDevice(char * port, bool secure)
+bool Controller::connectDevice(char *port, bool secure)
 {
     LOG(1, "connectDevice(char *port) \n");
     Device *chosen = NULL;
@@ -135,8 +132,6 @@ bool Controller::connectDevice(char * port, bool secure)
     if (chosen != NULL) {
         if (chosen->connect()){
             this->connectedDevice = chosen;
-            if (secure)
-                ack_thread = std::thread(&Controller::waitForACK, this);
             return true;
         }
     }
@@ -149,7 +144,7 @@ bool Controller::connectDevice(char * port, bool secure)
  * \param mess Message
  * \return
  */
-bool Controller::send(OutgoingMessage* mess)
+bool Controller::send(OutgoingMessage *mess)
 {
     if (this->connectedDevice == NULL)
         return false;
@@ -484,38 +479,6 @@ bool Controller::display()
         throw ErrorException("No device connected");
 }
 
-
-
-/* Thread that listen on USB connection */
-
-/*!
- * \brief Reads an ACK message from USB
- */
-void *Controller::waitForACK()
-{
-    while (1) {
-        if (this->connectedDevice == NULL)
-            break;
-
-        uint8_t *buff = new uint8_t[SIZE_ACK];
-        if (this->connectedDevice != NULL) {
-
-            if (this->connectedDevice->readFromFileDescriptor(buff)) {
-
-                lock_ack.lock();
-                buffReceived.push(buff);
-                lock_ack.unlock();
-
-                printBuffer("ACK PUSHED", buffReceived.front(), SIZE_ACK);
-                LOG(1, "[THREAD] Lock released");
-            }
-        }
-
-        delete []buff;
-    }
-
-    return NULL;
-}
 
 
 /* Getters */
