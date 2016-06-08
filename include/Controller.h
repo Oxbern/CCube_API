@@ -162,15 +162,6 @@ class Controller
     Device* getConnectedDevice();
 
     /*!
-     * \todo think about where to put it : Utils.h ?
-     * \fn bool send(Message* mess)
-     * \brief
-     * \param mess Message
-     * \return
-     */
-    //    bool send(OutgoingMessage* mess);
-
-    /*!
      * \fn std::list<Device*> getListDevices()
      * \brief Accessor to the list of USB connected devices
      * \return the list of USB connected devices
