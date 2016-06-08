@@ -51,11 +51,6 @@ Device::Device(std::string port, int id)
     this->timeout.tv_sec = 0;
     this->timeout.tv_usec = 1000000L;
 
-    /* Poll configuration */
-    pfds[0].events = POLLIN;
-    pfds[1].events = POLLOUT;
-
-
     //File descriptor (reading/writing)
     this->fd = -1;
 }
@@ -88,8 +83,6 @@ bool Device::connect()
             throw ErrorException("Error while opening the file descriptor : "
                 + std::string(std::strerror(errno)));
 	    else {
-            pfds[0].fd = fd;
-            pfds[1].fd = fd;
 #ifdef _WIN32
             //To make blocking:
             unsigned long off = 0;
@@ -105,6 +98,7 @@ bool Device::connect()
 
     LOG(2, "Device " + std::to_string(id) +
         std::string((fd >= 0 ? " " : " not ")) + "connected");
+
     return (fd >= 0);
 }
 
@@ -198,32 +192,24 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
 bool Device::readFromFileDescriptor(uint8_t ack_buffer[10])
 {
 	/* Simple read from file descriptor */
-    //int ret = select(this->getFile() + 1, &set, NULL, NULL, &timeout);
-#ifdef _WIN32
-        int ret = select(fd, NULL,NULL, 0, &timeout);
-#else
-        int ret = poll(pfds, 2, 700);
-#endif
+    int ret = select(fd, NULL, NULL, 0, &timeout);
+
     if (ret > 0) {
-        if (pfds[0].revents & POLLIN) {
-            ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
-            if (sizeRead >= 0) {
-                LOG(5, "[READ] Reading from Device "
-                    + std::to_string(id) + " | DATA READ = "
-                    + uint8ArrayToString(ack_buffer, sizeRead));
-#ifdef _WIN32
-#else
-                fsync(fd);
-#endif
-                return true;
-            } else
-                LOG(2, "[WRITE] Error while reading data to file : "
-                       + std::string(std::strerror(errno)));
-        }
+        ssize_t sizeRead = read(this->getFile(), ack_buffer, SIZE_ACK);
+        if (sizeRead >= 0) {
+            LOG(5, "[READ] Reading from Device "
+                + std::to_string(id) + " | DATA READ = "
+                + uint8ArrayToString(ack_buffer, sizeRead));
+            return true;
+        } else
+            LOG(2, "[WRITE] Error while reading data to file : "
+                + std::string(std::strerror(errno)));
+
     } else if (ret == 0)
         LOG(2, "[READ] Timeout");
     else
         LOG(2, "[READ] Error");
+
     return false;
 }
 
