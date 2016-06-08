@@ -12,14 +12,24 @@ project(cubeAPILib C CXX)
 
 find_package(Threads)
 
+find_package(Boost COMPONENTS  python REQUIRED)
+message("Include dirs of boost: " ${Boost_INCLUDE_DIRS} )
+message("Libs of boost: " ${Boost_LIBRARIES} )
+
+find_package(PythonLibs REQUIRED)
+message("Include dirs of Python: " ${PYTHON_INCLUDE_DIRS} )
+message("Libs of Python: " ${PYTHON_LIBRARIES} )
+
+
 # Compilers options
 set(CMAKE_C_FLAGS "-O0 -g -Wall -Werror -std=c99")
-set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lpthread")
-
+set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lpthread ")
 
 
 # Bring the headers into the project
 include_directories(../include)
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 
 # Headers files and sources files 
@@ -29,4 +39,4 @@ file(GLOB_RECURSE SOURCES_C "*.c")
 
 
 # Create cube api library
-add_library(cube SHARED ${SOURCES_CXX} ${SOURCES_C} ${HEADERS})
+add_library(cube SHARED ${SOURCES_CXX} ${SOURCES_C} ${HEADERS} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
