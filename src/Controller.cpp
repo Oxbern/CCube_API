@@ -230,9 +230,9 @@ uint8_t *Controller::getDeviceInfo()
         Question question(connectedDevice->getID(), DEVICE_INFO);
 
         //Send the message
-        /* if (!question.send(*this)) */
-        /*     throw ErrorException("Error while asking device info " */
-        /*                                  "of the connected device"); */
+        if (!question.send(*this, retVal))
+            throw ErrorException("Error while asking device info "
+                                         "of the connected device");
 
         return retVal;
 
@@ -420,8 +420,8 @@ bool Controller::display()
         //Deallocate memory
         delete[] ledsBuffer;
 
-        /* //Send the message */
-        /* dm.send(*this); */
+        //Send the message
+        dm.send(*this);
 
         return true;
     } else
