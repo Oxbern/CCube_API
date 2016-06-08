@@ -208,13 +208,38 @@ uint8_t Controller::getLuminosity()
         Question gl(connectedDevice->getID(), GET_LUMINOSITY);
 
         //Send the message
-        if (!gl.send(*this))
-            throw ErrorException("Error while asking the luminosity "
-                                         "of the connected device");
+        /* if (!gl.send(*this)) */
+        /*     throw ErrorException("Error while asking the luminosity " */
+        /*                                  "of the connected device"); */
 
         return 1; //TODO To modify with the good value
     } else
         throw ErrorException("No device connected");
+}
+
+/*!
+ * \brief Returns the info (Size) of the cube
+ * \return Array of integer: | SizeX | SizeY | SizeZ |
+ */
+uint8_t *Controller::getDeviceInfo()
+{
+    uint8_t *retVal = new uint8_t[3];
+
+    if (this->connectedDevice != NULL) {
+        // Create a request message, with its crc
+        Question question(connectedDevice->getID(), DEVICE_INFO);
+
+        //Send the message
+        /* if (!question.send(*this)) */
+        /*     throw ErrorException("Error while asking device info " */
+        /*                                  "of the connected device"); */
+
+        return retVal;
+
+    } else
+        throw ErrorException("No device connected");
+
+    return NULL;
 }
 
 
@@ -229,9 +254,9 @@ uint8_t Controller::getVersionFirmware()
         Question vf(connectedDevice->getID(),
                           FIRMWARE_VERSION);
 
-        if (!vf.send(*this))
-            throw ErrorException("Error while asking the firmware version "
-                                         "of the connected device");
+        /* if (!vf.send(*this)) */
+        /*     throw ErrorException("Error while asking the firmware version " */
+        /*                                  "of the connected device"); */
 
         return 1;
     } else
@@ -390,8 +415,8 @@ bool Controller::display()
         //Deallocate memory
         delete[] ledsBuffer;
 
-        //Send the message
-        dm.send(*this);
+        /* //Send the message */
+        /* dm.send(*this); */
 
         return true;
     } else

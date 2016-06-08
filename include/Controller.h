@@ -121,6 +121,12 @@ class Controller
     uint8_t getLuminosity();
 
     /*!
+     * \brief Returns the info (Size) of the cube
+     * \return Array of integer: | SizeX | SizeY | SizeZ |
+     */
+    uint8_t *getDeviceInfo();
+
+    /*!
      * \fn uint8_t getVersionFirmware()
      * \brief Returns the version of the firmware
      * \return the version
