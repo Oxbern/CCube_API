@@ -6,13 +6,6 @@
 #include "Debug.h"
 
 /*!
- * \def MAX_TRY
- * \brief TODO, explain timeout
- */
-#define MAX_TRY 10
-
-
-/*!
  * \brief Constructor
  *
  * Creates a message
@@ -91,6 +84,7 @@ OutgoingMessage::~OutgoingMessage()
  */
 bool OutgoingMessage::send(Controller &c)
 {
+    std::cout << "Outgoing message send \n";
     if (c.getConnectedDevice() == NULL)
         return false;
 

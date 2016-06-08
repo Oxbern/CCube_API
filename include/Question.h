@@ -33,6 +33,15 @@ class Question : public OutgoingMessage
      *
      */    
     ~Question();
+
+    /*!
+     * \fn bool send(Controller &c)
+     * \brief Sends a message to a device
+     * \param c controller
+     * \return bool
+     */
+    bool send(Controller &c);
+    
 };
 
 #endif

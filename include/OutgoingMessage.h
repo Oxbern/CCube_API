@@ -59,7 +59,7 @@ class OutgoingMessage
      * \param c controller
      * \return bool
      */
-    bool send(Controller &c);
+    virtual bool send(Controller &c);
 
     /*!
      * \fn int NbBuffers() const

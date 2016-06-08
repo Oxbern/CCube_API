@@ -346,9 +346,14 @@ bool Controller::updateFirmware(const std::string& myFile)
 
             LOG(3, "firmware update message : " + uf.toStringDebug());
 
+
+            uf.send(*this);
+
+
             delete[] data;
+            
 
-
+            
         } else
             throw ErrorException("Unable to open file " + myFile);
 
