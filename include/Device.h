@@ -39,8 +39,8 @@ class Device
  private :
     int id; /*!< identifier of the device */
     int fd; /*!< file descriptor of the device */
-    fd_set set; /*!<  needed for the timeout */
     struct timeval timeout; /*!< time waited before exiting read function */
+    fd_set set; /*!<  needed for the timeout */
     std::string port; /*!< link to the file open by the file descriptor  */
     std::string firmwareVersion; /*!< not implemented yet */
     float luminosity; /*!< luminosity of the LEDs (not implemented yet) */
@@ -52,6 +52,7 @@ class Device
 
  public :
     // Port is found by Controller's constructor and id is defined there.
+
     /*!
      * \brief Constructor
      * Constructor of the class Device

@@ -49,7 +49,7 @@ Device::Device(std::string port, int id)
 
     /* Set timeout */
     this->timeout.tv_sec = 0;
-    this->timeout.tv_usec = 1000000L;
+    this->timeout.tv_usec = 100000L;
 
     //File descriptor (reading/writing)
     this->fd = -1;
@@ -78,7 +78,7 @@ bool Device::connect()
 {
     LOG(1, "Trying to connect the device");
     if (fd < 0) {
-	    fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+	    fd = open(port.c_str(), O_RDWR | O_NOCTTY);
 	    if (fd == -1)
             throw ErrorException("Error while opening the file descriptor : "
                 + std::string(std::strerror(errno)));
@@ -167,16 +167,16 @@ bool Device::askForDisplaySize()
 bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
 {
     if (fd && dataSize > 0) {
-        LOG(5, "[WRITE] Trying to write Buffer (SIZE = "
+        LOG(2, "[WRITE] Trying to write Buffer (SIZE = "
             + std::to_string(dataSize)
             + " Bytes) : DATA TO WRITE = "
             + uint8ArrayToString(data, dataSize));
 
         if (write(fd, &data[0], dataSize)) {
-            LOG(5, "[WRITE] Data written to file");
+            LOG(2, "[WRITE] Data written to file");
             return true;
         } else
-            LOG(5, "[WRITE] Error while writing data to file : "
+            LOG(2, "[WRITE] Error while writing data to file : "
                 + std::string(std::strerror(errno)));
     }
 
@@ -209,13 +209,13 @@ bool Device::readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer)
             return true;
 
         } else
-            LOG(2, "[WRITE] Error while reading data to file : "
+            LOG(5, "[WRITE] Error while reading data to file : "
                 + std::string(std::strerror(errno)));
 
     } else if (ret == 0)
-        LOG(2, "[READ] Timeout");
+        LOG(5, "[READ] Timeout");
     else
-        LOG(2, "[READ] Error");
+        LOG(5, "[READ] Error");
 
     return false;
 }
