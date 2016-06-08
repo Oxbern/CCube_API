@@ -30,6 +30,7 @@
  * \class Controller
  * \brief TODO
  */
+namespace apicube{
 class Controller
 {
  protected:
@@ -38,7 +39,6 @@ class Controller
  public:
     bool secure;                /*!< TODO */
     std::list<Device*> devices; /*!< TODO */
-
     /*!
      * \brief Constructor
      *
@@ -175,5 +175,5 @@ class Controller
     std::list<Device*> getListDevices();
 
 };
-
+}
 #endif //CONTROLLER_H

@@ -24,6 +24,7 @@
  */
 #define MAX_SENDING_TRIES 5
 
+using namespace apicube;
 
 
 /*!
@@ -420,7 +421,7 @@ bool Controller::display()
         //Deallocate memory
         delete[] ledsBuffer;
 
-        //Send the message
+        /* //Send the message */
         dm.send(*this);
 
         return true;

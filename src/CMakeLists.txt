@@ -12,9 +12,9 @@ project(cubeAPILib C CXX)
 
 find_package(Threads)
 
-find_package(Boost COMPONENTS  python REQUIRED)
-message("Include dirs of boost: " ${Boost_INCLUDE_DIRS} )
-message("Libs of boost: " ${Boost_LIBRARIES} )
+# find_package(Boost COMPONENTS  python REQUIRED)
+# message("Include dirs of boost: " ${Boost_INCLUDE_DIRS} )
+# message("Libs of boost: " ${Boost_LIBRARIES} )
 
 find_package(PythonLibs REQUIRED)
 message("Include dirs of Python: " ${PYTHON_INCLUDE_DIRS} )
@@ -29,7 +29,7 @@ set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Werror -std=c++11 -lpthread ")
 
 # Bring the headers into the project
 include_directories(../include)
-include_directories(${Boost_INCLUDE_DIRS})
+#include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 

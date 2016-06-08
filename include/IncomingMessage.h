@@ -12,8 +12,7 @@
 #include "Buffer.h"
 #include "Controller.h"
 
-class Controller;
-
+using namespace apicube;
 /*!
  * \class IncomingMessage 
  * \brief Parent class 
