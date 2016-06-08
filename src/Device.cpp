@@ -49,7 +49,7 @@ Device::Device(std::string port, int id)
 
     /* Set timeout */
     this->timeout.tv_sec = 0;
-    this->timeout.tv_usec = 1000000L;
+    this->timeout.tv_usec = 100000L;
 
     //File descriptor (reading/writing)
     this->fd = -1;
