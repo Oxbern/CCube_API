@@ -12,7 +12,7 @@
 /* User variable definition */
 #define ACK_SIZE 10
 
-#define DEBUG 0
+#define DEBUG 1
 
 /* File descriptor used  */
 int fd = -1;
@@ -30,7 +30,7 @@ int main ()
                                 /* Open connection */
 
     /* Open connection in blocking mode */
-    fd = open("/dev/ttyACM0", O_WRONLY | O_NOCTTY);
+    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
 
     /* Check for error */
     if (fd < 0) {
@@ -38,7 +38,7 @@ int main ()
         return EXIT_FAILURE;
     }
 
-
+    fcntl(fd, F_SETFL, 0);
 
     /* Define variables used here */
 
@@ -50,7 +50,7 @@ int main ()
 
     /* Create array needed below */
     uint8_t myDataMessage[64] = {0};
-    /* uint8_t emptyAck[10] = {0}; */
+    uint8_t emptyAck[10] = {0};
 
     uint8_t *ledBuffer = new uint8_t[92];
     /* Compute ledBuffer array */
@@ -107,6 +107,12 @@ int main ()
 
     /* Send it over USB */
     write(fd, &myDataMessage[0], 64);
+
+    read(fd, &emptyAck[0], 10);
+
+#if DEBUG
+    printBuffer("ACK", &emptyAck[0], 10);
+#endif
 
     printf("[TEST PASSED]\n");
 
