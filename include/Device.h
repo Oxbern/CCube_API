@@ -49,9 +49,6 @@ class Device
     DeviceShape *currentConfig; /*!< state of the LEDs of the device */
 
  public :
-    struct timeval timeout; /*!< time waited before exiting read function */
-    fd_set set; /*!<  needed for the timeout */
-
 
     // Port is found by Controller's constructor and id is defined there.
 
@@ -109,7 +106,7 @@ class Device
      *
      * \param buffer  array where the data are stored
      * \param sizeBuffer  size of the data to collect
-     * 
+     *
      * \return true if the reading went well
      * false otherwise
      */
@@ -247,8 +244,8 @@ class Device
      * \param id the device's ID
      */
     void setID(uint8_t id);
-    
-    
+
+
 };
 
 #endif //CUBEAPI_DEVICE_H

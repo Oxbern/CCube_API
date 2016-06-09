@@ -46,15 +46,8 @@ Device::Device(std::string port, int id)
 
     this->currentConfig = new DeviceShape(sizeX, sizeY, sizeZ);
 
-    /* Set timeout */
-    this->timeout.tv_sec = 0;
-    this->timeout.tv_usec = 100000L;
-
     //File descriptor (reading/writing)
     this->fd = -1;
-
-    /* Clear set */
-    FD_ZERO(&set);
 }
 
 /*!
@@ -155,45 +148,6 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
     return false;
 }
 
-/*!
- * \brief store the data received in a buffer
- * to process them later
- *
- * \param buffer  array where the data are stored
- * \param sizeBuffer  size of the data to collect 
- * 
- * \return true if the reading went well
- * false otherwise
- */
-bool Device::readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer)
-{
-    uint8_t localBuffer[sizeBuffer];
-
-    int ret = select(fd, NULL, NULL, 0, &timeout);
-
-    if (ret > 0) {
-        ssize_t sizeRead = read(this->getFile(), &localBuffer[0], sizeBuffer);
-        if (sizeRead >= 0) {
-
-            LOG(5, "[READ] Reading from Device "
-                + std::to_string(id) + " | DATA READ = "
-                + uint8ArrayToString(localBuffer, sizeRead));
-
-            /* Copy data received into buffer to fill */
-            memcpy(&buffer[0], &localBuffer[0], sizeRead);
-            return true;
-
-        } else
-            LOG(5, "[WRITE] Error while reading data to file : "
-                + std::string(std::strerror(errno)));
-
-    } else if (ret == 0)
-        LOG(5, "[READ] Timeout");
-    else
-        LOG(5, "[READ] Error");
-
-    return false;
-}
 
 /*!
  * \brief Returns the id of the device
