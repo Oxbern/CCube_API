@@ -93,6 +93,9 @@ You are connected to /dev/ttyACM0
     
     We provide a function you can call from cmdline called `listTTYPorts`, you simply have to find the number of the tty port of your STM Device and your path will be somtehing like `/dev/ttyACM0`.
 
+  ***Note 2***
+    You can also connect secure TODO
+    
 4. Now that you are connected to your device, you still want to switch on the led (4,4,4). To do so, simply add to your code the function `on($x,$y,$z)` of Controller's class !
   ```
 ...
