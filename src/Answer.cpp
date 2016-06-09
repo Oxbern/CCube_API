@@ -5,7 +5,7 @@
 /*!
  * \brief Constructor
  *
- * Creates an answer
+ * Creates an answer, which can only be one buffer
  *
  * \param id device's ID
  * \param opCode 
@@ -38,8 +38,22 @@ bool Answer::verify()
 {
     if (received[HEADER_INDEX] == 1 && received[ID_INDEX] == idDevice
         && received[OPCODE_INDEX] == opCode) {
-        // TODO check crc
-        return true;
+
+        // Check sizeLeft
+        uint16_t size = convertTwo8to16(received[SIZE_INDEX], received[SIZE_INDEX + 1]);
+        if (size > SIZE_ANSWER - DATA_INDEX - SIZE_CRC)
+            return false;
+
+        else {        
+
+            // Check crc
+            uint16_t expectedCRC = computeCRC(received, SIZE_ANSWER);
+            uint16_t actualCRC = convertTwo8to16(received[SIZE_ANSWER - SIZE_CRC],
+                                                 received[SIZE_ANSWER - SIZE_CRC +1]);
+
+            return (expectedCRC == actualCRC); 
+                }
+        
     } else
         return false;        
 }
