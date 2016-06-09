@@ -89,9 +89,21 @@ You are connected to /dev/ttyACM0
     
     We provide a function you can call from cmdline called `listCOMPorts.exe`, you simply have to find the number of the COM port of your STM Device and your path will be somtehing like `COM7`.
     
+    ***WARNING*** Under Windows, the Controller is not yet fully operational ! ***WARNING***
+    
+    Instantiating a Controller object is not sufficient to initialise its list of devices. You actually need to instanciate a Device object and add it to the list of devices of your controller object !
+    ```
+    Controller c;
+    Device *d = new Device("COM7",42);
+    c.devices.push_back(d);
+    
+    // Then you can connect to this device
+    c.connectDevice(42); // Or c.connectDevice("COM7");
+    ```
+    
   *** Linux ***
     
-    We provide a function you can call from cmdline called `listTTYPorts`, you simply have to find the number of the tty port of your STM Device and your path will be somtehing like `/dev/ttyACM0`.
+    Under Linux, you have the available function you can call from a controller object.
 
   ***Note 2***
     You can also connect secure TODO
