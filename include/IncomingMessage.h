@@ -43,21 +43,6 @@ class IncomingMessage
      */
     ~IncomingMessage();
 
-    /*!
-     * \brief Receives a message from a device
-     * \param c controller
-     * \return bool
-     */
-    bool receive(Controller &c);
-
-
-    /*!
-     * \fn uint8_t getID() const
-     * \brief Gets the device's ID
-     * \return ID
-     */
-    uint8_t getID() const;
-
 };
 
 

@@ -40,7 +40,12 @@ int main(int argc, char *argv[])
     light[0] = 1;
     set2.encode(light);
     std::cout << "\n Set2\n";
-    std::cout << set2.toStringDebug();    
+    std::cout << set2.toStringDebug();
+
+    Answer ans();
+    Answer ans2(1, DEVICE_INFO);
+
+    
 
     delete [] light;
     delete [] data;

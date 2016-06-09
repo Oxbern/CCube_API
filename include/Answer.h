@@ -17,6 +17,8 @@
 class Answer : public IncomingMessage
 {
  public :
+    uint8_t *received;
+    
     /*!
      * \brief Constructor
      *
@@ -33,6 +35,12 @@ class Answer : public IncomingMessage
      *
      */
     ~Answer();
+
+    /*!
+     * \brief Verifies
+     * \return bool
+     */
+    bool verify();
 };
 
 #endif
