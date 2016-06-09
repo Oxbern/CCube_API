@@ -245,7 +245,7 @@ std::string Device::getPort() const
  *
  * \return DeviceShape * : currentConfig of the device
  */
-DeviceShape *Device::getcurrentConfig() const
+DeviceShape *Device::getCurrentConfig() const
 {
     return this->currentConfig;
 }
@@ -328,7 +328,7 @@ int Device::getFile()
  * \return true if copy went well
  * false otherwise (for example dimensions did not match)
  */
-bool Device::setLedStatus(ShapeToDisplay s)
+bool Device::setLedStatus(ShapeToDisplay &s)
 {
     return currentConfig->copyLedStatus(s);
 }

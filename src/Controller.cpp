@@ -10,7 +10,8 @@
 #include "ErrorException.h"
 #include "Utils.h"
 #include "Debug.h"
-
+#include <ncurses.h>
+#include "Cube.h"
 
 /*!
  * \def MAX_WAIT
@@ -26,6 +27,62 @@
 
 using namespace apicube;
 
+bool Controller::pilot()
+{
+    Point *p = new Point(3,3,3);
+    Cube *cube = new Cube(3,*p,true,9,9,9);
+    initscr();
+    bool end = false;
+    connectedDevice->setLedStatus(*cube);
+    display();
+    sleep(2);
+    cube->moveUp();
+    connectedDevice->setLedStatus(*cube);
+    display();
+    
+    while(!end){
+        //printcmd();
+        keypad(stdscr, TRUE);
+        noecho();
+      switch(getch()) { 
+      case 'm':
+          cube->moveUp();
+          break;
+      case 'l':
+          (*cube).moveDown();
+          break;
+      case 's':
+          (*cube).moveBackward();
+          break;
+      case 'z':
+          (*cube).moveForward();
+            break;	    
+      case 'd':
+          (*cube).moveRight();
+          break;
+      case 'q':
+          (*cube).moveLeft();
+          break;
+      case '+':
+          (*cube).incrSize();
+          break;
+      case '-':
+          (*cube).decrSize();
+          break;
+      case 't':
+          end = true;
+      default:
+          break;
+      }
+      
+      connectedDevice->getCurrentConfig()->copyLedStatus(*cube);
+      display();
+    }
+    endwin();
+    disconnectDevice();
+    return true;
+
+}
 
 /*!
  * \brief Constructor
@@ -194,6 +251,7 @@ bool Controller::available()
     //     throw ErrorException("Error while checking the "
     //                          "availability of the connected device");
 
+    listAllDevices();
     return true;
 }
 
@@ -408,14 +466,14 @@ bool Controller::display()
     if (connectedDevice != NULL) {
         //Create a Request
         Request dm(connectedDevice->getID(),
-                   connectedDevice->getcurrentConfig()->getSizeInBytes(),
+                   connectedDevice->getCurrentConfig()->getSizeInBytes(),
                    OPCODE(SET_LEDSTATS));
 
         //Encode the message with the DeviceShape of the Device
         uint8_t *ledsBuffer = new uint8_t[connectedDevice->
-                                          getcurrentConfig()->getSizeInBytes()];
+                                          getCurrentConfig()->getSizeInBytes()];
 
-        connectedDevice->getcurrentConfig()->toArray(ledsBuffer);
+        connectedDevice->getCurrentConfig()->toArray(ledsBuffer);
         dm.encode(ledsBuffer);
 
         //Deallocate memory

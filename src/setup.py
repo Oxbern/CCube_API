@@ -6,6 +6,6 @@ setup(ext_modules = cythonize(Extension(
            sources=["control.pyx", "Controller.cpp"],
            include_dirs=['../include/'],
            language="c++",
-           libraries=['./cube'],
+           libraries=['./cube', 'curses'],
            extra_compile_args=['-std=c++11']
       )))

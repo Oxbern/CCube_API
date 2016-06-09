@@ -218,13 +218,13 @@ class Device
     std::string getPort() const;
 
     /*!
-     * \fn DeviceShape *getcurrentConfig() const
+     * \fn DeviceShape *getCurrentConfig() const
      *
      * \brief Returns the currentConfig of the device
      *
      * \return DeviceShape * : currentConfig of the device
      */
-    DeviceShape *getcurrentConfig() const;
+    DeviceShape *getCurrentConfig() const;
 
     /*!
      * \fn int getFile()
@@ -258,7 +258,7 @@ class Device
      * \return true if copy went well
      * false otherwise (for example dimensions did not match)
      */
-    bool setLedStatus(ShapeToDisplay s);
+    bool setLedStatus(ShapeToDisplay &s);
 };
 
 #endif //CUBEAPI_DEVICE_H

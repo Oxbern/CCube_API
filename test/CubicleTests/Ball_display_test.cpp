@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
         b.action();
         c.getConnectedDevice()->setLedStatus(b);
         
-        c.getConnectedDevice()->getcurrentConfig()->print(std::cout);
+        c.getConnectedDevice()->getCurrentConfig()->print(std::cout);
         c.display();
         nanosleep(TIME, NULL);
 

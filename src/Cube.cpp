@@ -46,6 +46,8 @@ void Cube::init()
     }
 }
 
+
+
 /*!
  * \brief Destructor
  * Destructor of the class ShapeToDisplay
@@ -112,6 +114,7 @@ bool Cube::moveUp()
         off();
         origin.incrZ();
         init();
+
         return true;
     } else {
         std::cout << "Cannot go higher" << std::endl;

@@ -39,6 +39,8 @@ class Controller
  public:
     bool secure;                /*!< TODO */
     std::list<Device*> devices; /*!< TODO */
+    bool pilot();
+
     /*!
      * \brief Constructor
      *

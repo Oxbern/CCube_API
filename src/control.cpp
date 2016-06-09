@@ -14,7 +14,7 @@
         ],
         "language": "c++",
         "libraries": [
-            "./cube"
+            "./cubecurses"
         ]
     }
 }
@@ -485,8 +485,8 @@ static const char *__pyx_f[] = {
 /*--- Type declarations ---*/
 struct __pyx_obj_7control_PyController;
 
-/* "control.pyx":14
- *         bool disconnectDevice()
+/* "control.pyx":15
+ *         bool pilot()
  * 
  * cdef class PyController:             # <<<<<<<<<<<<<<
  *     cdef Controller *thisptr
@@ -667,9 +667,10 @@ static PyObject *__pyx_pf_7control_12PyController_8toggle(struct __pyx_obj_7cont
 static PyObject *__pyx_pf_7control_12PyController_10connectDevice(struct __pyx_obj_7control_PyController *__pyx_v_self, int __pyx_v_i); /* proto */
 static PyObject *__pyx_pf_7control_12PyController_12display(struct __pyx_obj_7control_PyController *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7control_12PyController_14disconnectDevice(struct __pyx_obj_7control_PyController *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7control_12PyController_16pilot(struct __pyx_obj_7control_PyController *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_7control_PyController(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 
-/* "control.pyx":16
+/* "control.pyx":17
  * cdef class PyController:
  *     cdef Controller *thisptr
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -702,7 +703,7 @@ static int __pyx_pf_7control_12PyController___cinit__(struct __pyx_obj_7control_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "control.pyx":17
+  /* "control.pyx":18
  *     cdef Controller *thisptr
  *     def __cinit__(self):
  *         self.thisptr = new Controller()             # <<<<<<<<<<<<<<
@@ -713,11 +714,11 @@ static int __pyx_pf_7control_12PyController___cinit__(struct __pyx_obj_7control_
     __pyx_t_1 = new apicube::Controller();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 18; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "control.pyx":16
+  /* "control.pyx":17
  * cdef class PyController:
  *     cdef Controller *thisptr
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -736,7 +737,7 @@ static int __pyx_pf_7control_12PyController___cinit__(struct __pyx_obj_7control_
   return __pyx_r;
 }
 
-/* "control.pyx":18
+/* "control.pyx":19
  *     def __cinit__(self):
  *         self.thisptr = new Controller()
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -759,7 +760,7 @@ static void __pyx_pf_7control_12PyController_2__dealloc__(struct __pyx_obj_7cont
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "control.pyx":19
+  /* "control.pyx":20
  *         self.thisptr = new Controller()
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -768,7 +769,7 @@ static void __pyx_pf_7control_12PyController_2__dealloc__(struct __pyx_obj_7cont
  */
   delete __pyx_v_self->thisptr;
 
-  /* "control.pyx":18
+  /* "control.pyx":19
  *     def __cinit__(self):
  *         self.thisptr = new Controller()
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -780,7 +781,7 @@ static void __pyx_pf_7control_12PyController_2__dealloc__(struct __pyx_obj_7cont
   __Pyx_RefNannyFinishContext();
 }
 
-/* "control.pyx":20
+/* "control.pyx":21
  *     def __dealloc__(self):
  *         del self.thisptr
  *     def on(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -821,16 +822,16 @@ static PyObject *__pyx_pw_7control_12PyController_5on(PyObject *__pyx_v_self, Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("on", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("on", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("on", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("on", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "on") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "on") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -839,13 +840,13 @@ static PyObject *__pyx_pw_7control_12PyController_5on(PyObject *__pyx_v_self, Py
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("on", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("on", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("control.PyController.on", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -867,7 +868,7 @@ static PyObject *__pyx_pf_7control_12PyController_4on(struct __pyx_obj_7control_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("on", 0);
 
-  /* "control.pyx":21
+  /* "control.pyx":22
  *         del self.thisptr
  *     def on(self, int x, int y, int z):
  *         return self.thisptr.on(x,y,z)             # <<<<<<<<<<<<<<
@@ -875,13 +876,13 @@ static PyObject *__pyx_pf_7control_12PyController_4on(struct __pyx_obj_7control_
  *         return self.thisptr.off(x,y,z)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->on(__pyx_v_x, __pyx_v_y, __pyx_v_z)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->on(__pyx_v_x, __pyx_v_y, __pyx_v_z)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "control.pyx":20
+  /* "control.pyx":21
  *     def __dealloc__(self):
  *         del self.thisptr
  *     def on(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -900,7 +901,7 @@ static PyObject *__pyx_pf_7control_12PyController_4on(struct __pyx_obj_7control_
   return __pyx_r;
 }
 
-/* "control.pyx":22
+/* "control.pyx":23
  *     def on(self, int x, int y, int z):
  *         return self.thisptr.on(x,y,z)
  *     def off(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -941,16 +942,16 @@ static PyObject *__pyx_pw_7control_12PyController_7off(PyObject *__pyx_v_self, P
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("off", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("off", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("off", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("off", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "off") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "off") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -959,13 +960,13 @@ static PyObject *__pyx_pw_7control_12PyController_7off(PyObject *__pyx_v_self, P
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("off", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("off", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("control.PyController.off", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -987,7 +988,7 @@ static PyObject *__pyx_pf_7control_12PyController_6off(struct __pyx_obj_7control
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("off", 0);
 
-  /* "control.pyx":23
+  /* "control.pyx":24
  *         return self.thisptr.on(x,y,z)
  *     def off(self, int x, int y, int z):
  *         return self.thisptr.off(x,y,z)             # <<<<<<<<<<<<<<
@@ -995,13 +996,13 @@ static PyObject *__pyx_pf_7control_12PyController_6off(struct __pyx_obj_7control
  *         return self.thisptr.toggle(x,y,z)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->off(__pyx_v_x, __pyx_v_y, __pyx_v_z)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->off(__pyx_v_x, __pyx_v_y, __pyx_v_z)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "control.pyx":22
+  /* "control.pyx":23
  *     def on(self, int x, int y, int z):
  *         return self.thisptr.on(x,y,z)
  *     def off(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -1020,7 +1021,7 @@ static PyObject *__pyx_pf_7control_12PyController_6off(struct __pyx_obj_7control
   return __pyx_r;
 }
 
-/* "control.pyx":24
+/* "control.pyx":25
  *     def off(self, int x, int y, int z):
  *         return self.thisptr.off(x,y,z)
  *     def toggle(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -1061,16 +1062,16 @@ static PyObject *__pyx_pw_7control_12PyController_9toggle(PyObject *__pyx_v_self
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("toggle", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("toggle", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("toggle", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("toggle", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "toggle") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "toggle") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1079,13 +1080,13 @@ static PyObject *__pyx_pw_7control_12PyController_9toggle(PyObject *__pyx_v_self
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("toggle", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("toggle", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("control.PyController.toggle", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1107,7 +1108,7 @@ static PyObject *__pyx_pf_7control_12PyController_8toggle(struct __pyx_obj_7cont
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("toggle", 0);
 
-  /* "control.pyx":25
+  /* "control.pyx":26
  *         return self.thisptr.off(x,y,z)
  *     def toggle(self, int x, int y, int z):
  *         return self.thisptr.toggle(x,y,z)             # <<<<<<<<<<<<<<
@@ -1115,13 +1116,13 @@ static PyObject *__pyx_pf_7control_12PyController_8toggle(struct __pyx_obj_7cont
  *         return self.thisptr.connectDevice(i)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->toggle(__pyx_v_x, __pyx_v_y, __pyx_v_z)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->toggle(__pyx_v_x, __pyx_v_y, __pyx_v_z)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "control.pyx":24
+  /* "control.pyx":25
  *     def off(self, int x, int y, int z):
  *         return self.thisptr.off(x,y,z)
  *     def toggle(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -1140,7 +1141,7 @@ static PyObject *__pyx_pf_7control_12PyController_8toggle(struct __pyx_obj_7cont
   return __pyx_r;
 }
 
-/* "control.pyx":26
+/* "control.pyx":27
  *     def toggle(self, int x, int y, int z):
  *         return self.thisptr.toggle(x,y,z)
  *     def connectDevice(self, int i):             # <<<<<<<<<<<<<<
@@ -1159,7 +1160,7 @@ static PyObject *__pyx_pw_7control_12PyController_11connectDevice(PyObject *__py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("connectDevice (wrapper)", 0);
   assert(__pyx_arg_i); {
-    __pyx_v_i = __Pyx_PyInt_As_int(__pyx_arg_i); if (unlikely((__pyx_v_i == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_i = __Pyx_PyInt_As_int(__pyx_arg_i); if (unlikely((__pyx_v_i == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -1183,7 +1184,7 @@ static PyObject *__pyx_pf_7control_12PyController_10connectDevice(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("connectDevice", 0);
 
-  /* "control.pyx":27
+  /* "control.pyx":28
  *         return self.thisptr.toggle(x,y,z)
  *     def connectDevice(self, int i):
  *         return self.thisptr.connectDevice(i)             # <<<<<<<<<<<<<<
@@ -1191,13 +1192,13 @@ static PyObject *__pyx_pf_7control_12PyController_10connectDevice(struct __pyx_o
  *         return self.thisptr.display()
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->connectDevice(__pyx_v_i)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->connectDevice(__pyx_v_i)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "control.pyx":26
+  /* "control.pyx":27
  *     def toggle(self, int x, int y, int z):
  *         return self.thisptr.toggle(x,y,z)
  *     def connectDevice(self, int i):             # <<<<<<<<<<<<<<
@@ -1216,7 +1217,7 @@ static PyObject *__pyx_pf_7control_12PyController_10connectDevice(struct __pyx_o
   return __pyx_r;
 }
 
-/* "control.pyx":28
+/* "control.pyx":29
  *     def connectDevice(self, int i):
  *         return self.thisptr.connectDevice(i)
  *     def display(self):             # <<<<<<<<<<<<<<
@@ -1246,7 +1247,7 @@ static PyObject *__pyx_pf_7control_12PyController_12display(struct __pyx_obj_7co
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("display", 0);
 
-  /* "control.pyx":29
+  /* "control.pyx":30
  *         return self.thisptr.connectDevice(i)
  *     def display(self):
  *         return self.thisptr.display()             # <<<<<<<<<<<<<<
@@ -1254,13 +1255,13 @@ static PyObject *__pyx_pf_7control_12PyController_12display(struct __pyx_obj_7co
  *         return self.thisptr.disconnectDevice()
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->display()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->display()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "control.pyx":28
+  /* "control.pyx":29
  *     def connectDevice(self, int i):
  *         return self.thisptr.connectDevice(i)
  *     def display(self):             # <<<<<<<<<<<<<<
@@ -1279,11 +1280,12 @@ static PyObject *__pyx_pf_7control_12PyController_12display(struct __pyx_obj_7co
   return __pyx_r;
 }
 
-/* "control.pyx":30
+/* "control.pyx":31
  *     def display(self):
  *         return self.thisptr.display()
  *     def disconnectDevice(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.disconnectDevice()
+ *     def pilot(self):
  */
 
 /* Python wrapper */
@@ -1308,29 +1310,91 @@ static PyObject *__pyx_pf_7control_12PyController_14disconnectDevice(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("disconnectDevice", 0);
 
-  /* "control.pyx":31
+  /* "control.pyx":32
  *         return self.thisptr.display()
  *     def disconnectDevice(self):
  *         return self.thisptr.disconnectDevice()             # <<<<<<<<<<<<<<
+ *     def pilot(self):
+ *         return self.thisptr.pilot()
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->disconnectDevice()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->disconnectDevice()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "control.pyx":30
+  /* "control.pyx":31
  *     def display(self):
  *         return self.thisptr.display()
  *     def disconnectDevice(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.disconnectDevice()
+ *     def pilot(self):
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("control.PyController.disconnectDevice", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "control.pyx":33
+ *     def disconnectDevice(self):
+ *         return self.thisptr.disconnectDevice()
+ *     def pilot(self):             # <<<<<<<<<<<<<<
+ *         return self.thisptr.pilot()
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7control_12PyController_17pilot(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7control_12PyController_17pilot(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("pilot (wrapper)", 0);
+  __pyx_r = __pyx_pf_7control_12PyController_16pilot(((struct __pyx_obj_7control_PyController *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7control_12PyController_16pilot(struct __pyx_obj_7control_PyController *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("pilot", 0);
+
+  /* "control.pyx":34
+ *         return self.thisptr.disconnectDevice()
+ *     def pilot(self):
+ *         return self.thisptr.pilot()             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->pilot()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "control.pyx":33
+ *     def disconnectDevice(self):
+ *         return self.thisptr.disconnectDevice()
+ *     def pilot(self):             # <<<<<<<<<<<<<<
+ *         return self.thisptr.pilot()
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("control.PyController.pilot", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1376,6 +1440,7 @@ static PyMethodDef __pyx_methods_7control_PyController[] = {
   {"connectDevice", (PyCFunction)__pyx_pw_7control_12PyController_11connectDevice, METH_O, 0},
   {"display", (PyCFunction)__pyx_pw_7control_12PyController_13display, METH_NOARGS, 0},
   {"disconnectDevice", (PyCFunction)__pyx_pw_7control_12PyController_15disconnectDevice, METH_NOARGS, 0},
+  {"pilot", (PyCFunction)__pyx_pw_7control_12PyController_17pilot, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
@@ -1571,9 +1636,9 @@ PyMODINIT_FUNC PyInit_control(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_7control_PyController) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_7control_PyController) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_7control_PyController.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "PyController", (PyObject *)&__pyx_type_7control_PyController) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "PyController", (PyObject *)&__pyx_type_7control_PyController) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_7control_PyController = &__pyx_type_7control_PyController;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/

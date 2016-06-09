@@ -10,6 +10,7 @@ cdef extern from "Controller.h" namespace "apicube":
         bool toggle(int x, int y, int z)
         bool display()
         bool disconnectDevice()
+        bool pilot()
 
 cdef class PyController:
     cdef Controller *thisptr
@@ -29,3 +30,5 @@ cdef class PyController:
         return self.thisptr.display()        
     def disconnectDevice(self):
         return self.thisptr.disconnectDevice()
+    def pilot(self):
+        return self.thisptr.pilot()
