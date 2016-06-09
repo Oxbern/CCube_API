@@ -9,7 +9,6 @@
  */
 
 #include "ShapeToDisplay.h"
-// TODO : inherite from cube.h
 
 /*!
  * \class Ball
