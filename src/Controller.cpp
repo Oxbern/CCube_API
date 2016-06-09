@@ -251,7 +251,7 @@ bool Controller::available()
     //     throw ErrorException("Error while checking the "
     //                          "availability of the connected device");
 
-    listAllDevices();
+    listAllDevices(*this);
     return true;
 }
 
