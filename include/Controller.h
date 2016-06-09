@@ -153,7 +153,7 @@ class Controller
 
     bool connectDevice(int id, bool secure);
 
-    bool connectDevice(char *port, bool secure);
+    bool connectDevice(char *port, bool secure = false);
 
     /*!
      * \fn bool disconnectDevice()
