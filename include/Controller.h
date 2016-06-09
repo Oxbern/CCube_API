@@ -129,6 +129,13 @@ class Controller
     uint8_t *getDeviceInfo();
 
     /*!
+     * \fn uint8_t getDeviceID()
+     * \brief Returns the connected device's ID
+     * \return the ID
+     */
+    uint8_t getDeviceID();
+    
+    /*!
      * \fn uint8_t getVersionFirmware()
      * \brief Returns the version of the firmware
      * \return the version
@@ -142,7 +149,14 @@ class Controller
      */
     bool updateFirmware(const std::string& file);
 
-
+    /*!
+     * \fn bool printMsgScreen()
+     * \brief Prints a message on the device's screen
+     * \param message the message to print
+     * \return bool
+     */
+    bool printMsgScreen(char *message) ;
+    
     /*!
      * \fn bool connectDevice(int id)
      * \brief Connects the controller to a device with its ID

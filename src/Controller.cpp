@@ -106,6 +106,19 @@ Controller::Controller()
     LOG(1, "Controller()");
 }
 
+/* Destructor */
+
+/*!
+ * \brief Destructor
+ *
+ */
+Controller::~Controller()
+{
+    LOG(1,"~Controller()");
+    while(!devices.empty()) delete devices.front(), devices.pop_front();
+    delete this->connectedDevice;
+}
+
 
 
 
@@ -137,15 +150,13 @@ bool Controller::connectDevice(int id)
         }
     }
 
-
-
     return false;
 }
 
 /*!
  * \brief Connects the controller to a device with its ID
  * \param id ID of the device to connect
- * \paran secure Flag to set ACK security
+ * \param secure Flag to set ACK security
  * \return
  */
 bool Controller::connectDevice(int id, bool secure)
@@ -173,7 +184,7 @@ bool Controller::connectDevice(int id, bool secure)
 /*!
  * \brief Connects the controller to a device with its ID
  * \param id ID of the device to connect
- * \paran secure Flag to set ACK security
+ * \param secure Flag to set ACK security
  * \return
  */
 bool Controller::connectDevice(char *port, bool secure)
@@ -208,7 +219,7 @@ bool Controller::disconnectDevice()
     LOG(1, "disconnectDevice() \n");
 
     if (this->connectedDevice != NULL)
-        while (!connectedDevice->disconnect()); //TODO Timeout
+        while (!connectedDevice->disconnect());
 
     this->connectedDevice = NULL;
     return true;
@@ -219,7 +230,6 @@ bool Controller::disconnectDevice()
 /* Functionnality methods */
 
 /*!
- * \todo todo
  * \brief Sets the device's luminosity
  * \param value to set the luminosity to
  * \return bool
@@ -232,8 +242,9 @@ bool Controller::setLuminosity(uint8_t value)
         sl.encode(&value);
 
         //Send the message
-        //        sl.send(*this);
-
+        if (!sl.send(*this))
+            throw ErrorException("Error while setting the luminosity "
+                                 "of the connected device");
         return true;
     } else
         throw ErrorException("No device connected");
@@ -241,21 +252,12 @@ bool Controller::setLuminosity(uint8_t value)
 
 
 /*!
- * \todo look into the entire list of devices ? or only ask the connected one ?
- * \todo use the available parameter of device
- * \brief TODO
- * \return bool
+ * \brief Lists the devices which are connected
+ * \return true if there is at least one connected device
  */
 bool Controller::available()
 {
-    // // Create a request message, with its crc
-    // Question av(connectedDevice->getID(), AVAILABLE);
-
-    // if (!send(&av))
-    //     throw ErrorException("Error while checking the "
-    //                          "availability of the connected device");
-
-    #ifdef _WIN32
+#ifdef _WIN32
     Device *d = new Device("COM7",1);
     devices.push_back(d);
 #else
@@ -276,13 +278,14 @@ uint8_t Controller::getLuminosity()
     if (this->connectedDevice != NULL) {
         // Create a request message, with its crc
         Question gl(connectedDevice->getID(), GET_LUMINOSITY);
-
+        uint8_t *result = new uint8_t[1]();
+        
         //Send the message
-        /* if (!gl.send(*this)) */
-        /*     throw ErrorException("Error while asking the luminosity " */
-        /*                                  "of the connected device"); */
+        if (!gl.send(*this, result))
+            throw ErrorException("Error while asking the luminosity "
+                                 "of the connected device");
 
-        return 1; //TODO To modify with the good value
+        return result[0]; //TODO To modify with the good value
     } else
         throw ErrorException("No device connected");
 }
@@ -293,7 +296,7 @@ uint8_t Controller::getLuminosity()
  */
 uint8_t *Controller::getDeviceInfo()
 {
-    uint8_t *retVal = new uint8_t[3];
+    uint8_t *retVal = new uint8_t[3]();
 
     if (this->connectedDevice != NULL) {
         // Create a request message, with its crc
@@ -312,6 +315,26 @@ uint8_t *Controller::getDeviceInfo()
     return NULL;
 }
 
+/*!
+ * \brief Returns the connected device's ID
+ * \return the ID
+ */
+uint8_t Controller::getDeviceID()
+{
+    uint8_t *id = new uint8_t[1]();
+
+    if (this->connectedDevice != NULL) {
+        // Create a request message, with its crc
+        Question dev(connectedDevice->getID(), DEVICE_ID);
+
+        if (!dev.send(*this, id))
+            throw ErrorException("Error while asking the ID "
+                                 "of the connected device");
+        return id[0];
+    } else
+        throw ErrorException("No device connected");
+}
+
 
 /*!
  * \brief Returns the version of the firmware
@@ -319,23 +342,24 @@ uint8_t *Controller::getDeviceInfo()
  */
 uint8_t Controller::getVersionFirmware()
 {
+    uint8_t *version = new uint8_t[1]();
+    
     if (this->connectedDevice != NULL) {
         // Create a request message, with its crc
         Question vf(connectedDevice->getID(),
                           FIRMWARE_VERSION);
 
-        /* if (!vf.send(*this)) */
-        /*     throw ErrorException("Error while asking the firmware version " */
-        /*                                  "of the connected device"); */
+        if (!vf.send(*this, version)) 
+            throw ErrorException("Error while asking the firmware version " 
+                                 "of the connected device"); 
 
-        return 1;
+        return version[0];
     } else
         throw ErrorException("No device connected");
 }
 
-
 /*!
- * \brief Send the firmware update
+ * \brief Sends the firmware update
  * \return bool
  */
 bool Controller::updateFirmware(const std::string& myFile)
@@ -373,34 +397,74 @@ bool Controller::updateFirmware(const std::string& myFile)
             LOG(3, "firmware update message : " + uf.toStringDebug());
 
 
-            uf.send(*this);
+            if (!uf.send(*this))
+                throw ErrorException("Error while updating the firmware version "
+                                     "of the connected device");            
 
+            delete[] data;           
 
-            delete[] data;
-            
-
+            return true;
             
         } else
             throw ErrorException("Unable to open file " + myFile);
 
-        return true;
     } else
         throw ErrorException("No device connected");
 }
 
+/*!
+ * \brief Prints a message on the device's screen
+ * \param message the message to print
+ */
+bool Controller::printMsgScreen(char *message)
+{
+    if (connectedDevice != NULL) {
+        //Create a Request
+        Request pm(connectedDevice->getID(),
+                   connectedDevice->getCurrentConfig()->getSizeInBytes(),
+                   OPCODE(PRINT_TFT));
 
+        //Encode the request with the message
+        pm.encode((uint8_t*)message);
 
-/* Destructor */
+        //Send the message
+        if (!pm.send(*this))
+            throw ErrorException("Error while sending the message "
+                                 "to the connected device");
+        return true;
+    } else
+        throw ErrorException("No device connected");    
+}
 
 /*!
- * \brief Destructor
- *
+ * \brief Sends the new status of all the LEDs 
+ * \return bool
  */
-Controller::~Controller()
+bool Controller::display()
 {
-    LOG(1,"~Controller()");
-    while(!devices.empty()) delete devices.front(), devices.pop_front();
-    delete this->connectedDevice;
+    if (connectedDevice != NULL) {
+        //Create a Request
+        Request dm(connectedDevice->getID(),
+                   connectedDevice->getCurrentConfig()->getSizeInBytes(),
+                   OPCODE(SET_LEDSTATS));
+
+        //Encode the message with the DeviceShape of the Device
+        uint8_t *ledsBuffer = new uint8_t[connectedDevice->
+                                          getCurrentConfig()->getSizeInBytes()];
+
+        connectedDevice->getCurrentConfig()->toArray(ledsBuffer);
+        dm.encode(ledsBuffer);
+
+        //Deallocate memory
+        delete[] ledsBuffer;
+
+        //Send the message
+        if (!dm.send(*this))
+            throw ErrorException("Error while sending the message "
+                                 "to the connected device");
+        return true;
+    } else
+        throw ErrorException("No device connected");
 }
 
 
@@ -468,35 +532,6 @@ bool Controller::toggle(int x, int y, int z)
 }
 
 
-/*!
- * \brief TODO
- * \return bool
- */
-bool Controller::display()
-{
-    if (connectedDevice != NULL) {
-        //Create a Request
-        Request dm(connectedDevice->getID(),
-                   connectedDevice->getCurrentConfig()->getSizeInBytes(),
-                   OPCODE(SET_LEDSTATS));
-
-        //Encode the message with the DeviceShape of the Device
-        uint8_t *ledsBuffer = new uint8_t[connectedDevice->
-                                          getCurrentConfig()->getSizeInBytes()];
-
-        connectedDevice->getCurrentConfig()->toArray(ledsBuffer);
-        dm.encode(ledsBuffer);
-
-        //Deallocate memory
-        delete[] ledsBuffer;
-
-        /* //Send the message */
-        dm.send(*this);
-
-        return true;
-    } else
-        throw ErrorException("No device connected");
-}
 
 
 
