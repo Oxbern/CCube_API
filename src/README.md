@@ -102,7 +102,7 @@ Or one signe buffer ( X < 57 )
 1 | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(3) | CRC(2)
 
 - ACKs :
-- 
+
 1 | ID_DEVICE(1) | ACK_TYPE(1) | 0 | 3 | DATA(3) | CRC(2)
 
 
@@ -110,20 +110,20 @@ Or one signe buffer ( X < 57 )
 
 These are the different kinds of operation codes which determine the purpose of a message.
 
-Operation code | Value | Action
---- | --- | --- | ---
-`ACK_OK` | 0x01 |  
-`ACK_ERR` | 0x02 |
-`ACK_NOK` | 0x03 |
-`PRINT_TFT` | 0x0A |
-`DEVICE_ID` | 0x10 |
-`GET_LEDSTATS` | 0x11 |
-`GET_LUMINOSITY` | 0x12 |
-`SCREEN_SIZE` | 0x13 |
-`FIRMWARE_VERSION` | 0x14 |
-`DEVICE_INFO` | 0X15 |
-`SET_LEDSTATS` | 0x21 |
-`SET_LUMINOSITY` | 0x22 |
-`UPDATE_FIRMWARE` | 0x24 |
-`RESET` | 0xFF |
-`SECURE` | 0xF0 |
+Operation code | Value | Description
+--- | --- | ---
+`ACK_OK` | 0x01 | ACK OK 
+`ACK_ERR` | 0x02 | ACK ERROR
+`ACK_NOK` | 0x03 | ACK NOT OK
+`PRINT_TFT` | 0x0A | Prints a message on the screen
+`DEVICE_ID` | 0x10 | Gets the device's ID
+`GET_LEDSTATS` | 0x11 | Gets the states of the LEDs
+`GET_LUMINOSITY` | 0x12 | Gets the luminosity of the LEDs
+`SCREEN_SIZE` | 0x13 | Gets the screen's dimensions
+`FIRMWARE_VERSION` | 0x14 | Gets the firmware's version
+`DEVICE_INFO` | 0X15 | Gets the dimensions of the cube, the number of LEDs on each side
+`SET_LEDSTATS` | 0x21 | Sets the states of the LEDs
+`SET_LUMINOSITY` | 0x22 | Sets the luminosity of the LEDs
+`UPDATE_FIRMWARE` | 0x24 | Updates the firmware
+`RESET` | 0xFF | Resets the connection
+`SECURE` | 0xF0 | Tells the device which protocol mode to be in
