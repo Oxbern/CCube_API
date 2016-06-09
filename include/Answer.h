@@ -12,7 +12,7 @@
 
 /*! 
  * \class Answer
- * \brief Class representing a message of type Answer
+ * \brief Class representing an answer
  */
 class Answer : public IncomingMessage
 {

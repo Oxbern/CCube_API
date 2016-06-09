@@ -3,7 +3,7 @@
 
 /*!
  * \file ErrorException.h
- * \brief TODO
+ * \brief Normalises the exceptions for the API
  * \version 0.1
  */
 
@@ -13,7 +13,7 @@
 
 /*!
  * \class ErrorException
- * \brief TODO
+ * \brief Represents the thrown exceptions
  */
 class ErrorException : public std::exception
 {
@@ -21,7 +21,7 @@ class ErrorException : public std::exception
     /*!
      * \brief Constructor
      *
-     * TODO
+     * Creates an exception
      *
      * \param Msg 
      */
@@ -33,12 +33,12 @@ class ErrorException : public std::exception
     virtual ~ErrorException() throw();
 
     /*!
-     * \brief TODO
+     * \brief Needed
      */
     virtual const char * what() const throw();
 
  private:
-    std::string msg; /*!< TODO */
+    std::string msg; /*!< Message printed */
 };
 
 #endif //ERROR_EXCEPTION_H

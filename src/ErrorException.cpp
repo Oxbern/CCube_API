@@ -3,7 +3,7 @@
 /*!
  * \brief Constructor
  *
- * TODO
+ * Creates an exception
  *
  * \param Msg 
  */
@@ -22,7 +22,7 @@ ErrorException::~ErrorException() throw()
 }
 
 /*!
- * \brief TODO
+ * \brief Needed
  */
 const char * ErrorException::what() const throw()
 {

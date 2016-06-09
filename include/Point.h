@@ -3,7 +3,7 @@
 
 /*!
  * \file Point.h
- * \brief TODO
+ * \brief For demo
  * \version 0.1
  */
 
@@ -16,14 +16,14 @@
 
 /*!
  * \class Point
- * \brief TODO
+ * \brief Class for tests
  */
 class Point
 {
  private: 
-    uint8_t x; /*!< TODO */
-    uint8_t y; /*!< TODO */
-    uint8_t z; /*!< TODO */
+    uint8_t x; /*!< first coordinate */
+    uint8_t y; /*!< second coordinate */
+    uint8_t z; /*!< third coordinate */
 
  public:
     /*!
