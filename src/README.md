@@ -11,6 +11,9 @@ First, be sure to have the device so you will be able to do the complementary fo
 - Send your message
     - If it is a `Question`, the method `send` will not only tell you if the transmission went well but it will also give you your answer (if the functionnality has already been added to the device's firmware).
 
+### Note
+If you want to create a new operation code, change the buffer sizes or other details, go to `Utils.h`.
+
 ## Example
 ### `getScreenSize()`
 
@@ -123,3 +126,4 @@ Operation code | Value | Action
 `SET_LUMINOSITY` | 0x22 |
 `UPDATE_FIRMWARE` | 0x24 |
 `RESET` | 0xFF |
+`SECURE` | 0xF0 |
