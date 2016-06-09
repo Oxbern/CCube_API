@@ -14,7 +14,7 @@
 
 /*!
  * @class DeviceShape
- * \brief TODO
+ * \brief State of all the LEDs of a device with the dimension of the device
  */
 class DeviceShape
 {
@@ -178,12 +178,13 @@ class DeviceShape
     bool*** getLedStatus() const;
     
     
-    // TODO : test this function
     /*! 
      * \fn bool copyLedStatus(ShapeToDisplay s)
      * 
      * \brief Sets the 3D array to the 3D array
      *  of the ShapeToDisplay
+     * 
+     * \param s  The shape from which we want to copy the 3D array
      * 
      * \return true if copy went well
      * false otherwise (for example dimensions did not match)

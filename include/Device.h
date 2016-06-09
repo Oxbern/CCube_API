@@ -92,9 +92,9 @@ class Device
      * \todo not yet implemented, is it usefull ?
      * \fn bool askForDisplaySize()
      *
-     * \brief not implemented yet
+     * \brief not implemented yet todo
      *
-     * \return
+     * \return ???? todo
      */
     bool askForDisplaySize();
 
@@ -117,6 +117,9 @@ class Device
      *
      * \param buffer  array where the data are stored
      * \param sizeBuffer  size of the data to collect
+     * 
+     * \return true if the reading went well
+     * false otherwise
      */
     bool readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer);
 
@@ -213,20 +216,6 @@ class Device
      * \return int : fd of the device
      */
     int getFile();
-
-    /*!
-     * \fn bool handleAck(OutgoingMessage *mess, Ack ack, int i)
-     *
-     * \brief Handles the acknowledge of the message
-     *
-     * \param mess  needed to know which message has to be send back
-     * \param ack  to verify if the message was received well
-     * \param i TODO
-     *
-     * \return true if the ack is an ACK_OK
-     * false otherwise
-     */
-    //    bool handleAck(OutgoingMessage *mess, Ack &ack, int i);
 
     /*!
      * \fn bool setLedStatus(ShapeToDisplay s)

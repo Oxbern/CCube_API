@@ -35,6 +35,8 @@ Buffer::Buffer(int sizeBuff) :
 
 /**
  * @brief Constructor by copy
+ * 
+ * \param B
  */
 Buffer::Buffer(const Buffer& B)
 {
@@ -228,7 +230,7 @@ uint8_t Buffer::getID() const
 /*!
  * \brief Comparaison operator == between two buffers
  *
- * 
+ * \param b the buffer to compare with
  *
  * \return the result of the comparaison
  */                

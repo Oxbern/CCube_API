@@ -167,7 +167,10 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
  * to process them later
  *
  * \param buffer  array where the data are stored
- * \param sizeBuffer  size of the data to collect
+ * \param sizeBuffer  size of the data to collect 
+ * 
+ * \return true if the reading went well
+ * false otherwise
  */
 bool Device::readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer)
 {

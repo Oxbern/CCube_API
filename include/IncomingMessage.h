@@ -32,7 +32,6 @@ class IncomingMessage
      * Creates a message
      *
      * \param id device's ID
-     * \param sizeBuff the buffers' size
      * \param size the size of the data to encode
      * \param code the message's operation code
      */    

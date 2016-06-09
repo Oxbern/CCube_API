@@ -19,12 +19,12 @@ public:
      *
      * Constructor of the class Cube
      *
-     * \param i
-     * \param p 
-     * \param b
-     * \param x
-     * \param y
-     * \param z
+     * \param i size of the Cube
+     * \param p origin (back lower left corner)
+     * \param b if the cube is full or not
+     * \param x first size of the device we displayed it on
+     * \param y second size of the device we displayed it on
+     * \param z third size of the device we displayed it on
      */
     Cube(int i = 0, Point p = Point(0, 0, 0), bool b = true,
             int x = 9, int y = 9, int z = 9);
@@ -116,9 +116,9 @@ public:
 /*!
  * \fn std::ostream& operator<<(std::ostream &out, Cube &c)
  * \brief Overloads of the operator <<
- * @param out : stream on which we write
- * @param c : Cube shape we want to display
- * \return std::ostream Out
+ * \param out stream on which we write
+ * \param c Cube shape we want to display
+ * \return out (stream on which we wrote)
  */
 std::ostream& operator<<(std::ostream &out, Cube &c);
 
