@@ -80,7 +80,7 @@ OutgoingMessage::~OutgoingMessage()
 /*!
  * \brief Sends a message to a device
  * \param c controller
- * \return bool
+ * \return true if the message was sent properly
  */
 bool OutgoingMessage::send(Controller &c)
 {

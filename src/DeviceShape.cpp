@@ -127,7 +127,7 @@ bool DeviceShape::toggle(int x, int y, int z)
 /*! 
  * \brief Returns the nb of uint8_t in the array
  *
- * \return int : nb of uint8_t in the array
+ * \return nb of uint8_t in the array
  */
 int DeviceShape::getSizeInBytes() 
 {
@@ -172,7 +172,7 @@ void DeviceShape::toArray(uint8_t *arrayToFill)
  * \param os : stream on which we write
  * \param d : DeviceShape we display
  * 
- * @return std::ostream& : os (stream we wrote on) 
+ * @return os (stream we wrote on) 
  */
 std::ostream& operator<<(std::ostream& os, const DeviceShape& d) 
 {
@@ -182,6 +182,7 @@ std::ostream& operator<<(std::ostream& os, const DeviceShape& d)
 
 /*! 
  * \brief Displays the 3D array
+ * \param str string to where to print
  */
 void DeviceShape::print(std::ostream &str) const 
 {
@@ -225,7 +226,7 @@ DeviceShape& DeviceShape::operator=(const DeviceShape &ds)
 /*! 
  * \brief Returns the first dimension of the 3D array
  *
- * \return int sizeX : first dimension of the 3D array
+ * \return sizeX : first dimension of the 3D array
  */
 int DeviceShape::getSizeX() const 
 {
@@ -235,7 +236,7 @@ int DeviceShape::getSizeX() const
 /*! 
  * \brief Returns the second dimension of the 3D array
  *
- * \return int sizeY : second dimension of the 3D array
+ * \return sizeY : second dimension of the 3D array
  */
 int DeviceShape::getSizeY() const 
 {
@@ -245,7 +246,7 @@ int DeviceShape::getSizeY() const
 /*! 
  * \brief Returns the third dimension of the 3D array
  *
- * \return int sizeZ : third dimension of the 3D array
+ * \return sizeZ : third dimension of the 3D array
  */
 int DeviceShape::getSizeZ() const 
 {

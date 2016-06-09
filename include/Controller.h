@@ -99,7 +99,7 @@ class Controller
 
     /*!
      * \fn bool display()
-     * \brief Displays the status of the LEDs on the device
+     * \brief Sends the new status of all the LEDs
      * \return true if the functionality went well
      */
     bool display();
@@ -114,8 +114,8 @@ class Controller
 
     /*!
      * \fn bool available()
-     * \brief TODO
-     * \return bool
+     * \brief Lists the devices which are connected
+     * \return true if there is at least one connected device
      */
     bool available();
 
@@ -149,6 +149,7 @@ class Controller
     /*!
      * \fn bool updateFirmware()
      * \brief Sends the firmware update
+     * \param file the absolute path to the binary file
      * \return true if the functionality went well
      */
     bool updateFirmware(const std::string& file);

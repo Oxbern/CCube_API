@@ -13,7 +13,7 @@
 #include "ShapeToDisplay.h"
 
 /*!
- * @class DeviceShape
+ * \class DeviceShape
  * \brief State of all the LEDs of a device with the dimension of the device
  */
 class DeviceShape
@@ -98,7 +98,7 @@ class DeviceShape
     * 
     * \brief Returns the nb of uint8_t in the array
     *
-    * \return int : nb of uint8_t in the array
+    * \return nb of uint8_t in the array
     */
     int getSizeInBytes();
     
@@ -119,7 +119,7 @@ class DeviceShape
      * \param os  stream on which we write
      * \param d  DeviceShape we display
      * 
-     * @return std::ostream& : os (stream we wrote on) 
+     * @return os (stream we wrote on) 
      */    
     friend std::ostream& operator<<(std::ostream& os, const DeviceShape& d);
 
@@ -127,6 +127,7 @@ class DeviceShape
      * \fn void print(std::ostream &str) const
      * 
      * \brief Displays the 3D array
+     * \param str string to where to print
      */
     void print(std::ostream &str) const;
     
@@ -146,7 +147,7 @@ class DeviceShape
      * 
      * \brief Returns the first dimension of the 3D array
      *
-     * \return int sizeX : first dimension of the 3D array
+     * \return sizeX : first dimension of the 3D array
      */
     int getSizeX() const;
 
@@ -155,7 +156,7 @@ class DeviceShape
     * 
     * \brief Returns the second dimension of the 3D array
     *
-    * \return int sizeY : second dimension of the 3D array
+    * \return sizeY : second dimension of the 3D array
     */    
     int getSizeY() const;
 
@@ -173,7 +174,7 @@ class DeviceShape
     * 
     * \brief Returns the 3D array
     *
-    * \return bool ***ledStatus : the 3D array
+    * \return the 3D array representing the LED's status
     */
     bool*** getLedStatus() const;
     

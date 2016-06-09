@@ -3,7 +3,7 @@
 
 /*!
  * \file LinuxUtils.h
- * \brief TODO
+ * \brief Regroups all the functions used to see which devices are connected
  * \version 0.5
  */
 
@@ -23,18 +23,18 @@
 #include <algorithm>
 /*!
  * \struct Dictionnary
- * \brief TODO
+ * \brief used in the parsing
  *
  */
 struct Dictionnary {
-    int bus; /*!< TODO */
-    int Device; /*!< TODO */
+    int bus; /*!< bus */
+    int Device; /*!< device */
 } typedef Dictionnary;
 
 /*!
  * \fn bool listAllDevices(Controller& c)
  * \brief Lists all devices which are connected via USB
- * \return TODO
+ * \return true when the method exited successfully
  */
 bool listAllDevices(Controller &c);
 
@@ -50,7 +50,7 @@ void listAndGetUSBConnectedDevices(Controller &c);
  * \brief Gets the next word in a char
  * \param path the line to parse
  * \param j the beginning of the future parsing
- * \param wordreturn
+ * \param wordreturn the word to return
  */
 void getNextWord(char *path, int *j, char * wordreturn);
 

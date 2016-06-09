@@ -56,7 +56,7 @@ class OutgoingMessage
      * \fn bool send(Controller &c)
      * \brief Sends a message to a device
      * \param c controller
-     * \return bool
+     * \return true if the message was sent properly
      */
     virtual bool send(Controller &c);
 

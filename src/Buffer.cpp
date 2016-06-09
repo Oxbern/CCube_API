@@ -36,7 +36,7 @@ Buffer::Buffer(int sizeBuff) :
 /**
  * @brief Constructor by copy
  * 
- * \param B
+ * \param B the other buffer
  */
 Buffer::Buffer(const Buffer& B)
 {

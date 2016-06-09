@@ -41,11 +41,11 @@ class Device
     int fd; /*!< file descriptor of the device */
     std::string port; /*!< link to the file open by the file descriptor  */
     uint8_t firmwareVersion; /*!< not implemented yet */
-    uint8_t luminosity; /*!< luminosity of the LEDs (not implemented yet) */
+    uint8_t luminosity; /*!< luminosity of the LEDs */
     int sizeX; /*!< First dimension of the device */
     int sizeY; /*!< Second dimension of the device */
     int sizeZ; /*!< Third dimension of the device */
-    bool isAvailable; /*!< if the device is available (not implemented yet) */
+    bool isAvailable; /*!< if the device is available */
     DeviceShape *currentConfig; /*!< state of the LEDs of the device */
 
  public :
@@ -178,7 +178,7 @@ class Device
      *
      * \brief Returns the id of the device
      *
-     * \return int id : id of the device
+     * \return id of the device
      */
     int getID() const;
 
@@ -187,7 +187,7 @@ class Device
      *
      * \brief Returns the port of the device
      *
-     * \return std::string : port of the device
+     * \return port of the device
      */
     std::string getPort() const;
 
@@ -196,7 +196,7 @@ class Device
      *
      * \brief Returns the currentConfig of the device
      *
-     * \return DeviceShape * : currentConfig of the device
+     * \return currentConfig of the device
      */
     DeviceShape *getCurrentConfig() const;
 
@@ -205,7 +205,7 @@ class Device
      *
      * \brief Returns the file descriptor of the device
      *
-     * \return int : fd of the device
+     * \return fd of the device
      */
     int getFile();
 

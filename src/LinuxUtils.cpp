@@ -3,7 +3,7 @@
 
 /*!
  * \brief Lists all devices which are connected via USB
- * \return TODO
+ * \return true when the method exited successfully
  */
 bool listAllDevices(Controller &c)
 {
@@ -29,7 +29,7 @@ bool listAllDevices(Controller &c)
  * \brief Gets the next word in a char
  * \param path the line to parse
  * \param j the beginning of the future parsing
- * \param wordreturn
+ * \param wordreturn the word to return
  */
 void getNextWord(char *path, int *j, char *wordreturn)
 {

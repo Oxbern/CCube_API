@@ -198,7 +198,7 @@ bool Device::readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer)
 /*!
  * \brief Returns the id of the device
  *
- * \return int id : id of the device
+ * \return id of the device
  */
 int Device::getID() const
 {
@@ -208,7 +208,7 @@ int Device::getID() const
 /*!
  * \brief Returns the port of the device
  *
- * \return std::string : port of the device
+ * \return port of the device
  */
 std::string Device::getPort() const
 {
@@ -218,7 +218,7 @@ std::string Device::getPort() const
 /*!
  * \brief Returns the currentConfig of the device
  *
- * \return DeviceShape * : currentConfig of the device
+ * \return currentConfig of the device
  */
 DeviceShape *Device::getCurrentConfig() const
 {
@@ -288,7 +288,7 @@ bool Device::toggle(int x, int y, int z)
 /*!
  * \brief Returns the file descriptor of the device
  *
- * \return int : fd of the device
+ * \return fd of the device
  */
 int Device::getFile()
 {

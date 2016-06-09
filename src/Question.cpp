@@ -12,7 +12,7 @@
  * Creates a question which is represented by one single SIZE_QUESTION sized buffer *
  *
  * \param id device's ID
- * \param opCode
+ * \param opCode operation code
  */
 Question::Question(uint8_t id, uint8_t opCode) :
     OutgoingMessage(id, SIZE_QUESTION, SIZE_QUESTION - DATA_INDEX - SIZE_CRC, opCode)
@@ -34,7 +34,7 @@ Question::~Question()
  * \brief Sends a message to a device
  * \param c controller
  * \param result the answer to our question
- * \return bool
+ * \return true if the message was sent properly
  */
 bool Question::send(Controller &c, uint8_t *result)
 {

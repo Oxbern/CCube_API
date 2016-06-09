@@ -79,7 +79,7 @@ void Request::encode(uint8_t *dataToEncode)
 /*!
  * \brief Sends a message to a device
  * \param c controller
- * \return bool
+ * \return true if the request was sent properly
  */
 bool Request::send(Controller &c)
 {

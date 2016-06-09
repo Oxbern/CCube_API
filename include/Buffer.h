@@ -51,7 +51,7 @@ class Buffer
     /*!
      * \brief Constructor by copy
      * 
-     * \param B
+     * \param B the other buffer
      */
     Buffer(const Buffer& B);
 

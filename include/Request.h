@@ -49,7 +49,7 @@ class Request : public OutgoingMessage
     /*!
      * \brief Sends a message to a device
      * \param c controller
-     * \return bool
+     * \return true if the request was sent properly
      */
     bool send(Controller &c);
 

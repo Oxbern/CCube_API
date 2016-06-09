@@ -24,7 +24,7 @@ class Question : public OutgoingMessage
      * Creates a question which is represented by one single SIZE_QUESTION sized buffer
      *
      * \param id device's ID
-     * \param opCode
+     * \param opCode operation code
      */       
     Question(uint8_t id, uint8_t code);
 
@@ -39,7 +39,7 @@ class Question : public OutgoingMessage
      * \brief Sends a message to a device
      * \param c controller
      * \param result the answer to our question
-     * \return bool
+     * \return true if the message was sent properly
      */
     bool send(Controller &c, uint8_t *result);
     

@@ -129,7 +129,7 @@ Controller::~Controller()
 /*!
  * \brief Connects the controller to a device with its ID
  * \param id ID of the device to connect
- * \return
+ * \return true if the connection went well
  */
 bool Controller::connectDevice(int id)
 {
@@ -160,8 +160,8 @@ bool Controller::connectDevice(int id)
 /*!
  * \brief Connects the controller to a device with its ID
  * \param id ID of the device to connect
- * \param secure Flag to set ACK security
- * \return
+ * \param secure flag to set ACK security
+ * \return true if the connection went well
  */
 bool Controller::connectDevice(int id, bool secure)
 {
@@ -216,7 +216,7 @@ bool Controller::connectDevice(char *port, bool secure)
 
 /*!
  * \brief Disconnects the controller from the device
- * \return
+ * \return true if the disconnection went well
  */
 bool Controller::disconnectDevice()
 {
@@ -236,7 +236,7 @@ bool Controller::disconnectDevice()
 /*!
  * \brief Sets the device's luminosity
  * \param value to set the luminosity to
- * \return bool
+ * \return true if the functionality went well
  */
 bool Controller::setLuminosity(uint8_t value)
 {
@@ -368,7 +368,8 @@ uint8_t Controller::getVersionFirmware()
 
 /*!
  * \brief Sends the firmware update
- * \return bool
+ * \param file the absolute path to the binary file
+ * \return true if the functionality went well
  */
 bool Controller::updateFirmware(const std::string& myFile)
 {
@@ -423,6 +424,8 @@ bool Controller::updateFirmware(const std::string& myFile)
 /*!
  * \brief Prints a message on the device's screen
  * \param message the message to print
+ * \param sizeMessage the message's size
+ * \return true if the functionality went well
  */
 bool Controller::printMsgScreen(std::string message, uint8_t sizeMessage)
 {
@@ -445,8 +448,8 @@ bool Controller::printMsgScreen(std::string message, uint8_t sizeMessage)
 
 /*!
  * \brief Resets the connection
- * \return bool
- */
+ * \return true if the functionality went well
+*/
 bool Controller::reset()
 {
     if (connectedDevice != NULL) {
@@ -467,7 +470,7 @@ bool Controller::reset()
 
 /*!
  * \brief Sends the new status of all the LEDs 
- * \return bool
+ * \return true if the functionality went well
  */
 bool Controller::display()
 {
@@ -502,10 +505,10 @@ bool Controller::display()
 
 /*!
  * \brief Switches on a led on the current connected device
- * \param x
- * \param y
- * \param z
- * \return bool
+ * \param x the first coordinate
+ * \param y the second coordinate
+ * \param z the third coordinate
+ * \return true if the change went well
  */
 bool Controller::on(int x, int y, int z)
 {
@@ -518,10 +521,10 @@ bool Controller::on(int x, int y, int z)
 
 /*!
  * \brief Switches off a led on the current connected device
- * \param x
- * \param y
- * \param z
- * \return bool
+ * \param x the first coordinate
+ * \param y the second coordinate
+ * \param z the third coordinate
+ * \return true if the change went well
  */
 bool Controller::off(int x, int y, int z)
 {
@@ -534,7 +537,7 @@ bool Controller::off(int x, int y, int z)
 
 /*!
  * \brief Switches off the entire device
- * \return bool
+ * \return true if the change went well
  */
 bool Controller::off()
 {
@@ -547,10 +550,10 @@ bool Controller::off()
 
 /*!
  * \brief Sets the state of a led to its opposite on the current connected device
- * \param x
- * \param y
- * \param z
- * \return bool
+ * \param x the first coordinate
+ * \param y the second coordinate
+ * \param z the third coordinate
+ * \return true if the change went well
  */
 bool Controller::toggle(int x, int y, int z)
 {
