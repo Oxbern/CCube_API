@@ -291,8 +291,8 @@ std::string Buffer::toString()
     std::ostringstream convert;
     uint8_t tab[2];
     convert << (int) header;
-    convert << (int) opCode;
     convert << (int) idDevice;
+    convert << (int) opCode;
 
     //split sizeLeft into two uint8_t
     convert16to8(sizeLeft, tab);
