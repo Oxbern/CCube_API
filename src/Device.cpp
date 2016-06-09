@@ -129,16 +129,6 @@ bool Device::disconnect()
  *
  * \return
  */
-std::string Device::getFirmwareVersion()
-{
-    throw ErrorException("Not yet implemented");
-}
-
-/*!
- * \brief not implemented yet
- *
- * \return
- */
 bool Device::askForDisplaySize()
 {
     throw ErrorException("Not yet implemented");

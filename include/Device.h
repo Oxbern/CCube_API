@@ -87,16 +87,6 @@ class Device
      * false otherwise
      */
     bool disconnect();
-    
-    /*!
-     * \todo not yet implemented, is it usefull ?
-     * \fn bool getFirmwareVersion()
-     *
-     * \brief not implemented yet
-     *
-     * \return
-     */
-    std::string getFirmwareVersion();
 
     /*!
      * \todo not yet implemented, is it usefull ?
