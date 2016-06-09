@@ -35,7 +35,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 # Headers files and sources files 
 file(GLOB_RECURSE HEADERS "../include/*.h")
-file(GLOB_RECURSE SOURCES_CXX "*.cpp")
+file(GLOB_RECURSE SOURCES_CXX "[!control]*.cpp")
 file(GLOB_RECURSE SOURCES_C "*.c")
 
 
