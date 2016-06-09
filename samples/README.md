@@ -95,7 +95,8 @@ Compile and run, the led is now on !
   ```
 Controller c;
 int MyID = 1;                  // Replace 1 by your wanted ID
-Device d("/dev/ttyACM0",MyID); // If you want to do it properly, get the list of connected Devices and add 1 
-                               // something like : MyId = c.getListDevices().size + 1;
-c.connectDevice(&d);           // connectDevice(Device* d) takes a pointer in argument, git it the adress of d
+Device d("/dev/ttyACM0",MyID); // If you want to do it properly, get the list of connected Devices 
+                                   // and add 1, something like : MyId = c.getListDevices().size + 1;
+c.connectDevice(&d);           // connectDevice(Device* d) takes a pointer in argument, 
+                                   // give it the adress of d
   ```
