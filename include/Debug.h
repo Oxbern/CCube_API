@@ -11,7 +11,7 @@
  * \def LOG_LEVEL
  * \brief defines the level of debug desired
  */
-#define LOG_LEVEL 2
+#define LOG_LEVEL 0
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL 0
