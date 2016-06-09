@@ -6,7 +6,6 @@
 
 #include <string.h>
 
-#define MAX_TRY 10
 
 /*!
  * \brief Constructor
@@ -49,19 +48,24 @@ void Request::encode(uint8_t *dataToEncode)
     LOG(2, "OutgoingMessage encoding :");
 
     //Header, DeviceID, Opcode already set in the constructor
-    int j = 0; int k= 0; int n = NbBuffers();
+    int j = 0;
+    int k = 0;
+    int n = NbBuffers();
 
     //Fills the buffers with the data
     for (int i = 0; i < n; i ++) {
         while (j < (listBuffer[i].getDataSize())) {
-            if (k < sizeData) {
+
+            if (k < sizeData)
                 listBuffer[i].setData(j, dataToEncode[k]);
-            }
-            else {
+            else
                 listBuffer[i].setData(j,0);
-            }
-            j++; k++;
+
+            ++j;
+            ++k;
         }
+
+        /* Re-set j to 0 */
         j = 0;
 
         //Sets CRC computed on the entire buffer
@@ -132,7 +136,11 @@ bool Request::send(Controller &c)
             else
                 break;
 
+            /* Set buffer as retransmited buffer */
+            bufferArray[0] = 2;
+
         } while (nbTry < MAX_TRY);
+
 
         //If number of tries exceeded
         if (nbTry == MAX_TRY) {
@@ -146,6 +154,7 @@ bool Request::send(Controller &c)
 
         delete [] bufferArray;
     }
+
     LOG(1, "[SEND] Message sent");
     return true;
 }
