@@ -6,7 +6,7 @@
 #include "Controller.h"
 
 /**
- * Simple test to switch on some LEDs using methods of the API
+ * Simple test to set the luminosity
  */
 int main(int argc, char *argv[])
 {
@@ -15,22 +15,19 @@ int main(int argc, char *argv[])
     if (c.connectDevice(1)){
         std::cout << "Connection to device successful" << std::endl;
 
-        uint8_t *info = c.getDeviceInfo();
+        // Sets the luminosity
+        if (!c.setLuminosity(1)) {
+             std::cout << "Unable to set the luminosity" << std::endl;
+             return EXIT_FAILURE;
+        }
 
-        std::cout << "size x : " << (int)info[0] << std::endl;
-        std::cout << "size y : " << (int)info[1] << std::endl;
-        std::cout << "size z : " << (int)info[2] << std::endl;        
-        
-        
         if (c.disconnectDevice()) {
-            std::cout << "Disconnection from device successful" << std::endl;
+            std::cout << "Disconnection to device successful" << std::endl;
             std::cout << "TEST PASSED " << std::endl;
             return EXIT_SUCCESS;
         } else {
             std::cout << "Unable to disconnect " << std::endl;
         }
-
-        delete [] info;
     }
 
     std::cout << "Unable to connect" << std::endl;

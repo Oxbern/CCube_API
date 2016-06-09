@@ -2,9 +2,8 @@
 
 int main(int argc, char** argv)
 {
-    // Read the parameter
     if (argc < 2) {
-        std::cout << "Usage : "<< argv[0] << " absolute path to CCube_Firmware.bin \n";
+        std::cout << "Usage : "<< argv[0] << "your message \n";
         return EXIT_FAILURE;
     }
     
@@ -13,7 +12,7 @@ int main(int argc, char** argv)
     if (c.connectDevice(1)){
         std::cout << "Connection to device successful" << std::endl;
 
-        if (!c.updateFirmware(argv[1])) {
+        if (!c.printMsgScreen(argv[1])) {
             std::cout << "Unable to update firmware" << std::endl;
             return EXIT_FAILURE;
         }
