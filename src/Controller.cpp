@@ -179,9 +179,11 @@ bool Controller::connectDevice(int id, bool secure)
     if (chosen != NULL) {
         if (chosen->connect()){
             this->connectedDevice = chosen;
+            setSecure(secure);
             return true;
         }
     }
+
     return false;
 }
 
@@ -481,9 +483,9 @@ bool Controller::setSecure(bool secure)
         request.encode((uint8_t *)&secure);
 
         //Send the message
-        if (!pm.send(*this))
-            throw ErrorException("Error while wanting to reset the connection"
-                                 "to the connected device");
+        if (!request.send(*this))
+            throw ErrorException("Error while wanting to set the connection"
+                                 " to the connected device");
         return true;
     } else
         throw ErrorException("No device connected");
