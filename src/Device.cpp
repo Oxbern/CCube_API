@@ -53,6 +53,9 @@ Device::Device(std::string port, int id)
 
     //File descriptor (reading/writing)
     this->fd = -1;
+
+    /* Clear set */
+    FD_ZERO(&set);
 }
 
 /*!
