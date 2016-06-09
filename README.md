@@ -81,7 +81,7 @@ cmake .. && make
     Instantiating a Controller object is not sufficient to initialise its list of devices. You actually need to instanciate a Device object and add it to the list of devices of your controller object !
     ```
     Controller c;
-    Device *d = new Device("COM7",42);
+    Device *d = new Device("COM7", 42);
     c.devices.push_back(d);
     
     // Then you can connect to this device
@@ -90,10 +90,18 @@ cmake .. && make
     
   ***Linux***
     
-    Under Linux, you have the available function you can call from a controller object.
+    Under Linux, you have the ```available()``` function you can call from a controller object which will print all the device you can connect to. Once you know the ID of the device you wish to be connected to you may called the ```connect(ID)``` method.
+    ```
+    Controller c;
+    // Print all the devices you can connect to
+    c.available(); 
+    
+    // Then you can connect to any device shown 
+    c.connectDevice(1); 
+    ```
 
   ***Note 2***
-    You can also connect secure TODO
+    If you want to be sure that every message you send is well received you can use the «secure» flag when calling connect method.  
     
 4. Now that you are connected to your device, you still want to switch on the led (4,4,4). To do so, simply add to your code the function `on($x,$y,$z)` of Controller's class !
   ```
