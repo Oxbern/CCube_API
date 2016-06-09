@@ -1,7 +1,7 @@
 # CCube_API conception
 
 ## How to add a new functionnality to the API ?
-First, be sure to have the device so you will be able to do these following steps in its firmware.
+First, be sure to have the device so you will be able to do the complementary following steps in its firmware.
 
 - Add your new function to the class called `Controller` (.h and .cpp of course)
 - Add a new OPCODE to the spec if it does not exist already
@@ -12,7 +12,65 @@ First, be sure to have the device so you will be able to do these following step
     - If it is a `Question`, the method `send` will not only tell you if the transmission went well but it will also give you your answer (if the functionnality is been added to the device's firmware).
 
 ## Example
+### `getScreenSize()`
 
+In `Controller.h`
+```
+uint8_t getScreenSize();
+```
+
+In `Controller.cpp`
+
+```
+uint8_t Controller::getScreenSize()
+{
+    // Create the space where to put the answer
+    uint8_t *size= new uint8_t[1]();
+
+    // Connect to the device
+    if (this->connectedDevice != NULL) {
+        // Create the question with the right opcode
+        Question ss(connectedDevice->getID(),
+                          SCREEN_SIZE);
+
+        // Send the message and receive the size                  
+        if (!ss.send(*this, size)) 
+            throw ErrorException("Error while asking the screen size ");
+
+        return size[0];
+    } else
+        throw ErrorException("No device connected");
+        
+}
+```
+
+### `setLuminosity()`
+
+In `Controller.h`
+```
+bool setLuminosity();
+```
+
+In `Controller.cpp`
+```
+bool Controller::setLuminosity(uint8_t value)
+{
+    if (this->connectedDevice != NULL) {
+        // Create a request
+        Request sl(connectedDevice->getID(), 1, SET_LUMINOSITY);
+        // Encode the data in the request
+        sl.encode(&value);
+
+        //Send the message
+        if (!sl.send(*this))
+            throw ErrorException("Error while setting the luminosity "
+                                 "of the connected device");
+        return true;
+    } else
+        throw ErrorException("No device connected");
+}
+
+```
 
 ## Specification
 
