@@ -30,7 +30,7 @@ Answer::~Answer()
 
 /*!
  * \brief Verifies if it is a correct answer
- * \return bool
+ * \return true if the verification went well
  */
 bool Answer::verify()
 {

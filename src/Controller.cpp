@@ -15,6 +15,7 @@
 #include <ncurses.h>
 #include "Cube.h"
 #endif
+
 /*!
  * \def MAX_WAIT
  * \brief TODO, explain timeout

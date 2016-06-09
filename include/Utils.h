@@ -23,6 +23,17 @@
  */
 #define MAX_TRY 10
 
+/*!
+ * \def MAX_WAIT
+ * \brief the maximum number of time to wait to send a buffer
+ */
+#define MAX_WAIT 1000000
+
+/*!
+ * \def MAX_SENDING_TRIES
+ * \brief the maximum number of tries to send a buffer
+ */
+#define MAX_SENDING_TRIES 5
 
 /*!
  * \def SIZE_ACK

@@ -34,7 +34,6 @@ Device::Device(std::string port, int id)
     }
 
     //Size initialization
-    //TODO Ask the size to the device
     this->sizeX = 9;
     this->sizeY = 9;
     this->sizeZ = 9;
@@ -127,15 +126,6 @@ bool Device::disconnect()
     return (fd == -1);
 }
 
-/*!
- * \brief not implemented yet
- *
- * \return
- */
-bool Device::askForDisplaySize()
-{
-    throw ErrorException("Not yet implemented");
-}
 
 /*!
  * \brief write the data in the file descriptor

@@ -36,8 +36,9 @@ class Answer : public IncomingMessage
     ~Answer();
 
     /*!
+     * \fn bool verify
      * \brief Verifies if it is a correct answer
-     * \return bool
+     * \return true if the verification went well
      */
     bool verify();
 };

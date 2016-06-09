@@ -100,7 +100,7 @@ cmake .. && make
     c.connectDevice(1); 
     ```
 
-  ***Note 2***
+  **Note 2** <br />
     If you want to be sure that every message you send is well received you can use the ```C_SECURE``` flag when calling ```connect()``` method. 
   
     ```
@@ -187,7 +187,7 @@ Function | Description
 --- | ---
 `available()` | Lists all the devices available
 `connectDevice(id)` | Establishes the serial connection to the device with this `id`
-`disconnectDevice();` | Closes the serial connection
+`disconnectDevice()` | Closes the serial connection
 `reset()` | Resets the connection
 
 
@@ -217,8 +217,8 @@ Function | Description
 
 Function | Description
 --- | ---
-`on(x,y,z);` | Turns on the LED(x,y,z)
-`off();` | Turns off the entire cube
-`off(x,y,z);` | Turns off the LED(x,y,z)
-`toggle(x,y,z);` | Changes the state of the LED(x,y,z)
+`on(x,y,z)` | Turns on the LED(x,y,z)
+`off()` | Turns off the entire cube
+`off(x,y,z)` | Turns off the LED(x,y,z)
+`toggle(x,y,z)` | Changes the state of the LED(x,y,z)
 

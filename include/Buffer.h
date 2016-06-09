@@ -139,7 +139,6 @@ class Buffer
     void setCrc(uint16_t crcCheck);
 
     /*!
-     * \todo is this method useful ?
      * \fn void setData(int index, uint8_t dataIndex)
      * \brief Sets data[index]
      *

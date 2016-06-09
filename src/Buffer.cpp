@@ -130,7 +130,6 @@ void Buffer::setCrc(uint16_t crcCheck)
 }
 
 /*!
- * \todo is this method useful ?
  * \brief Sets data[index]
  *
  * Setter

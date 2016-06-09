@@ -8,7 +8,8 @@
  * \brief Constructor
  * Constructor of the class Ball
  */
-Ball::Ball() : ShapeToDisplay(1, Point(4, 4, 2), true, 9, 9, 9), direction(Point(0, 1, 0)) 
+Ball::Ball() :
+    ShapeToDisplay(1, Point(4, 4, 2), true, 9, 9, 9), direction(Point(0, 1, 0)) 
 {
     LOG(1, "ball()");
     Point **snake = new Point*[SIZE_SNAKE];

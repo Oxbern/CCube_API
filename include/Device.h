@@ -91,16 +91,6 @@ class Device
     bool disconnect();
 
     /*!
-     * \todo not yet implemented, is it usefull ?
-     * \fn bool askForDisplaySize()
-     *
-     * \brief not implemented yet todo
-     *
-     * \return ???? todo
-     */
-    bool askForDisplaySize();
-
-    /*!
      * \fn bool writeToFileDescriptor(uint8_t* data, int dataSize)
      *
      * \brief write the data in the file descriptor
