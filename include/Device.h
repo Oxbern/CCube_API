@@ -89,27 +89,6 @@ class Device
     bool disconnect();
 
     /*!
-     * \todo not yet implemented, but soon
-     * \fn bool updateFirmware()
-     *
-     * \brief not implemented yet
-     *
-     * \return true if
-     * false otherwise
-     */
-    bool updateFirmware(); //TODO Set binary file as arg
-
-    /*!
-     * \todo not yet implemented, is it usefull ?
-     * \fn bool getFirmwareVersion()
-     *
-     * \brief not implemented yet
-     *
-     * \return
-     */
-    std::string getFirmwareVersion();
-
-    /*!
      * \todo not yet implemented, is it usefull ?
      * \fn bool askForDisplaySize()
      *
