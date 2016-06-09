@@ -1,14 +1,21 @@
 #include "Ball.h"
 #include "Debug.h"
+#include <time.h>
+#include <cstdlib>
 
+#define SIZE_SNAKE 5
 /*! 
  * \brief Constructor
  * Constructor of the class Ball
  */
-Ball::Ball() : ShapeToDisplay(1, Point(4, 4, 4), true, 9, 9, 9), direction(Point(1, 1, 1)) 
+Ball::Ball() : ShapeToDisplay(1, Point(4, 4, 2), true, 9, 9, 9), direction(Point(0, 1, 0)) 
 {
     LOG(1, "ball()");
-    on(origin.getX(), origin.getY(), origin.getZ());
+    Point **snake = new Point*[SIZE_SNAKE];
+    this->snake = snake;
+    for(int i = 0; i<SIZE_SNAKE; i++)
+        snake[i] = new Point(4,i,4);
+    on(snake[0]->getX(), snake[0]->getY(), snake[0]->getZ());
 }
 
 /*!
@@ -21,14 +28,45 @@ Ball::~Ball()
 }
 
 /*! 
- * \brief Moves the ball (origin becomes origin + direction)
+ * \brief Moves the ball (snake becomes snake + direction)
  */
 void Ball::action() 
 {
-    origin = origin + direction;
-    bounce();
+    
+    for(int i = 0; i<SIZE_SNAKE-1; i++){
+        snake[i]->setX(snake[i+1]->getX());
+        snake[i]->setY(snake[i+1]->getY());
+        snake[i]->setZ(snake[i+1]->getZ());
+
+    }
+    srand(time(NULL));
+    int changex = ((rand() % 4) == 0)? 1 : 0;
+    int changey = ((rand() % 4) == 1)? 1 : 0;
+    //int changez = ((rand() % 9) == 2)? 1 : 0;
+
+    if (changex && !direction.getX()){
+        int nb_aleax = (rand() % 2)? 1 : -1;
+        direction.setX(nb_aleax);
+        direction.setY(0);
+        direction.setZ(0);
+
+    } else if (changey && !direction.getY()) {
+        int nb_aleay = (rand() % 2)? 1 : -1;
+        direction.setY(nb_aleay);
+        direction.setX(0);
+        direction.setZ(0);
+    } // else if (changez && !direction.getZ()) {
+    //     int nb_aleaz = (rand() % 2)? 1 : -1;
+    //     direction.setZ(nb_aleaz);
+    //     direction.setY(0);
+    //     direction.setX(0);
+    // }
+    snake[SIZE_SNAKE-1]->setX((snake[SIZE_SNAKE-1]->getX() + direction.getX())%9);
+    snake[SIZE_SNAKE-1]->setY((snake[SIZE_SNAKE-1]->getY() + direction.getY())%9);
+    snake[SIZE_SNAKE-1]->setZ((snake[SIZE_SNAKE-1]->getZ() + direction.getZ())%9);
+    //bounce();
+    
     initialisation();
-    std::cout << "Origin : " << origin << std::endl;
 }
 
 /*! 
@@ -37,16 +75,19 @@ void Ball::action()
 void Ball::initialisation() 
 {
     LOG(1, "Ball::initialisation()");
-    for (int x = 0; x < sizeX; x++) {
-        for (int y = 0; y < sizeY; y++) {
-            for (int z = 0; z < sizeZ; z++) {
-                if (x == origin.getX() && y == origin.getY() && z == origin.getZ())
-                    status[x][y][z] = true;
-                else
-                    status[x][y][z] = false;
-            }
-        }
-    }
+    // for (int x = 0; x < sizeX; x++) {
+    //     for (int y = 0; y < sizeY; y++) {
+    //         for (int z = 0; z < sizeZ; z++) {
+    //             if (x == snake.getX() && y == snake.getY() && z == snake.getZ())
+    //                 status[x%9][y%9][z%9] = true;
+    //             else
+    //                 status[x%9][y%9][z%9] = false;
+    //         }
+    //     }
+    // }
+    off();
+    for(int i = 0; i<SIZE_SNAKE; i++)
+        on(snake[i]->getX()%9,snake[i]->getY()%9,snake[i]->getZ()%9);
 }
 
 /*! 
@@ -54,15 +95,24 @@ void Ball::initialisation()
  */
 void Ball::bounce() 
 {
-    LOG(1, "Ball::bounce()");
-    if (origin.getX() == 0 || origin.getX() == 8)
-        direction.setX(-direction.getX());
-    if (origin.getY() == 0 || origin.getY() == 8)
-        direction.setY(-direction.getY());
-    if (origin.getZ() == 0 || origin.getZ() == 8)
-        direction.setZ(-direction.getZ());
-
-    //ShapeToDisplay::print(std::cout);
+    // srand(time(NULL));
+    // int nb_alea = (rand() % 2)? 1 : 0;
+    // LOG(1, "Ball::bounce()");
+    // if (origin.getX() == 0 || origin.getX() == 8){
+    //     direction.setX(-direction.getX());
+    //     // direction.setY( nb_alea);
+    //     // direction.setZ( nb_alea);
+    // }
+    // if (origin.getY() == 0 || origin.getY() == 8){
+    //     direction.setY(-direction.getY());
+    //     // direction.setX( nb_alea);
+    //     // direction.setZ( nb_alea);
+    // }
+    // if (origin.getZ() == 0 || origin.getZ() == 8){
+    //     direction.setZ(-direction.getZ());
+    //     // direction.setY( nb_alea);
+    //     // direction.setX( nb_alea);
+    // }
 }
 
 /*! 

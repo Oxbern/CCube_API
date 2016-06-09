@@ -19,7 +19,7 @@ class Ball : public ShapeToDisplay
 {
     private:
         Point direction; /*!< 3D vectors which shows were the ball goes */
-    
+        Point **snake;
     public:
     /*! 
      * \brief Constructor
