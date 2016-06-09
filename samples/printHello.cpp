@@ -2,14 +2,14 @@
 
 int main(int argc, char** argv)
 {
-    char hello[6] = "hello";
+    std::string hello = "hello";
     
     Controller c;
 
     if (c.connectDevice(1)){
         std::cout << "Connection to device successful" << std::endl;
 
-        if (!c.printMsgScreen(hello, 5)) {
+        if (!c.printMsgScreen(hello, 60)) {
             std::cout << "Unable to update firmware" << std::endl;
             return EXIT_FAILURE;
         }
@@ -26,6 +26,7 @@ int main(int argc, char** argv)
             std::cout << "Unable to disconnect " << std::endl;
         }
     }
+    c.display();
 
     std::cout << "Unable to connect" << std::endl;
 

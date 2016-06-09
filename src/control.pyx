@@ -1,4 +1,6 @@
 from libcpp cimport bool
+from libc.stdint cimport uint8_t
+from libcpp.string cimport string
 from libcpp.list cimport list
 
 cdef extern from "Controller.h" namespace "apicube":
@@ -12,6 +14,14 @@ cdef extern from "Controller.h" namespace "apicube":
         bool disconnectDevice()
         bool pilot()
         bool available()
+        uint8_t getLuminosity();
+        bool setLuminosity(uint8_t v);
+        uint8_t *getDeviceInfo();
+        uint8_t getDeviceID();
+        uint8_t getVersionFirmware();
+        bool printMsgScreen(string message, uint8_t sizeMessage) ;
+        bool reset();
+
 
 cdef class PyController:
     cdef Controller *thisptr
@@ -35,3 +45,17 @@ cdef class PyController:
         return self.thisptr.pilot()
     def available(self):       
         return self.thisptr.available()
+    def getLuminosity(self):       
+        return self.thisptr.getLuminosity()
+    def getDeviceInfo(self):       
+        return self.thisptr.getDeviceInfo()
+    def getDeviceID(self):       
+        return self.thisptr.getDeviceID()
+    def getVersionFirmware(self):       
+        return self.thisptr.getVersionFirmware()
+    def setLuminosity(self, uint8_t v):       
+        return self.thisptr.setLuminosity(v)
+    def printMsgScreen(self, string message, uint8_t sizeMessage):       
+        return self.thisptr.printMsgScreen(message,sizeMessage)
+    def reset(self):       
+        return self.thisptr.reset()

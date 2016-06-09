@@ -1,3 +1,4 @@
+#ifndef _WIN32
 #include "Controller.h"
 #include <ncurses.h>
 #include "Cube.h"
@@ -52,4 +53,10 @@ int main(int argc, char** argv) {
     c.disconnectDevice();
     return 0;
 }
+#else
+#include <iostream>
 
+int main(int argc, char** argv) {
+    std::cout << "No curses for windows, this test can't be compiled for Windows" << std::endl;
+}
+#endif

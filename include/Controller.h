@@ -39,8 +39,10 @@ class Controller
  public:
     bool secure;                /*!< TODO */
     std::list<Device*> devices; /*!< TODO */
-    bool pilot();
 
+#ifndef _WIN32
+    bool pilot();
+#endif
     /*!
      * \brief Constructor
      *
@@ -155,7 +157,7 @@ class Controller
      * \param message the message to print
      * \return bool
      */
-    bool printMsgScreen(char *message, uint8_t sizeMessage) ;
+    bool printMsgScreen(std::string message, uint8_t sizeMessage) ;
 
     /*!
      * \fn bool reset()

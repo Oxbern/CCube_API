@@ -38,8 +38,16 @@ int main ()
         return EXIT_FAILURE;
     }
 
-    fcntl(fd, F_SETFL, 0);
-
+#ifdef _WIN32
+            //To make blocking:
+            unsigned long off = 0;
+            if (ioctlsocket(fd, FIONBIO, &off) != 0)
+                {
+                    /* Handle failure. */
+                }
+#else
+            fcntl(fd, F_SETFL, 0);
+#endif
     /* Define variables used here */
 
     /* /\* Create a device shape *\/ */

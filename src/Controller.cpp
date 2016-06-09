@@ -10,9 +10,11 @@
 #include "ErrorException.h"
 #include "Utils.h"
 #include "Debug.h"
+
+#ifndef _WIN32
 #include <ncurses.h>
 #include "Cube.h"
-
+#endif
 /*!
  * \def MAX_WAIT
  * \brief TODO, explain timeout
@@ -26,7 +28,7 @@
 #define MAX_SENDING_TRIES 5
 
 using namespace apicube;
-
+#ifndef _WIN32
 bool Controller::pilot()
 {
     Point *p = new Point(3,3,3);
@@ -83,6 +85,7 @@ bool Controller::pilot()
     return true;
 
 }
+#endif
 
 /*!
  * \brief Constructor
@@ -420,7 +423,7 @@ bool Controller::updateFirmware(const std::string& myFile)
  * \brief Prints a message on the device's screen
  * \param message the message to print
  */
-bool Controller::printMsgScreen(char *message, uint8_t sizeMessage)
+bool Controller::printMsgScreen(std::string message, uint8_t sizeMessage)
 {
     if (connectedDevice != NULL) {
         //Create a Request
@@ -429,8 +432,7 @@ bool Controller::printMsgScreen(char *message, uint8_t sizeMessage)
                    OPCODE(PRINT_TFT));
 
         //Encode the request with the message
-        pm.encode((uint8_t*) message);
-
+        pm.encode((uint8_t*) message.c_str());
         //Send the message
         if (!pm.send(*this))
             throw ErrorException("Error while sending the message "
