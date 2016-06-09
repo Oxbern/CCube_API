@@ -8,19 +8,19 @@
 bool listAllDevices(Controller &c)
 {
     LOG(1, "listAllDevices(Controller &c)\n");
-
-    std::cout << "--- List of USB Connected Devices : ---" << std::endl;
-    std::list<Device*>::iterator iter ;
-    int i = 1;
-    for(iter = c.getListDevices().begin() ; (iter != c.getListDevices().end()) ;iter++){
-        std::cout << "Device  "  << i << ": Id = " << (*iter)->getID()
-                  << ", Port :" << (*iter)->getPort() <<  "\n";
-        i++;
+    if (c.devices.size() !=0){
+        std::cout << "--- List of USB Connected Devices : ---" << std::endl;
+        std::list<Device*>::iterator iter ;
+        int i = 1;
+        for(iter = c.devices.begin() ; (iter != c.devices.end()) ;iter++){
+            std::cout << "Device  "  << i << ": Id = " << (*iter)->getID()
+                      << ", Port :" << (*iter)->getPort() <<  "\n";
+            i++;
+        }
+    } else {
+        std::cout << "--- No Device connected ---" << std::endl;
     }
-    if (!strcmp((*( c.getListDevices().begin()))->getPort().c_str(),"/dev/stdout") ) {
-        std::cout << "No device connected, connection to stdout\n";
-        return false;
-    }
+    
     return true;
 }
 
@@ -197,7 +197,7 @@ bool isInDico(std::string echo, Dictionnary *dic, int sizeOfDic)
 void listAndGetUSBConnectedDevices(Controller &c)
 {
     LOG(1, "listAndGetUSBConnectedDevices() \n");
-
+    c.devices.clear();
     /* Open the command for reading. */
     FILE *fp = popen("ls /dev/tty*  ", "r");
     if (!fp) {

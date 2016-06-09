@@ -11,6 +11,7 @@ cdef extern from "Controller.h" namespace "apicube":
         bool display()
         bool disconnectDevice()
         bool pilot()
+        bool available()
 
 cdef class PyController:
     cdef Controller *thisptr
@@ -32,3 +33,5 @@ cdef class PyController:
         return self.thisptr.disconnectDevice()
     def pilot(self):
         return self.thisptr.pilot()
+    def available(self):       
+        return self.thisptr.available()

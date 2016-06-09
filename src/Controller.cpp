@@ -127,9 +127,13 @@ bool Controller::connectDevice(int id)
     }
 
     if (chosen != NULL) {
-        if (chosen->connect()){
-            this->connectedDevice = chosen;
-            return true;
+        try {
+            if (chosen->connect()){
+                this->connectedDevice = chosen;
+                return true;
+            }
+        } catch (std::exception e) {
+            std::cout << "Try again, the ressource is probably busy!" << std::endl;
         }
     }
 
@@ -251,7 +255,14 @@ bool Controller::available()
     //     throw ErrorException("Error while checking the "
     //                          "availability of the connected device");
 
+    #ifdef _WIN32
+    Device *d = new Device("COM7",1);
+    devices.push_back(d);
+#else
+    listAndGetUSBConnectedDevices(*this);
+#endif
     listAllDevices(*this);
+
     return true;
 }
 

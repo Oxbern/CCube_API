@@ -8,8 +8,9 @@ int main(int argc, char** argv) {
     Controller c;
     c.connectDevice(1);
     
-    c.pilot();
-        
+    //c.pilot();
+    c.available();
+    
     c.disconnectDevice();
     return 0;
 }
