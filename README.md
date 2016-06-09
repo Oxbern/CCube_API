@@ -101,8 +101,20 @@ cmake .. && make
     ```
 
   ***Note 2***
-    If you want to be sure that every message you send is well received you can use the «secure» flag when calling connect method.  
+    If you want to be sure that every message you send is well received you can use the ```C_SECURE``` flag when calling ```connect()``` method. 
+  
+    ```
+    Controller c;
     
+    // Then you can connect to any device shown 
+    c.connectDevice(1, C_SECURE); 
+    ```
+  
+  In this case, the device will "answer" and tell the controller if a part of the message has not been received properly and so this particular part will be sent again.
+  
+  Otherwise, you will have a visual which will represent a cross, meaning that the message has not been received properly and so you will need to send it again.
+  
+
 4. Now that you are connected to your device, you still want to switch on the led (4,4,4). To do so, simply add to your code the function `on($x,$y,$z)` of Controller's class !
   ```
 ...
