@@ -114,21 +114,18 @@ bool Request::send(Controller &c)
             // Send the message to the device
             if (!(c.getConnectedDevice()->writeToFileDescriptor(bufferArray,
                                                                 sizeBuffer))) {
-                c.disconnectDevice();                
+                c.disconnectDevice();
                 throw ErrorException("Error while sending a message : "
                                      "Number of tries to send "
                                      "the message exceeded");
             } /* Buffer sent */
-            LOG(5, "Buffer sent");
 
             if (!c.secure)
                 break;
 
-            if (select(c.getConnectedDevice()->getFile() + 1,
-                       &c.getConnectedDevice()->set,
-                       NULL, NULL,
-                       &c.getConnectedDevice()->timeout) > 0)
-                read(c.getConnectedDevice()->getFile(), &ackBuffer[0], SIZE_ACK);
+            read(c.getConnectedDevice()->getFile(), &ackBuffer[0], SIZE_ACK);
+
+            LOG(5, "Buffer sent");
 
             if (memcmp(ackBuffer, ackRef, SIZE_ACK - 2))
                 ++nbTry;

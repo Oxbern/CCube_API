@@ -59,11 +59,8 @@ bool Question::send(Controller &c, uint8_t *result)
                                  "Number of tries to send "
                                  "the message exceeded");
         } /* Buffer sent */
-        if (select(c.getConnectedDevice()->getFile() + 1,
-                   &c.getConnectedDevice()->set,
-                   NULL, NULL,
-                   &c.getConnectedDevice()->timeout) > 0)
-            read(c.getConnectedDevice()->getFile(), ans.received, SIZE_ANSWER);
+
+        read(c.getConnectedDevice()->getFile(), ans.received, SIZE_ANSWER);
 
         LOG(5, "Buffer sent");
 
