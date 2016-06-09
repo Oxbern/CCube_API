@@ -3,8 +3,8 @@
 
 /*!
  * \file DeviceShape.h
- * \brief TODO
- * \version 0.1
+ * \brief Represents a cube and its attributes
+ * \version 1.0
  */
 
 #include <cstdint>

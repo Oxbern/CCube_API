@@ -33,6 +33,7 @@ Question::~Question()
 /*!
  * \brief Sends a message to a device
  * \param c controller
+ * \param result the answer to our question
  * \return bool
  */
 bool Question::send(Controller &c, uint8_t *result)

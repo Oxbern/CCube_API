@@ -1,5 +1,5 @@
 /**
-* @file condition_variable.h
+* @file mingw.condition_variable.h
 * @brief std::condition_variable implementation for MinGW
 *
 * (c) 2013-2016 by Mega Limited, Auckland, New Zealand

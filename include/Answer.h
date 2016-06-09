@@ -4,7 +4,7 @@
 /*!
  * \file Answer.h
  * \brief Messages of type answer 
- * \version 0.5
+ * \version 1.0
  */
 #include <cstdint>
 
@@ -17,7 +17,7 @@
 class Answer : public IncomingMessage
 {
  public :
-    uint8_t *received;
+    uint8_t *received; /*!< the buffer received raw */
     
     /*!
      * \brief Constructor
@@ -25,7 +25,6 @@ class Answer : public IncomingMessage
      * Creates an answer
      *
      * \param id device's ID
-     * \param sizeData
      * \param opCode
      */   
     Answer(uint8_t id, uint8_t opCode);
@@ -37,7 +36,7 @@ class Answer : public IncomingMessage
     ~Answer();
 
     /*!
-     * \brief Verifies
+     * \brief Verifies if it is a correct answer
      * \return bool
      */
     bool verify();

@@ -3,8 +3,8 @@
 
 /*!
  * \file Device.h
- * \brief TODO
- * \version 0.1
+ * \brief Represents a device
+ * \version 1.0
  */
 
 #include <iostream>
@@ -233,6 +233,7 @@ class Device
     /*!
      * \fn void setLuminosity(uint8_t l)
      * \brief sets the luminosity
+     * \param l the value of the luminosity
      */
     void setLuminosity(uint8_t l);
 
