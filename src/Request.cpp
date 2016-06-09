@@ -115,10 +115,10 @@ bool Request::send(Controller &c)
             // Send the message to the device
             if (!(c.getConnectedDevice()->writeToFileDescriptor(bufferArray,
                                                                 sizeBuffer))) {
+                c.disconnectDevice();                
                 throw ErrorException("Error while sending a message : "
                                      "Number of tries to send "
                                      "the message exceeded");
-                c.disconnectDevice();
             } /* Buffer sent */
             LOG(5, "Buffer sent");
 
@@ -138,10 +138,10 @@ bool Request::send(Controller &c)
         if (nbTry == MAX_TRY) {
             LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
+            c.disconnectDevice();
             throw ErrorException("Error while receiving a ack: "
                                  "Number of tries to receive "
                                  "the ack exceeded");
-            c.disconnectDevice();
         }
 
         delete [] bufferArray;

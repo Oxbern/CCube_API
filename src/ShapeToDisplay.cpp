@@ -87,9 +87,9 @@ void ShapeToDisplay::print(std::ostream &str)
 
 /*!
  * \brief Overloads of the operator <<
- * \param out  stream on which we write
- * \param std  ShapeToDisplay we want to display
- * \return std::ostream Out
+ * @param Out  stream on which we write
+ * @param std  ShapeToDisplay we want to display
+ * \return std::ostream Out stream we wrote on
  */
 std::ostream& operator<<(std::ostream &out, ShapeToDisplay &std) 
 {
@@ -143,9 +143,9 @@ bool *** ShapeToDisplay::getStatus()
 
 /*! 
  * \brief Changes the status of the cell of the array at true
- * \param x
- * \param y
- * \param z
+ * \param x first coordinate of the cell
+ * \param y second coordinate of the cell
+ * \param z third coordinate of the cell
  * \return true if the parameters are in the 3D array
  * false otherwise
  */

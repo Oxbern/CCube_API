@@ -40,7 +40,7 @@ Device::Device(std::string port, int id)
     this->sizeZ = 9;
 
     //Luminosity initialization
-    this->luminosity = -1.0;
+    this->luminosity = 0;
 
     //Not available by default
     this->isAvailable = false;
@@ -167,7 +167,10 @@ bool Device::writeToFileDescriptor(uint8_t *data, int dataSize)
  * to process them later
  *
  * \param buffer  array where the data are stored
- * \param sizeBuffer  size of the data to collect
+ * \param sizeBuffer  size of the data to collect 
+ * 
+ * \return true if the reading went well
+ * false otherwise
  */
 bool Device::readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer)
 {
@@ -310,4 +313,43 @@ int Device::getFile()
 bool Device::setLedStatus(ShapeToDisplay &s)
 {
     return currentConfig->copyLedStatus(s);
+}
+
+/*!
+ * \fn bool setLuminosity(uint8_t l)
+ * \brief sets the luminosity
+ */
+void Device::setLuminosity(uint8_t l)
+{
+    this->luminosity = l;
+}
+
+/*!
+ * \brief sets the dimensions
+ * \param dim an array of sizex, sizey, sizez
+ */
+void Device::setDimension(uint8_t *dim)
+{
+    this->sizeX = (int)dim[0];
+    this->sizeY = (int)dim[1];
+    this->sizeZ = (int)dim[2];
+}
+
+/*!
+ * \fn void setLuminosity(uint8_t v)
+ * \brief sets the firmware's version
+ * \param v the new version
+ */
+void Device::setVersionFirmware(uint8_t v)
+{
+    this->firmwareVersion = v;
+}
+
+/*!
+ * \brief sets the ID
+ * \param id the device's ID
+ */
+void Device::setID(uint8_t id)
+{
+    this->id = id;
 }

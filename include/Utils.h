@@ -26,22 +26,26 @@
 
 /*!
  * \def SIZE_ACK
- * \brief the entire size of an AckMessage buffer
+ * \brief the entire size of an Ack buffer
  */
 #define SIZE_ACK 10
 
 /*!
  * \def SIZE_BUFFER
- * \brief the entire size of a DataMessage buffer
+ * \brief the maximum size of a buffer
  */
 #define SIZE_BUFFER 64
 
 /*!
  * \def SIZE_QUESTION
- * \brief the entire size of a RequestMessage buffer
+ * \brief the entire size of a question buffer
  */
 #define SIZE_QUESTION 7
 
+/*!
+ * \def SIZE_ANSWER
+ * \brief the entire size of a Answer buffer
+ */
 #define SIZE_ANSWER 10
 
 /*!
@@ -88,15 +92,22 @@
 
 /*!
  * \def SIZE_INDEX
- * \brief the sizeLeft's index
+ * \brief the beginning of the size left's index
  */
 #define SIZE_INDEX 3
 
 /*!
  * \def DATA_INDEX
- * \brief the begining of data's index
+ * \brief the beginning of data's index
  */
 #define DATA_INDEX 5
+
+/*!
+ * \def C_SECURE
+ * \brief ACK verification during communication
+ */
+const bool C_SECURE = 1;
+
 
 
 /*!
@@ -116,7 +127,7 @@ enum OPCODE {
     SET_LEDSTATS = 0x21,
     SET_LUMINOSITY = 0x22,
     UPDATE_FIRMWARE = 0x24,
-    
+
     // ACKMESSAGE TYPE
     ACK_OK = 0x01,
     ACK_ERR = 0x02,
@@ -129,7 +140,7 @@ enum OPCODE {
  * \brief Converts an uint16 into two uint8s
  * \param val to convert
  * \param tab array : the converted values destination
- */ 
+ */
 void convert16to8(uint16_t val, uint8_t tab[2]);
 
 /*!
@@ -146,7 +157,7 @@ uint16_t convertTwo8to16(uint8_t highValue, uint8_t lowValue);
  * \brief Creates an array with the pack ID
  * \param sizeLeftPack
  * \param opCodePack
- * \param tab array 
+ * \param tab array
  */
 void packID(uint16_t sizeLeftPack, uint8_t opCodePack, uint8_t tab[3]);
 

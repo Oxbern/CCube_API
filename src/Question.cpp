@@ -10,15 +10,15 @@
  * \brief Constructor
  *
  * Creates a question which is represented by one single SIZE_QUESTION sized buffer *
- * 
+ *
  * \param id device's ID
  * \param opCode
- */       
+ */
 Question::Question(uint8_t id, uint8_t opCode) :
     OutgoingMessage(id, SIZE_QUESTION, SIZE_QUESTION - DATA_INDEX - SIZE_CRC, opCode)
 {
     LOG(1, "Question(idDevice, opCode)");
-    this->listBuffer[0].crcEncoding();    
+    this->listBuffer[0].crcEncoding();
 }
 
 /*!
@@ -47,46 +47,46 @@ bool Question::send(Controller &c, uint8_t *result)
     listBuffer[0].toArray(bufferArray);
 
     int nbTry = 0;
+    Answer ans(c.getConnectedDevice()->getID(), opCode);
 
     do {
         // Send the message to the device
         if (!(c.getConnectedDevice()->writeToFileDescriptor(bufferArray,
                                                             SIZE_QUESTION))) {
+            c.disconnectDevice();
             throw ErrorException("Error while sending a message : "
                                  "Number of tries to send "
                                  "the message exceeded");
-            c.disconnectDevice();
         } /* Buffer sent */
-        LOG(5, "Buffer sent");
-        printBuffer("sent : ", bufferArray, SIZE_QUESTION);
-            
-        Answer ans(c.getConnectedDevice()->getID(), opCode);
+
         read(c.getConnectedDevice()->getFile(), ans.received, SIZE_ANSWER);
 
-        printBuffer("received : ", ans.received, SIZE_ANSWER);
-        
-        if (ans.verify() || 1) {
-            result = new uint8_t[ans.received[SIZE_INDEX +1]];
-            memcpy(result, &ans.received[DATA_INDEX], ans.received[SIZE_INDEX+1]);
+        LOG(5, "Buffer sent");
+
+        if (ans.verify()) {
+            memcpy(&result[0], &ans.received[DATA_INDEX],
+                   ans.received[SIZE_INDEX + 1]);
             break;
         } else {
             ++nbTry;
         }
-                            
+
     } while (nbTry < MAX_TRY);
 
     //If number of tries exceeded
     if (nbTry == MAX_TRY) {
         LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
+        c.disconnectDevice();
         throw ErrorException("Error while receiving the answer : "
                              "Number of tries to receive "
                              "the answer exceeded");
     }
 
-    return true;
-    
+
     delete [] bufferArray;
-    
+
     LOG(1, "[SEND] Message sent");
+
+    return true;
 }

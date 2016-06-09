@@ -50,7 +50,8 @@ class Buffer
 
     /*!
      * \brief Constructor by copy
-     *
+     * 
+     * \param B
      */
     Buffer(const Buffer& B);
 
@@ -63,8 +64,6 @@ class Buffer
     /*!
      * \fn void toArray(uint8_t* buffLinear)
      * \brief Converts a buffer into an array
-     *
-     *
      *
      * \param buffLinear the filled array
      */
@@ -225,7 +224,7 @@ class Buffer
      * \fn bool operator==(Buffer b)
      * \brief Comparaison operator == between two buffers
      *
-     *
+     * \param b the buffer to compare with
      *
      * \return the result of the comparaison
      */

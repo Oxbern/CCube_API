@@ -42,8 +42,8 @@ class Device
     struct timeval timeout; /*!< time waited before exiting read function */
     fd_set set; /*!<  needed for the timeout */
     std::string port; /*!< link to the file open by the file descriptor  */
-    std::string firmwareVersion; /*!< not implemented yet */
-    float luminosity; /*!< luminosity of the LEDs (not implemented yet) */
+    uint8_t firmwareVersion; /*!< not implemented yet */
+    uint8_t luminosity; /*!< luminosity of the LEDs (not implemented yet) */
     int sizeX; /*!< First dimension of the device */
     int sizeY; /*!< Second dimension of the device */
     int sizeZ; /*!< Third dimension of the device */
@@ -92,9 +92,9 @@ class Device
      * \todo not yet implemented, is it usefull ?
      * \fn bool askForDisplaySize()
      *
-     * \brief not implemented yet
+     * \brief not implemented yet todo
      *
-     * \return
+     * \return ???? todo
      */
     bool askForDisplaySize();
 
@@ -117,6 +117,9 @@ class Device
      *
      * \param buffer  array where the data are stored
      * \param sizeBuffer  size of the data to collect
+     * 
+     * \return true if the reading went well
+     * false otherwise
      */
     bool readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer);
 
@@ -215,20 +218,6 @@ class Device
     int getFile();
 
     /*!
-     * \fn bool handleAck(OutgoingMessage *mess, Ack ack, int i)
-     *
-     * \brief Handles the acknowledge of the message
-     *
-     * \param mess  needed to know which message has to be send back
-     * \param ack  to verify if the message was received well
-     * \param i TODO
-     *
-     * \return true if the ack is an ACK_OK
-     * false otherwise
-     */
-    //    bool handleAck(OutgoingMessage *mess, Ack &ack, int i);
-
-    /*!
      * \fn bool setLedStatus(ShapeToDisplay s)
      *
      * \brief Sets the 3D array of the currentDevice to the 3D array
@@ -238,6 +227,35 @@ class Device
      * false otherwise (for example dimensions did not match)
      */
     bool setLedStatus(ShapeToDisplay &s);
+
+    /*!
+     * \fn void setLuminosity(uint8_t l)
+     * \brief sets the luminosity
+     */
+    void setLuminosity(uint8_t l);
+
+    /*!
+     * \fn void setDimension(uint8_t* dim)
+     * \brief sets the dimensions
+     * \param dim an array of sizex, sizey, sizez
+     */
+    void setDimension(uint8_t *dim);
+
+    /*!
+     * \fn void setVersionFirmware(uint8_t v)
+     * \brief sets the firmware's version
+     * \param v the new version
+     */
+    void setVersionFirmware(uint8_t v);
+
+    /*!
+     * \fn void setID(uint8_t id);
+     * \brief sets the ID
+     * \param id the device's ID
+     */
+    void setID(uint8_t id);
+    
+    
 };
 
 #endif //CUBEAPI_DEVICE_H

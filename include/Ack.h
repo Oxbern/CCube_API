@@ -46,19 +46,11 @@ class Ack : public IncomingMessage
      */
     void encodeAck(uint16_t sizeLeftPack, uint8_t opCodePack);
 
-    /*!
-     * \todo is this method usefull ? 
-     * \fn void handleAck(int fd, Message &msg)
-     * \brief TODO
-     * \param fd
-     * \param msg
-     */
-    //    void handleAck(int fd, OutgoingMessage &msg);
 
     /*!
      * \todo is this method usefull ?
      * \fn void setAck(int fd)
-     * \brief TODO
+     * \brief set an Ack with fd
      * \param fd
      */
     void setAck(int fd);

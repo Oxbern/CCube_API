@@ -6,7 +6,7 @@
 #include "Controller.h"
 
 /**
- * Simple test to switch on some LEDs using methods of the API
+ * Simple test to get the version of the firmware
  */
 int main(int argc, char *argv[])
 {
@@ -15,11 +15,9 @@ int main(int argc, char *argv[])
     if (c.connectDevice(1)){
         std::cout << "Connection to device successful" << std::endl;
 
-        uint8_t *info = c.getDeviceInfo();
+        uint8_t version = c.getVersionFirmware();
 
-        std::cout << "size x : " << (int)info[0] << std::endl;
-        std::cout << "size y : " << (int)info[1] << std::endl;
-        std::cout << "size z : " << (int)info[2] << std::endl;        
+        std::cout << "version : " << (int)version << std::endl;        
         
         
         if (c.disconnectDevice()) {
@@ -30,7 +28,6 @@ int main(int argc, char *argv[])
             std::cout << "Unable to disconnect " << std::endl;
         }
 
-        delete [] info;
     }
 
     std::cout << "Unable to connect" << std::endl;

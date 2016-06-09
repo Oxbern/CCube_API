@@ -101,8 +101,20 @@ cmake .. && make
     ```
 
   ***Note 2***
-    If you want to be sure that every message you send is well received you can use the «secure» flag when calling connect method.  
+    If you want to be sure that every message you send is well received you can use the ```C_SECURE``` flag when calling ```connect()``` method. 
+  
+    ```
+    Controller c;
     
+    // Then you can connect to any device shown 
+    c.connectDevice(1, C_SECURE); 
+    ```
+  
+  In this case, the device will "answer" and tell the controller if a part of the message has not been received properly and so this particular part will be sent again.
+  
+  Otherwise, you will have a visual which will represent a cross, meaning that the message has not been received properly and so you will need to send it again.
+  
+
 4. Now that you are connected to your device, you still want to switch on the led (4,4,4). To do so, simply add to your code the function `on($x,$y,$z)` of Controller's class !
   ```
 ...
@@ -173,20 +185,20 @@ True
 
 Function | Description
 --- | ---
-`available();` | Returns true if the cube is available
-`connect();` | Establishes the serial connection
-`disconnect();` | Closes the serial connection
+`available()` | Lists all the devices available
+`connectDevice(id)` | Establishes the serial connection to the device with this `id`
+`disconnectDevice();` | Closes the serial connection
+`reset()` | Resets the connection
 
 
 ### Control functions
 
 Function | Description
 --- | ---
-`on(x,y,z);` | Turns on the LED(x,y,z)
-`off();` | Turns off the entire cube
-`off(x,y,z);` | Turns off the LED(x,y,z)
-`toggle(x,y,z);` | Changes the state of the LED(x,y,z)
-`setLuminosity(value);` | Sets the luminosity to `value`
+`setLuminosity(value)` | Sets the luminosity of the LEDs to `value`
+`display()` | Displays the status of the LEDs
+`updateFirmware(file)` | Updates the firmware with a `.bin` file
+`printMsgScreen(message)` | Prints a message on the screen
 
 
 ### Information functions
@@ -196,5 +208,17 @@ Function | Description
 `getScreenSize()` | Gets the screen's size
 `getVersion()` | Gets the firmware's version
 `getLuminosity()` | Gets the luminosity of the LEDs
+`getDeviceInfo()` | Gets the size x, size y and size z of the cube
+`getDeviceID()` | Gets the cube's ID
+`getVersionFirmware()` | Gets the firmware's version
 
+
+### Device specific methods
+
+Function | Description
+--- | ---
+`on(x,y,z);` | Turns on the LED(x,y,z)
+`off();` | Turns off the entire cube
+`off(x,y,z);` | Turns off the LED(x,y,z)
+`toggle(x,y,z);` | Changes the state of the LED(x,y,z)
 
