@@ -3,7 +3,7 @@
 #include <iostream>
 #include <assert.h>
 
-#define DEBUG 1
+#define DEBUG 0
 
 int main(int argc, char *argv[])
 {
