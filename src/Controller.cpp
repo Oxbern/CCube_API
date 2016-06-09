@@ -150,7 +150,7 @@ bool Controller::connectDevice(int id)
                 return true;
             }
         } catch (std::exception e) {
-            std::cout << "Try again, the ressource is probably busy!" << std::endl;
+            std::cout << "Try again, the device is probably busy!" << std::endl;
         }
     }
 
@@ -310,7 +310,7 @@ uint8_t *Controller::getDeviceInfo()
 
         //Send the message
         if (!question.send(*this, retVal))
-            throw ErrorException("Error while asking device info "
+            throw ErrorException("Error while asking info "
                                          "of the connected device");
 
         connectedDevice->setDimension(retVal);
@@ -460,7 +460,7 @@ bool Controller::reset()
 
         //Send the message
         if (!pm.send(*this))
-            throw ErrorException("Error while wanting to reset the connection"
+            throw ErrorException("Error while wanting to reset the connection "
                                  "to the connected device");
         return true;
     } else
