@@ -91,11 +91,3 @@ c.displayDevice();
   ```
 Compile and run, the led is now on ! 
 
-6. **EXTRA** : For those who already know on which port they want to connect their Controller, you can instanciate a Device with the port name and set its ID instead of calling `connectDevice`
-  ```
-Controller c;
-int MyID = 1;                  // Replace 1 by your wanted ID
-Device d("/dev/ttyACM0",MyID); // If you want to do it properly, get the list of connected Devices and add 1 
-                               // something like : MyId = c.getListDevices().size + 1;
-c.connectDevice(&d);           // connectDevice(Device* d) takes a pointer in argument, git it the adress of d
-  ```

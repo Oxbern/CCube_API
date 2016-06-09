@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     
     assert(arrayEqual(c.getStatus(), ds.getLedStatus(), X, Y, Z));
     
-    std::cout << "Test Cube : PASSED" << std::endl;
+    std::cout << "Test : PASSED" << std::endl;
     
-    return 0;
+    return EXIT_SUCCESS;
 }

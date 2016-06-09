@@ -6,7 +6,7 @@
 
 ## Introduction
 CCube_API is the API used to communicate with Cubicle, a led cube, via USB Serial Communication.
-In this README, you'll find specifications and our general class hierarchy.
+In this README, you'll find specifications and our general class hierarchy, a Hello World Tutorial to switch on a led with our API, how to compile for a Windows system, and use our amazing python binding !
 
 ## Reference
 
@@ -89,10 +89,25 @@ You are connected to /dev/ttyACM0
     
     We provide a function you can call from cmdline called `listCOMPorts.exe`, you simply have to find the number of the COM port of your STM Device and your path will be somtehing like `COM7`.
     
+    ***WARNING*** Under Windows, the Controller is not yet fully operational ! ***WARNING***
+    
+    Instantiating a Controller object is not sufficient to initialise its list of devices. You actually need to instanciate a Device object and add it to the list of devices of your controller object !
+    ```
+    Controller c;
+    Device *d = new Device("COM7",42);
+    c.devices.push_back(d);
+    
+    // Then you can connect to this device
+    c.connectDevice(42); // Or c.connectDevice("COM7");
+    ```
+    
   *** Linux ***
     
-    We provide a function you can call from cmdline called `listTTYPorts`, you simply have to find the number of the tty port of your STM Device and your path will be somtehing like `/dev/ttyACM0`.
+    Under Linux, you have the available function you can call from a controller object.
 
+  ***Note 2***
+    You can also connect secure TODO
+    
 4. Now that you are connected to your device, you still want to switch on the led (4,4,4). To do so, simply add to your code the function `on($x,$y,$z)` of Controller's class !
   ```
 ...
@@ -112,13 +127,51 @@ c.displayDevice();
   ```
 Compile and run, the led is now on ! 
 
-6. **EXTRA** : For those who already know on which port they want to connect their Controller, you can instanciate a Device with the port name and set its ID instead of calling `connectDevice`
+## Windows Cross-Compilation
+
+  We chose cross-compilation under linux with the cross-compilator mingw32 to compile our code for a Windows system. 
+  To achieve windows compilation, delete the build folder in the main folder : `rm -rf build/`, re-create a build folder with `mkdir build` and then call cmake by specifying that you want to compile for a windows system : `cmake DWINDOWS_COMPILE:BOOL=1 .. && make`.
+  In the exec directory, you will then find all the executable marked with `Executable.exe`, running under Windows !
+
+## Python Binding
+
+  In the folder `script`, we have provided a script named `bindindPython`. If you execute this script via `./bindingPython` you should enter a Python session in which you could directly call the API's functions !
+  ***Note*** We use python3.5 to execute python binding.
+  
+  ***Example***
+  Go to the script folder `cd script/` and execute `./bindingPython`. You should see something like :
+  
   ```
-Controller c;
-int MyID = 1;                  // Replace 1 by your wanted ID
-Device d("/dev/ttyACM0",MyID); // If you want to do it properly, get the list of connected Devices and add 1 
-                               // something like : MyId = c.getListDevices().size + 1;
-c.connectDevice(&d);           // connectDevice(Device* d) takes a pointer in argument, git it the adress of d
+  Python 3.5.0+ (default, XXXX XX XXXX, XX:XX:XX) 
+[GCC 5.2.1 20151010] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+  ```
+  
+  Import the API's library by taping : `import control`.
+  To instanciate a Controller, just enter `c = control.PyController()`.
+  Now you can call any basic function of the API (on, off, toggle, connectDevice, disconnetDevice, available,...)
+  Here's an idea of what you should get :
+  
+  ```
+  Python 3.5.0+ (default, XXXX XX XXXX, XX:XX:XX ) 
+[GCC 5.2.1 20151010] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import control
+>>> c = control.PyController()
+/dev/ttyACM0
+>>> c.available()
+/dev/ttyACM0
+--- List of USB Connected Devices : ---
+Device  1: Id = 1, Port :/dev/ttyACM0
+True
+>>> c.connectDevice(1)
+True
+>>> c.on(4,4,4)
+True
+>>> c.display()
+True
+
   ```
 
 ### Communication functions
