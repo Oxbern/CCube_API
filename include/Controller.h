@@ -95,7 +95,7 @@ class Controller
 
     /*!
      * \fn bool display()
-     * \brief TODO
+     * \brief Displays the status of the LEDs on the device
      * \return bool
      */
     bool display();

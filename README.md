@@ -185,20 +185,19 @@ True
 
 Function | Description
 --- | ---
-`available();` | Returns true if the cube is available
-`connect();` | Establishes the serial connection
-`disconnect();` | Closes the serial connection
+`available()` | Lists all the devices available
+`connectDevice(id)` | Establishes the serial connection to the device with this `id`
+`disconnectDevice();` | Closes the serial connection
 
 
 ### Control functions
 
 Function | Description
 --- | ---
-`on(x,y,z);` | Turns on the LED(x,y,z)
-`off();` | Turns off the entire cube
-`off(x,y,z);` | Turns off the LED(x,y,z)
-`toggle(x,y,z);` | Changes the state of the LED(x,y,z)
-`setLuminosity(value);` | Sets the luminosity to `value`
+`setLuminosity(value)` | Sets the luminosity of the LEDs to `value`
+`display()` | Displays the status of the LEDs
+`updateFirmware(file)` | Updates the firmware with a `.bin` file
+`printMsgScreen(message)` | Prints a message on the screen
 
 
 ### Information functions
@@ -208,5 +207,16 @@ Function | Description
 `getScreenSize()` | Gets the screen's size
 `getVersion()` | Gets the firmware's version
 `getLuminosity()` | Gets the luminosity of the LEDs
+`getDeviceInfo()` | Gets the size x, size y and size z of the cube
+`getDeviceID()` | Gets the cube's ID
+`getVersionFirmware()` | Gets the firmware's version
 
+### Device specific methods
+
+Function | Description
+--- | ---
+`on(x,y,z);` | Turns on the LED(x,y,z)
+`off();` | Turns off the entire cube
+`off(x,y,z);` | Turns off the LED(x,y,z)
+`toggle(x,y,z);` | Changes the state of the LED(x,y,z)
 
