@@ -345,7 +345,6 @@ uint8_t Controller::getVersionFirmware()
     uint8_t *version = new uint8_t[1]();
     
     if (this->connectedDevice != NULL) {
-        // Create a request message, with its crc
         Question vf(connectedDevice->getID(),
                           FIRMWARE_VERSION);
 

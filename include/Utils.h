@@ -26,22 +26,26 @@
 
 /*!
  * \def SIZE_ACK
- * \brief the entire size of an AckMessage buffer
+ * \brief the entire size of an Ack buffer
  */
 #define SIZE_ACK 10
 
 /*!
  * \def SIZE_BUFFER
- * \brief the entire size of a DataMessage buffer
+ * \brief the maximum size of a buffer
  */
 #define SIZE_BUFFER 64
 
 /*!
  * \def SIZE_QUESTION
- * \brief the entire size of a RequestMessage buffer
+ * \brief the entire size of a question buffer
  */
 #define SIZE_QUESTION 7
 
+/*!
+ * \def SIZE_ANSWER
+ * \brief the entire size of a Answer buffer
+ */
 #define SIZE_ANSWER 10
 
 /*!
@@ -88,13 +92,13 @@
 
 /*!
  * \def SIZE_INDEX
- * \brief the sizeLeft's index
+ * \brief the beginning of the size left's index
  */
 #define SIZE_INDEX 3
 
 /*!
  * \def DATA_INDEX
- * \brief the begining of data's index
+ * \brief the beginning of data's index
  */
 #define DATA_INDEX 5
 
@@ -115,7 +119,7 @@ enum OPCODE {
     PRINT_TFT = 0x0A, // printMessageScreen
     SET_LEDSTATS = 0x21,
     SET_LUMINOSITY = 0x22,
-    UPDATE_FIRMWARE = 0x24,
+    UPDATE_FIRMWARE = 0x24,    
     
     // ACKMESSAGE TYPE
     ACK_OK = 0x01,
