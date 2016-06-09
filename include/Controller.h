@@ -155,7 +155,14 @@ class Controller
      * \param message the message to print
      * \return bool
      */
-    bool printMsgScreen(char *message) ;
+    bool printMsgScreen(char *message, uint8_t sizeMessage) ;
+
+    /*!
+     * \fn bool reset()
+     * \brief Resets the connection
+     * \return bool
+     */
+    bool reset();
     
     /*!
      * \fn bool connectDevice(int id)
@@ -165,8 +172,22 @@ class Controller
      */
     bool connectDevice(int id);
 
+    /*!
+     * \fn bool connectDevice(int id, bool secure)
+     * \brief Connects the controller to a device with its ID
+     * \param id ID of the device to connect
+     * \param secure 
+     * \return
+     */
     bool connectDevice(int id, bool secure);
 
+    /*!
+     * \fn bool connectDevice(char *port, bool secure = false)
+     * \brief Connects the controller to a device with its ID
+     * \param id ID of the device to connect
+     * \param secure default value to false
+     * \return
+     */    
     bool connectDevice(char *port, bool secure = false);
 
     /*!

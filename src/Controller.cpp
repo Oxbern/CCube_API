@@ -415,16 +415,16 @@ bool Controller::updateFirmware(const std::string& myFile)
  * \brief Prints a message on the device's screen
  * \param message the message to print
  */
-bool Controller::printMsgScreen(char *message)
+bool Controller::printMsgScreen(char *message, uint8_t sizeMessage)
 {
     if (connectedDevice != NULL) {
         //Create a Request
         Request pm(connectedDevice->getID(),
-                   connectedDevice->getCurrentConfig()->getSizeInBytes(),
+                   sizeMessage,
                    OPCODE(PRINT_TFT));
 
         //Encode the request with the message
-        pm.encode((uint8_t*)message);
+        pm.encode((uint8_t*) message);
 
         //Send the message
         if (!pm.send(*this))
@@ -435,6 +435,26 @@ bool Controller::printMsgScreen(char *message)
         throw ErrorException("No device connected");    
 }
 
+/*!
+ * \brief Resets the connection
+ * \return bool
+ */
+bool Controller::reset()
+{
+    if (connectedDevice != NULL) {
+        //Create a Request
+        Request pm(connectedDevice->getID(),
+                   0,
+                   OPCODE(RESET));
+
+        //Send the message
+        if (!pm.send(*this))
+            throw ErrorException("Error while wanting to reset the connection"
+                                 "to the connected device");
+        return true;
+    } else
+        throw ErrorException("No device connected");    
+}
 /*!
  * \brief Sends the new status of all the LEDs 
  * \return bool

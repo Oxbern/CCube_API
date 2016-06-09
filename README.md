@@ -188,6 +188,7 @@ Function | Description
 `available()` | Lists all the devices available
 `connectDevice(id)` | Establishes the serial connection to the device with this `id`
 `disconnectDevice();` | Closes the serial connection
+`reset()` | Resets the connection
 
 
 ### Control functions
@@ -210,6 +211,7 @@ Function | Description
 `getDeviceInfo()` | Gets the size x, size y and size z of the cube
 `getDeviceID()` | Gets the cube's ID
 `getVersionFirmware()` | Gets the firmware's version
+
 
 ### Device specific methods
 
