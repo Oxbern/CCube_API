@@ -186,10 +186,10 @@ bool Controller::connectDevice(int id, bool secure)
 
 /*!
  * \brief Connects the controller to a device with its ID
- * \param id ID of the device to connect
- * \param secure Flag to set ACK security
- * \return
- */
+ * \param port the port of the device to connect
+ * \param secure default value to false
+ * \return true if the connection went well
+ */    
 bool Controller::connectDevice(char *port, bool secure)
 {
     LOG(1, "connectDevice(char *port) \n");

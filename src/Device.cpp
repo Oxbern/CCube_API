@@ -53,6 +53,9 @@ Device::Device(std::string port, int id)
 
     //File descriptor (reading/writing)
     this->fd = -1;
+
+    /* Clear set */
+    FD_ZERO(&set);
 }
 
 /*!
@@ -316,8 +319,8 @@ bool Device::setLedStatus(ShapeToDisplay &s)
 }
 
 /*!
- * \fn bool setLuminosity(uint8_t l)
  * \brief sets the luminosity
+ * \param l the value of the luminosity
  */
 void Device::setLuminosity(uint8_t l)
 {
@@ -336,7 +339,6 @@ void Device::setDimension(uint8_t *dim)
 }
 
 /*!
- * \fn void setLuminosity(uint8_t v)
  * \brief sets the firmware's version
  * \param v the new version
  */

@@ -9,7 +9,6 @@
  *
  * \param id device's ID
  * \param opCode
- * \param size
  */
 Answer::Answer(uint8_t id, uint8_t opCode) :
     IncomingMessage(id, SIZE_ANSWER, opCode)
@@ -30,8 +29,7 @@ Answer::~Answer()
 
 
 /*!
- * \todo check crc
- * \brief Verifies
+ * \brief Verifies if it is a correct answer
  * \return bool
  */
 bool Answer::verify()

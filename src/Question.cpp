@@ -33,6 +33,7 @@ Question::~Question()
 /*!
  * \brief Sends a message to a device
  * \param c controller
+ * \param result the answer to our question
  * \return bool
  */
 bool Question::send(Controller &c, uint8_t *result)
@@ -58,8 +59,11 @@ bool Question::send(Controller &c, uint8_t *result)
                                  "Number of tries to send "
                                  "the message exceeded");
         } /* Buffer sent */
-
-        read(c.getConnectedDevice()->getFile(), ans.received, SIZE_ANSWER);
+        if (select(c.getConnectedDevice()->getFile() + 1,
+                   &c.getConnectedDevice()->set,
+                   NULL, NULL,
+                   &c.getConnectedDevice()->timeout) > 0)
+            read(c.getConnectedDevice()->getFile(), ans.received, SIZE_ANSWER);
 
         LOG(5, "Buffer sent");
 

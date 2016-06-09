@@ -3,8 +3,8 @@
 
 /*!
  * \file Device.h
- * \brief TODO
- * \version 0.1
+ * \brief Represents a device
+ * \version 1.0
  */
 
 #include <iostream>
@@ -39,8 +39,6 @@ class Device
  private :
     int id; /*!< identifier of the device */
     int fd; /*!< file descriptor of the device */
-    struct timeval timeout; /*!< time waited before exiting read function */
-    fd_set set; /*!<  needed for the timeout */
     std::string port; /*!< link to the file open by the file descriptor  */
     uint8_t firmwareVersion; /*!< not implemented yet */
     uint8_t luminosity; /*!< luminosity of the LEDs (not implemented yet) */
@@ -51,6 +49,10 @@ class Device
     DeviceShape *currentConfig; /*!< state of the LEDs of the device */
 
  public :
+    struct timeval timeout; /*!< time waited before exiting read function */
+    fd_set set; /*!<  needed for the timeout */
+
+
     // Port is found by Controller's constructor and id is defined there.
 
     /*!
@@ -231,6 +233,7 @@ class Device
     /*!
      * \fn void setLuminosity(uint8_t l)
      * \brief sets the luminosity
+     * \param l the value of the luminosity
      */
     void setLuminosity(uint8_t l);
 

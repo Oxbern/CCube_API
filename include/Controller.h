@@ -3,9 +3,10 @@
 
 /*!
  * \file Controller.h
- * \brief TODO
- * \version 0.1
+ * \brief In this class are listed all the functionalities of the API
+ * \version 1.0
  */
+
 #include <cstdint>
 #include <list>
 #include <queue>
@@ -28,20 +29,21 @@
 
 /*!
  * \class Controller
- * \brief TODO
+ * \brief Creates a controller
  */
 namespace apicube{
 class Controller
 {
  protected:
-    Device *connectedDevice; /*!< TODO */
+    Device *connectedDevice; /*!< the connected device*/
 
  public:
-    bool secure;                /*!< TODO */
-    std::list<Device*> devices; /*!< TODO */
+
+    bool secure;                /*!< Flag to set ACK security */
+    std::list<Device*> devices; /*!< list of all plugged in devices*/
 
 #ifndef _WIN32
-    bool pilot();
+    bool pilot(); /*!< method for demo */
 #endif
     /*!
      * \brief Constructor
@@ -61,44 +63,44 @@ class Controller
     /*!
      * \fn bool on(int x, int y, int z)
      * \brief Switches on a led on the current connected device
-     * \param x
-     * \param y
-     * \param z
-     * \return bool
+     * \param x the first coordinate
+     * \param y the second coordinate
+     * \param z the third coordinate
+     * \return true if the change went well
      */
     bool on(int x, int y, int z);
 
     /*!
      * \fn bool off(int x, int y, int z)
      * \brief Switches off a led on the current connected device
-     * \param x
-     * \param y
-     * \param z
-     * \return bool
+     * \param x the first coordinate
+     * \param y the second coordinate
+     * \param z the third coordinate
+     * \return true if the change went well
      */
     bool off(int x, int y, int z);
 
     /*!
      * \fn bool off()
      * \brief Switches off the entire device
-     * \return bool
+     * \return true if the change went well
      */
     bool off();
 
     /*!
      * \fn bool toggle(int x, int y, int z)
      * \brief Sets the state of a led to its opposite on the current connected device
-     * \param x
-     * \param y
-     * \param z
-     * \return bool
+     * \param x the first coordinate
+     * \param y the second coordinate
+     * \param z the third coordinate
+     * \return true if the change went well
      */
     bool toggle(int x, int y, int z);
 
     /*!
      * \fn bool display()
      * \brief Displays the status of the LEDs on the device
-     * \return bool
+     * \return true if the functionality went well
      */
     bool display();
 
@@ -106,7 +108,7 @@ class Controller
      * \fn bool setLuminosity()
      * \brief Sets the device's luminosity
      * \param value to set the luminosity to
-     * \return bool
+     * \return true if the functionality went well
      */
     bool setLuminosity(uint8_t value);
 
@@ -147,7 +149,7 @@ class Controller
     /*!
      * \fn bool updateFirmware()
      * \brief Sends the firmware update
-     * \return bool
+     * \return true if the functionality went well
      */
     bool updateFirmware(const std::string& file);
 
@@ -155,14 +157,15 @@ class Controller
      * \fn bool printMsgScreen()
      * \brief Prints a message on the device's screen
      * \param message the message to print
-     * \return bool
+     * \param sizeMessage the message's size
+     * \return true if the functionality went well
      */
     bool printMsgScreen(std::string message, uint8_t sizeMessage) ;
 
     /*!
      * \fn bool reset()
      * \brief Resets the connection
-     * \return bool
+     * \return true if the functionality went well
      */
     bool reset();
     
@@ -170,7 +173,7 @@ class Controller
      * \fn bool connectDevice(int id)
      * \brief Connects the controller to a device with its ID
      * \param id ID of the device to connect
-     * \return
+     * \return true if the connection went well
      */
     bool connectDevice(int id);
 
@@ -178,24 +181,24 @@ class Controller
      * \fn bool connectDevice(int id, bool secure)
      * \brief Connects the controller to a device with its ID
      * \param id ID of the device to connect
-     * \param secure 
-     * \return
+     * \param secure flag to set ACK security
+     * \return true if the connection went well
      */
     bool connectDevice(int id, bool secure);
 
     /*!
      * \fn bool connectDevice(char *port, bool secure = false)
      * \brief Connects the controller to a device with its ID
-     * \param id ID of the device to connect
+     * \param port the port of the device to connect
      * \param secure default value to false
-     * \return
+     * \return true if the connection went well
      */    
     bool connectDevice(char *port, bool secure = false);
 
     /*!
      * \fn bool disconnectDevice()
      * \brief Disconnects the controller from the device
-     * \return
+     * \return true if the disconnection went well
      */
     bool disconnectDevice();
 

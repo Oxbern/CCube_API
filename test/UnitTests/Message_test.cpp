@@ -5,7 +5,6 @@
 #include <assert.h>
 
 #include "Request.h"
-#include "Ack.h"
 #include "Question.h"
 #include "Answer.h"
 #include "Utils.h"

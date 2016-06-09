@@ -13,13 +13,13 @@
 
 /*!
  * \def CRC16
- * \brief TODO
+ * \brief value used to compute crc
  */
 #define CRC16 0x1021
 
 /*!
  * \def MAX_TRY
- * \brief TODO, explain timeout
+ * \brief the max number of tries when sending a buffer
  */
 #define MAX_TRY 10
 
@@ -103,7 +103,6 @@
 #define DATA_INDEX 5
 
 /*!
- * \def C_SECURE
  * \brief ACK verification during communication
  */
 const bool C_SECURE = 1;
@@ -127,7 +126,8 @@ enum OPCODE {
     SET_LEDSTATS = 0x21,
     SET_LUMINOSITY = 0x22,
     UPDATE_FIRMWARE = 0x24,
-
+    SECURE = 0xF0,
+    
     // ACKMESSAGE TYPE
     ACK_OK = 0x01,
     ACK_ERR = 0x02,

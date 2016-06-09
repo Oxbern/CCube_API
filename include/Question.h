@@ -38,6 +38,7 @@ class Question : public OutgoingMessage
      * \fn bool send(Controller &c)
      * \brief Sends a message to a device
      * \param c controller
+     * \param result the answer to our question
      * \return bool
      */
     bool send(Controller &c, uint8_t *result);

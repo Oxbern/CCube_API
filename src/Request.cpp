@@ -3,7 +3,6 @@
 #include "Utils.h"
 #include "Debug.h"
 #include "ErrorException.h"
-#include "Ack.h"
 
 #include <string.h>
 
@@ -125,7 +124,11 @@ bool Request::send(Controller &c)
             if (!c.secure)
                 break;
 
-            read(c.getConnectedDevice()->getFile(), &ackBuffer[0], SIZE_ACK);
+            if (select(c.getConnectedDevice()->getFile() + 1,
+                       &c.getConnectedDevice()->set,
+                       NULL, NULL,
+                       &c.getConnectedDevice()->timeout) > 0)
+                read(c.getConnectedDevice()->getFile(), &ackBuffer[0], SIZE_ACK);
 
             if (memcmp(ackBuffer, ackRef, SIZE_ACK - 2))
                 ++nbTry;
