@@ -106,7 +106,7 @@
  * \def C_SECURE
  * \brief ACK verification during communication
  */
-#define C_SECURE 1
+const bool C_SECURE = 1;
 
 
 
