@@ -39,12 +39,12 @@ bool Controller::pilot()
     cube->moveUp();
     connectedDevice->setLedStatus(*cube);
     display();
-    
+
     while(!end){
         //printcmd();
         keypad(stdscr, TRUE);
         noecho();
-      switch(getch()) { 
+      switch(getch()) {
       case 'm':
           cube->moveUp();
           break;
@@ -56,7 +56,7 @@ bool Controller::pilot()
           break;
       case 'z':
           (*cube).moveForward();
-            break;	    
+            break;
       case 'd':
           (*cube).moveRight();
           break;
@@ -74,7 +74,7 @@ bool Controller::pilot()
       default:
           break;
       }
-      
+
       connectedDevice->getCurrentConfig()->copyLedStatus(*cube);
       display();
     }
@@ -281,7 +281,7 @@ uint8_t Controller::getLuminosity()
         // Create a request message, with its crc
         Question gl(connectedDevice->getID(), GET_LUMINOSITY);
         uint8_t *result = new uint8_t[1]();
-        
+
         //Send the message
         if (!gl.send(*this, result))
             throw ErrorException("Error while asking the luminosity "
@@ -298,7 +298,7 @@ uint8_t Controller::getLuminosity()
  */
 uint8_t *Controller::getDeviceInfo()
 {
-    uint8_t *retVal = new uint8_t[3]();
+    uint8_t *retVal = new uint8_t[3];
 
     if (this->connectedDevice != NULL) {
         // Create a request message, with its crc
@@ -347,14 +347,14 @@ uint8_t Controller::getDeviceID()
 uint8_t Controller::getVersionFirmware()
 {
     uint8_t *version = new uint8_t[1]();
-    
+
     if (this->connectedDevice != NULL) {
         Question vf(connectedDevice->getID(),
                           FIRMWARE_VERSION);
 
-        if (!vf.send(*this, version)) 
-            throw ErrorException("Error while asking the firmware version " 
-                                 "of the connected device"); 
+        if (!vf.send(*this, version))
+            throw ErrorException("Error while asking the firmware version "
+                                 "of the connected device");
 
         connectedDevice->setVersionFirmware(version[0]);
         return version[0];
@@ -403,12 +403,12 @@ bool Controller::updateFirmware(const std::string& myFile)
 
             if (!uf.send(*this))
                 throw ErrorException("Error while updating the firmware version "
-                                     "of the connected device");            
+                                     "of the connected device");
 
-            delete[] data;           
+            delete[] data;
 
             return true;
-            
+
         } else
             throw ErrorException("Unable to open file " + myFile);
 
@@ -437,7 +437,7 @@ bool Controller::printMsgScreen(char *message, uint8_t sizeMessage)
                                  "to the connected device");
         return true;
     } else
-        throw ErrorException("No device connected");    
+        throw ErrorException("No device connected");
 }
 
 /*!
@@ -460,6 +460,8 @@ bool Controller::reset()
     } else
         throw ErrorException("No device connected");    
 }
+
+
 /*!
  * \brief Sends the new status of all the LEDs 
  * \return bool
