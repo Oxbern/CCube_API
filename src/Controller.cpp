@@ -245,6 +245,8 @@ bool Controller::setLuminosity(uint8_t value)
         if (!sl.send(*this))
             throw ErrorException("Error while setting the luminosity "
                                  "of the connected device");
+
+        connectedDevice->setLuminosity(value);
         return true;
     } else
         throw ErrorException("No device connected");
@@ -307,6 +309,7 @@ uint8_t *Controller::getDeviceInfo()
             throw ErrorException("Error while asking device info "
                                          "of the connected device");
 
+        connectedDevice->setDimension(retVal);
         return retVal;
 
     } else
@@ -330,6 +333,7 @@ uint8_t Controller::getDeviceID()
         if (!dev.send(*this, id))
             throw ErrorException("Error while asking the ID "
                                  "of the connected device");
+        connectedDevice->setID(id[0]);
         return id[0];
     } else
         throw ErrorException("No device connected");
@@ -352,6 +356,7 @@ uint8_t Controller::getVersionFirmware()
             throw ErrorException("Error while asking the firmware version " 
                                  "of the connected device"); 
 
+        connectedDevice->setVersionFirmware(version[0]);
         return version[0];
     } else
         throw ErrorException("No device connected");

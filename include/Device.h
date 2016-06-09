@@ -42,8 +42,8 @@ class Device
     struct timeval timeout; /*!< time waited before exiting read function */
     fd_set set; /*!<  needed for the timeout */
     std::string port; /*!< link to the file open by the file descriptor  */
-    std::string firmwareVersion; /*!< not implemented yet */
-    float luminosity; /*!< luminosity of the LEDs (not implemented yet) */
+    uint8_t firmwareVersion; /*!< not implemented yet */
+    uint8_t luminosity; /*!< luminosity of the LEDs (not implemented yet) */
     int sizeX; /*!< First dimension of the device */
     int sizeY; /*!< Second dimension of the device */
     int sizeZ; /*!< Third dimension of the device */
@@ -227,6 +227,35 @@ class Device
      * false otherwise (for example dimensions did not match)
      */
     bool setLedStatus(ShapeToDisplay &s);
+
+    /*!
+     * \fn void setLuminosity(uint8_t l)
+     * \brief sets the luminosity
+     */
+    void setLuminosity(uint8_t l);
+
+    /*!
+     * \fn void setDimension(uint8_t* dim)
+     * \brief sets the dimensions
+     * \param dim an array of sizex, sizey, sizez
+     */
+    void setDimension(uint8_t *dim);
+
+    /*!
+     * \fn void setVersionFirmware(uint8_t v)
+     * \brief sets the firmware's version
+     * \param v the new version
+     */
+    void setVersionFirmware(uint8_t v);
+
+    /*!
+     * \fn void setID(uint8_t id);
+     * \brief sets the ID
+     * \param id the device's ID
+     */
+    void setID(uint8_t id);
+    
+    
 };
 
 #endif //CUBEAPI_DEVICE_H
