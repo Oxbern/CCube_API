@@ -59,7 +59,7 @@ foreach( testsourcefile ${TESTS_CXX})
 endforeach( testsourcefile ${TESTS_CXX} )
 
 # Target to execute all test files
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../test/tests.sh)
-    add_custom_target(check
-        COMMAND ${BASH_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../test/tests.sh)
-endif()
+#if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../test/tests.sh)
+#    add_custom_target(check
+#        COMMAND ${BASH_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../test/tests.sh)
+#endif()
