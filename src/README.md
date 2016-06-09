@@ -9,7 +9,7 @@ First, be sure to have the device so you will be able to do the complementary fo
     For now, you have the possibility to send a `Question` or a `Request`, but up to you if you want to create a new class extended from `OutgoingMessage`.
     - If it is a `Request`, you will have to encode it with the right data
 - Send your message
-    - If it is a `Question`, the method `send` will not only tell you if the transmission went well but it will also give you your answer (if the functionnality is been added to the device's firmware).
+    - If it is a `Question`, the method `send` will not only tell you if the transmission went well but it will also give you your answer (if the functionnality has already been added to the device's firmware).
 
 ## Example
 ### `getScreenSize()`
@@ -99,6 +99,7 @@ Or one signe buffer ( X < 57 )
 1 | ID_DEVICE(1) | OP_CODE(1) | SIZE_LEFT(2) | DATA(3) | CRC(2)
 
 - ACKs :
+- 
 1 | ID_DEVICE(1) | ACK_TYPE(1) | 0 | 3 | DATA(3) | CRC(2)
 
 
