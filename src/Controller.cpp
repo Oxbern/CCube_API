@@ -454,8 +454,7 @@ bool Controller::reset()
 {
     if (connectedDevice != NULL) {
         //Create a Request
-        Request pm(connectedDevice->getID(),
-                   0,
+        Request pm(connectedDevice->getID(), 0,
                    OPCODE(RESET));
 
         //Send the message
@@ -464,7 +463,30 @@ bool Controller::reset()
                                  "to the connected device");
         return true;
     } else
-        throw ErrorException("No device connected");    
+        throw ErrorException("No device connected");
+}
+
+/*!
+ * \brief Set secure communication
+ * \param secure Should the connection be secure or not
+ * \return bool
+ */
+bool Controller::setSecure(bool secure)
+{
+    if (connectedDevice != NULL) {
+        //Create a Request
+        Request request(connectedDevice->getID(), 1,
+                        OPCODE(SECURE));
+
+        request.encode((uint8_t *)&secure);
+
+        //Send the message
+        if (!pm.send(*this))
+            throw ErrorException("Error while wanting to reset the connection"
+                                 "to the connected device");
+        return true;
+    } else
+        throw ErrorException("No device connected");
 }
 
 

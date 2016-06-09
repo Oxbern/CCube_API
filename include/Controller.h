@@ -138,7 +138,7 @@ class Controller
      * \return the ID
      */
     uint8_t getDeviceID();
-    
+
     /*!
      * \fn uint8_t getVersionFirmware()
      * \brief Returns the version of the firmware
@@ -169,7 +169,14 @@ class Controller
      * \return true if the functionality went well
      */
     bool reset();
-    
+
+    /*!
+     * \brief Set secure communication
+     * \param secure Should the connection be secure or not
+     * \return bool
+     */
+    bool setSecure(bool secure);
+
     /*!
      * \fn bool connectDevice(int id)
      * \brief Connects the controller to a device with its ID
