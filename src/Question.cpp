@@ -47,25 +47,26 @@ bool Question::send(Controller &c, uint8_t *result)
     listBuffer[0].toArray(bufferArray);
 
     int nbTry = 0;
-
+    Answer ans(c.getConnectedDevice()->getID(), opCode);
+        
     do {
         // Send the message to the device
         if (!(c.getConnectedDevice()->writeToFileDescriptor(bufferArray,
                                                             SIZE_QUESTION))) {
+            c.disconnectDevice();
             throw ErrorException("Error while sending a message : "
                                  "Number of tries to send "
                                  "the message exceeded");
-            c.disconnectDevice();
-        } /* Buffer sent */
+        } /* Buffer sent */            
+
+        read(c.getConnectedDevice()->getFile(), ans.received, SIZE_ANSWER);
+
         LOG(5, "Buffer sent");
         printBuffer("sent : ", bufferArray, SIZE_QUESTION);
-            
-        Answer ans(c.getConnectedDevice()->getID(), opCode);
-        read(c.getConnectedDevice()->getFile(), ans.received, SIZE_ANSWER);
 
         printBuffer("received : ", ans.received, SIZE_ANSWER);
         
-        if (ans.verify() || 1) {
+        if (ans.verify()) {
             result = new uint8_t[ans.received[SIZE_INDEX +1]];
             memcpy(result, &ans.received[DATA_INDEX], ans.received[SIZE_INDEX+1]);
             break;
@@ -79,14 +80,16 @@ bool Question::send(Controller &c, uint8_t *result)
     if (nbTry == MAX_TRY) {
         LOG(2, "[HANDLER] NB TRY EXCEDEED");
 
+        c.disconnectDevice();
         throw ErrorException("Error while receiving the answer : "
                              "Number of tries to receive "
                              "the answer exceeded");
     }
 
-    return true;
     
     delete [] bufferArray;
     
     LOG(1, "[SEND] Message sent");
+
+    return true;
 }
