@@ -332,14 +332,14 @@ bool Controller::updateFirmware(const std::string& myFile)
 {
     if (connectedDevice != NULL) {
         std::streampos size;
-        char *memblock;
+        //        char *memblock;
 
         uint8_t *data;
 
         std::ifstream file(myFile, std::ios::in | std::ios::binary | std::ios::ate);
         if (file.is_open()) {
             size = file.tellg();
-            memblock = new char[size]();
+            char *memblock = new char[size]();
 
             file.seekg(0, std::ios::beg);
             file.read(memblock, size);
@@ -350,7 +350,7 @@ bool Controller::updateFirmware(const std::string& myFile)
 
             LOG(3, "the entire file content is in memblock \n");
 
-            delete[] memblock;
+
 
             LOG(3, "size is " + std::to_string(size) + " bytes.");
 
@@ -368,7 +368,8 @@ bool Controller::updateFirmware(const std::string& myFile)
                                      "of the connected device");
 
             delete[] data;
-
+            delete[] memblock;
+            
             return true;
 
         } else
