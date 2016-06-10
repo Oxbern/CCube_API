@@ -334,8 +334,6 @@ bool Controller::updateFirmware(const std::string& myFile)
         std::streampos size;
         //        char *memblock;
 
-        uint8_t *data;
-
         std::ifstream file(myFile, std::ios::in | std::ios::binary | std::ios::ate);
         if (file.is_open()) {
             size = file.tellg();
@@ -344,7 +342,7 @@ bool Controller::updateFirmware(const std::string& myFile)
             file.seekg(0, std::ios::beg);
             file.read(memblock, size);
             file.close();
-            data = new uint8_t[size]();
+            uint8_t *data = new uint8_t[size]();
 
             memcpy(data, (const uint8_t *) memblock, size);
 
