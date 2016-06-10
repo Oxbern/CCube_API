@@ -98,19 +98,7 @@ class Device
      * \return true if the writing went well
      * false otherwise
      */
-    bool writeToFileDescriptor(uint8_t* data, int dataSize); //TODO set as private later
-
-    /*!
-     * \brief store the data received in a buffer
-     * to process them later
-     *
-     * \param buffer  array where the data are stored
-     * \param sizeBuffer  size of the data to collect
-     *
-     * \return true if the reading went well
-     * false otherwise
-     */
-    bool readFromFileDescriptor(uint8_t *buffer, uint16_t sizeBuffer);
+    bool writeToFileDescriptor(uint8_t* data, int dataSize);
 
     /*!
      * \fn bool on(int x, int y, int z)
@@ -167,8 +155,6 @@ class Device
      * false otherwise
      */
     bool toggle(int x, int y, int z);
-
-    //TODO : Add setters and getters
 
     /*!
      * \fn int getID() const

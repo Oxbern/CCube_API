@@ -13,7 +13,8 @@
  * \param sizeY  Second dimension of the 3D array of booleans
  * \param sizeZ  Third dimension of the 3D array of booleans
  */
-DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) 
+DeviceShape::DeviceShape(int sizeX, int sizeY, int sizeZ) :
+    sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) 
 {
     LOG(1, "DeviceShape(sizeX, sizeY, sizeZ)");
     //Allocation

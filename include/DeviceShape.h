@@ -28,8 +28,9 @@ class DeviceShape
     /*! 
      * \brief Constructor
      * Constructor of the class DeviceShape
+     * default value of the shape's dimension : 9,9,9
      * 
-     * \param sizeX  First dimension of the 3D array of booleans
+     * \param sizeX  First dimension oft pul the 3D array of booleans
      * \param sizeY  Second dimension of the 3D array of booleans
      * \param sizeZ  Third dimension of the 3D array of booleans
      */

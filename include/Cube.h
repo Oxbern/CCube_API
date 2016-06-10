@@ -2,7 +2,7 @@
 #define CUBE_H
 /*!
  * \file Cube.h
- * \brief TODO
+ * \brief Class for demo
  * \version 0.1
  */
 #include "ShapeToDisplay.h"

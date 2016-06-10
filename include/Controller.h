@@ -178,30 +178,22 @@ class Controller
     bool setSecure(bool secure);
 
     /*!
-     * \fn bool connectDevice(int id)
-     * \brief Connects the controller to a device with its ID
-     * \param id ID of the device to connect
-     * \return true if the connection went well
-     */
-    bool connectDevice(int id);
-
-    /*!
      * \fn bool connectDevice(int id, bool secure)
      * \brief Connects the controller to a device with its ID
      * \param id ID of the device to connect
-     * \param secure flag to set ACK security
+     * \param secure flag to set ACK security, default value to false
      * \return true if the connection went well
      */
-    bool connectDevice(int id, bool secure);
+    bool connectDevice(int id, bool secure = !C_SECURE);
 
     /*!
      * \fn bool connectDevice(char *port, bool secure = false)
      * \brief Connects the controller to a device with its ID
      * \param port the port of the device to connect
-     * \param secure default value to false
+     * \param secure flag to set ACK security, default value to false
      * \return true if the connection went well
      */    
-    bool connectDevice(char *port, bool secure = false);
+    bool connectDevice(char *port, bool secure = !C_SECURE);
 
     /*!
      * \fn bool disconnectDevice()

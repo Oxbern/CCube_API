@@ -16,18 +16,6 @@
 #include "Cube.h"
 #endif
 
-/*!
- * \def MAX_WAIT
- * \brief TODO, explain timeout
- */
-#define MAX_WAIT 1000000
-
-/*!
- * \def MAX_SENDING_TRIES
- * \brief TODO
- */
-#define MAX_SENDING_TRIES 5
-
 using namespace apicube;
 #ifndef _WIN32
 bool Controller::pilot()
@@ -124,43 +112,10 @@ Controller::~Controller()
 }
 
 
-
-
 /*!
  * \brief Connects the controller to a device with its ID
  * \param id ID of the device to connect
- * \return true if the connection went well
- */
-bool Controller::connectDevice(int id)
-{
-
-    LOG(1, "connectDevice(int id) \n");
-    Device *chosen = NULL;
-
-    std::list<Device*>::iterator iter ;
-    for(iter = devices.begin(); (iter != devices.end()); iter++){
-        if (id == (*iter)->getID())
-            chosen = *iter;
-    }
-
-    if (chosen != NULL) {
-        try {
-            if (chosen->connect()){
-                this->connectedDevice = chosen;
-                return true;
-            }
-        } catch (std::exception e) {
-            std::cout << "Try again, the device is probably busy!" << std::endl;
-        }
-    }
-
-    return false;
-}
-
-/*!
- * \brief Connects the controller to a device with its ID
- * \param id ID of the device to connect
- * \param secure flag to set ACK security
+ * \param secure flag to set ACK security, default value to false
  * \return true if the connection went well
  */
 bool Controller::connectDevice(int id, bool secure)
@@ -190,7 +145,7 @@ bool Controller::connectDevice(int id, bool secure)
 /*!
  * \brief Connects the controller to a device with its ID
  * \param port the port of the device to connect
- * \param secure default value to false
+ * \param secure flag to set ACK security, default value to false
  * \return true if the connection went well
  */    
 bool Controller::connectDevice(char *port, bool secure)
@@ -293,7 +248,7 @@ uint8_t Controller::getLuminosity()
             throw ErrorException("Error while asking the luminosity "
                                  "of the connected device");
 
-        return result[0]; //TODO To modify with the good value
+        return result[0];
     } else
         throw ErrorException("No device connected");
 }
